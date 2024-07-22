@@ -20,7 +20,8 @@ class Server{
     };
 
     routers(){
-        
+        this.app.use('/proveedores', require('./routers/providers.routers'));
+        this.app.use('/clientes', require('./routers/clients.routers'));
     };
 
     listen(){
