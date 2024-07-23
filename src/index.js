@@ -5,7 +5,7 @@ class Server{
 
     constructor(){
         this.app = express();
-        this.port = process.env.PORT || 3000;
+        this.port = 3000;
         //Middlewares
         this.middlewares();
         //Rutas
@@ -22,6 +22,10 @@ class Server{
     routers(){
         this.app.use('/proveedores', require('./routers/providers.routers'));
         this.app.use('/clientes', require('./routers/clients.routers'));
+        this.app.use('/ventas', require('./routers/sales.routers'));
+        this.app.use('/devolucionVentas', require('./routers/returnSales.router'));
+        this.app.use('/perdida', require('./routers/returnLoss.router'))
+
     };
 
     listen(){
