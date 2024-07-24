@@ -28,6 +28,7 @@ class Server{
         this.app.use('/productos', require('./routers/products.routers'));
         this.app.use('/perdida', require('./routers/returnLoss.router'));
         this.app.use('/categorias', require('./routers/categories.routers'));
+        this.app.use('/roles', require('./routers/roles.routers'));
     };
 
     listen(){
