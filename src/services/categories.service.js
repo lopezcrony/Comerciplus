@@ -7,6 +7,7 @@ const GetAllCategoriesService = () => {
         });
     });
 };
+
 const GetOneCategorieService = (id) => {
     return new Promise((resolve, reject) => {
         connection.query('SELECT * FROM categorias_productos WHERE idCategoria = ?', [id], (err, results) => {
