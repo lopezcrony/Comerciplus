@@ -1,7 +1,6 @@
 const { request, response } = require('express')
 const { getAllProviders, getOneProvider, createNewProvider,updateOneProvider, deleteOneProvider } = require('../services/providers.service');
 
-
 const GetAllProviders = async (request, response) => {
     try {
         const providers = await getAllProviders();
