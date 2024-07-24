@@ -2,7 +2,7 @@ const { request, response } = require('express')
 const { getAllRoles, getOneRoles, createNewRol,updateOneRol, deleteOneRol } = require('../services/Roles.service');
 
 
-const getAllRoles = async (request, response) => {
+const GetAllRoles = async (request, response) => {
     try {
         const roles = await getAllRoles();
         response.json(roles);
@@ -11,7 +11,7 @@ const getAllRoles = async (request, response) => {
     }
 };
 
-const getOneRoles = async (request, response) => {
+const GetOneRoles = async (request, response) => {
     try {
         // Destructuración para obtener el id de request.params
         const { id } = request.params
@@ -67,12 +67,11 @@ const UpdateRol = async (request, response) => {
     }
 };
 
-const deleteOneRol = async (request, response) => {
+const DeleteOneRol = async (request, response) => {
     try {
         const { id } = request.params
         const result = await deleteOneRol(id);
 
-        // Verifica si se eliminó algún registro
         if (result.affectedRows === 0) {
             return response.status(404).json({ message: 'Rol no encontrado.' });
         }
@@ -84,10 +83,10 @@ const deleteOneRol = async (request, response) => {
 }
 
 module.exports = {
-    getAllRoles,
-    getOneRoles,
+    GetAllRoles,
+    GetOneRoles,
     CreateNewRol,
     UpdateRol,
-    deleteOneRol
+    DeleteOneRol
 }
 
