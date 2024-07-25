@@ -38,9 +38,9 @@ const updateOneRol = (roles) => {
             SET nombreRol = ?
             WHERE idRol  = ?`;
 
-        const { nombreRol } = roles;
+        const { idRol, nombreRol } = roles;
 
-        connection.query(query, [nombreRol],  (err, results) => {
+        connection.query(query, [ nombreRol, idRol],  (err, results) => {
             err ? reject(err) : resolve(results);
         })
     });

@@ -25,7 +25,7 @@ const GetOneRoles = async (request, response) => {
     } catch (error) {
         response.status(500).json({ message: 'Error al obtener el rol', error: error.message });
     }
-};
+}; 
 
 const CreateNewRol = async (request, response) => {
     try {
@@ -55,6 +55,7 @@ const UpdateRol = async (request, response) => {
         }
 
         const updatedRol = {
+            idRol:id,
             nombreRol
         };
 
