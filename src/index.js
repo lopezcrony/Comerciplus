@@ -26,7 +26,6 @@ class Server{
         this.app.use('/devolucionVentas', require('./routers/returnSales.router'));
         this.app.use('/perdida', require('./routers/returnLoss.router'))
         this.app.use('/productos', require('./routers/products.routers'));
-        this.app.use('/perdida', require('./routers/returnLoss.router'));
         this.app.use('/categorias', require('./routers/categories.routers'));
         this.app.use('/roles', require('./routers/roles.routers'));
         this.app.use('/permissions', require('./routers/permissions.routers'));
@@ -35,7 +34,7 @@ class Server{
 
     listen(){
         this.app.listen(this.port, () => {
-            console.log(`http://localhost:${this.port}`);
+            console.log(`\nhttp://localhost:${this.port}`);
         });
     };
 

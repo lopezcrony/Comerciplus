@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { GetAllProductsController, GetOneProductController, CreateNewProductController, UpdateProductController, DeleteOneProductController } = require("../controllers/products.controllers");
-const { validateProducts } = require("../validations/products.validations");
-const { validateCategorie } = require("../validations/categories.validations");
+const { validateProducts } = require("../middlewares/products.validations");
+const { validateCategorie } = require("../middlewares/categories.validations");
 
 const router = Router();
 

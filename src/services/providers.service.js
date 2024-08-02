@@ -1,66 +1,64 @@
-const connection = require('../database/db');
+const providerRepository = require('../repositories/providers.repository');
 
-const getAllProviders = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM proveedores', (err, results) => {
-            (err) ? reject(err) : resolve(results);
-        });
-    });
+const getAllProviders = async () => {
+    try {
+        return await providerRepository.findAllProviders();
+    } catch (error) {
+        throw error;
+    }
 };
 
-const getOneProvider = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM proveedores WHERE idProveedor = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results[0]);
-        });
-    });
+const getOneProvider = async (id) => {
+    try {
+        return await providerRepository.findProviderById(id);
+    } catch (error) {
+        throw error;
+    }
 };
 
-const createNewProvider = (provider) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            INSERT INTO proveedores (nitProveedor, nombreProveedor, direccionProveedor, telefonoProveedor)
-            VALUES (?, ?, ?, ?)
-        `;
-        // Destructuración del objeto proveedor
-        const { nitProveedor, nombreProveedor, direccionProveedor, telefonoProveedor } = provider;
-        
-        connection.query(query, [nitProveedor, nombreProveedor, direccionProveedor, telefonoProveedor], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const createNewProvider = async (providerData) => {
+    try {
+        return await providerRepository.createProvider(providerData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe un proveedor con esa información.');
+        }
+        throw error;
+    }
 };
 
-const updateOneProvider = (provider) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            UPDATE proveedores 
-            SET nitProveedor = ?, 
-                nombreProveedor = ?, 
-                direccionProveedor = ?, 
-                telefonoProveedor = ? 
-            WHERE idProveedor  = ?`;
-
-        const { idProveedor, nitProveedor, nombreProveedor, direccionProveedor, telefonoProveedor } = provider;
-
-        connection.query(query, [nitProveedor, nombreProveedor, direccionProveedor, telefonoProveedor, idProveedor],  (err, results) => {
-            err ? reject(err) : resolve(results);
-        })
-    });
+const updateOneProvider = async (id, providerData) => {
+    try {
+        const provider = await providerRepository.findProviderById(id);
+        if (provider) {
+            return await providerRepository.updateProvider(id, providerData);
+        }
+        throw new Error('Proveedor no encontrado');
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('El NIT del proveedor ya está registrado.');
+        }
+        throw error;
+    }
 };
 
-const deleteOneProvider = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM proveedores WHERE idProveedor = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const deleteOneProvider = async (id) => {
+    try {
+        const result = await providerRepository.deleteProvider(id);
+        if (result === 0) {
+            throw new Error('Proveedor no encontrado');
+        }
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
+
 
 module.exports = {
     getAllProviders,
     getOneProvider,
     createNewProvider,
     updateOneProvider,
-    deleteOneProvider
+    deleteOneProvider,
 };

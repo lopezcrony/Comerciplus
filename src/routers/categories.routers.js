@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { GetAllCategoriesController, GetOneCategorieController, CreateNewCategorieController, UpdateCategorieController, DeleteOneCategoriesController } = require("../controllers/categories.controllers");
-const { validateCategorie } = require("../validations/categories.validations");
+const { validateCategorie } = require("../middlewares/categories.validations");
 
 const router = Router();
 

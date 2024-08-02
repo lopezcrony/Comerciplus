@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { GetAllClients, GetOneClient, DeleteOneClient, UpdatedOneClient, CreateNewClient } = require("../controllers/clients.controllers");
-const { validateClient } = require("../validations/clients.validations");
+const { validateClient } = require("../middlewares/clients.validations");
 
 const router = Router();
 

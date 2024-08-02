@@ -1,4 +1,4 @@
-const connection = require('../database/db');
+const connection = require('../config/db');
 
 const GetAllProductsService = () => {
     return new Promise((resolve, reject) => {

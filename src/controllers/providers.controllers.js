@@ -1,97 +1,59 @@
-const { request, response } = require('express')
-const { getAllProviders, getOneProvider, createNewProvider,updateOneProvider, deleteOneProvider } = require('../services/providers.service');
+const providerService = require('../services/providers.service');
 
-const GetAllProviders = async (request, response) => {
+const getAllProviders = async (req, res) => {
     try {
-        const providers = await getAllProviders();
-        response.json(providers);
+        const providers = await providerService.getAllProviders();
+        res.status(200).json(providers);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener los proveedores', error: error.message });
+        res.status(500).json({ message: 'Error al obtener los proveedores', error: error.message });
     }
 };
 
-const GetOneProvider = async (request, response) => {
+const getOneProvider = async (req, res) => {
     try {
-        // Destructuración para obtener el id de request.params
-        const { id } = request.params
-        const proveedor = await getOneProvider(id);
+        const provider = await providerService.getOneProvider(req.params.id);
+        res.status(200).json(provider);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener el proveedor', error: error.message });
+    }
+};
 
-        if (proveedor) {
-            response.json(proveedor);
+const createNewProvider = async (req, res) => {
+    try {
+        const newProvider = await providerService.createNewProvider(req.body);
+        res.status(201).json({ message: 'Proveedor creado exitosamente.', newProvider });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error al crear el proveedor.', error: error.message });
+    }
+};
+
+const updateOneProvider = async (req, res) => {
+    try {
+        const updatedProvider = await providerService.updateOneProvider(req.params.id, req.body);
+        res.status(200).json({ message: 'Proveedor actualizado exitosamente', updatedProvider});
+    } catch (error) {
+        if (error.message === 'El NIT del proveedor ya está registrado.') {
+            res.status(400).json({ message: error.message });
         } else {
-            response.status(404).json({ message: 'Proveedor no encontrado' })
+            res.status(500).json({ message: 'Error al actualizar el proveedor', error: error.message });
         }
-    } catch (error) {
-        response.status(500).json({ message: 'Error al obtener el proveedor', error: error.message });
     }
 };
 
-const CreateNewProvider = async (request, response) => {
+const deleteOneProvider = async (req, res) => {
     try {
-        const { nitProveedor, nombreProveedor, direccionProveedor, telefonoProveedor } = request.body;
-
-        const newProvider = {
-            nitProveedor,
-            nombreProveedor,
-            direccionProveedor,
-            telefonoProveedor
-        };
-
-        const result = await createNewProvider(newProvider);
-        response.status(201).json({ message: 'Proveedor creado exitosamente.' });
-
+        await providerService.deleteOneProvider(req.params.id);
+        res.status(204).json({ message: 'Proveedor eliminado con éxito.' });
     } catch (error) {
-        response.status(500).json({ message: 'Error al crear el proveedor.', error: error.message });
+        res.status(500).json({ message: 'Error al obtener el proveedor', error: error.message });
     }
 };
-
-const UpdateProvider = async (request, response) => {
-    try {
-        const { id } = request.params;
-        const { nitProveedor, nombreProveedor, direccionProveedor, telefonoProveedor } = request.body;
-
-        const provider = await getOneProvider(id);
-        if(!provider){
-            return response.status(404).json({ message: 'Proveedor no encontrado' });
-        }
-
-        const updatedProvider = {
-            idProveedor: id,
-            nitProveedor,
-            nombreProveedor,
-            direccionProveedor,
-            telefonoProveedor
-        };
-
-        const result = await updateOneProvider(updatedProvider);
-
-        response.status(200).json({ message: 'Proveedor actualizado exitosamente'});
-
-    } catch (error) {
-        response.status(500).json({ message: 'Error al actualizar el proveedor.', error: error.message });
-    }
-};
-
-const DeleteOneProvider = async (request, response) => {
-    try {
-        const { id } = request.params
-        const result = await deleteOneProvider(id);
-
-        // Verifica si se eliminó algún registro
-        if (result.affectedRows === 0) {
-            return response.status(404).json({ message: 'Proveedor no encontrado.' });
-        }
-        response.status(200).json({ message: 'Proveedor eliminado con éxito.' });
-        
-    } catch (error) {
-        response.status(500).json({ message: 'Error al obtener el proveedor', error: error.message });
-    }
-}
 
 module.exports = {
-    GetAllProviders,
-    GetOneProvider,
-    CreateNewProvider,
-    UpdateProvider,
-    DeleteOneProvider
-}
+    getAllProviders,
+    getOneProvider,
+    createNewProvider,
+    updateOneProvider,
+    deleteOneProvider
+};
