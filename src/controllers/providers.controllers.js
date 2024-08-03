@@ -18,9 +18,9 @@ const getOneProvider = async (req, res) => {
     }
 };
 
-const createNewProvider = async (req, res) => {
+const createProvider = async (req, res) => {
     try {
-        const newProvider = await providerService.createNewProvider(req.body);
+        const newProvider = await providerService.createProvider(req.body);
         res.status(201).json({ message: 'Proveedor creado exitosamente.', newProvider });
 
     } catch (error) {
@@ -28,9 +28,9 @@ const createNewProvider = async (req, res) => {
     }
 };
 
-const updateOneProvider = async (req, res) => {
+const updateProvider = async (req, res) => {
     try {
-        const updatedProvider = await providerService.updateOneProvider(req.params.id, req.body);
+        const updatedProvider = await providerService.updateProvider(req.params.id, req.body);
         res.status(200).json({ message: 'Proveedor actualizado exitosamente', updatedProvider});
     } catch (error) {
         if (error.message === 'El NIT del proveedor ya está registrado.') {
@@ -44,7 +44,7 @@ const updateOneProvider = async (req, res) => {
 const deleteOneProvider = async (req, res) => {
     try {
         await providerService.deleteOneProvider(req.params.id);
-        res.status(204).json({ message: 'Proveedor eliminado con éxito.' });
+        res.json({ message: 'Proveedor eliminado con éxito.' });
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener el proveedor', error: error.message });
     }
@@ -53,7 +53,7 @@ const deleteOneProvider = async (req, res) => {
 module.exports = {
     getAllProviders,
     getOneProvider,
-    createNewProvider,
-    updateOneProvider,
+    createProvider,
+    updateProvider,
     deleteOneProvider
 };

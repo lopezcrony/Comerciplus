@@ -1,8 +1,10 @@
 const sequelize = require('../config/db');
 const provider = require('./providers.model');
+const client = require('./clients.model')
 
 const models = {
-    provider
+    provider,
+    client
 };
 
 const connectDb = async () => {

@@ -1,69 +1,65 @@
-const connection = require('../config/db');
+const clientRepository = require('../repositories/clients.repository');
 
-const getAllClients = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM clientes', (err, results) => {
-            if (err) reject(err);
-            resolve(results);
-        });
-    });
+const getAllClients = async () => {
+    try {
+        return await clientRepository.findAllClients();
+    } catch (error) {
+        throw error;
+    }
 };
 
-const getOneClient = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM clientes WHERE idCliente = ?', [id], (err, results) => {
-            (err) ? reject(err) : resolve(results[0]);
-        });
-    });
+
+const getOneClient = async (id) => {
+    try {
+        return await clientRepository.findClientById(id);
+    } catch (error) {
+        throw error;
+    }
 };
 
-const createNewClient = (client) => {
-    return new Promise((resolve, reject) => {
-
-        const { cedulaCliente, nombreCliente, apellidoCliente, direccionCliente, telefonoCliente } = client;
-
-        const query = `
-            INSERT INTO clientes (cedulaCliente, nombreCliente, apellidoCliente, direccionCliente, telefonoCliente)
-            VALUES (?, ?, ?, ?, ?)
-        `;
-        
-        connection.query(query, [cedulaCliente, nombreCliente, apellidoCliente, direccionCliente, telefonoCliente], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const createClient = async (ClientData) => {
+    try {
+        return await clientRepository.createClient(ClientData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe un cliente con esa información.');
+        }
+        throw error;
+    }
 };
 
-const updateOneClient = (client) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-        UPDATE clientes 
-        SET cedulaCliente = ?, 
-            nombreCliente = ?, 
-            apellidoCliente = ?, 
-            direccionCliente = ?,
-            telefonoCliente = ?
-        WHERE idCliente  = ?`;
-
-        const { idCliente, cedulaCliente, nombreCliente, apellidoCliente, direccionCliente, telefonoCliente } = client;
-
-        connection.query(query, [cedulaCliente, nombreCliente, apellidoCliente, direccionCliente, telefonoCliente, idCliente], (err, results) => {
-            err ? reject(err) : resolve(results);
-        })
-    });
+const updateClient = async (id, ClientData) => {
+    try {
+        const Client = await clientRepository.findClientById(id);
+        if (Client) {
+            return await clientRepository.updateClient(id, ClientData);
+        }
+        throw new Error('Cliente no encontrado');
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('La cédula del cliente ya está registrada.');
+        }
+        throw error;
+    }
 };
 
-const deleteOneClient = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM clientes WHERE idCliente = ?', [id], (err, results) => {
-            (err) ? reject(err) : resolve(results);
-        });
-    });
+const deleteOneClient = async (id) => {
+    try {
+        const result = await clientRepository.deleteClient(id);
+        if (result === 0) {
+            throw new Error('Cliente no encontrado');
+        }
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
+
 
 module.exports = {
     getAllClients,
     getOneClient,
-    createNewClient,
-    updateOneClient,
-    deleteOneClient
-}
+    createClient,
+    updateClient,
+    deleteOneClient,
+};

@@ -1,15 +1,15 @@
 const { Router } = require("express");
-const { getAllProviders, getOneProvider, createNewProvider, updateOneProvider, deleteOneProvider } = require("../controllers/providers.controllers");
+const providerController = require("../controllers/providers.controllers");
 const { validateProvider } = require('../middlewares/providers.validations')
 
 const router = Router();
 
 router
-    .get('/', getAllProviders)
-    .get('/:id', getOneProvider)
-    .post('/', validateProvider, createNewProvider)
-    .put('/:id', validateProvider, updateOneProvider)
-    .delete('/:id', deleteOneProvider)
+    .get('/', providerController.getAllProviders)
+    .get('/:id', providerController.getOneProvider)
+    .post('/', validateProvider, providerController.createProvider)
+    .put('/:id', validateProvider, providerController.updateProvider)
+    .delete('/:id', providerController.deleteOneProvider)
 
 
 module.exports = router;

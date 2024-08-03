@@ -1,14 +1,14 @@
 const { Router } = require("express");
-const { GetAllClients, GetOneClient, DeleteOneClient, UpdatedOneClient, CreateNewClient } = require("../controllers/clients.controllers");
+const clientController = require("../controllers/clients.controllers");
 const { validateClient } = require("../middlewares/clients.validations");
 
 const router = Router();
 
 router
-    .get('/', GetAllClients)
-    .get('/:id', GetOneClient)
-    .post('/', validateClient, CreateNewClient)
-    .put('/:id', validateClient, UpdatedOneClient)
-    .delete('/:id', DeleteOneClient)
+    .get('/', clientController.getAllClients)
+    .get('/:id', clientController.getOneClient)
+    .post('/', validateClient, clientController.createClient)
+    .put('/:id', validateClient, clientController.updateClient)
+    .delete('/:id', clientController.deleteOneClient)
 
 module.exports = router;

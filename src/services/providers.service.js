@@ -16,7 +16,7 @@ const getOneProvider = async (id) => {
     }
 };
 
-const createNewProvider = async (providerData) => {
+const createProvider = async (providerData) => {
     try {
         return await providerRepository.createProvider(providerData);
     } catch (error) {
@@ -27,7 +27,7 @@ const createNewProvider = async (providerData) => {
     }
 };
 
-const updateOneProvider = async (id, providerData) => {
+const updateProvider = async (id, providerData) => {
     try {
         const provider = await providerRepository.findProviderById(id);
         if (provider) {
@@ -58,7 +58,7 @@ const deleteOneProvider = async (id) => {
 module.exports = {
     getAllProviders,
     getOneProvider,
-    createNewProvider,
-    updateOneProvider,
+    createProvider,
+    updateProvider,
     deleteOneProvider,
 };
