@@ -41,6 +41,27 @@ const updateProvider = async (req, res) => {
     }
 };
 
+const updateProviderStatus  = async (req, res) => {
+    try {
+        let { estadoProveedor } = req.body;
+
+        if (estadoProveedor === '0' || estadoProveedor === 0) {
+            estadoProveedor = false;
+        } else if (estadoProveedor === '1' || estadoProveedor === 1) {
+            estadoProveedor = true;
+        } else if (estadoProveedor === true || estadoProveedor === false) {
+            
+        } else {
+            return res.status(400).json({ message: 'El estado debe ser un valor booleano' });
+        }
+        
+        await providerService.updateProviderStatus (req.params.id, estadoProveedor);
+        res.json({ message: 'Estado actualizado con éxito.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar el estado del proveedor', error: error.message });
+    }
+};
+
 const deleteOneProvider = async (req, res) => {
     try {
         await providerService.deleteOneProvider(req.params.id);
@@ -50,10 +71,13 @@ const deleteOneProvider = async (req, res) => {
     }
 };
 
+
+
 module.exports = {
     getAllProviders,
     getOneProvider,
     createProvider,
     updateProvider,
+    updateProviderStatus,
     deleteOneProvider
 };

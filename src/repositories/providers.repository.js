@@ -20,6 +20,16 @@ const updateProvider = async (id, providerData) => {
     throw new Error('Proveedor no encontrado');
 };
 
+const updateProviderStatus = async (id, status) => {
+
+    const provider = await findProviderById(id);
+    if (provider) {
+        return await provider.update({estadoProveedor : status});
+    }
+    throw new Error('Proveedor no encontrado');
+};
+
+
 const deleteProvider = async (id) => {
     const result = await Provider.destroy({
         where: { idProveedor: id }
@@ -27,11 +37,11 @@ const deleteProvider = async (id) => {
     return result;
 };
 
-
 module.exports = {
     findAllProviders,
     findProviderById,
     createProvider,
     updateProvider,
+    updateProviderStatus,
     deleteProvider,
 };

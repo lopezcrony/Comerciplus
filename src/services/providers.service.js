@@ -29,16 +29,24 @@ const createProvider = async (providerData) => {
 
 const updateProvider = async (id, providerData) => {
     try {
-        const provider = await providerRepository.findProviderById(id);
-        if (provider) {
-            return await providerRepository.updateProvider(id, providerData);
-        }
-        throw new Error('Proveedor no encontrado');
+        return await providerRepository.updateProvider(id, providerData);
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
             throw new Error('El NIT del proveedor ya está registrado.');
         }
         throw error;
+    }
+};
+
+const updateProviderStatus = async (id, status) => {
+    try {
+        const result = await providerRepository.updateProviderStatus(id, status);
+        if (!result) {
+            throw new Error('SERVICE: El proveedor no se pudo actualizar');
+        }
+        return result;
+    } catch (error) {
+        throw new Error('Error al cambiar el estado del proveedor: ' + error.message);
     }
 };
 
@@ -54,11 +62,11 @@ const deleteOneProvider = async (id) => {
     }
 };
 
-
 module.exports = {
     getAllProviders,
     getOneProvider,
     createProvider,
     updateProvider,
+    updateProviderStatus,
     deleteOneProvider,
 };

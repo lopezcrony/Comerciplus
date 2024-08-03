@@ -9,6 +9,7 @@ router
     .get('/:id', providerController.getOneProvider)
     .post('/', validateProvider, providerController.createProvider)
     .put('/:id', validateProvider, providerController.updateProvider)
+    .patch('/:id', providerController.updateProviderStatus)
     .delete('/:id', providerController.deleteOneProvider)
 
 

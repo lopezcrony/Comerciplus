@@ -22,6 +22,8 @@ class Server{
     routers(){
         this.app.use('/proveedores', require('./routers/providers.routers'));
         this.app.use('/clientes', require('./routers/clients.routers'));
+        this.app.use('/creditos', require('./routers/credits.routers'));
+        this.app.use('/abonos', require('./routers/installments.routers'));
         this.app.use('/ventas', require('./routers/sales.routers'));
         this.app.use('/devolucionVentas', require('./routers/returnSales.router'));
         this.app.use('/perdida', require('./routers/returnLoss.router'))

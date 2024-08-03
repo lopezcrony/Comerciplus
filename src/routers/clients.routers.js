@@ -9,6 +9,7 @@ router
     .get('/:id', clientController.getOneClient)
     .post('/', validateClient, clientController.createClient)
     .put('/:id', validateClient, clientController.updateClient)
+    .patch('/:id', clientController.updateClientStatus)
     .delete('/:id', clientController.deleteOneClient)
 
 module.exports = router;

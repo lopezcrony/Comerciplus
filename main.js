@@ -7,7 +7,7 @@ const startServer = async () => {
     try {
         await connectToDatabase();
 
-        await sequelize.sync({ alter: true });
+        await sequelize.sync({ alter : true }); // alter : true mantiene los registros
 
         server.listen();
     } catch (error) {

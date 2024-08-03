@@ -13,11 +13,20 @@ const createClient = async (clientData) => {
 };
 
 const updateClient = async (id, clientData) => {
-    const provider = await findClientById(id);
-    if (provider) {
-        return await provider.update(clientData);
+    const client = await findClientById(id);
+    if (client) {
+        return await client.update(clientData);
     }
     throw new Error('Cliente no encontrado');
+};
+
+const updateClientStatus = async (id, status) => {
+
+    const client = await findClientById(id);
+    if (client) {
+        return await client.update({estadoCliente : status});
+    }
+    throw new Error('REPOSITORY: Cliente no encontrado');
 };
 
 const deleteClient = async (id) => {
@@ -33,5 +42,6 @@ module.exports = {
     findClientById,
     createClient,
     updateClient,
+    updateClientStatus,
     deleteClient,
 };

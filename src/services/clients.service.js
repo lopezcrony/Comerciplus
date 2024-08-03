@@ -8,7 +8,6 @@ const getAllClients = async () => {
     }
 };
 
-
 const getOneClient = async (id) => {
     try {
         return await clientRepository.findClientById(id);
@@ -30,11 +29,10 @@ const createClient = async (ClientData) => {
 
 const updateClient = async (id, ClientData) => {
     try {
-        const Client = await clientRepository.findClientById(id);
-        if (Client) {
-            return await clientRepository.updateClient(id, ClientData);
+        const result = await clientRepository.updateClient(id, ClientData);
+        if (!result) {
+            throw new Error('SERVICE: No se pudo actualizar la información del cliente.');
         }
-        throw new Error('Cliente no encontrado');
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
             throw new Error('La cédula del cliente ya está registrada.');
@@ -42,6 +40,20 @@ const updateClient = async (id, ClientData) => {
         throw error;
     }
 };
+
+const updateClientStatus  = async (id, status) => {
+    try {
+        const result = await clientRepository.updateClientStatus(id, status);
+        if (!result) {
+            throw new Error('SERVICE: No se pudo actualizar el estado del cliente');
+        }
+        return result;
+    } catch (error) {
+        throw new Error('SERVICE: Error al cambiar el estado del cliente: ' + error.message);
+    }
+}
+
+
 
 const deleteOneClient = async (id) => {
     try {
@@ -61,5 +73,6 @@ module.exports = {
     getOneClient,
     createClient,
     updateClient,
-    deleteOneClient,
+    updateClientStatus,
+    deleteOneClient
 };
