@@ -1,8 +1,8 @@
 const Installment = require('../models/installments.model');
 
-const registerInstallment = async (installmentData) => {
+const registerInstallment = async (installmentData, options = {}) => {
     try {
-        return await Installment.create(installmentData);
+        return await Installment.create(installmentData, options);
     } catch (error) {
         throw new Error('REPOSITORY: Error al registrar abono: ' + error.message);
     }
@@ -30,11 +30,15 @@ const updateInstallment = async (id, installmentData) => {
     }
 };
 
-const deleteOneInstallment = (id) => {
-    const result = Installment.destroy({
-        where: { idAbono : id }
-    });
-    return result;
+const deleteOneInstallment = async (id) => {
+    try {
+        const result = await Installment.destroy({
+            where: { idAbono: id }
+        });
+        return result;
+    } catch (error) {
+        throw new Error('REPOSITORY: Error al eliminar abono: ' + error.message);
+    }
 };
 
 module.exports = {
