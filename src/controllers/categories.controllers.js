@@ -1,92 +1,82 @@
-const { request, response } = require('express')
-const { GetAllCategoriesService, GetOneCategorieService, CreateNewCategorieService, updateOneCategorieService, deleteOneCategorieService } = require('../services/categories.service');
+const categorieService = require('../services/categories.service')
 
-const GetAllCategoriesController = async (request, response) => {
+const getAllCategories = async (req, res) => {
     try {
-        const categories = await GetAllCategoriesService();
-        response.json(categories);
+        const categories = await categorieService.getAllCategories();
+        res.status(200).json(categories);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener las categorias', error });
+        res.status(500).json({ message: 'CONTROLLER: Error al obtener las categorias', error });
     }
 };
 
-const GetOneCategorieController = async (request, response) => {
+const getOneCategorie = async (req, res) => {
     try {
-        const { id } = request.params
-        const categorie = await GetOneCategorieService(id);
+        const categorie = await categorieService.getOneCategorie(req.params.id);
+        res.status(200).json(categorie);
+    } catch (error) {
+        res.status(500).json({message: 'CONTROLLER: Error al obtener la categoria.', error});
+    }
+};
 
-        if (categorie) {
-            response.json(categorie);
+const createCategorie = async (req, res) => {
+    try {
+        const newCategorie = await categorieService.createCategorie(req.body);
+        res.status(201).json({ message: 'Categoria registrada exitosamente.', newCategorie });
+
+    } catch (error) {
+        res.status(500).json({ message: 'CONTROLLER', error: error.message });
+    }
+};
+
+const updateCategorie = async (req, res) => {
+    try {
+        const updatedCategorie = await categorieService.updateCategorie(req.params.id, req.body);
+        res.status(200).json({ message: 'Categoria actualizada exitosamente', updatedCategorie});
+    } catch (error) {
+        if (error.message === 'El nombre de la categoria ya está registrado.') {
+            res.status(400).json({ message: error.message });
         } else {
-            response.status(404).json({ message: 'Categoría no encontrada' })
+            res.status(500).json({ message: 'CONTROLLER:', error: error.message });
         }
-    } catch (error) {
-        response.status(500).json({ message: 'Error al obtener la categoría', error: error.message });
     }
 };
 
-const CreateNewCategorieController = async (request, response) => {
+const updateCategorieStatus  = async (req, res) => {
     try {
-        const { nombreCategoria, descripcionCategoria } = request.body;
+        let { estadoCategoria } = req.body;
 
-        const newCategorie = {
-            nombreCategoria,
-            descripcionCategoria
-        };
-
-        const result = await CreateNewCategorieService(newCategorie);
-        response.status(201).json({ message: 'Categoria creada exitosamente.' });
-
+        if (estadoCategoria === '0' || estadoCategoria === 0) {
+            estadoCategoria = false;
+        } else if (estadoCategoria === '1' || estadoCategoria === 1) {
+            estadoCategoria = true;
+        } else if (estadoCategoria === true || estadoCategoria === false) {
+            
+        } else {
+            return res.status(400).json({ message: 'El estado debe ser un valor booleano' });
+        }
+        await categorieService.updateCategorieStatus (req.params.id, estadoCategoria);
+        res.json({ message: 'Estado actualizado con éxito.' });
     } catch (error) {
-        response.status(500).json({ message: 'Error al crear la categoria.', error: error.message });
+        res.status(500).json({ message: 'CONTROLLER:', error: error.message });
     }
 };
 
-const UpdateCategorieController = async (request, response) => {
+const deleteOneCategorie = async (req, res) => {
     try {
-        const { id } = request.params;
-        const { nombreCategoria, descripcionCategoria } = request.body;
-
-        const categorie = await GetOneCategorieService(id);
-        if(!categorie){
-            return response.status(404).json({ message: 'Categoria no encontrada' });
+        const categorie = await categorieService.deleteOneCategorie(req.params.id);
+        if(categorie){
+        res.json({ message: 'Categoria eliminada con éxito.' });
         }
-
-        const updatedCategorie = {
-            idCategoria: id,
-            nombreCategoria,
-            descripcionCategoria,
-        };
-
-        const result = await updateOneCategorieService(updatedCategorie);
-
-        response.status(200).json({ message: 'Categoría actualizada exitosamente'});
-
     } catch (error) {
-        response.status(500).json({ message: 'Error al actualizar la categoría.', error: error.message });
+        res.status(500).json({mensagge : 'CONTROLLER:', error: error.message });
     }
 };
-
-const DeleteOneCategoriesController = async (request, response) => {
-    try {
-        const { id } = request.params
-        const result = await deleteOneCategorieService(id);
-
-        // Verifica si se eliminó algún registro
-        if (result.affectedRows === 0) {
-            return response.status(404).json({ message: 'Categoría no encontrada.' });
-        }
-        response.status(200).json({ message: 'Categoría eliminada con éxito.' });
-        
-    } catch (error) {
-        response.status(500).json({ message: 'Error al obtener la Categoría', error: error.message });
-    }
-}
 
 module.exports = {
-    GetAllCategoriesController,
-    GetOneCategorieController,
-    CreateNewCategorieController,
-    UpdateCategorieController,
-    DeleteOneCategoriesController
+    getAllCategories,
+    getOneCategorie,
+    createCategorie,
+    updateCategorie,
+    updateCategorieStatus,
+    deleteOneCategorie
 }

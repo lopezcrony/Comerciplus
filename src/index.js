@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 class Server{
 
@@ -17,6 +18,11 @@ class Server{
         this.app.use(cors());
         //Parseo a json
         this.app.use(express.json());
+        //file uploads-carga de archivos
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/'
+        }));
     };
 
     routers(){
@@ -32,6 +38,7 @@ class Server{
         this.app.use('/roles', require('./routers/roles.routers'));
         this.app.use('/permissions', require('./routers/permissions.routers'));
         this.app.use('/users', require('./routers/users.routers'));
+        this.app.use('/uploads', require('./routers/uploads.js'));
     };
 
     listen(){

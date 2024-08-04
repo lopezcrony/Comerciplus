@@ -1,6 +1,6 @@
 const { request, response } = require('express')
 const { GetAllProductsService, GetOneProductService, CreateNewProductService, updateOneProductService, deleteOneProductService } = require('../services/products.service');
-const { GetOneCategorieService } = require('../services/categories.service');
+const { getOneCategorie } = require('../services/categories.service');
 
 const GetAllProductsController = async (request, response) => {
     try {
@@ -30,7 +30,7 @@ const CreateNewProductController = async (request, response) => {
     try {
         const { idCategoria,imagenProducto,nombreProducto, stock, precioVenta } = request.body;
 
-        const categorie = await GetOneCategorieService(id);
+        const categorie = await getOneCategorie(id);
         if(!categorie){
             return response.status(404).json({ message: 'Categoria no encontrada' });
         }
@@ -60,7 +60,7 @@ const UpdateProductController = async (request, response) => {
         if(!product){
             return response.status(404).json({ message: 'Producto no encontrado' });
         }
-        const categorie = await GetOneCategorieService(id);
+        const categorie = await getOneCategorie(id);
         if(!categorie){
             return response.status(404).json({ message: 'Categoria no encontrada' });
         }

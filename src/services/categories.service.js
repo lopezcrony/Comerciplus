@@ -1,67 +1,78 @@
-const connection = require('../config/db');
+const categorieRepository = require('../repositories/categories.repository');
 
-const GetAllCategoriesService = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM categorias_productos', (err, results) => {
-            (err)? reject(err):resolve(results);
-        });
-    });
+const getAllCategories = async () => {
+    try {
+        return await categorieRepository.findAllCategories();
+    } catch (error) {
+        throw error;
+    }
 };
 
-const GetOneCategorieService = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM categorias_productos WHERE idCategoria = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results[0]);
-        });
-    });
+const getOneCategorie = async (id) => {
+    try {
+        return await categorieRepository.findCategorieById(id);
+    } catch (error) {
+        throw error;
+    }
 };
 
-const CreateNewCategorieService = (newCategorie) => {
-    return new Promise((resolve, reject) => {
-
-        // Destructuración del objeto proveedor
-        const { nombreCategoria, descripcionCategoria } = newCategorie;
-
-        const query = `
-            INSERT INTO categorias_productos (nombreCategoria, descripcionCategoria)
-            VALUES (?, ?)
-        `;
-        
-        connection.query(query, [nombreCategoria, descripcionCategoria], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const createCategorie = async (CategorieData) => {
+    try {
+        return await categorieRepository.createCategorie(CategorieData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe una categoria con ese nombre.');
+        }
+        throw error;
+    }
 };
 
-const updateOneCategorieService = (setCategorie) => {
-    return new Promise((resolve, reject) => {
-
-        const { idCategoria ,nombreCategoria, descripcionCategoria } = setCategorie;
-
-        const query = `
-            UPDATE categorias_productos 
-            SET nombreCategoria = ?, 
-                descripcionCategoria = ? 
-            WHERE idCategoria  = ?`;
-
-        connection.query(query, [nombreCategoria, descripcionCategoria, idCategoria],  (err, results) => {
-            err ? reject(err) : resolve(results);
-        })
-    });
+const updateCategorie = async (id, CategorieData) => {
+    try {
+        const result = await categorieRepository.updateCategorie(id, CategorieData);
+        if (!result) {
+            throw new Error('SERVICE: No se pudo actualizar la información de la categoría.');
+        }
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('La categoría ya esta registrada.');
+        }
+        throw error;
+    }
 };
 
-const deleteOneCategorieService = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM categorias_productos WHERE idCategoria = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const updateCategorieStatus  = async (id, status) => {
+    try {
+        const result = await categorieRepository.updateCategorieStatus(id, status);
+        if (!result) {
+            throw new Error('SERVICE: No se pudo actualizar el estado de la categoria');
+        }
+        return result;
+    } catch (error) {
+        throw new Error('SERVICE: Error al cambiar el estado de la categoría: ' + error.message);
+    }
+}
+
+
+
+const deleteOneCategorie = async (id) => {
+    try {
+        const result = await categorieRepository.deleteCategorie(id);
+        if (result === 0) {
+            throw new Error('categoria no encontrada');
+        }
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
+
 
 module.exports = {
-    GetAllCategoriesService,
-    GetOneCategorieService,
-    CreateNewCategorieService,
-    updateOneCategorieService,
-    deleteOneCategorieService
-}
+    getAllCategories,
+    getOneCategorie,
+    createCategorie,
+    updateCategorie,
+    updateCategorieStatus,
+    deleteOneCategorie
+};
