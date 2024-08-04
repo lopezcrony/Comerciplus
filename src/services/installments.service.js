@@ -1,6 +1,6 @@
 const installmentRepository = require('../repositories/installments.repository');
 const creditRepository = require('../repositories/credits.repository');
-const sequelize  = require('../models');
+const {sequelize} = require('../config/db');
 
 const getInstallmentsByCredit = async (idCredit) => {
     try {
@@ -13,17 +13,19 @@ const getInstallmentsByCredit = async (idCredit) => {
 const createInstallment = async (installmentData) => {
     const transaction = await sequelize.transaction();
     try {
-        // Crear el nuevo abono
+        // Registra un abono
         const newInstallment = await installmentRepository.registerInstallment(installmentData, { transaction });
 
-        // Obtener el crédito asociado y actualizar el TotalCredito
+        // Busca el crédito y valida si existe
         const credit = await creditRepository.findCreditById(installmentData.idCredito, { transaction });
+
+        // Actualiza el valor total crédito
         const newTotalCredit = credit.totalCredito - newInstallment.montoAbonado;
-        
+
         if (newTotalCredit < 0) {
             throw new Error('El monto abonado no puede ser mayor que el crédito restante.');
         }
-
+        // Actualiza el valor total crédito
         await creditRepository.updateTotalCredit(installmentData.idCredito, newTotalCredit, { transaction });
 
         await transaction.commit();

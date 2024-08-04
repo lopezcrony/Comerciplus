@@ -7,7 +7,8 @@ const startServer = async () => {
     try {
         await connectToDatabase();
 
-        await sequelize.sync({ alter : true }); // alter : true mantiene los registros
+// alter : true mantiene los registros // force : true borra todas las tablas y las vuelve a crear
+        await sequelize.sync({ alter : true }); 
 
         server.listen();
     } catch (error) {
