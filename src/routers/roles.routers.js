@@ -1,12 +1,15 @@
-const express = require('express');
-const router = express.Router();
-const { GetAllRoles, GetOneRoles, CreateNewRol, UpdateRol , DeleteOneRol} = require('../controllers/roles.controllers');
+const { Router } = require("express");
+const rolesController = require("../controllers/roles.controllers");
+const { validateRoles } = require('../middlewares/roles.validations')
+
+const router = Router();
 
 router
-    .get('/', GetAllRoles)
-    .get('/:id', GetOneRoles)
-    .post('/', CreateNewRol)
-    .put('/:id', UpdateRol)
-    .delete('/:id', DeleteOneRol)
+    .get('/', rolesController.GetAllRoles)
+    .get('/:id', rolesController.GetOneRoles)
+    .post('/', validateRoles, rolesController.CreateNewRol)
+    .put('/:id', validateRoles, rolesController.UpdateRol)
+    .delete('/:id', rolesController.DeleteOneRol)
+
 
 module.exports = router;
