@@ -45,7 +45,7 @@ const updateRol = async (req, res) => {
 
 const deleteOneRol = async (req, res) => {
     try {
-        await rolService.deleteOneProvider(req.params.id);
+        await rolService.deleteOneRol(req.params.id);
         res.json({ message: 'Rol eliminado con éxito.' });
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener el rol', error: error.message });
