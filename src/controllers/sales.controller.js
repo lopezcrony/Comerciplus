@@ -1,69 +1,56 @@
-const { request, response } = require('express')
-const { getAllSales, getOneSale, createNewSale, deleteOneSale } = require('../services/sales.service');
+const saleService = require('../services/sales.service');
 
 
 const GetAllSales = async (request, response) => {
     try {
-        const sales = await getAllSales();
+        const sales = await saleService.getAllSales();
         response.json(sales);
     } catch (error) {
         response.status(500).json({ message: 'Error al obtener las ventas', error: error.message });
     }
 };
 
-const GetOneSale = async (request, response) => {
+const GetOneSale = async (req, res) => {
     try {
-        // Destructuración para obtener el id de request.params
-        const { id } = request.params
-        const sales = await getOneSale(id);
-
-        if (sales) {
-            response.json(sales);
-        } else {
-            response.status(404).json({ message: 'Venta no encontrada' })
-        }
+        const sales = await saleService.getOneSales(req.params.id);
+        res.status(200).json(sales);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener la venta', error: error.message });
+        res.status(500).json({ message: 'Error al obtener la venta', error: error.message });
     }
 };
 
-const CreateNewSale = async (request, response) => {
+const CreateNewSale = async (req, res) => {
     try {
-        const { fechaVenta, totalVenta, estadoVenta } = request.body;
-
-        const newSale = {
-            fechaVenta,
-            totalVenta,
-            estadoVenta
-        };
-
-        const result = await createNewSale(newSale);
-        response.status(201).json({ message: 'Ventas registrada exitosamente.' });
+        const newSale = await saleService.createSales(req.body);
+        res.status(201).json({ message: 'Venta creada exitosamente.', newSale });
 
     } catch (error) {
-        response.status(500).json({ message: 'Error al registrar la venta.', error: error.message });
+        res.status(500).json({ message: 'Error al crear la venta.', error: error.message });
     }
 };
-
-const DeleteOneSale = async (request, response) => {
+const updateSaleStatus  = async (req, res) => {
     try {
-        const { id } = request.params
-        const result = await deleteOneSale(id);
+        let { statusSale } = req.body;
 
-        // Verifica si se eliminó algún registro
-        if (result.affectedRows === 0) {
-            return response.status(404).json({ message: 'Venta no encontrada.' });
+        if (statusSale == '0' || statusSale == 0) {
+            statusSale = false;
+        } else if (statusSale == '1' || statusSale == 1) {
+            statusSale = true;
+        }else {
+            return res.status(400).json({ message: 'El estado debe ser un valor booleano' });
         }
-        response.status(200).json({ message: 'Venta eliminada con éxito.' });
         
+        await saleService.updateSalesStatus(req.params.id, statusSale);
+        res.json({ message: 'Estado actualizado con éxito.' });
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener la venta', error: error.message });
+        res.status(500).json({ message: 'Error al actualizar el estado de la venta', error: error.message });
     }
-}
+};
+
 
 module.exports = {
     GetAllSales,
     GetOneSale,
     CreateNewSale,
-    DeleteOneSale
+    updateSaleStatus    
 }

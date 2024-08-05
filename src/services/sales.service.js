@@ -1,47 +1,60 @@
-const connection = require('../config/db');
+const salesRepository = require('../repositories/sales.repository');
 
-const getAllSales = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM ventas', (err, results) => {
-            (err) ? reject(err) : resolve(results);
-        });
-    });
+const getAllSales = async () => {
+    try {
+        return await salesRepository.findAllSales();
+    } catch (error) {
+        throw error;
+    }
 };
 
-const getOneSale = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM ventas WHERE idVenta = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results[0]);
-        });
-    });
+const getOneSales = async (id) => {
+    try {
+        return await salesRepository.findSalesById(id);
+    } catch (error) {
+        throw error;
+    }
 };
 
-const createNewSale = (sale) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            INSERT INTO ventas (fechaVenta, totalVenta, estadoVenta)
-            VALUES (?, ?, ?)
-        `;
-        // Destructuración del objeto venta
-        const { fechaVenta, totalVenta, estadoVenta } = sale;
-        
-        connection.query(query, [fechaVenta, totalVenta, estadoVenta], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const createSales = async (salesData) => {
+    try {
+        return await salesRepository.createSales(salesData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe una venta con esa información.');
+        }
+        throw error;
+    }
 };
 
-const deleteOneSale = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM ventas WHERE idVenta = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const updateSales = async (id, salesData) => {
+    try {
+        return await salesData.updateSales(id, salesData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('El ID de la venta ya está registrado.');
+        }
+        throw error;
+    }
 };
+
+const updateSalesStatus = async (id, status) => {
+    try {
+        const result = await salesRepository.updateSalesStatu(id, status);
+        if (!result) {
+            throw new Error('SERVICE: El estado de la venta no se pudo actualizar');
+        }
+        return result;
+    } catch (error) {
+        throw new Error('Error al cambiar el estado de la venta: ' + error.message);
+    }
+};
+
 
 module.exports = {
     getAllSales,
-    getOneSale,
-    createNewSale,
-    deleteOneSale
+    getOneSales,
+    createSales,
+    updateSales,
+    updateSalesStatus,
 };
