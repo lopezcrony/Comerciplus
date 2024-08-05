@@ -1,102 +1,66 @@
-const bcrypt = require('bcrypt');
-const connection = require('../config/db');
+const userRepository = require('../repositories/users.repository');
 
-const getAllUsers = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM usuarios', (err, results) => {
-            (err) ? reject(err) : resolve(results);
-        });
-    });
+const getAllUsers = async () => {
+    try {
+        return await userRepository.getAllUsers();
+    } catch (error) {
+        throw new Error('Error al obtener todos los usuarios: ' + error.message);
+    }
 };
 
-const getOneUsers = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM usuarios WHERE idUsuario = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results[0]);
-        });
-    });
-};
-
-const createNewUser = (users) => {
-    return new Promise(async (resolve, reject) => {
-        const query = `
-            INSERT INTO usuarios (cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
-        // Encriptar la contraseña antes de guardar
-        try {
-            const hashedPassword = await bcrypt.hash(users.contraseñaUsuario, 10);
-            const { cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario } = users;
-            
-            connection.query(query, [cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, hashedPassword], (err, results) => {
-                err ? reject(err) : resolve(results);
-            });
-        } catch (error) {
-            reject(error);
+const getOneUser = async (id) => {
+    try {
+        const user = await userRepository.getOneUser(id);
+        if (!user) {
+            throw new Error('Usuario no encontrado');
         }
-    });
+        return user;
+    } catch (error) {
+        throw new Error('Error al obtener el usuario: ' + error.message);
+    }
 };
 
-const updateOneUser = async (users) => {
-    return new Promise(async (resolve, reject) => {
-        const query = `
-            UPDATE usuarios 
-            SET cedulaUsuario = ?, 
-                nombreUsuario = ?, 
-                apellidoUsuario = ?, 
-                telefonoUsuario = ?, 
-                correoUsuario = ?, 
-                contraseñaUsuario = ? 
-            WHERE idUsuario = ?`;
-
-        // Encriptar la nueva contraseña si es proporcionada
-        try {
-            let hashedPassword = users.contraseñaUsuario;
-            if (users.contraseñaUsuario) {
-                hashedPassword = await bcrypt.hash(users.contraseñaUsuario, 10);
-            }
-            const { idUsuario, cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario } = users;
-
-            connection.query(query, [cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, hashedPassword, idUsuario], (err, results) => {
-                err ? reject(err) : resolve(results);
-            });
-        } catch (error) {
-            reject(error);
+const createNewUser = async (userData) => {
+    try {
+        return await userRepository.createNewUser(userData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe un usuario con esa información.');
         }
-    });
+        throw new Error('Error al crear el usuario: ' + error.message);
+    }
 };
 
-// const updateOneUser = (users) => {
-//     return new Promise((resolve, reject) => {
-//         const query = `
-//             UPDATE usuarios 
-//             SET cedulaUsuario = ?, 
-//                 nombreUsuario = ?, 
-//                 apellidoUsuario = ?, 
-//                 telefonoUsuario = ?, 
-//                 correoUsuario = ?, 
-//                 contraseñaUsuario = ? 
-//             WHERE idUsuario  = ?`;
+const updateOneUser = async (id, userData) => {
+    try {
+        const result = await userRepository.updateOneUser(id, userData);
+        if (result[0] === 0) {
+            throw new Error('Usuario no encontrado o no actualizado');
+        }
+        return result;
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('El correo del usuario ya está registrado.');
+        }
+        throw new Error('Error al actualizar el usuario: ' + error.message);
+    }
+};
 
-//         const { idUsuario, cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario } = users;
-
-//         connection.query(query, [cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario, idUsuario],  (err, results) => {
-//             err ? reject(err) : resolve(results);
-//         })
-//     });
-// };
-
-const deleteOneUser = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM usuarios WHERE idUsuario = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const deleteOneUser = async (id) => {
+    try {
+        const result = await userRepository.deleteOneUser(id);
+        if (result === 0) {
+            throw new Error('Usuario no encontrado');
+        }
+        return result;
+    } catch (error) {
+        throw new Error('Error al eliminar el usuario: ' + error.message);
+    }
 };
 
 module.exports = {
     getAllUsers,
-    getOneUsers,
+    getOneUser,
     createNewUser,
     updateOneUser,
     deleteOneUser

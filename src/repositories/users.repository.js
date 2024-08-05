@@ -4,7 +4,7 @@ const getAllUsers = async () => {
   return await User.findAll();
 };
 
-const getOneUsers = async (id) => {
+const getOneUser = async (id) => {
   return await User.findByPk(id);
 };
 
@@ -26,7 +26,7 @@ const deleteOneUser = async (id) => {
 
 module.exports = {
   getAllUsers,
-  getOneUsers,
+  getOneUser,
   createNewUser,
   updateOneUser,
   deleteOneUser,
