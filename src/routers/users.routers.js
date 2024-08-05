@@ -5,11 +5,11 @@ const { validateUsers } = require('../middlewares/users.validations')
 const router = Router();
 
 router
-    .get('/', userController.GetAllUsers)
-    .get('/:id', userController.GetOneUsers)
-    .post('/', validateUsers, userController.CreateNewUser)
-    .put('/:id', validateUsers, userController.UpdateUser)
-    .delete('/:id', userController.DeleteOneUser)
+    .get('/', userController.getAllUsers)
+    .get('/:id', userController.getOneUser)
+    .post('/', validateUsers, userController.createNewUser)
+    .put('/:id', validateUsers, userController.updateOneUser)
+    .delete('/:id', userController.deleteOneUser)
 
 
 module.exports = router;
