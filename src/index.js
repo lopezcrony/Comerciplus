@@ -32,7 +32,7 @@ class Server{
         this.app.use('/abonos', require('./routers/installments.routers'));
         this.app.use('/ventas', require('./routers/sales.routers'));
         this.app.use('/devolucionVentas', require('./routers/returnSales.router'));
-        this.app.use('/perdida', require('./routers/returnLoss.router'))
+        this.app.use('/perdida', require('./routers/returnLoss.router'));
         this.app.use('/productos', require('./routers/products.routers'));
         this.app.use('/Codigos_barra', require('./routers/Barcode.routers'));
         this.app.use('/categorias', require('./routers/categories.routers'));
