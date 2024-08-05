@@ -10,7 +10,7 @@ const getAllDetailCredit = async (idCredit) => {
     }
 };
 
-const addVentaToCredito = async (creditDetailData) => {
+const addVentaToCredito = async (creditDetailData, options = {}) => {
     try {
         return await detailCredit.create(creditDetailData, options);
     } catch (error) {

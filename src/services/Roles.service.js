@@ -1,63 +1,60 @@
 const connection = require('../config/db');
+const roleRepository = require('../repositories/roles.repository')
 
-const getAllRoles = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM roles', (err, results) => {
-            (err) ? reject(err) : resolve(results);
-        });
-    });
+const getAllRoles = async () => {
+    try {
+        return await roleRepository.findAllRoles();
+    } catch (error) {
+        throw error;
+    }
 };
 
-const getOneRoles = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM roles WHERE idRol = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results[0]);
-        });
-    });
+const getOneRol = async (id) => {
+    try {
+        return await roleRepository.findRoleById(id);
+    } catch (error) {
+        throw error;
+    }
 };
 
-const createNewRol = (roles) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            INSERT INTO roles (nombreRol)
-            VALUES (?)
-        `;
-        // Destructuración del objeto proveedor
-        const { nombreRol } = roles;
-        
-        connection.query(query, [nombreRol], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const createNewRol = async (rolData) => {
+    try {
+        return await roleRepository.createRole(rolData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe rol con ese nombre.');
+        }
+        throw error;
+    }
 };
 
-const updateOneRol = (roles) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            UPDATE roles 
-            SET nombreRol = ?
-            WHERE idRol  = ?`;
-
-        const { idRol, nombreRol } = roles;
-
-        connection.query(query, [ nombreRol, idRol],  (err, results) => {
-            err ? reject(err) : resolve(results);
-        })
-    });
+const updateRol = async (id, rolData) => {
+    try {
+        return await roleRepository.updateRole(id, rolData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe ese rol.');
+        }
+        throw error;
+    }
 };
 
-const deleteOneRol = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM roles WHERE idRol = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const deleteOneRol = async (id) => {
+    try {
+        const result = await roleRepository.deleteRole(id);
+        if (result === 0) {
+            throw new Error('Rol no encontrado');
+        }
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
 
 module.exports = {
     getAllRoles,
-    getOneRoles,
+    getOneRol,
     createNewRol,
-    updateOneRol,
+    updateRol,
     deleteOneRol
 }

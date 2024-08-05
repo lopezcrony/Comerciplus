@@ -1,4 +1,5 @@
 const clientRepository = require('../repositories/clients.repository');
+const creditRepository = require('../repositories/credits.repository'); 
 
 const getAllClients = async () => {
     try {
@@ -18,7 +19,16 @@ const getOneClient = async (id) => {
 
 const createClient = async (ClientData) => {
     try {
-        return await clientRepository.createClient(ClientData);
+        const newClient = await clientRepository.createClient(ClientData);
+        
+        // Le crea un crédito a ese cliente
+        const creditData = {
+            idCliente: newClient.idCliente, 
+            totalCredito: 0 
+        };
+        await creditRepository.createCredit(creditData);
+
+        return newClient;
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
             throw new Error('Ya existe un cliente con esa información.');

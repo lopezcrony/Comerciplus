@@ -11,7 +11,7 @@ const getAllCredits = async (req, res) => {
 
 const getOneCredit = async (req, res) => {
     try {
-        const credit = await creditService.getOneCredit();
+        const credit = await creditService.getOneCredit(req.params.id);
         res.status(200).json(credit);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener el crédito', error });
