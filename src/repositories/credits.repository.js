@@ -12,10 +12,10 @@ const createCredit = async (creditData) => {
     return await Credit.create(creditData);
 };
 
-const updateTotalCredit = async (id, newTotalCredit) => {
-    const credit = await findCreditById(id);
+const updateTotalCredit = async (id, newTotalCredit, options = {}) => {
+    const credit = await findCreditById(id, options);
     if (credit) {
-        return await credit.update({ totalCredito : newTotalCredit});
+        return await credit.update({ totalCredito: newTotalCredit }, options);
     }
     throw new Error('REPOSITORY: Crédito no encontrado');
 };

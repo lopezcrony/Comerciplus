@@ -1,13 +1,15 @@
 const { Router } = require("express");
-const { GetAllCategoriesController, GetOneCategorieController, CreateNewCategorieController, UpdateCategorieController, DeleteOneCategoriesController } = require("../controllers/categories.controllers");
+const categorieController = require("../controllers/categories.controllers");
 const { validateCategorie } = require("../middlewares/categories.validations");
 
 const router = Router();
 
 router
-    .get('/', GetAllCategoriesController)
-    .get('/:id', GetOneCategorieController)
-    .post('/', validateCategorie, CreateNewCategorieController)
-    .put('/:id', validateCategorie, UpdateCategorieController)
-    .delete('/:id', DeleteOneCategoriesController)
-    module.exports = router;
+    .get('/', categorieController.getAllCategories)
+    .get('/:id', categorieController.getOneCategorie)
+    .post('/', validateCategorie, categorieController.createCategorie)
+    .put('/:id', validateCategorie, categorieController.updateCategorie)
+    .patch('/:id', categorieController.updateCategorieStatus)
+    .delete('/:id', categorieController.deleteOneCategorie)
+
+module.exports = router;

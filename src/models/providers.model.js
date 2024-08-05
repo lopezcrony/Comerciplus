@@ -15,12 +15,10 @@ const Proveedor = sequelize.define('Proveedor', {
   },
   nombreProveedor: {
     type: DataTypes.STRING(100),
-    unique: true,
     allowNull: false
   },
   direccionProveedor: {
     type: DataTypes.STRING(100),
-    unique: true,
     allowNull: false
   },
   telefonoProveedor: {
@@ -33,7 +31,13 @@ const Proveedor = sequelize.define('Proveedor', {
   }
 }, {
   tableName: 'proveedores',
-  timestamps: false
+  timestamps: false,
+  indexes: [
+    {
+      unique: true,
+      fields: ['nombreProveedor', 'direccionProveedor'] 
+    }
+  ]
 });
 
 module.exports = Proveedor;

@@ -15,7 +15,7 @@ const Abono = sequelize.define('Abono', {
             key: 'idCredito'
         }
     },
-    montoAbono: {
+    montoAbonado: {
         type: DataTypes.FLOAT,
         allowNull: false,
         validate: {
