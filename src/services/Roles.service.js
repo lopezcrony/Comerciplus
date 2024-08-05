@@ -9,7 +9,7 @@ const getAllRoles = async () => {
     }
 };
 
-const getOneRol = async (id) => {
+const getOneRole= async (id) => {
     try {
         return await roleRepository.findRoleById(id);
     } catch (error) {
@@ -17,7 +17,7 @@ const getOneRol = async (id) => {
     }
 };
 
-const createNewRol = async (rolData) => {
+const createNewRole= async (rolData) => {
     try {
         return await roleRepository.createRole(rolData);
     } catch (error) {
@@ -28,7 +28,7 @@ const createNewRol = async (rolData) => {
     }
 };
 
-const updateRol = async (id, rolData) => {
+const updateRole= async (id, rolData) => {
     try {
         return await roleRepository.updateRole(id, rolData);
     } catch (error) {
@@ -39,7 +39,7 @@ const updateRol = async (id, rolData) => {
     }
 };
 
-const deleteOneRol = async (id) => {
+const deleteOneRole= async (id) => {
     try {
         const result = await roleRepository.deleteRole(id);
         if (result === 0) {
@@ -53,8 +53,8 @@ const deleteOneRol = async (id) => {
 
 module.exports = {
     getAllRoles,
-    getOneRol,
-    createNewRol,
-    updateRol,
-    deleteOneRol
+    getOneRole,
+    createNewRole,
+    updateRole,
+    deleteOneRole
 }

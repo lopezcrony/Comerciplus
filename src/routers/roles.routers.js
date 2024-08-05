@@ -6,10 +6,10 @@ const router = Router();
 
 router
     .get('/', rolesController.getAllRoles)
-    .get('/:id', rolesController.getOneRol)
-    .post('/', validateRoles, rolesController.createNewRol)
-    .put('/:id', validateRoles, rolesController.updateRol)
-    .delete('/:id', rolesController.deleteOneRol)
+    .get('/:id', rolesController.getOneRole)
+    .post('/', validateRoles, rolesController.createNewRole)
+    .put('/:id', validateRoles, rolesController.updateRole)
+    .delete('/:id', rolesController.deleteOneRole)
 
 
 module.exports = router;
