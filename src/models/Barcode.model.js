@@ -31,6 +31,11 @@ CodigoBarra.associate = (models) => {
         foreignKey: 'idProducto ',
         as: 'productos'
     });
+
+    CodigoBarra.hasMany(models.returnProvider,{
+      foreignKey: 'idCodigoBarra',
+      as: 'codigoBarra'
+    })
 };
 
 module.exports = CodigoBarra;

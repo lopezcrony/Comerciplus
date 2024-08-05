@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
-const returnProvider=sequelize.define('returnProvider',{
+const returnProvider = sequelize.define('returnProvider', {
     idDevolucionLocal: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -10,7 +10,7 @@ const returnProvider=sequelize.define('returnProvider',{
     },
     idProveedor: {
         type: DataTypes.INTEGER,
-        unique : true,
+        unique: true,
         allowNull: false,
         references: {
             model: 'proveedores',
@@ -19,47 +19,48 @@ const returnProvider=sequelize.define('returnProvider',{
     },
     idCodigoBarra: {
         type: DataTypes.INTEGER,
-        unique : true,
+        unique: true,
         allowNull: false,
         references: {
             model: 'CodigoBarra',
             key: 'idCodigoBarra'
         }
     },
-    cantidad:{
+    cantidad: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        validate:{
-            min:0
+        validate: {
+            min: 0
         }
     },
-    motivoDevolucion:{
+    motivoDevolucion: {
         type: DataTypes.STRING(100),
-        allowNull:false,
+        allowNull: false,
         validate: {
             is: /^[a-zA-Záéíóúñ ]+$/,
         },
     },
-    estado:{
-        type:DataTypes.STRING,
+    estado: {
+        type: DataTypes.STRING,
         allowNull: false,
-        defaultValue:"Por notificar"
+        defaultValue: "Por notificar"
     }
-},{tableName:'devolucionLocal',
-    timestamps:false
-},
+}, {
+    tableName: 'devolucionLocal',
+    timestamps: false
+});
 
-returnSales.associate = (models) => {
-    detailVenta.belongsTo(models.detailVenta, {
-        foreignKey: 'idProveedor',
-        as: 'proveedores'
-    });    
+    returnProvider.associate = (models) => {
+        detailVenta.belongsTo(models.detailVenta, {
+            foreignKey: 'idProveedor',
+            as: 'proveedores'
+        });
 
-    detailVenta.hasMany(models.CodigoBarra, {
-        foreignKey: 'idCodigoBarra',
-        as: 'codigoBarras'
-    });
-}
+        returnProvider.belongsTo(models.CodigoBarra, {
+            foreignKey: 'idCodigoBarra',
+            as: 'codigoBarras'
+        });
+    }
 
-)
-module.exports=returnProvider
+
+module.exports = returnProvider
