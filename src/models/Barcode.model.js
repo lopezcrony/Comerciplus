@@ -28,7 +28,7 @@ const CodigoBarra = sequelize.define('CodigoBarra', {
 
 CodigoBarra.associate = (models) => {
     CodigoBarra.belongsTo(models.Producto, {
-        foreignKey: 'idProducto ',
+        foreignKey: 'idProducto',
         as: 'productos'
     });
 

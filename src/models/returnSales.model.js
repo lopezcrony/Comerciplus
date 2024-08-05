@@ -12,7 +12,7 @@ const returnSales = sequelize.define('returnSales', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'detalleVentas',
+            model: 'detalleVenta',
             key: 'idDetalleVenta'
         }
     },
@@ -68,7 +68,7 @@ returnSales.associate = (models) => {
         as: 'detalleVenta'
     });
 
-    returnSales.hasMany(models.CodigoBarra, {
+    returnSales.belongsTo(models.CodigoBarra, {
         foreignKey: 'idCodigoBarra',
         as: 'codigoBarras'
     });
