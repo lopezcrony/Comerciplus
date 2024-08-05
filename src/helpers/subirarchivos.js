@@ -24,7 +24,7 @@ const subirimagen = (files, extensionevalidas = ['jpg', 'jpeg', 'png', 'bmp', 't
             }
             resolve(nombreimg);
         });
-    });
+    }); 
 }
 
 

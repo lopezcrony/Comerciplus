@@ -7,3 +7,4 @@ router
     .post('/',cargarImg)
 
 module.exports = router;
+ 

@@ -28,4 +28,12 @@ const Sales= sequelize.define('Sales', {
     timestamps:false
 });
 
+Sales.associate = (models) => {
+
+    Sales.hasMany(models.detallecredito, {
+        foreignKey: 'idVenta',
+        as: 'DetalleCredito'
+    });    
+};
+
 module.exports=Sales;
