@@ -22,7 +22,7 @@ const returnProvider = sequelize.define('returnProvider', {
         unique: true,
         allowNull: false,
         references: {
-            model: 'CodigoBarra',
+            model: 'codigoBarras',
             key: 'idCodigoBarra'
         }
     },
@@ -51,7 +51,7 @@ const returnProvider = sequelize.define('returnProvider', {
 });
 
     returnProvider.associate = (models) => {
-        detailVenta.belongsTo(models.detailVenta, {
+        detailVenta.belongsTo(models.Proveedor, {
             foreignKey: 'idProveedor',
             as: 'proveedores'
         });

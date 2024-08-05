@@ -9,11 +9,11 @@ const installment = require('./installments.model');
 const shoppingdetails = require('./shoppingdetails.model');
 const creditDetail= require('./creditDetail.model');
 const shopping = require('./shopping.model');
-const returnLoss =require('./returnLoss.model');
-const returnSale =require('./returnSales.model');
 const returnProvider =require('./returnProvider.model');
 const sales =require('./sales.model')
-
+const detailSale = require ('./detailSale.model');
+const returnLoss = require('./returnLoss.model');
+const returnSale = require('./returnSales.model');
 
 
 
@@ -30,6 +30,7 @@ const models = {
     shopping,
     returnLoss,
     sales,
+    detailSale,
     returnProvider,
     returnSale
 };

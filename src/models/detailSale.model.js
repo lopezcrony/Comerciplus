@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
-const detalleVenta=sequelize.define('detalleVenta',{
+const detalleVenta = sequelize.define('detalleVenta', {
     idDetalleVenta: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -10,31 +10,31 @@ const detalleVenta=sequelize.define('detalleVenta',{
     },
     idVenta: {
         type: DataTypes.INTEGER,
-        unique : true,
+        unique: false,
         allowNull: false,
         references: {
-            model: 'Sales',
+            model: 'ventas',
             key: 'idVenta'
         }
     },
     idCodigoBarra: {
         type: DataTypes.INTEGER,
-        unique : true,
+        unique: false,
         allowNull: false,
         references: {
-            model: 'CodigoBarra',
+            model: 'codigoBarras',
             key: 'idCodigoBarra'
         }
     },
-    cantidadProducto:{
+    cantidadProducto: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        validate:{
-            min:0
+        validate: {
+            min: 0
         }
     }
-},{
-    tableName:'detalleVenta',
+}, {
+    tableName: 'detalleVenta',
     timestamps: false
 
 });
@@ -49,6 +49,17 @@ detalleVenta.associate = (models) => {
         foreignKey: 'idCodigoBarra',
         
     });
-}
 
-module.exports=detalleVenta
+    detalleVenta.belongsTo(models.ventas, {
+        foreignKey: 'idVenta',
+        as: 'ventas'
+
+    });
+
+    detalleVenta.hasMany(models.returnSales,{
+        foreignKey: 'idDetalleVenta',
+        as : 'devolucionVenta'
+    })
+};
+
+module.exports = detalleVenta

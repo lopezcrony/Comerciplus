@@ -31,13 +31,7 @@ const Proveedor = sequelize.define('Proveedor', {
   }
 }, {
   tableName: 'proveedores',
-  timestamps: false,
-  indexes: [
-    {
-      unique: true,
-      fields: ['nombreProveedor', 'direccionProveedor'] 
-    }
-  ]
+  timestamps: false
 });
 
 module.exports = Proveedor;
