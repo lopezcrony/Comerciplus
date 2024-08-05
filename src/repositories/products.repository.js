@@ -4,8 +4,8 @@ const findAllProducts = async () => {
     return await Products.findAll();
 };
 
-const findProductById = async (id) => {
-    return await Products.findByPk(id);
+const findProductById = async (id, options = {}) => {
+    return await Products.findByPk(id, options);
 };
 
 const createProduct = async (productData) => {
@@ -21,21 +21,27 @@ const updateProduct = async (id, productData) => {
 };
 
 const updateProductStatus = async (id, status) => {
-
     const product = await findProductById(id);
     if (product) {
-        return await product.update({estadoProducto : status});
+        return await product.update({ estadoProducto: status });
     }
     throw new Error('REPOSITORY: Producto no encontrado');
 };
 
 const deleteProduct = async (id) => {
     const result = await Products.destroy({
-        where: { 	idProducto: id }
+        where: { idProducto: id }
     });
     return result;
 };
 
+const updateProductoStock = async (idProducto, nuevoStock, options = {}) => {
+    const producto = await findProductById(idProducto, options);
+    if (producto) {
+        return await producto.update({ stock: nuevoStock }, options);
+    }
+    throw new Error('Producto no encontrado');
+};
 
 module.exports = {
     findAllProducts,
@@ -44,4 +50,5 @@ module.exports = {
     updateProduct,
     updateProductStatus,
     deleteProduct,
+    updateProductoStock
 };
