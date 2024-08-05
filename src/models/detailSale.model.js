@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
-const detalleVenta=sequelize.define('detalleVenta',{
+const detalleVenta = sequelize.define('detalleVenta', {
     idDetalleVenta: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -10,45 +10,50 @@ const detalleVenta=sequelize.define('detalleVenta',{
     },
     idVenta: {
         type: DataTypes.INTEGER,
-        unique : true,
+        unique: true,
         allowNull: false,
         references: {
-            model: 'Sales',
+            model: 'ventas',
             key: 'idVenta'
         }
     },
     idCodigoBarra: {
         type: DataTypes.INTEGER,
-        unique : true,
+        unique: true,
         allowNull: false,
         references: {
-            model: 'CodigoBarra',
+            model: 'codigoBarras',
             key: 'idCodigoBarra'
         }
     },
-    cantidadProducto:{
+    cantidadProducto: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        validate:{
-            min:0
+        validate: {
+            min: 0
         }
     }
-},{
-    tableName:'detalleVenta',
+}, {
+    tableName: 'detalleVentas',
     timestamps: false
 
 });
 
 detalleVenta.associate = (models) => {
-    detailVenta.belongsTo(models.CodigoBarra, {
+    detalleVenta.belongsTo(models.CodigoBarra, {
         foreignKey: 'idCodigoBarra',
-        as: 'ventas'
-    });    
-
-    detailVenta.hasMany(models.CodigoBarra, {
-        foreignKey: 'idCodigoBarra',
-        
+        as: 'codigoBarra'
     });
+
+    detalleVenta.belongsTo(models.ventas, {
+        foreignKey: 'idVenta',
+        as: 'ventas'
+
+    });
+
+    detalleVenta.belongsTo(models.returnSales,{
+        foreignKey: 'idDetalleVenta'        
+    })
 }
 
-module.exports=detalleVenta
+module.exports = detalleVenta
