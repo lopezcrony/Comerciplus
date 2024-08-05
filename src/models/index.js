@@ -9,6 +9,13 @@ const installment = require('./installments.model');
 const shoppingdetails = require('./shoppingdetails.model');
 const creditDetail= require('./creditDetail.model');
 const shopping = require('./shopping.model');
+const returnLoss =require('./returnLoss.model');
+const returnSale =require('./returnSales.model');
+const returnProvider =require('./returnProvider.model');
+const sales =require('./sales.model')
+
+
+
 
 const models = {
     provider,
@@ -21,6 +28,10 @@ const models = {
     installment,
     shoppingdetails,
     shopping,
+    returnLoss,
+    sales,
+    returnProvider,
+    returnSale
 };
 
 const connectDb = async () => {

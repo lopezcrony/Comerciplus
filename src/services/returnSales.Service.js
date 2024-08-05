@@ -1,47 +1,34 @@
-const connection = require('../config/db');
+const ReturnProviderRepository = require('../repositories/returnSales.repository');
 
-const getAllReturnSales = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM devolucionventa', (err, results) => {
-            (err) ? reject(err) : resolve(results);
-        });
-    });
+const getAllReturnSales = async () => {
+    try {
+        return await ReturnProviderRepository.findAllReturnSales();
+    } catch (error) {
+        throw error;
+    }
 };
 
-const getOneReturnSales = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM devolucionventa WHERE idDevolucionVenta = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results[0]);
-        });
-    });
+const getOneReturnSales = async (id) => {
+    try {
+        return await ReturnProviderRepository.findReturnSalesById(id);
+    } catch (error) {
+        throw error;
+    }
 };
 
-const createNewReturnSales = (returSale) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            INSERT INTO devolucionventa (idDetalleVenta, idCodigoBarra, cantidad, fechaDevolucion, motivoDevolucion, tipoReembolso, valorDevolucion)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        `;
-        // Destructuración del objeto venta
-        const { idDetalleVenta, idCodigoBarra, cantidad, fechaDevolucion, motivoDevolucion, tipoReembolso, valorDevolucion } = returSale;
-        
-        connection.query(query, [idDetalleVenta, idCodigoBarra, cantidad, fechaDevolucion, motivoDevolucion, tipoReembolso, valorDevolucion], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
-};
-
-const deleteOneReturnSales = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM devolucionventa WHERE idDevolucionVenta = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const createReturnSales = async (ReturnSalesData) => {
+    try {
+        return await ReturnProviderRepository.createReturnSales(ReturnSalesData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe una devolucion de venta con el mismo ID.');
+        }
+        throw error;
+    }
 };
 
 module.exports = {
     getAllReturnSales,
     getOneReturnSales,
-    createNewReturnSales,
-    deleteOneReturnSales
+    createReturnSales,    
 };

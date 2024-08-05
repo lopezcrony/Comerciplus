@@ -7,6 +7,6 @@ router
     .get('/', GetAllReturnLoss)
     .get('/:id', GetOneReturnLoss)
     .post('/', CreateNewReturnLoss)
-    .delete('/:id', DeleteOneReturnLoss)
+    
 
 module.exports = router;
