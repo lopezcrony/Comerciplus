@@ -2,7 +2,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
 
-const subirimagen = (files, extensionevalidas = ['jpg', 'jpeg', 'png', 'bmp', 'tif', 'tiff', 'svg', 'webp'],carpeta='') => {
+const subirimagen = (files, extensionevalidas = ['jpg', 'jpeg', 'png', 'bmp', 'tif', 'tiff', 'svg', 'webp','jfif'], carpeta = '') => {
 
     return new Promise((resolve, reject) => {
 
@@ -26,7 +26,7 @@ const subirimagen = (files, extensionevalidas = ['jpg', 'jpeg', 'png', 'bmp', 't
         });
     }); 
 }
-
+ 
 
 module.exports={
     subirimagen

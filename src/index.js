@@ -21,7 +21,8 @@ class Server{
         //file uploads-carga de archivos
         this.app.use(fileUpload({
             useTempFiles : true,
-            tempFileDir : '/tmp/'
+            tempFileDir : '/tmp/',
+            createParentPath:true
         }));
     };
 
@@ -39,7 +40,7 @@ class Server{
         this.app.use('/categorias', require('./routers/categories.routers'));
         this.app.use('/roles', require('./routers/roles.routers'));
         this.app.use('/permissions', require('./routers/permissions.routers'));
-        this.app.use('/users', require('./routers/users.routers'));
+        // this.app.use('/users', require('./routers/users.routers'));
         this.app.use('/compras', require('./routers/shopping.routers'));
         this.app.use('/detallecompras', require('./routers/shoppingdetails.routers'));
         this.app.use('/uploads', require('./routers/uploads.js'));
