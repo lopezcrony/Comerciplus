@@ -1,107 +1,81 @@
-const { request, response } = require('express')
-const { GetAllProductsService, GetOneProductService, CreateNewProductService, updateOneProductService, deleteOneProductService } = require('../services/products.service');
-const { getOneCategorie } = require('../services/categories.service');
+const productService = require('../services/products.service')
 
-const GetAllProductsController = async (request, response) => {
+const getAllProducts = async (req, res) => {
     try {
-        const products = await GetAllProductsService();
-        response.json(products);
+        const products = await productService.getAllProducts();
+        res.status(200).json(products);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener los productos', error });
+        res.status(500).json({ message: 'CONTROLLER: Error al obtener los productos', error });
     }
 };
 
-const GetOneProductController = async (request, response) => {
+const getOneProduct = async (req, res) => {
     try {
-        const { id } = request.params
-        const product = await GetOneProductService(id);
+        const product = await productService.getOneProduct(req.params.id);
+        res.status(200).json(product);
+    } catch (error) {
+        res.status(500).json({message: 'CONTROLLER: Error al obtener el producto.', error});
+    }
+};
 
-        if (product) {
-            response.json(product);
+const createProduct = async (req, res) => {
+    try {
+        const newproduct = await productService.createProduct(req.body);
+        res.status(201).json({ message: 'Producto registrado exitosamente.', newproduct });
+    } catch (error) {
+        res.status(500).json({ message: 'CONTROLLER', error: error.message });
+    }
+};
+
+const updateProduct = async (req, res) => {
+    try {
+        const updatedProduct = await productService.updateProduct(req.params.id, req.body);
+        res.status(200).json({ message: 'Producto actualizado exitosamente', updatedProduct});
+    } catch (error) {
+        if (error.message === 'El nombre del producto ya está registrado.') {
+            res.status(400).json({ message: error.message });
         } else {
-            response.status(404).json({ message: 'Producto no encontrado' })
+            res.status(500).json({ message: 'CONTROLLER:', error: error.message });
         }
-    } catch (error) {
-        response.status(500).json({ message: 'Error al obtener el producto', error: error.message });
     }
 };
 
-const CreateNewProductController = async (request, response) => {
+const updateProductStatus  = async (req, res) => {
     try {
-        const { idCategoria,imagenProducto,nombreProducto, stock, precioVenta } = request.body;
+        let { estadoProducto } = req.body;
 
-        const categorie = await getOneCategorie(id);
-        if(!categorie){
-            return response.status(404).json({ message: 'Categoria no encontrada' });
+        if (estadoProducto === '0' || estadoProducto === 0) {
+            estadoProducto = false;
+        } else if (estadoProducto === '1' || estadoProducto === 1) {
+            estadoProducto = true;
+        } else if (estadoProducto === true || estadoProducto === false) {
+            
+        } else {
+            return res.status(400).json({ message: 'El estado debe ser un valor booleano' });
         }
-
-        const newProduct = {
-            idCategoria,
-            imagenProducto,
-            nombreProducto,
-            stock,
-            precioVenta
-        };
-
-        const result = await CreateNewProductService(newProduct);
-        response.status(201).json({ message: 'producto creado exitosamente.' });
-
+        await productService.updateProductStatus (req.params.id, estadoProducto);
+        res.json({ message: 'Estado actualizado con éxito.' });
     } catch (error) {
-        response.status(500).json({ message: 'Error al crear el producto.', error: error.message });
+        res.status(500).json({ message: 'CONTROLLER:', error: error.message });
     }
 };
 
-const UpdateProductController = async (request, response) => {
+const deleteOneProduct = async (req, res) => {
     try {
-        const { id } = request.params;
-        const { idCategoria,imagenProducto,nombreProducto, stock, precioVenta } = request.body;
-
-        const product = await GetOneProductService(id);
-        if(!product){
-            return response.status(404).json({ message: 'Producto no encontrado' });
+        const product = await productService.deleteOneProduct(req.params.id);
+        if(product){
+        res.json({ message: 'Producto eliminado con éxito.' });
         }
-        const categorie = await getOneCategorie(id);
-        if(!categorie){
-            return response.status(404).json({ message: 'Categoria no encontrada' });
-        }
-        const updatedProduct = {
-            idProduct: id,
-            idCategoria,
-            imagenProducto,
-            nombreProducto,
-            stock,
-            precioVenta
-        };
-
-        const result = await updateOneProductService(updatedProduct);
-
-        response.status(200).json({ message: 'Producto actualizado exitosamente'});
-
     } catch (error) {
-        response.status(500).json({ message: 'Error al actualizar el producto.', error: error.message });
+        res.status(500).json({mensagge : 'CONTROLLER:', error: error.message });
     }
 };
-
-const DeleteOneProductController = async (request, response) => {
-    try {
-        const { id } = request.params
-        const result = await deleteOneProductService(id);
-
-        // Verifica si se eliminó algún registro
-        if (result.affectedRows === 0) {
-            return response.status(404).json({ message: 'Producto no encontrado.' });
-        }
-        response.status(200).json({ message: 'Producto eliminado con éxito.' });
-        
-    } catch (error) {
-        response.status(500).json({ message: 'Error al obtener el producto', error: error.message });
-    }
-}
 
 module.exports = {
-    GetAllProductsController,
-    GetOneProductController,
-    CreateNewProductController,
-    UpdateProductController,
-    DeleteOneProductController
+    getAllProducts,
+    getOneProduct,
+    createProduct,
+    updateProduct,
+    updateProductStatus,
+    deleteOneProduct
 }

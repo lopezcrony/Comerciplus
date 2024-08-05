@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db'); 
 
-
 const CategoriaProducto = sequelize.define('CategoriaProducto', {
     idCategoria: {
         type: DataTypes.INTEGER,
@@ -12,7 +11,7 @@ const CategoriaProducto = sequelize.define('CategoriaProducto', {
     nombreCategoria: {
         type: DataTypes.STRING(20),
         allowNull: false,
-        unique:true,
+        unique: true,
         validate: {
             is: /^[a-zA-Záéíóúñ ]+$/,
         },

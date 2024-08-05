@@ -1,70 +1,78 @@
-const connection = require('../config/db');
+const productRepository = require('../repositories/products.repository');
 
-const GetAllProductsService = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM productos', (err, results) => {
-            (err)? reject(err):resolve(results);
-        });
-    });
+const getAllProducts = async () => {
+    try {
+        return await productRepository.findAllProducts();
+    } catch (error) {
+        throw error;
+    }
 };
 
-const GetOneProductService = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM productos WHERE idProducto = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results[0]);
-        });
-    });
+const getOneProduct = async (id) => {
+    try {
+        return await productRepository.findProductById(id);
+    } catch (error) {
+        throw error;
+    }
 };
 
-const CreateNewProductService = (newProduct) => {
-    return new Promise((resolve, reject) => {
-
-        // Destructuración del objeto proveedor
-        const { idCategoria,imagenProducto,nombreProducto, stock, precioVenta } = newProduct;
-
-        const query = `
-            INSERT INTO productos (idCategoria, imagenProducto,nombreProducto,stock,precioVenta)
-            VALUES (?, ?, ?, ?, ?)
-        `;
-        
-        connection.query(query, [idCategoria, imagenProducto,nombreProducto,stock,precioVenta], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const createProduct = async (ProductData) => {
+    try {
+        return await productRepository.createProduct(ProductData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe un producto con ese nombre.');
+        }
+        throw error;
+    }
 };
 
-const updateOneProductService = (setProduct) => {
-    return new Promise((resolve, reject) => {
-
-        const { idProducto,idCategoria,imagenProducto,nombreProducto, stock, precioVenta } = setProduct;
-
-        const query = `
-            UPDATE productos 
-            SET idCategoria = ?, 
-                imagenProducto = ?, 
-                nombreProducto= ?,
-                stock= ?,
-                precioVenta= ?
-            WHERE idProducto  = ?
-            `;
-        connection.query(query, [idCategoria, imagenProducto, nombreProducto,stock,precioVenta, idProducto ],  (err, results) => {
-            err ? reject(err) : resolve(results);
-        })
-    });
+const updateProduct = async (id, ProductData) => {
+    try {
+        const result = await productRepository.updateProduct(id, ProductData);
+        if (!result) {
+            throw new Error('SERVICE: No se pudo actualizar la información del producto.');
+        }
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('El producto ya esta registrada.');
+        }
+        throw error;
+    }
 };
 
-const deleteOneProductService = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM productos WHERE idProducto = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const updateProductStatus  = async (id, status) => {
+    try {
+        const result = await productRepository.updateProductStatus(id, status);
+        if (!result) {
+            throw new Error('SERVICE: No se pudo actualizar el estado del producto');
+        }
+        return result;
+    } catch (error) {
+        throw new Error('SERVICE: Error al cambiar el estado del producto: ' + error.message);
+    }
+}
+
+
+
+const deleteOneProduct = async (id) => {
+    try {
+        const result = await productRepository.deleteProduct(id);
+        if (result === 0) {
+            throw new Error('producto no encontrado');
+        }
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
+
 
 module.exports = {
-    GetAllProductsService,
-    GetOneProductService,
-    CreateNewProductService,
-    updateOneProductService,
-    deleteOneProductService
-}
+    getAllProducts,
+    getOneProduct,
+    createProduct,
+    updateProduct,
+    updateProductStatus,
+    deleteOneProduct
+};
