@@ -30,17 +30,20 @@ const CreateNewSale = async (req, res) => {
 };
 const updateSaleStatus  = async (req, res) => {
     try {
-        let { statusSale } = req.body;
+        let { estadoVenta } = req.body;
 
-        if (statusSale == '0' || statusSale == 0) {
-            statusSale = false;
-        } else if (statusSale == '1' || statusSale == 1) {
-            statusSale = true;
+        if (estadoVenta == '0' || estadoVenta == 0) {
+            estadoVenta = false;
+            
+        } else if (estadoVenta == '1' || estadoVenta == 1) {
+            estadoVenta = true;
+        } else if (estadoVenta === true || estadoVenta === false) {
+            
         }else {
-            return res.status(400).json({ message: 'El estado debe ser un valor booleano' });
+            return res.status(400).json({ message: `El estado debe ser un valor booleano ${estadoVenta}` });
         }
         
-        await saleService.updateSalesStatus(req.params.id, statusSale);
+        await saleService.updateSalesStatus(req.params.id, estadoVenta);
         res.json({ message: 'Estado actualizado con éxito.' });
     } catch (error) {
         res.status(500).json({ message: 'Error al actualizar el estado de la venta', error: error.message });

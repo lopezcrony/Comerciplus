@@ -1,71 +1,37 @@
-const { request, response } = require('express')
-const { getAllReturnLoss, getOneReturnLoss, createNewReturnLoss, deleteOneReturnLoss} = require('../services/returnLoss.service');
+const returnLossService = require('../services/returnLoss.service');
 
 
 const GetAllReturnLoss = async (request, response) => {
     try {
-        const returnLoss = await getAllReturnLoss();
-        response.json(returnLoss);
+        const sales = await returnLossService.getAllReturnLoss();
+        response.json(sales);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener el registro de perdida', error: error.message });
+        response.status(500).json({ message: 'Error al obtener las pérdidas', error: error.message });
     }
 };
 
-const GetOneReturnLoss = async (request, response) => {
+const GetOneReturnLoss = async (req, res) => {
     try {
-        // Destructuración para obtener el id de request.params
-        const { id } = request.params
-        const returLoss = await getOneReturnLoss(id);
-
-        if (returLoss) {
-            response.json(returLoss);
-        } else {
-            response.status(404).json({ message: 'Regitro de pérdida no encontrado' })
-        }
+        const sales = await returnLossService.getOneReturnLoss(req.params.id);
+        res.status(200).json(sales);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener el regitro de pérdida', error: error.message });
+        res.status(500).json({ message: 'Error al obtener la venta', error: error.message });
     }
 };
 
-const CreateNewReturnLoss = async (request, response) => {
+const CreateNewReturnLoss = async (req, res) => {
     try {
-        const { idDevolucionDeBaja, idCodigoBarra, motivo, cantidad, fechaDeBaja } = request.body;
-
-        const newReturnLoss = {
-            idDevolucionDeBaja, 
-            idCodigoBarra, 
-            motivo, 
-            cantidad, 
-            fechaDeBaja
-        };
-
-        const result = await createNewReturnLoss(newReturnLoss);
-        response.status(201).json({ message: 'Regitro de pérdida registrado exitosamente.' });
+        const newSale = await returnLossService.createReturnLoss(req.body);
+        res.status(201).json({ message: 'Devolución de venta creada exitosamente.', newSale });
 
     } catch (error) {
-        response.status(500).json({ message: 'Error al registrar la pérdida.', error: error.message });
-    }
-};
-
-const DeleteOneReturnLoss = async (request, response) => {
-    try {
-        const { id } = request.params
-        const result = await deleteOneReturnLoss(id);
-
-        // Verifica si se eliminó algún registro
-        if (result.affectedRows === 0) {
-            return response.status(404).json({ message: 'Devolución de venta no encontrada.' });
-        }
-        response.status(200).json({ message: 'Regitro de pérdida eliminado con éxito.' });
-        
-    } catch (error) {
-        response.status(500).json({ message: 'Error al obtener el regitro de pérdida', error: error.message });
+        res.status(500).json({ message: 'Error al crear la venta.', error: error.message });
     }
 }
+
 
 module.exports = {
     GetAllReturnLoss,
     GetOneReturnLoss,
     CreateNewReturnLoss,
-    DeleteOneReturnLoss
 }

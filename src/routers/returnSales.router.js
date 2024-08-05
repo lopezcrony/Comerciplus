@@ -1,12 +1,11 @@
 const { Router } = require("express");
-const { GetAllReturnSales, GetOneReturnSales, CreateNewReturnSales, DeleteOneReturnSales } = require("../controllers/returnSales.controller");
+const returnSalesController = require("../controllers/returnSales.controller");
 
 const router = Router();
 
 router
-    .get('/', GetAllReturnSales)
-    .get('/:id', GetOneReturnSales)
-    .post('/', CreateNewReturnSales)
-    .delete('/:id', DeleteOneReturnSales)
+    .get('/', returnSalesController.GetAllReturnSale)
+    .get('/:id', returnSalesController.GetOneReturnSale)
+    .post('/', returnSalesController.CreateNewReturnSale)
 
 module.exports = router;

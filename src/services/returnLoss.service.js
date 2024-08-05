@@ -1,47 +1,34 @@
-const connection = require('../config/db');
+const ReturnLossRepository = require('../repositories/returnLoss.repository');
 
-const getAllReturnLoss = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM dardebaja', (err, results) => {
-            (err) ? reject(err) : resolve(results);
-        });
-    });
+const getAllReturnLoss = async () => {
+    try {
+        return await ReturnLossRepository.findAllReturnLoss();
+    } catch (error) {
+        throw error;
+    }
 };
 
-const getOneReturnLoss = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM dardebaja WHERE idDevolucionDeBaja = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results[0]);
-        });
-    });
+const getOneReturnLoss = async (id) => {
+    try {
+        return await ReturnLossRepository.findReturnLossById(id);
+    } catch (error) {
+        throw error;
+    }
 };
 
-const createNewReturnLoss = (returLoss) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            INSERT INTO dardebaja (idDevolucionDeBaja, idCodigoBarra, motivo, cantidad, fechaDeBaja)
-            VALUES (?, ?, ?, ?, ?)
-        `;
-        // Destructuración del objeto perdidda
-        const { idDevolucionDeBaja, idCodigoBarra, motivo, cantidad, fechaDeBaja } = returLoss;
-        
-        connection.query(query, [idDevolucionDeBaja, idCodigoBarra, motivo, cantidad, fechaDeBaja], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
-};
-
-const deleteOneReturnLoss = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM dardebaja WHERE idDevolucionDeBaja = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const createReturnLoss = async (ReturnLossData) => {
+    try {
+        return await ReturnLossRepository.createReturnLoss(ReturnLossData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe una perdida con el mismo ID.');
+        }
+        throw error;
+    }
 };
 
 module.exports = {
     getAllReturnLoss,
     getOneReturnLoss,
-    createNewReturnLoss,
-    deleteOneReturnLoss
+    createReturnLoss,    
 };

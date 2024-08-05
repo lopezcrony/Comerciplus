@@ -27,20 +27,10 @@ const createSales = async (salesData) => {
     }
 };
 
-const updateSales = async (id, salesData) => {
-    try {
-        return await salesData.updateSales(id, salesData);
-    } catch (error) {
-        if (error.name === 'SequelizeUniqueConstraintError') {
-            throw new Error('El ID de la venta ya está registrado.');
-        }
-        throw error;
-    }
-};
 
 const updateSalesStatus = async (id, status) => {
     try {
-        const result = await salesRepository.updateSalesStatu(id, status);
+        const result = await salesRepository.updateSalesStatus(id, status);
         if (!result) {
             throw new Error('SERVICE: El estado de la venta no se pudo actualizar');
         }
@@ -54,7 +44,6 @@ const updateSalesStatus = async (id, status) => {
 module.exports = {
     getAllSales,
     getOneSales,
-    createSales,
-    updateSales,
+    createSales,    
     updateSalesStatus,
 };
