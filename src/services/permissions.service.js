@@ -1,63 +1,59 @@
-const connection = require('../config/db');
+const permissionRepository = require('../repositories/permissions.repository');
 
-const getAllPermissions = () => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM permisos', (err, results) => {
-            (err) ? reject(err) : resolve(results);
-        });
-    });
+const getAllPermissions = async () => {
+    try {
+        return await permissionRepository.findAllPermissions();
+    } catch (error) {
+        throw error;
+    }
 };
 
-const getOnePermissions = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM permiso WHERE idPermiso = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results[0]);
-        });
-    });
+const getOnePermission = async (id) => {
+    try {
+        return await permissionRepository.findPermissionById(id);
+    } catch (error) {
+        throw error;
+    }
 };
 
-const createNewPermission = (permissions) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            INSERT INTO permisos (nombrePermiso)
-            VALUES (?)
-        `;
-        // Destructuración del objeto permisos
-        const { nombrePermiso } = permissions;
-        
-        connection.query(query, [nombrePermiso], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const createNewPermission = async (permissionData) => {
+    try {
+        return await permissionRepository.createPermission(permissionData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('Ya existe un permiso con esa información.');
+        }
+        throw error;
+    }
 };
 
-const updateOnePermission = (permissions) => {
-    return new Promise((resolve, reject) => {
-        const query = `
-            UPDATE permisos 
-            SET nombrePermiso = ?
-            WHERE idPermiso  = ?`;
-
-        const { idPermiso, nombrePermiso } = permissions;
-
-        connection.query(query, [ nombrePermiso, idPermiso],  (err, results) => {
-            err ? reject(err) : resolve(results);
-        })
-    });
+const updateOnePermission = async (permissionData) => {
+    try {
+        return await permissionRepository.updatePermission(permissionData.idPermiso, permissionData);
+    } catch (error) {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error('El nombre del permiso ya está registrado.');
+        }
+        throw error;
+    }
 };
 
-const deleteOnePermission = (id) => {
-    return new Promise((resolve, reject) => {
-        connection.query('DELETE FROM permisos WHERE idPermiso = ?', [id], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
-    });
+const deleteOnePermission = async (id) => {
+    try {
+        const result = await permissionRepository.deletePermission(id);
+        if (result === 0) {
+            throw new Error('Permiso no encontrado');
+        }
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
 
 module.exports = {
     getAllPermissions,
-    getOnePermissions,
+    getOnePermission,
     createNewPermission,
     updateOnePermission,
-    deleteOnePermission
-}
+    deleteOnePermission,
+};
