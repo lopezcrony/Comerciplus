@@ -10,7 +10,6 @@ const detalleVenta = sequelize.define('detalleVenta', {
     },
     idVenta: {
         type: DataTypes.INTEGER,
-        unique: false,
         allowNull: false,
         references: {
             model: 'ventas',
@@ -19,7 +18,6 @@ const detalleVenta = sequelize.define('detalleVenta', {
     },
     idCodigoBarra: {
         type: DataTypes.INTEGER,
-        unique: false,
         allowNull: false,
         references: {
             model: 'codigoBarras',
@@ -33,28 +31,24 @@ const detalleVenta = sequelize.define('detalleVenta', {
             min: 0
         }
     }
-}, {
-    tableName: 'detalleVenta',
+}, {tableName: 'detalleVenta',
     timestamps: false
-
 });
 
 detalleVenta.associate = (models) => {
-    detalleVenta.belongsTo(models.CodigoBarra, {
-        foreignKey: 'idCodigoBarra',
-        as: 'codigoBarra'
-    });
-
-    detalleVenta.belongsTo(models.ventas, {
+    
+    detalleVenta.belongsTo(models.Sales, {
         foreignKey: 'idVenta',
-        as: 'ventas'
-
+        as: 'venta'
+    });
+    
+    detalleVenta.hasMany(models.returnSales, {
+        foreignKey: 'idDevolucionVenta',
+        as: 'devolucionVenta'
     });
 
-    detalleVenta.hasMany(models.returnSales,{
-        foreignKey: 'idDetalleVenta',
-        as : 'devolucionVenta'
-    })
+    
+    
 };
 
 module.exports = detalleVenta

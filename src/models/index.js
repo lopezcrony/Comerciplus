@@ -10,10 +10,10 @@ const shoppingdetails = require('./shoppingdetails.model');
 const creditDetail= require('./creditDetail.model');
 const shopping = require('./shopping.model');
 const returnProvider =require('./returnProvider.model');
-const sales =require('./sales.model')
 const detailSale = require ('./detailSale.model');
-const returnLoss = require('./returnLoss.model');
-const returnSale = require('./returnSales.model');
+const sales =require('./sales.model')
+// const returnLoss = require('./returnLoss.model');
+// const returnSale = require('./returnSales.model');
 
 
 
@@ -28,11 +28,11 @@ const models = {
     installment,
     shoppingdetails,
     shopping,
-    returnLoss,
-    sales,
+    // returnLoss,
     detailSale,
+    sales,
     returnProvider,
-    returnSale
+    // returnSale
 };
 
 const connectDb = async () => {

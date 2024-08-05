@@ -33,7 +33,12 @@ Sales.associate = (models) => {
     Sales.hasMany(models.detallecredito, {
         foreignKey: 'idVenta',
         as: 'DetalleCredito'
-    });    
+    });
+    
+    Sales.hasMany(models.detalleVenta, {
+        foreignKey: 'idVenta',
+        as: 'venta'
+    });
 };
 
 module.exports=Sales;
