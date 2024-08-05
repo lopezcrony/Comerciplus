@@ -40,12 +40,12 @@ const detalleVenta=sequelize.define('detalleVenta',{
 });
 
 detalleVenta.associate = (models) => {
-    detailVenta.belongsTo(models.CodigoBarra, {
+    detalleVenta.belongsTo(models.CodigoBarra, {
         foreignKey: 'idCodigoBarra',
         as: 'ventas'
     });    
 
-    detailVenta.hasMany(models.CodigoBarra, {
+    detalleVenta.hasMany(models.CodigoBarra, {
         foreignKey: 'idCodigoBarra',
         
     });
