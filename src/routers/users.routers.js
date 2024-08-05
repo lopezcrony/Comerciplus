@@ -1,12 +1,15 @@
-const express = require('express');
-const router = express.Router();
-const { GetAllUsers, GetOneUsers, CreateNewUser, UpdateUser, DeleteOneUser} = require('../controllers/users.controllers');
+const { Router } = require("express");
+const userController = require("../controllers/users.controllers");
+const { validateUsers } = require('../middlewares/users.validations')
+
+const router = Router();
 
 router
-    .get('/', GetAllUsers)
-    .get('/:id', GetOneUsers)
-    .post('/', CreateNewUser)
-    .put('/:id', UpdateUser)
-    .delete('/:id', DeleteOneUser)
+    .get('/', userController.GetAllUsers)
+    .get('/:id', userController.GetOneUsers)
+    .post('/', validateUsers, userController.CreateNewUser)
+    .put('/:id', validateUsers, userController.UpdateUser)
+    .delete('/:id', userController.DeleteOneUser)
+
 
 module.exports = router;

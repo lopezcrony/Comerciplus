@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const connection = require('../config/db');
 
 const getAllUsers = () => {
@@ -17,22 +18,27 @@ const getOneUsers = (id) => {
 };
 
 const createNewUser = (users) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const query = `
             INSERT INTO usuarios (cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario)
             VALUES (?, ?, ?, ?, ?, ?)
         `;
-        // Destructuración del objeto usuario
-        const { cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario } = users;
-        
-        connection.query(query, [cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario], (err, results) => {
-            err ? reject(err) : resolve(results);
-        });
+        // Encriptar la contraseña antes de guardar
+        try {
+            const hashedPassword = await bcrypt.hash(users.contraseñaUsuario, 10);
+            const { cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario } = users;
+            
+            connection.query(query, [cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, hashedPassword], (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+        } catch (error) {
+            reject(error);
+        }
     });
 };
 
-const updateOneUser = (users) => {
-    return new Promise((resolve, reject) => {
+const updateOneUser = async (users) => {
+    return new Promise(async (resolve, reject) => {
         const query = `
             UPDATE usuarios 
             SET cedulaUsuario = ?, 
@@ -41,15 +47,44 @@ const updateOneUser = (users) => {
                 telefonoUsuario = ?, 
                 correoUsuario = ?, 
                 contraseñaUsuario = ? 
-            WHERE idUsuario  = ?`;
+            WHERE idUsuario = ?`;
 
-        const { idUsuario, cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario } = users;
+        // Encriptar la nueva contraseña si es proporcionada
+        try {
+            let hashedPassword = users.contraseñaUsuario;
+            if (users.contraseñaUsuario) {
+                hashedPassword = await bcrypt.hash(users.contraseñaUsuario, 10);
+            }
+            const { idUsuario, cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario } = users;
 
-        connection.query(query, [cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario, idUsuario],  (err, results) => {
-            err ? reject(err) : resolve(results);
-        })
+            connection.query(query, [cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, hashedPassword, idUsuario], (err, results) => {
+                err ? reject(err) : resolve(results);
+            });
+        } catch (error) {
+            reject(error);
+        }
     });
 };
+
+// const updateOneUser = (users) => {
+//     return new Promise((resolve, reject) => {
+//         const query = `
+//             UPDATE usuarios 
+//             SET cedulaUsuario = ?, 
+//                 nombreUsuario = ?, 
+//                 apellidoUsuario = ?, 
+//                 telefonoUsuario = ?, 
+//                 correoUsuario = ?, 
+//                 contraseñaUsuario = ? 
+//             WHERE idUsuario  = ?`;
+
+//         const { idUsuario, cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario } = users;
+
+//         connection.query(query, [cedulaUsuario, nombreUsuario, apellidoUsuario, telefonoUsuario, correoUsuario, contraseñaUsuario, idUsuario],  (err, results) => {
+//             err ? reject(err) : resolve(results);
+//         })
+//     });
+// };
 
 const deleteOneUser = (id) => {
     return new Promise((resolve, reject) => {

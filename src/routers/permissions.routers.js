@@ -1,12 +1,15 @@
-const express = require('express');
-const router = express.Router();
-const { GetAllPermissions, GetOnePermissions, CreateNewPermission, UpdatePermission , DeleteOnePermission} = require('../controllers/permissions.controllers');
+const { Router } = require("express");
+const permissionController = require("../controllers/permissions.controllers");
+const { validatePermission } = require('../middlewares/permissions.validations')
+
+const router = Router();
 
 router
-    .get('/', GetAllPermissions)
-    .get('/:id', GetOnePermissions)
-    .post('/', CreateNewPermission)
-    .put('/:id', UpdatePermission)
-    .delete('/:id', DeleteOnePermission)
+    .get('/', permissionController.GetAllPermissions)
+    .get('/:id', permissionController.GetOnePermissions)
+    .post('/', validatePermission, permissionController.CreateNewPermission)
+    .put('/:id', validatePermission, permissionController.UpdatePermission)
+    .delete('/:id', permissionController.DeleteOnePermission)
+
 
 module.exports = router;
