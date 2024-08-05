@@ -28,6 +28,7 @@ class Server{
     routers(){
         this.app.use('/proveedores', require('./routers/providers.routers'));
         this.app.use('/clientes', require('./routers/clients.routers'));
+        this.app.use('/detallecredito', require('./routers/detailCredit.routers'));
         this.app.use('/creditos', require('./routers/credits.routers'));
         this.app.use('/abonos', require('./routers/installments.routers'));
         this.app.use('/ventas', require('./routers/sales.routers'));
@@ -40,6 +41,7 @@ class Server{
         this.app.use('/permissions', require('./routers/permissions.routers'));
         this.app.use('/users', require('./routers/users.routers'));
         this.app.use('/compras', require('./routers/shopping.routers'));
+        this.app.use('/detallecompras', require('./routers/shoppingdetails.routers'));
         this.app.use('/uploads', require('./routers/uploads.js'));
     };
 

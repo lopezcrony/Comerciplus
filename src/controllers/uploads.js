@@ -15,3 +15,4 @@ const cargarImg = async (req, res = response) => {
 module.exports = {
     cargarImg
 }
+ 
