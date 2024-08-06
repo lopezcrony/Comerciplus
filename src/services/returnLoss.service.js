@@ -18,7 +18,7 @@ const getOneReturnLoss = async (id) => {
 
 const createReturnLoss = async (ReturnLossData) => {
     try {
-        return await ReturnLossRepository.createReturnLoss(ReturnLossData);
+        return await ReturnLossRepository.createreturnLoss(ReturnLossData);
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
             throw new Error('Ya existe una perdida con el mismo ID.');

@@ -10,7 +10,6 @@ const returnProvider = sequelize.define('returnProvider', {
     },
     idProveedor: {
         type: DataTypes.INTEGER,
-        unique: true,
         allowNull: false,
         references: {
             model: 'proveedores',
@@ -19,7 +18,6 @@ const returnProvider = sequelize.define('returnProvider', {
     },
     idCodigoBarra: {
         type: DataTypes.INTEGER,
-        unique: true,
         allowNull: false,
         references: {
             model: 'codigoBarras',

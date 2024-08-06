@@ -18,7 +18,7 @@ const getOneReturnSales = async (id) => {
 
 const createReturnSales = async (ReturnSalesData) => {
     try {
-        return await ReturnProviderRepository.createReturnSales(ReturnSalesData);
+        return await ReturnProviderRepository.createreturnSales(ReturnSalesData);
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
             throw new Error('Ya existe una devolucion de venta con el mismo ID.');

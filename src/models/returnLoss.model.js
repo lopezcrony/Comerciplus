@@ -10,7 +10,6 @@ const returnLoss=sequelize.define('returnLoss',{
     },    
     idCodigoBarra: {
         type: DataTypes.INTEGER,
-        unique : true,
         allowNull: false,
         references: {
             model: 'codigoBarras',
