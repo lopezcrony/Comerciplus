@@ -36,7 +36,7 @@ const DetalleCredito = sequelize.define('detallecredito', {
         allowNull: false
     },
 }, {
-    tableName: 'detalles_credito',
+    tableName: 'detalle_credito',
     timestamps: true 
 });
 
