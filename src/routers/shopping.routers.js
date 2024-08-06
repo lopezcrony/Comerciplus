@@ -8,6 +8,7 @@ router
     .get('/', shoppingController.getAllShoppings)
     .get('/:id', shoppingController.getOneShopping)
     .post('/', validateShopping, shoppingController.createShopping)
+    .post('/', shoppingController.createShoppingWithDetails) 
     .put('/:id', validateShopping, shoppingController.updateShopping)
     .patch('/:id', shoppingController.updateShoppingStatus)
     .delete('/:id', shoppingController.deleteOneShopping)

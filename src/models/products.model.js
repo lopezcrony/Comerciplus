@@ -12,7 +12,7 @@ const Producto = sequelize.define('Producto', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'categorias_productos', // Asegúrate de que coincida con el nombre de la tabla
+      model: 'categorias_productos',
       key: 'idCategoria'
     }
   },

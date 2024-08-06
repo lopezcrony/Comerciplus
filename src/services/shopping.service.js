@@ -67,6 +67,13 @@ const deleteOneShopping = async (id) => {
     }
 };
 
+const createShoppingWithDetails = async (shoppingData, detailsData) => {
+    try {
+        return await shoppingRepository.createShoppingWithDetails(shoppingData, detailsData);
+    } catch (error) {
+        throw new Error(`SERVICE: Error al crear la compra con detalles: ${error.message}`);
+    }
+};
 
 module.exports = {
     getAllShoppings,
@@ -74,5 +81,6 @@ module.exports = {
     createShopping,
     updateShopping,
     updateShoppingStatus,
-    deleteOneShopping
+    deleteOneShopping,
+    createShoppingWithDetails
 };

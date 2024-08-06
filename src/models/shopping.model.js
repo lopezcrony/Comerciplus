@@ -50,4 +50,11 @@ Compra.associate = (models) => {
   });
 };
 
+Compra.associate = (models) => {
+Compra.belongsTo(models.DetalleCompra, {
+      foreignKey: 'idCompra',
+      as: 'detalleCompras'
+  });
+};
+
 module.exports = Compra;

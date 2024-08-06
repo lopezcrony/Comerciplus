@@ -1,4 +1,7 @@
+const { sequelize } = require('../config/db');
 const Shopping = require('../models/shopping.model');
+const ShoppingDetails = require('../models/shoppingdetails.model');
+const Product = require('../models/products.model');
 
 const findAllShoppings = async () => {
     return await Shopping.findAll();
@@ -36,6 +39,32 @@ const deleteShopping = async (id) => {
     return result;
 };
 
+const createShoppingWithDetails = async (shoppingData, detailsData) => {
+    const transaction = await sequelize.transaction();
+    try {
+        const newShopping = await Shopping.create(shoppingData, { transaction });
+
+        for (const detail of detailsData) {
+            detail.idCompra = newShopping.idCompra;
+
+            const product = await Product.findByPk(detail.idProducto, { transaction });
+            if (!product) {
+                throw new Error(`Producto con ID ${detail.idProducto} no encontrado`);
+            }
+
+            const nuevoStock = product.stock + detail.cantidadProducto;
+            await product.update({ stock: nuevoStock }, { transaction });
+
+            await ShoppingDetails.create(detail, { transaction });
+        }
+
+        await transaction.commit();
+        return newShopping;
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
+    }
+};
 
 module.exports = {
     findAllShoppings,
@@ -44,4 +73,5 @@ module.exports = {
     updateShopping,
     updateShoppingStatus,
     deleteShopping,
+    createShoppingWithDetails
 };

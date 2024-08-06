@@ -1,4 +1,6 @@
 const shoppingService = require('../services/shopping.service')
+const Producto = require('../models/products.model');
+const DetalleCompras = require('../models/shoppingdetails.model');
 
 const getAllShoppings = async (req, res) => {
     try {
@@ -71,11 +73,44 @@ const deleteOneShopping = async (req, res) => {
     }
 };
 
+const createShoppingWithDetails = async (req, res) => {
+    const { shoppingData, detailsData } = req.body;
+
+    try {
+        const newShopping = await shoppingService.createShoppingWithDetails(shoppingData, detailsData);
+        res.status(201).json({ message: 'Compra registrada exitosamente.', newShopping });
+    } catch (error) {
+        res.status(500).json({ message: 'CONTROLLER', error: error.message });
+    }
+};
+
+const getCompraById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const compra = await shoppingService.findByPk(id, {
+            include: {
+                model: DetalleCompras,
+                as: 'detallesCompra'
+            }
+        });
+        if (!compra) {
+            return res.status(404).json({ message: 'Compra no encontrada' });
+        }
+        res.json(compra);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+};
+
 module.exports = {
     getAllShoppings,
     getOneShopping,
     createShopping,
     updateShopping,
     updateShoppingStatus,
-    deleteOneShopping
+    deleteOneShopping,
+    createShoppingWithDetails,
+    getCompraById,
+    
 }
