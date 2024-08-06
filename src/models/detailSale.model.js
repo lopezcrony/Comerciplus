@@ -45,6 +45,10 @@ detalleVenta.associate = (models) => {
         as: 'devolucionVenta'
     });
 
+    detalleVenta.belongsTo(models.CodigoBarra, {
+        foreignKey: 'idCodigoBarra',
+        as: 'codigoBarra'
+    }); 
     
     
 };

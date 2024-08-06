@@ -33,8 +33,13 @@ CodigoBarra.associate = (models) => {
     });
 
     CodigoBarra.hasMany(models.returnProvider,{
-      foreignKey: 'idCodigoBarra',
-      as: 'codigoBarra'
+      foreignKey: 'idDevolucionLocal',
+      as: 'devolucionLocal'
+    });
+
+    CodigoBarra.hasMany(models.detalleVenta,{
+      foreignKey: 'idDetalleVenta',
+      as: 'detalleVenta' 
     })
 };
 
