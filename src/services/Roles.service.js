@@ -39,6 +39,18 @@ const updateRole= async (id, rolData) => {
     }
 };
 
+const updateRoleStatus = async (id, status) => {
+    try {
+        const result = await roleRepository.updateRoleStatus(id, status);
+        if (!result) {
+            throw new Error('SERVICE: El rol no se pudo actualizar');
+        }
+        return result;
+    } catch (error) {
+        throw new Error('Error al cambiar el estado del rol: ' + error.message);
+    }
+};
+
 const deleteOneRole= async (id) => {
     try {
         const result = await roleRepository.deleteRole(id);
@@ -56,5 +68,6 @@ module.exports = {
     getOneRole,
     createNewRole,
     updateRole,
+    updateRoleStatus,
     deleteOneRole
 }

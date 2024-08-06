@@ -9,6 +9,7 @@ router
     .get('/:id', rolesController.getOneRole)
     .post('/', validateRoles, rolesController.createNewRole)
     .put('/:id', validateRoles, rolesController.updateRole)
+    .patch('/:id', rolesController.updateRoleStatus)
     .delete('/:id', rolesController.deleteOneRole)
 
 

@@ -18,6 +18,15 @@ const updateOneUser = async (id, user) => {
   });
 };
 
+const updateUserStatus = async (id, status) => {
+
+  const user = await findUserById(id);
+  if (user) {
+      return await user.update({estadoUsuario : status});
+  }
+  throw new Error('Usuario no encontrado');
+};
+
 const deleteOneUser = async (id) => {
   return await User.destroy({
     where: { idUsuario: id }
@@ -29,5 +38,6 @@ module.exports = {
   getOneUser,
   createNewUser,
   updateOneUser,
-  deleteOneUser,
+  updateUserStatus,
+  deleteOneUser
 };

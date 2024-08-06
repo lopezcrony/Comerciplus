@@ -20,6 +20,15 @@ const updateRole = async (id, roleData) => {
     throw new Error('Rol no encontrado');
 };
 
+const updateRoleStatus = async (id, status) => {
+
+    const role = await findRoleById(id);
+    if (role) {
+        return await role.update({estadoRol : status});
+    }
+    throw new Error('Rol no encontrado');
+};
+
 const deleteRole = async (id) => {
     const result = await Roles.destroy({
         where: { idRol: id }
@@ -32,5 +41,6 @@ module.exports = {
     findRoleById,
     createRole,
     updateRole,
-    deleteRole,
+    updateRoleStatus,
+    deleteRole
 };

@@ -46,6 +46,18 @@ const updateOneUser = async (id, userData) => {
     }
 };
 
+const updateUserStatus = async (id, status) => {
+    try {
+        const result = await userRepository.updateUserStatus(id, status);
+        if (!result) {
+            throw new Error('SERVICE: El usuario no se pudo actualizar');
+        }
+        return result;
+    } catch (error) {
+        throw new Error('Error al cambiar el estado del usuario: ' + error.message);
+    }
+};
+
 const deleteOneUser = async (id) => {
     try {
         const result = await userRepository.deleteOneUser(id);
@@ -63,5 +75,6 @@ module.exports = {
     getOneUser,
     createNewUser,
     updateOneUser,
+    updateUserStatus,
     deleteOneUser
 };

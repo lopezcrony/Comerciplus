@@ -39,6 +39,30 @@ const updateOneUser = async (req, res) => {
     }
 };
 
+//Patch para el cambio de estado
+
+const updateUserStatus  = async (req, res) => {
+    try {
+        let { estadoUsuario } = req.body;
+
+        if (estadoUsuario === '0' || estadoUsuario === 0) {
+            estadoUsuario = false;
+        } else if (estadoUsuario === '1' || estadoUsuario === 1) {
+            estadoUsuario = true;
+        } else if (estadoUsuario === true || estadoUsuario === false) {
+            
+        } else {
+            return res.status(400).json({ message: 'El estado debe ser un valor booleano' });
+        }
+        
+        await userService.updateUserStatus (req.params.id, estadoUsuario);
+        res.json({ message: 'Estado actualizado con éxito.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar el estado del usuario', error: error.message });
+    }
+};
+
+
 const deleteOneUser = async (req, res) => {
     try {
         await userService.deleteOneUser(req.params.id);
@@ -53,5 +77,6 @@ module.exports = {
     getOneUser,
     createNewUser,
     updateOneUser,
+    updateUserStatus,
     deleteOneUser
 };

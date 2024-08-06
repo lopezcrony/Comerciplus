@@ -9,6 +9,7 @@ router
     .get('/:id', userController.getOneUser)
     .post('/', validateUsers, userController.createNewUser)
     .put('/:id', validateUsers, userController.updateOneUser)
+    .patch('/:id', userController.updateUserStatus)
     .delete('/:id', userController.deleteOneUser)
 
 
