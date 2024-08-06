@@ -1,5 +1,6 @@
 const detailCreditRepository = require('../repositories/detailCredit.repository');
 const creditRepository = require('../repositories/credits.repository');
+const salesRepository = require('../repositories/sales.repository');
 
 const { sequelize } = require('../config/db');
 
@@ -14,6 +15,17 @@ const getAllDetailCredit = async (idCredit) => {
 const addVentaToCredito = async (creditDetailData) => {
     const transaction = await sequelize.transaction();
     try {
+        // Busca la venta 
+        const venta = await salesRepository.findSalesById(creditDetailData.idVenta, { transaction });
+        
+        if (!venta) {
+            throw new Error('Venta no encontrada');
+        }
+
+        // Validar que el monto acreditado no sea superior al total de la venta
+        if (creditDetailData.montoAcreditado > venta.totalVenta) {
+            throw new Error('El monto acreditado no puede ser superior al total de la venta');
+        }
         const newDetailCredit = await detailCreditRepository.addVentaToCredito(creditDetailData, { transaction });
 
         const credit = await creditRepository.findCreditById(creditDetailData.idCredito, { transaction });

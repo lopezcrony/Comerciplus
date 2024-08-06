@@ -1,38 +1,48 @@
 const sequelize = require('../config/db');
-const provider = require('./providers.model');
+
+// ------------------ ACCESO ------------------
+const roles = require('./roles.model');
+const users = require('./users.model');
+// ------------------ PRODUCTOS ------------------
 const categories = require('./categories.model');
 const products = require('./products.model');
-const barcode= require('./Barcode.model');
+const barcode = require('./Barcode.model');
+// ------------------ COMPRAS ------------------
+const provider = require('./providers.model');
+const shopping = require('./shopping.model');
+const shoppingdetails = require('./shoppingdetails.model');
+// ------------------ CRÉDITOS ------------------
 const client = require('./clients.model');
 const credit = require('./credits.model');
-const installment = require('./installments.model');
-const shoppingdetails = require('./shoppingdetails.model');
 const creditDetail= require('./creditDetail.model');
-const shopping = require('./shopping.model');
-const returnProvider =require('./returnProvider.model');
+const installment = require('./installments.model');
+// ------------------ VENTAS ------------------
+const sales = require('./sales.model')
 const detailSale = require ('./detailSale.model');
-const sales =require('./sales.model')
+// ------------------ DEVOLUCIONES ------------------
 const returnLoss = require('./returnLoss.model');
 const returnSale = require('./returnSales.model');
-
+const returnProvider = require('./returnProvider.model');
 
 
 const models = {
-    provider,
+    roles,
+    users,  
     categories,
     products,
     barcode,
+    provider,
+    shopping,
+    shoppingdetails,
     client,
     credit,
     creditDetail,
     installment,
-    shoppingdetails,
-    shopping,
-    returnLoss,
-    detailSale,
     sales,
+    detailSale,
+    returnLoss,
+    returnSale,
     returnProvider,
-    returnSale
 };
 
 const connectDb = async () => {
@@ -45,3 +55,4 @@ const connectDb = async () => {
 };
 
 module.exports = { models, connectDb };
+

@@ -18,6 +18,7 @@ const DetalleCredito = sequelize.define('detallecredito', {
     },
     idVenta: {
         type: DataTypes.INTEGER,
+        unique:true,
         allowNull: false,
         references: {
             model: 'ventas',
