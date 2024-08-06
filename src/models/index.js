@@ -3,6 +3,8 @@ const sequelize = require('../config/db');
 // ------------------ ACCESO ------------------
 const roles = require('./roles.model');
 const users = require('./users.model');
+const permissions = require('./permissions.model');
+const permissionsRoles = require('./permissionsRoles.model');
 // ------------------ PRODUCTOS ------------------
 const categories = require('./categories.model');
 const products = require('./products.model');
@@ -28,6 +30,8 @@ const returnProvider = require('./returnProvider.model');
 const models = {
     roles,
     users,  
+    permissions,
+    permissionsRoles,
     categories,
     products,
     barcode,

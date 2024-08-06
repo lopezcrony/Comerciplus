@@ -27,9 +27,9 @@ const createNewPermission = async (permissionData) => {
     }
 };
 
-const updateOnePermission = async (permissionData) => {
+const updateOnePermission = async (id, permissionData) => {
     try {
-        return await permissionRepository.updatePermission(permissionData.idPermiso, permissionData);
+        return await permissionRepository.updatePermission(id, permissionData);
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
             throw new Error('El nombre del permiso ya está registrado.');

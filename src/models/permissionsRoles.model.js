@@ -16,7 +16,7 @@ const PermissionRole = sequelize.define('PermissionRole', {
       key: 'idRol'
   }
   },
-  idPermisos: {
+  idPermiso: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -25,14 +25,14 @@ const PermissionRole = sequelize.define('PermissionRole', {
   }
   }
 }, {
-  tableName: 'permissionsRoles',
+  tableName: 'permisosRol',
   timestamps: false
 });
 
 //Acá es para relacionar las tablas.
 PermissionRole.associate = (models) => {
-  PermissionRole.belongsTo(models.Role, { foreignKey: 'idRol' });
-  PermissionRole.belongsTo(models.Permission, { foreignKey: 'idPermisos' });
+  PermissionRole.belongsTo(models.Roles, { foreignKey: 'idRol' });
+  PermissionRole.belongsTo(models.Permissions, { foreignKey: 'idPermiso' });
 };
 
 

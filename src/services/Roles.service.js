@@ -17,7 +17,7 @@ const getOneRole= async (id) => {
     }
 };
 
-const createNewRole= async (rolData) => {
+const createNewRole = async (rolData) => {
     try {
         return await roleRepository.createRole(rolData);
     } catch (error) {

@@ -41,7 +41,8 @@ class Server{
         this.app.use('/Codigos_barra', require('./routers/Barcode.routers'));
         this.app.use('/categorias', require('./routers/categories.routers'));
         this.app.use('/roles', require('./routers/roles.routers'));
-        this.app.use('/permissions', require('./routers/permissions.routers'));
+        this.app.use('/permisos', require('./routers/permissions.routers'));
+        this.app.use('/permisosRol', require('./routers/permissionsRoles.routers'));
         this.app.use('/usuarios', require('./routers/users.routers'));
         this.app.use('/compras', require('./routers/shopping.routers'));
         this.app.use('/detallecompras', require('./routers/shoppingdetails.routers'));
