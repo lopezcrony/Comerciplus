@@ -8,8 +8,8 @@ const findShoppingDetailById = async (id) => {
     return await shoppingdetails.findByPk(id);
 };
 
-const createShoppingDetail = async (shoppingDetailData) => {
-    return await shoppingdetails.create(shoppingDetailData);
+const createShoppingDetail = async (shoppingDetailData, options={}) => {
+    return await shoppingdetails.create(shoppingDetailData, options);
 };
 
 const updateShoppingDetail = async (id, shoppingDetailData) => {
