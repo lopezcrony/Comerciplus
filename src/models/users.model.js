@@ -8,6 +8,13 @@ const User = sequelize.define('User', {
     primaryKey: true,
     autoIncrement: true,
   },
+  idRol: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'roles',
+      key: 'idRol'
+  }},
   cedulaUsuario: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -50,5 +57,9 @@ const User = sequelize.define('User', {
     }
   }
 });
+
+User.associate = (models) => {
+  User.belongsTo(models.Role, { foreignKey: 'idRol' });
+};
 
 module.exports = User;

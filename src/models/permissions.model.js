@@ -18,4 +18,9 @@ const Permissions = sequelize.define('Permissions', {
     timestamps: false
 });
 
+//....
+Permission.associate = (models) => {
+    Permission.hasMany(models.PermissionRole, { foreignKey: 'idPermiso' });
+};
+
 module.exports = Permissions;
