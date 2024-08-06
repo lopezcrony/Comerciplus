@@ -40,7 +40,23 @@ CodigoBarra.associate = (models) => {
     CodigoBarra.hasMany(models.detalleVenta,{
       foreignKey: 'idDetalleVenta',
       as: 'detalleVenta' 
-    })
+    });
+
+    CodigoBarra.hasMany(models.returnSales,{
+      foreignKey: 'idDevolucionVenta',
+      as: 'devolucionVenta' 
+    });
+
+    CodigoBarra.hasMany(models.returnSales,{
+      foreignKey: 'idDevolucionVenta',
+      as: 'devolucionVenta' 
+    });
+
+    CodigoBarra.hasMany(models.returnLoss,{
+      foreignKey: 'idDevolucionDeBaja',
+      as: 'perdida' 
+    });
+
 };
 
 module.exports = CodigoBarra;

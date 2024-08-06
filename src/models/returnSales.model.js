@@ -68,6 +68,11 @@ returnSales.associate = (models) => {
         as: 'detalleVenta'
     });
 
+    returnSales.belongsTo(models.CodigoBarra, {
+        foreignKey: 'idCodigoBarra',
+        as: 'codigoBarras'
+    });
+
 };
 
 module.exports = returnSales;
