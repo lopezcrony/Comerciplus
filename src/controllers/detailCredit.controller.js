@@ -3,11 +3,11 @@ const detailCreditService = require('../services/detailCredit.service');
 const getAllDetailCredit = async (req, res) => {
     try {
         const { idCredito } = req.params;
-        const detailCredi = await detailCreditService.getAllDetailCredit(idCredito);
-        if (detailCredi.length === 0) {
+        const detailCredit = await detailCreditService.getAllDetailCredit(idCredito);
+        if (detailCredit.length === 0) {
             return res.status(404).json({ message: 'CONTROLLER: No se encontraron ventas asociadas a este crédito.' });
         }
-        return res.status(200).json(detailCredi);
+        return res.status(200).json(detailCredit);
     } catch (error) {
         return res.status(500).json({ message: 'CONTROLLER: Error al obtener el detalle del crédito.', error: error.message });
     }

@@ -1,8 +1,9 @@
 const barcodeService = require('../services/Barcode.service')
 
-const getAllBarcodes = async (req, res) => {
+const getAllBarcodesByProduct = async (req, res) => {
     try {
-        const barcode = await barcodeService.getAllBarcodes();
+        const { idProduct } = req.params;
+        const barcode = await barcodeService.getAllBarcodesByProduct(idProduct);
         res.status(200).json(barcode);
     } catch (error) {
         res.status(500).json({ message: 'CONTROLLER: Error al obtener el codigo', error });
@@ -53,7 +54,7 @@ const deleteOneBarcode = async (req, res) => {
 };
 
 module.exports = {
-    getAllBarcodes,
+    getAllBarcodesByProduct,
     getOneBarcode,
     createBarcode,
     updateBarcode,
