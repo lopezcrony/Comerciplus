@@ -1,12 +1,11 @@
 const { Router } = require("express");
-const { GetAllReturnLoss, GetOneReturnLoss, CreateNewReturnLoss, DeleteOneReturnLoss } = require("../controllers/returnLoss.controller");
+const returnLossController = require("../controllers/returnLoss.controller");
 
 const router = Router();
 
 router
-    .get('/', GetAllReturnLoss)
-    .get('/:id', GetOneReturnLoss)
-    .post('/', CreateNewReturnLoss)
-    
+    .get('/', returnLossController.GetAllReturnLoss)
+    .get('/:id', returnLossController.GetOneReturnLoss)
+    .post('/', returnLossController.CreateNewReturnLoss)
 
 module.exports = router;
