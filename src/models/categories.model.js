@@ -11,7 +11,10 @@ const CategoriaProducto = sequelize.define('CategoriaProducto', {
     nombreCategoria: {
         type: DataTypes.STRING(20),
         allowNull: false,
-        unique: true,
+        unique: {
+            name: 'unique_nombreCategoria', // Nombre del índice existente
+            msg: 'El nombre de la categoria debe ser único.'
+          },
         validate: {
             is: /^[a-zA-Záéíóúñ ]+$/,
         },

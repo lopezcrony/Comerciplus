@@ -6,12 +6,8 @@ const validateSales = [
         .notEmpty().withMessage('La fecha de venta es obligatoria')
         .isISO8601().withMessage('La fecha de venta debe ser una fecha válida en formato ISO 8601'),
 
-    body('totalVenta')
-        .notEmpty().withMessage('El total de la venta es obligatorio')
-        .isFloat({ min: 0 }).withMessage('El total de la venta debe ser un número mayor o igual a 0'),
-
-    body('estadoVenta')
-        .isBoolean().withMessage('El estado de la venta debe ser un valor booleano'),
+    // body('totalVenta')
+    //     .isFloat({ min: 0 }).withMessage('El total de la venta debe ser un número mayor o igual a 0'),
 
     (req, res, next) => {
         const errors = validationResult(req);

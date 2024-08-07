@@ -10,8 +10,11 @@ const Proveedor = sequelize.define('Proveedor', {
   },
   nitProveedor: {
     type: DataTypes.STRING(20),
-    unique: true,
-    allowNull: false
+    allowNull: false,
+    unique: {
+      name: 'unique_nitProveedor', // Nombre del índice existente
+      msg: 'El NIT del proveedor debe ser único.'
+    }
   },
   nombreProveedor: {
     type: DataTypes.STRING(100),

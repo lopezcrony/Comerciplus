@@ -30,6 +30,13 @@ const detalleVenta = sequelize.define('detalleVenta', {
         validate: {
             min: 0
         }
+    },
+    subtotal: { 
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        validate: {
+            min: 0
+        }
     }
 }, {tableName: 'detalleVenta',
     timestamps: false
