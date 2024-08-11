@@ -1,7 +1,9 @@
 const Barcode = require('../models/Barcode.model');
 
-const findAllBarcodes = async () => {
-    return await Barcode.findAll();
+const findAllBarcodesByProduct = async (idProduct) => {
+    return await Barcode.findAll({
+        where : {idProducto : idProduct}
+    });
 };
 
 const findBarcodeById = async (id) => {
@@ -17,9 +19,8 @@ const updateBarcode = async (id, barcodeData) => {
     if (barcode) {
         return await Barcode.update(barcodeData);
     }
-    throw new Error('codigo no encontrado');
+    throw new Error('Código no encontrado');
 };
-
 
 const deleteBarcode = async (id) => {
     const result = await Barcode.destroy({
@@ -30,7 +31,7 @@ const deleteBarcode = async (id) => {
 
 
 module.exports = {
-    findAllBarcodes,
+    findAllBarcodesByProduct,
     findBarcodeById,
     createBarcode,
     updateBarcode,

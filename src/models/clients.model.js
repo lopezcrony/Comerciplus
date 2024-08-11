@@ -9,7 +9,10 @@ const Cliente = sequelize.define('Cliente', {
     },
     cedulaCliente: {
         type: DataTypes.STRING(20),
-        unique: true,
+        unique: {
+            name: 'unique_cedulaCliente', // Nombre del índice existente
+            msg: 'La cédula del cliente debe ser única.'
+          },
         allowNull: false
     },
     nombreCliente: {

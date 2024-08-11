@@ -12,6 +12,14 @@ const createSales = async (salesData) => {
     return await Sales.create(salesData);
 };
 
+const updateTotalSale = async (id, newTotalSale) => {
+    const sale = await findSalesById(id);
+    if(sale){
+        return await sale.update({ totalVenta : newTotalSale});
+    }
+    throw new Error('REPOSITORY: La venta no existe.');
+};
+
 const updateSalesStatus = async (id, status) => {
 
     const sales = await findSalesById(id);
@@ -26,5 +34,6 @@ module.exports = {
     findAllSales,
     findSalesById,
     createSales,
+    updateTotalSale,
     updateSalesStatus,
 };

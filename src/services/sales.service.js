@@ -20,10 +20,7 @@ const createSales = async (salesData) => {
     try {
         return await salesRepository.createSales(salesData);
     } catch (error) {
-        if (error.name === 'SequelizeUniqueConstraintError') {
-            throw new Error('Ya existe una venta con esa información.');
-        }
-        throw error;
+       throw error;
     }
 };
 
@@ -40,10 +37,22 @@ const updateSalesStatus = async (id, status) => {
     }
 };
 
+const updateTotalSale = async (id, newTotalSale) => {
+    try {
+        const result = salesRepository.updateTotalSale(id,newTotalSale);
+        if(!result){
+            throw new Error ('SERVICE: No se pudo actualizar el total de la venta.')
+        }
+        return result;
+    } catch (error) {
+        
+    }
+};
 
 module.exports = {
     getAllSales,
     getOneSales,
     createSales,    
+    updateTotalSale,
     updateSalesStatus,
 };

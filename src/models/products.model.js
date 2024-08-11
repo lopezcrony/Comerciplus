@@ -23,7 +23,10 @@ const Producto = sequelize.define('Producto', {
   nombreProducto: {
     type: DataTypes.STRING(100),
     allowNull: false,
-    unique: true,
+    unique: {
+      name: 'unique_nombreProducto', 
+      msg: 'El nombre del producto debe ser único.'
+    },
     validate: {
       is: /^[a-zA-Záéíóúñ ]+$/,
     },
@@ -32,6 +35,9 @@ const Producto = sequelize.define('Producto', {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 0,
+    validate: {
+      min: 0,
+    },
   },
   precioVenta: {
     type: DataTypes.FLOAT,
