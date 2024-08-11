@@ -14,7 +14,8 @@ const User = sequelize.define('User', {
     references: {
       model: 'roles',
       key: 'idRol'
-  }},
+    }
+  },
   cedulaUsuario: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -45,21 +46,29 @@ const User = sequelize.define('User', {
   hooks: {
     beforeCreate: async (user) => {
       if (user.contraseñaUsuario) {
-        const salt = await bcrypt.genSalt(10);
-        user.contraseñaUsuario = await bcrypt.hash(user.contraseñaUsuario, salt);
+        console.log('Encriptando contraseña antes de crear:', user.contraseñaUsuario);
+        user.contraseñaUsuario = await bcrypt.hash(user.contraseñaUsuario, 10);
+        console.log('Contraseña encriptada:', user.contraseñaUsuario);
       }
     },
     beforeUpdate: async (user) => {
-      if (user.contraseñaUsuario) {
-        const salt = await bcrypt.genSalt(10);
-        user.contraseñaUsuario = await bcrypt.hash(user.contraseñaUsuario, salt);
+      if (user.changed('contraseñaUsuario')) {
+        console.log('Contraseña cambiada, encriptando...');
+        user.contraseñaUsuario = await bcrypt.hash(user.contraseñaUsuario, 10);
+        console.log('Contraseña encriptada:', user.contraseñaUsuario);
       }
     }
   }
 });
+
+User.prototype.validPassword = async function(password) {
+  return await bcrypt.compare(password, this.contraseñaUsuario);
+};
 
 User.associate = (models) => {
   User.belongsTo(models.Role, { foreignKey: 'idRol' });
 };
 
 module.exports = User;
+
+

@@ -12,10 +12,20 @@ const createNewUser = async (user) => {
   return await User.create(user);
 };
 
-const updateOneUser = async (id, user) => {
-  return await User.update(user, {
-    where: { idUsuario: id }
-  });
+const updateOneUser = async (id, userData) => {
+  // Encuentra el usuario por ID
+  const user = await User.findByPk(id);
+  if (!user) {
+    throw new Error('Usuario no encontrado');
+  }
+
+  // Actualiza los campos del usuario
+  Object.assign(user, userData);
+
+  // Guarda el usuario actualizado
+  await user.save();
+
+  return user;
 };
 
 const updateUserStatus = async (id, status) => {
