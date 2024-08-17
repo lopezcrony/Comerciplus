@@ -1,0 +1,7 @@
+.layout{
+    background-color: blue;
+}
+.content-wrapper {
+    display: flex;
+    flex: 1;
+}

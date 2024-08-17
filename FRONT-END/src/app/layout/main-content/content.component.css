@@ -1,0 +1,36 @@
+.main-container {
+  position: fixed;
+  top: 6rem;
+  left: 18rem; /* Espacio reservado para el sidebar */
+  width: calc(100% - 19rem); /* Se ajusta al espacio restante */
+  height: calc(100vh - 7rem);
+  z-index: 999;
+  overflow-y: auto;
+  user-select: none;
+  transition: left 0.2s ease-in-out, width 0.2s ease-in-out;
+  background-color:#ffffff;
+  border-radius: 12px;
+  padding: 0.5rem 1.5rem;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.main-container.expanded {
+  left: 2rem;
+  right: 2rem;
+
+  width: calc(100% - 4rem);
+}
+
+.content {
+  flex: 1;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    left: 2rem;
+  right: 2rem; 
+
+  width: calc(100% - 4rem);
+  }
+}
