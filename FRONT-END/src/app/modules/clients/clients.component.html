@@ -1,0 +1,75 @@
+<!-- PLATILLA CRUD -->
+<app-crud 
+  [items]="filteredClients" 
+  [columns]="columns" 
+  [canDelete]="false" 
+  (create)="openCreateModal()"
+  (deleteAll)="deleteAllClients()" 
+  (export)="exportClients()" 
+  (edit)="openEditModal($event)"
+  (delete)="confirmDelete($event)" 
+  (search)="searchClients($event)">
+</app-crud>
+
+<!-- FORMULARIOS -->
+
+<p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Cliente' : 'Crear Cliente'"
+  [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveClient()" (cancel)="closeModal()">
+  <ng-template pTemplate="content">
+    <form [formGroup]="clientForm">
+      <div class="field">
+        <label for="cedulaCliente">Cédula</label>
+        <input type="text" pInputText id="cedulaCliente" formControlName="cedulaCliente" required autofocus />
+        <small class="p-error"
+          *ngIf="clientForm.get('cedulaCliente')?.invalid && clientForm.get('cedulaCliente')?.touched">
+          La cédula es obligatoria.
+        </small>
+      </div>
+
+      <div class="field-group">
+        <div class="field">
+          <label for="nombreCliente">Nombre</label>
+          <input type="text" pInputText id="nombreCliente" formControlName="nombreCliente" required />
+          <small class="p-error"
+            *ngIf="clientForm.get('nombreCliente')?.invalid && clientForm.get('nombreCliente')?.touched">
+            El nombre es obligatorio.
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="apellidoCliente">Apellido</label>
+          <input type="text" pInputText id="apellidoCliente" formControlName="apellidoCliente" required />
+          <small class="p-error"
+            *ngIf="clientForm.get('apellidoCliente')?.invalid && clientForm.get('apellidoCliente')?.touched">
+            El apellido es obligatorio.
+          </small>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field">
+          <label for="direccionCliente">Dirección</label>
+          <input type="text" pInputText id="direccionCliente" formControlName="direccionCliente" required />
+          <small class="p-error"
+            *ngIf="clientForm.get('direccionCliente')?.invalid && clientForm.get('direccionCliente')?.touched">
+            La dirección es obligatoria.
+          </small>
+        </div>
+        
+        <div class="field">
+          <label for="telefonoCliente">Teléfono</label>
+          <input type="text" pInputText id="telefonoCliente" formControlName="telefonoCliente" required />
+          <small class="p-error"
+            *ngIf="clientForm.get('telefonoCliente')?.invalid && clientForm.get('telefonoCliente')?.touched">
+            El teléfono es obligatorio.
+          </small>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="closeModal()"></button>
+    <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text"
+      (click)="saveClient()"></button>
+  </ng-template>
+</p-dialog>

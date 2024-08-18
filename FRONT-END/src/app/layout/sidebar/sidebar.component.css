@@ -1,0 +1,101 @@
+/* SIDEBAR GENERAL */
+.sidebar {
+  background-color: #ffffff;
+  width: 250px; /* Ajusta el ancho según sea necesario */
+  padding: 0.5rem 1.5rem;
+  position: fixed;
+  height: calc(100vh - 7rem);
+  z-index: 999;
+  overflow-y: auto;
+  user-select: none;
+  top: 6rem;
+  left: 1rem; /* Colocado inicialmente */
+  transform: translateX(0); /* Siempre visible en pantallas grandes */
+  opacity: 1; /* Siempre visible en pantallas grandes */
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 12px;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar.collapsed {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed; /* Asegura que el sidebar esté en la posición correcta */
+    left: 0;
+    top: 0; /* Empieza desde el borde superior */
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    height: 100vh; /* Ocupa toda la altura de la pantalla */
+    transform: translateX(-100%); /* Inicialmente oculto */
+    opacity: 0;
+    z-index: 2000; /* Asegura que esté encima del contenido */
+    border-radius: 0; /* Elimina los bordes redondeados */
+    box-shadow: none; /* Elimina las sombras si no son necesarias */
+  }
+
+  .sidebar.expanded {
+    transform: translateX(0); /* Muestra el sidebar */
+    opacity: 1;
+  }
+}
+
+
+/* MENÚ */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 1rem;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sidebar li:hover {
+  background-color: rgba(0, 0, 255, 0.1); /* Color de fondo azul claro */
+  box-shadow: rgba(0, 0, 255, 0.2); /* Sombra azul */
+}
+
+.sidebar li.active {
+  background-color: rgba(0, 0, 255, 0.2); /* Color de fondo azul claro para el ítem activo */
+  color: var(--active-text-color); /* Color de texto para el ítem activo */
+}
+
+.sidebar li.active a {
+  color: var(--active-text-color); /* Color de texto del enlace activo */
+}
+
+.sidebar li a {
+  text-decoration: none;
+  color: var(--text-color);
+  display: block;
+  cursor: pointer;
+}
+
+.sidebar .item {
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  position: relative;
+  outline: 0 none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.sidebar .item:hover {
+  background-color: rgba(0, 0, 255, 0.1); /* Color de fondo azul claro en hover */
+}
+
+/* Define los colores de la variable para el texto activo */
+:root {
+  --text-color: #333;
+  --active-text-color: #0056b3; /* Color de texto cuando el ítem está activo */
+  --surface-overlay: #fff;
+}

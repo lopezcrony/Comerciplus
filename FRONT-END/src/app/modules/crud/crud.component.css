@@ -1,0 +1,69 @@
+.container-crud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .create-button {
+    background-color: #4299e1; /* Color de fondo azul */
+    color: white;
+    padding: 7px 16px;
+    border: none;
+    border-radius: 4px;
+    margin-right: auto; /* Asegura que el botón esté a la izquierda */
+  }
+  
+  .right-side {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-field {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    width: 200px; /* Ajusta el ancho según necesites */
+    margin-right: 8px; /* Pequeño margen a la derecha del campo de búsqueda */
+  }
+  
+  .status-filter {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+  }
+
+.colunms{
+    background-color: rgb(241, 239, 239);
+}
+
+/* Estilos globales o de componente */
+.uniform-button {
+  width: 100px; /* Ajusta el tamaño según tus necesidades */
+  height: 30px; /* Ajusta el tamaño según tus necesidades */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.field-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem; /* Ajusta el espacio entre campos */
+}
+
+.field {
+  flex: 1;
+  margin-right: 1rem;
+  margin-top: 7px;
+}
+
+.field:last-child {
+  margin-right: 0;
+}
+
+.p-inputtext {
+    /* Asegura que este estilo se aplique correctamente */
+    border: 1px solid #ccc !important;
+    padding: 8px !important;
+  }
