@@ -3,15 +3,12 @@
   [items]="filteredClients" 
   [columns]="columns" 
   [canDelete]="false" 
-
   (create)="openCreateModal()"
-
   (deleteAll)="deleteAllClients()" 
+  [canExport]="true" 
   (export)="exportClients()" 
-
   (edit)="openEditModal($event)"
   (delete)="confirmDelete($event)" 
-  
   (search)="searchClients($event)">
 </app-crud>
 

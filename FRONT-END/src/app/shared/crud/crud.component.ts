@@ -17,10 +17,12 @@ import { IconFieldModule } from 'primeng/iconfield';
 export class CRUDComponent {
   
   @Input() canDelete: boolean = true;
+  @Input() canExport: boolean = true;
+
   @Input() items: any[] = [];
   @Input() columns: {field: string, header: string}[] = [];
 
-  
+
   @Output() create = new EventEmitter<void>();
   @Output() deleteAll = new EventEmitter<void>();
   @Output() export = new EventEmitter<void>();

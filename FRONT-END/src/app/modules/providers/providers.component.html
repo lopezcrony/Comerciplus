@@ -2,7 +2,8 @@
 
 <app-crud [items]="filteredProviders" 
   [columns]="columns" 
-  [canDelete]="true" 
+  [canDelete]="true"
+  [canExport]="false" 
   (create)="openCreateModal()"
   (deleteAll)="deleteAllProviders()" 
   (export)="exportProviders()" 
@@ -10,6 +11,7 @@
   (delete)="confirmDelete($event)" 
   (search)="searchProviders($event)">
 </app-crud>
+
 
 <!-- FORMULARIOS -->
 
