@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { ConfirmationServiceMessage } from '../../shared/alerts/confirmation.service';
+import { ConfirmationServiceMessage } from '../../shared/alerts/alerts.service';
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 
 import { ProvidersService } from './providers.service';
@@ -54,11 +53,7 @@ export class ProvidersComponent implements OnInit {
     });
 
   }
-
-  ngOnInit() {
-    this.loadProviders();
-  }
-
+  
   // Cargar la lista de proveedores
   loadProviders() {
     this.providersService.getAllProviders().subscribe(data => {
@@ -67,6 +62,12 @@ export class ProvidersComponent implements OnInit {
       this.filteredProviders = data;
     });
   }
+
+
+  ngOnInit() {
+    this.loadProviders();
+  }
+
 
 
   openCreateModal() {
