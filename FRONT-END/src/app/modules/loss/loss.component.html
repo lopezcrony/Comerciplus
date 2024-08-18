@@ -1,0 +1,53 @@
+<!-- PLANTILLA CRUD -->
+<app-crud 
+  [items]="filteredLoss" 
+  [columns]="colums" 
+  [canDelete]="false" 
+
+  (create)="openCreateModal()"
+  (search)="searchClients($event)">
+</app-crud>
+
+<!-- FORMULARIOS -->
+
+<p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Cliente' : 'Registrar Pérdida'"
+  [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveLoss()" (cancel)="closeModal()">
+  <ng-template pTemplate="content">
+    <form [formGroup]="LossForm">
+      
+      <div class="field-group">
+        <div class="field">
+          <label for="idCodigoBarra">Codigo Barra</label>
+          <input type="text" pInputText id="idCodigoBarra" formControlName="idCodigoBarra" required />
+          <small class="p-error"
+            *ngIf="LossForm.get('idCodigoBarra')?.invalid && LossForm.get('idCodigoBarra')?.touched">
+            El codigo es obligatorio.
+          </small>
+        </div>
+
+        <div class="field">
+          <label for="cantidad">cantidad</label>
+          <input type="text" pInputText id="cantidad" formControlName="cantidad" required />
+          <small class="p-error"
+            *ngIf="LossForm.get('cantidad')?.invalid && LossForm.get('cantidad')?.touched">
+            La cantidad es obligatoria.
+          </small>
+        </div>
+      </div>
+        
+        <div class="field">
+          <label for="motivo">Motivo</label>
+          <input type="text" pInputText id="motivo" formControlName="motivo" required />
+          <small class="p-error"
+            *ngIf="LossForm.get('motivo')?.invalid && LossForm.get('motivo')?.touched">
+            El motivo es obligatorio.
+          </small>
+        </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="closeModal()"></button>
+    <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text"
+      (click)="saveLoss()"></button>
+  </ng-template>
+</p-dialog>
