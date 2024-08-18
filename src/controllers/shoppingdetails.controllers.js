@@ -1,38 +1,39 @@
-const shoppingDetailService = require('../services/shoppingdetails.service');
+const ShoppingdetailService = require('../services/shoppingdetails.service')
 
 const getAllShoppingDetails = async (req, res) => {
     try {
-        const shoppingDetail = await shoppingDetailService.getAllShoppingDetails();
-        res.status(200).json(shoppingDetail);
+        const shoppingdetail = await ShoppingdetailService.getAllShoppingDetails();
+        res.status(200).json(shoppingdetail);
     } catch (error) {
         res.status(500).json({ message: 'CONTROLLER: Error al obtener los detalles de la compra', error });
     }
 };
 
-const getOneShoppingDetail = async (req, res) => {
+const getOneShoppingdetail = async (req, res) => {
     try {
-        const shoppingDetail = await shoppingDetailService.getOneShoppingDetail(req.params.id);
-        res.status(200).json(shoppingDetail);
+        const shoppingdetail = await ShoppingdetailService.getOneShoppingDetail(req.params.id);
+        res.status(200).json(shoppingdetail);
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER: Error al obtener el detalle de la compra.', error });
+        res.status(500).json({message: 'CONTROLLER: Error al obtener el detalle de la compra.', error});
     }
 };
 
-const createShoppingDetail = async (req, res) => {
+const createShoppingdetail = async (req, res) => {
     try {
-        const newShoppingDetail = await shoppingDetailService.createShoppingDetail(req.body);
-        res.status(201).json({ message: 'Detalle de compra registrada exitosamente.', newShoppingDetail });
+        const newShoppingdetail = await ShoppingdetailService.createShoppingDetail(req.body);
+        res.status(201).json({ message: 'Detalle de compra registrada exitosamente.', newShoppingdetail });
+
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER', error: error.message });
+        res.status(500).json({ message: 'CONTROLLER no se registro', error: error.message });
     }
 };
 
-const updateShoppingDetail = async (req, res) => {
+const updateShoppingdetail = async (req, res) => {
     try {
-        const updatedShoppingDetail = await shoppingDetailService.updateShoppingDetail(req.params.id, req.body);
-        res.status(200).json({ message: 'Detalle de compra actualizada exitosamente', updatedShoppingDetail });
+        const updatedShoppingdetail = await ShoppingdetailService.updateShoppingDetail(req.params.id, req.body);
+        res.status(200).json({ message: 'Detalle de compra actualizado exitosamente', updatedShoppingdetail});
     } catch (error) {
-        if (error.message === 'ya existe un detalle de esta compra') {
+        if (error.message === 'El detalle de la categotia ya esta registrada.') {
             res.status(400).json({ message: error.message });
         } else {
             res.status(500).json({ message: 'CONTROLLER:', error: error.message });
@@ -40,21 +41,23 @@ const updateShoppingDetail = async (req, res) => {
     }
 };
 
-const deleteOneShoppingDetail = async (req, res) => {
+
+
+const deleteOneShoppingdetail = async (req, res) => {
     try {
-        const shoppingDetail = await shoppingDetailService.deleteOneShoppingDetail(req.params.id);
-        if (shoppingDetail) {
-            res.json({ message: 'Detalle de compra eliminada con éxito.' });
+        const shoppingdetail = await ShoppingdetailService.deleteOneShoppingDetail(req.params.id);
+        if(shoppingdetail){
+        res.json({ message: 'Detalle eliminado con éxito.' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER:', error: error.message });
+        res.status(500).json({mensagge : 'CONTROLLER:', error: error.message });
     }
 };
 
 module.exports = {
     getAllShoppingDetails,
-    getOneShoppingDetail,
-    createShoppingDetail,
-    updateShoppingDetail,
-    deleteOneShoppingDetail,
-};
+    getOneShoppingdetail,
+    createShoppingdetail,
+    updateShoppingdetail,
+    deleteOneShoppingdetail,
+}

@@ -1,10 +1,8 @@
-const shoppingDetailsRepository = require('../repositories/shoppingdetails.repository');
-const productosRepository = require('../repositories/products.repository');
-const { sequelize } = require('../config/db');
+const shoppingDetailRepository = require('../repositories/shoppingdetails.repository');
 
 const getAllShoppingDetails = async () => {
     try {
-        return await shoppingDetailsRepository.findAllShoppingDetails();
+        return await shoppingDetailRepository.findAllShoppingDetails();
     } catch (error) {
         throw error;
     }
@@ -12,53 +10,49 @@ const getAllShoppingDetails = async () => {
 
 const getOneShoppingDetail = async (id) => {
     try {
-        return await shoppingDetailsRepository.findShoppingDetailById(id);
+        return await shoppingDetailRepository.findShoppingDetailById(id);
     } catch (error) {
         throw error;
     }
 };
 
-const createShoppingDetail = async (shoppingDetailData) => {
-    const t = await sequelize.transaction();
+const createShoppingDetail = async (shoppingdetailData) => {
     try {
-        const newDetail = await shoppingDetailsRepository.createShoppingDetail(shoppingDetailData, { transaction: t });
+        const existingDetail = await shoppingDetailRepository.findShoppingDetailByCompraAndProducto(
+            shoppingdetailData.idCompra, 
+            shoppingdetailData.idProducto,
+            shoppingdetailData.codigoBarra
+        );
 
-        // Actualizar el stock del producto
-        const producto = await productosRepository.findProductById(shoppingDetailData.idProducto, { transaction: t });
-        if (!producto) {
-            throw new Error('Producto no encontrado');
+        if (existingDetail) {
+            throw new Error('Ya existe un detalle de compra con este producto y código de barra para la misma compra.');
         }
-        const nuevoStock = producto.stock + shoppingDetailData.cantidadProducto;
-        await productosRepository.updateProductoStock(producto.idProducto, nuevoStock, { transaction: t });
 
-        await t.commit();
-        return newDetail;
+        return await shoppingDetailRepository.createShoppingDetail(shoppingdetailData);
     } catch (error) {
-        await t.rollback();
-        if (error.name === 'SequelizeUniqueConstraintError') {
-            throw new Error('Ya existe un detalle de compra con ese número de factura.');
-        }
         throw error;
     }
 };
 
-const updateShoppingDetail = async (id, shoppingDetailData) => {
+
+const updateShoppingDetail = async (id, ShoppingdetailData) => {
     try {
-        const result = await shoppingDetailsRepository.updateShoppingDetail(id, shoppingDetailData);
+        const result = await shoppingDetailRepository.updateShoppingDetail(id, ShoppingdetailData);
         if (!result) {
             throw new Error('SERVICE: No se pudo actualizar la información del detalle de la compra.');
         }
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
-            throw new Error('El detalle de la compra ya está registrado.');
+            throw new Error('El detalle ya esta registrado.');
         }
         throw error;
     }
 };
 
+
 const deleteOneShoppingDetail = async (id) => {
     try {
-        const result = await shoppingDetailsRepository.deleteShoppingDetail(id);
+        const result = await shoppingDetailRepository.deleteShoppingDetail(id);
         if (result === 0) {
             throw new Error('Detalle de la compra no encontrado');
         }
@@ -67,6 +61,7 @@ const deleteOneShoppingDetail = async (id) => {
         throw error;
     }
 };
+
 
 module.exports = {
     getAllShoppingDetails,

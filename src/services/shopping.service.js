@@ -27,20 +27,6 @@ const createShopping = async (shoppingData) => {
     }
 };
 
-const updateShopping = async (id, shoppingData) => {
-    try {
-        const result = await shoppingRepository.updateShopping(id, shoppingData);
-        if (!result) {
-            throw new Error('SERVICE: No se pudo actualizar la información de la compra.');
-        }
-    } catch (error) {
-        if (error.name === 'SequelizeUniqueConstraintError') {
-            throw new Error('La compra ya esta registrada.');
-        }
-        throw error;
-    }
-};
-
 const updateShoppingStatus  = async (id, status) => {
     try {
         const result = await shoppingRepository.updateShoppingStatus(id, status);
@@ -53,34 +39,23 @@ const updateShoppingStatus  = async (id, status) => {
     }
 }
 
-
-
-const deleteOneShopping = async (id) => {
+const updateValorCompra = async (id,newValorCompra) => {
     try {
-        const result = await shoppingRepository.deleteShopping(id);
-        if (result === 0) {
-            throw new Error('Compra no encontrada');
+        const result =  shoppingRepository.updateValorShopping(id,newValorCompra);
+        if (!result) {
+            throw new Error("SERVICE: no se pudo actualizar el valor de la compra.");
+            
         }
         return result;
     } catch (error) {
-        throw error;
     }
 };
 
-const createShoppingWithDetails = async (shoppingData, detailsData) => {
-    try {
-        return await shoppingRepository.createShoppingWithDetails(shoppingData, detailsData);
-    } catch (error) {
-        throw new Error(`SERVICE: Error al crear la compra con detalles: ${error.message}`);
-    }
-};
 
 module.exports = {
     getAllShoppings,
     getOneShopping,
     createShopping,
-    updateShopping,
     updateShoppingStatus,
-    deleteOneShopping,
-    createShoppingWithDetails
+    updateValorCompra
 };

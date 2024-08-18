@@ -22,11 +22,8 @@ const validateShopping = [
 
     body('numeroFactura')
         .notEmpty().withMessage('El número de factura es obligatorio')
-        .isString().withMessage('El número de factura debe ser una cadena de caracteres'),
-
-    body('valorCompra')
-        .notEmpty().withMessage('El valor de compra es obligatorio')
-        .isFloat({ gt: 0 }).withMessage('El valor de compra debe ser un número positivo'),
+        .isString().withMessage('El número de factura debe ser una cadena de caracteres')
+        .isLength({ max: 50 }).withMessage('El número de factura no debe exceder los 50 caracteres'), // Adicional para limitar longitud
 
     (req, res, next) => {
         const errors = validationResult(req);

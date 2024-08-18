@@ -1,29 +1,45 @@
-const shoppingdetails = require('../models/shoppingdetails.model');
+const shoppingDetails = require('../models/shoppingdetails.model');
+
+const findByCompraId = async (idCompra) => {
+    return await shoppingDetails.findAll({
+        where: { idCompra }
+    });
+};
 
 const findAllShoppingDetails = async () => {
-    return await shoppingdetails.findAll();
+    return await shoppingDetails.findAll();
 };
 
 const findShoppingDetailById = async (id) => {
-    return await shoppingdetails.findByPk(id);
+    return await shoppingDetails.findByPk(id);
 };
 
-const createShoppingDetail = async (shoppingDetailData, options={}) => {
-    return await shoppingdetails.create(shoppingDetailData, options);
+const createShoppingDetail = async (shoppingdetailData) => {
+    return await shoppingDetails.create(shoppingdetailData);
 };
 
-const updateShoppingDetail = async (id, shoppingDetailData) => {
-    const shoppingDetail = await findShoppingDetailById(id);
-    if (shoppingDetail) {
-        return await shoppingDetail.update(shoppingDetailData);
+const updateShoppingDetail = async (id, shoppingdetailData) => {
+    const shoppingdetail = await findShoppingDetailById(id);
+    if (shoppingdetail) {
+        return await shoppingdetail.update(shoppingdetailData);
     }
-    throw new Error('Detalle de Compra no encontrada');
+    throw new Error('detalle de compra no encontrado');
+};
+
+const findShoppingDetailByCompraAndProducto = async (idCompra, idProducto, codigoBarra) => {
+    return await shoppingDetails.findOne({
+        where: {
+            idCompra,
+            idProducto,
+            codigoBarra
+        }
+    });
 };
 
 
 const deleteShoppingDetail = async (id) => {
-    const result = await shoppingdetails.destroy({
-        where: { 	idDetalleCompra  : id }
+    const result = await shoppingDetails.destroy({
+        where: { 	idDetalleCompra : id }
     });
     return result;
 };
@@ -35,4 +51,6 @@ module.exports = {
     createShoppingDetail,
     updateShoppingDetail,
     deleteShoppingDetail,
+    findShoppingDetailByCompraAndProducto,
+    findByCompraId
 };

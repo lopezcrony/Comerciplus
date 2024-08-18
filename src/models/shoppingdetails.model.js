@@ -36,21 +36,33 @@ const DetalleCompra = sequelize.define('DetalleCompra', {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
+    // CAMBIO: Se agrega el campo subtotal que se calcula automáticamente.
+    subtotal: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 0, // Valor inicial
+    },
 }, {
-    tableName: 'detalleCompra',
+    tableName: 'detalle_compras',
     timestamps: false,
+    // CAMBIO: Hooks que calculan el subtotal antes de crear o actualizar un registro.
+    hooks: {
+        beforeCreate: (detalleCompra, options) => {
+            // Calcula el subtotal antes de crear un nuevo detalle de compra
+            detalleCompra.subtotal = detalleCompra.cantidadProducto * detalleCompra.precioCompraUnidad;
+        },
+        beforeUpdate: (detalleCompra, options) => {
+            // Recalcula el subtotal antes de actualizar un detalle de compra existente
+            detalleCompra.subtotal = detalleCompra.cantidadProducto * detalleCompra.precioCompraUnidad;
+        }
+    }
 });
-
-// Definir las relaciones
 
 DetalleCompra.associate = (models) => {
     DetalleCompra.belongsTo(models.Compra, {
         foreignKey: 'idCompra',
         as: 'compra'
     });
-};
-
-DetalleCompra.associate = (models) => {
     DetalleCompra.belongsTo(models.Producto, {
         foreignKey: 'idProducto',
         as: 'producto'
