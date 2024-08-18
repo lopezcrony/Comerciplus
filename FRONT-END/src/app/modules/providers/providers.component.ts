@@ -1,33 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { ToolbarModule } from 'primeng/toolbar';
-import { DialogModule } from 'primeng/dialog';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { InputTextModule } from 'primeng/inputtext';
 import { ToastrService } from 'ngx-toastr';
+
+import { CRUDComponent } from '../../shared/crud/crud.component';
+import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
+import { ConfirmationServiceMessage } from '../../shared/alerts/confirmation.service';
+import { SHARED_IMPORTS } from '../../shared/shared-imports';
 
 import { ProvidersService } from './providers.service';
 import { Proveedor } from './providers.model';
-import { CRUDComponent } from '../crud/crud.component';
-import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { ConfirmationServiceMessage } from '../../shared/alerts/confirmation.service';
 
 @Component({
   selector: 'app-providers',
   standalone: true,
   imports: [
-    CommonModule,
+    ...SHARED_IMPORTS,
     FormsModule,
     ReactiveFormsModule,
-    ButtonModule,
-    ToolbarModule,
-    DialogModule,
-    InputTextModule,
     CRUDComponent,
     CrudModalDirective,
-    ConfirmDialogModule
   ],
   templateUrl: './providers.component.html',
 })

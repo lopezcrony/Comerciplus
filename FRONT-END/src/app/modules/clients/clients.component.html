@@ -1,13 +1,17 @@
-<!-- PLATILLA CRUD -->
+<!-- PLANTILLA CRUD -->
 <app-crud 
   [items]="filteredClients" 
   [columns]="columns" 
   [canDelete]="false" 
+
   (create)="openCreateModal()"
+
   (deleteAll)="deleteAllClients()" 
   (export)="exportClients()" 
+
   (edit)="openEditModal($event)"
   (delete)="confirmDelete($event)" 
+  
   (search)="searchClients($event)">
 </app-crud>
 

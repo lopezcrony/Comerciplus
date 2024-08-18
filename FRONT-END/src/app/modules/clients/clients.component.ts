@@ -1,49 +1,42 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { ToolbarModule } from 'primeng/toolbar';
-import { DialogModule } from 'primeng/dialog';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { InputTextModule } from 'primeng/inputtext';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+
+import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
+import { CRUDComponent } from '../../shared/crud/crud.component';
+import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
+import { ConfirmationServiceMessage } from '../../shared/alerts/confirmation.service';
 
 import { ClientService } from './clients.service';
 import { Client } from './client.model';
-import { CRUDComponent } from '../crud/crud.component';
-import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { ConfirmationServiceMessage } from '../../shared/alerts/confirmation.service';
 
 @Component({
   selector: 'app-clients',
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ButtonModule,
-    ToolbarModule,
-    DialogModule,
-    InputTextModule,
+    ...SHARED_IMPORTS,
     CRUDComponent,
-    CrudModalDirective,
-    ConfirmDialogModule
-  ],
+    CrudModalDirective
+    ],
   templateUrl: './clients.component.html'
 })
 
 export class ClientsComponent implements OnInit {
+
   clients: Client[] = [];
   filteredClients: Client[] = [];
 
   columns: { field: string, header: string }[] = [
+    { field: 'cedulaCliente', header: 'Cédula' },
     { field: 'nombreCliente', header: 'Nombre' },
     { field: 'apellidoCliente', header: 'Apellido' },
-    { field: 'cedulaCliente', header: 'Cédula' },
     { field: 'telefonoCliente', header: 'Teléfono' },
     { field: 'estadoCliente', header: 'Estado' }
   ];
+  
   clientForm: FormGroup;
+
+
   showModal = false;
   isEditing = false;
 
@@ -118,7 +111,6 @@ export class ClientsComponent implements OnInit {
       () => this.deleteClient(client.idCliente)
     );
   }
-
 
   deleteClient(id: number) {
     this.clientService.deleteClient(id).subscribe({
