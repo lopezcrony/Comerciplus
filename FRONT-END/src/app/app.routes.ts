@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { ProvidersComponent } from './modules/providers/providers.component';
 import { LayoutComponent } from './layout/main-layout/layout.component';
 import { ClientsComponent } from './modules/clients/clients.component';
-import { CategoriesComponent } from './modules/categories/categories.component';
 
 export const routes: Routes = [
   {
@@ -11,9 +10,6 @@ export const routes: Routes = [
     children: [
       { path: 'providers', component: ProvidersComponent },
       { path: 'clients', component: ClientsComponent},
-      { path: 'categories', component: CategoriesComponent},
-
-
       { path: '', redirectTo: 'crud', pathMatch: 'full' },
     ]
   }
