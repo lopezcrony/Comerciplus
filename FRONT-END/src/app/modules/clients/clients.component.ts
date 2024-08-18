@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { ConfirmationServiceMessage } from '../../shared/alerts/confirmation.service';
+import { ConfirmationServiceMessage } from '../../shared/alerts/alerts.service';
 
 import { ClientService } from './clients.service';
 import { Client } from './client.model';
@@ -56,11 +56,7 @@ export class ClientsComponent implements OnInit {
       estadoCliente: [true]
     });
   }
-
-  ngOnInit() {
-    this.loadClients();
-  }
-
+  
   loadClients() {
     this.clientService.getClients().subscribe(
       (data: Client[]) => {
@@ -70,6 +66,11 @@ export class ClientsComponent implements OnInit {
       error => console.error('Error al cargar registros:', error)
     );
   }
+
+  ngOnInit() {
+    this.loadClients();
+  }
+
 
   openCreateModal() {
     this.isEditing = false;
