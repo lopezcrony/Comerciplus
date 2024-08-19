@@ -38,7 +38,7 @@ class Server{
         this.app.use('/devolucionVentas', require('./routers/returnSales.router.js'));
         this.app.use('/perdida', require('./routers/returnLoss.router.js'));
         this.app.use('/productos', require('./routers/products.routers.js'));
-        this.app.use('/Codigos_barra', require('./routers/Barcode.routers.js'));
+        this.app.use('/codigo_barra', require('./routers/Barcode.routers.js')); 
         this.app.use('/categorias', require('./routers/categories.routers.js'));
         this.app.use('/roles', require('./routers/roles.routers.js'));
         this.app.use('/permisos', require('./routers/permissions.routers.js'));
