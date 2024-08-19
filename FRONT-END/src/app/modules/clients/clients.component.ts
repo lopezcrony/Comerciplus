@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { ConfirmationServiceMessage } from '../../shared/alerts/alerts.service';
+import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { ClientService } from './clients.service';
 import { Client } from './client.model';
@@ -25,6 +25,7 @@ export class ClientsComponent implements OnInit {
 
   clients: Client[] = [];
   filteredClients: Client[] = [];
+  selectedClients: any[] = [];
 
   columns: { field: string, header: string }[] = [
     { field: 'cedulaCliente', header: 'Cédula' },
@@ -35,15 +36,13 @@ export class ClientsComponent implements OnInit {
   ];
   
   clientForm: FormGroup;
-
-
   showModal = false;
   isEditing = false;
 
   constructor(
     private clientService: ClientService,
     private fb: FormBuilder,
-    private confirmationService: ConfirmationServiceMessage,
+    private confirmationService: AlertsService,
     private toastr: ToastrService
   ) {
     this.clientForm = this.fb.group({
@@ -57,20 +56,18 @@ export class ClientsComponent implements OnInit {
     });
   }
   
+
   loadClients() {
-    this.clientService.getClients().subscribe(
-      (data: Client[]) => {
+    this.clientService.getClients().subscribe(data => {
         this.clients = data;
         this.filteredClients = data;
       },
-      error => console.error('Error al cargar registros:', error)
     );
   }
 
   ngOnInit() {
     this.loadClients();
   }
-
 
   openCreateModal() {
     this.isEditing = false;
@@ -84,6 +81,11 @@ export class ClientsComponent implements OnInit {
     this.showModal = true;
   }
 
+  closeModal() {
+    this.showModal = false;
+    this.clientForm.reset();
+  }
+
   saveClient() {
     if (this.clientForm.valid) {
       const clientData = this.clientForm.value;
@@ -93,24 +95,13 @@ export class ClientsComponent implements OnInit {
 
       request.subscribe({
         next: () => {
+          this.toastr.success('Cliente guardado con éxito!', 'Éxito');
           this.loadClients();
           this.closeModal();
         },
         error: (error) => console.error('Error al guardar cliente:', error)
       });
     }
-  }
-
-  closeModal() {
-    this.showModal = false;
-    this.clientForm.reset();
-  }
-
-  confirmDelete(client: Client) {
-    this.confirmationService.confirm(
-      `¿Estás seguro de eliminar a ${client.nombreCliente} ${client.apellidoCliente}?`,
-      () => this.deleteClient(client.idCliente)
-    );
   }
 
   deleteClient(id: number) {
@@ -130,9 +121,12 @@ export class ClientsComponent implements OnInit {
     });
   }
 
-  deleteAllClients() { }
-
-  exportClients() { }
+  confirmDelete(client: Client) {
+    this.confirmationService.confirm(
+      `¿Estás seguro de eliminar a ${client.nombreCliente} ${client.apellidoCliente}?`,
+      () => this.deleteClient(client.idCliente)
+    );
+  }
 
   searchClients(query: string) {
     this.filteredClients = this.clients.filter(client =>
@@ -142,4 +136,8 @@ export class ClientsComponent implements OnInit {
       client.telefonoCliente.toLowerCase().includes(query.toLowerCase())
     );
   }
+
+  deleteAllClients() { }
+
+  exportClients() { }
 }

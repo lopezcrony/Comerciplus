@@ -14,7 +14,6 @@ export class CrudModalDirective {
 
   @HostListener('click', ['$event'])
   onClick(event: Event) {
-    // This is to prevent the modal from closing when clicking inside it
     event.stopPropagation();
   }
 

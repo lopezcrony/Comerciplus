@@ -2,7 +2,10 @@
 
 <app-crud [items]="filteredProviders" 
   [columns]="columns" 
-  [canDelete]="true" 
+  [canDelete]="true"
+  [canExport]="false" 
+  [(selection)]="selectedProviders"
+  [dataKey]="'idProveedor'"
   (create)="openCreateModal()"
   (deleteAll)="deleteAllProviders()" 
   (export)="exportProviders()" 

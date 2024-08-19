@@ -9,18 +9,33 @@ import { IconFieldModule } from 'primeng/iconfield';
 @Component({
   selector: 'app-crud',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, InputTextModule, FormsModule, IconFieldModule
+  imports: [
+    CommonModule,
+    TableModule,
+    ButtonModule,
+    InputTextModule,
+    FormsModule,
+    IconFieldModule
   ],
   templateUrl: './crud.component.html',
   styleUrl: './crud.component.css'
 })
 export class CRUDComponent {
-  
-  @Input() canDelete: boolean = true;
-  @Input() items: any[] = [];
-  @Input() columns: {field: string, header: string}[] = [];
 
-  
+  // Configuraciones de la tabla y permisos
+  @Input() canDelete: boolean = true;
+  @Input() canExport: boolean = true;
+  @Input() dataKey: string = 'id';
+
+  // Datos de entrada para la tabla
+  @Input() items: any[] = [];
+  @Input() columns: { field: string, header: string }[] = [];
+
+  // Para manejar la selección de filas
+  @Input() selection: any[] = [];
+  @Output() selectionChange = new EventEmitter<any[]>();
+
+  // Funciones del CRUD
   @Output() create = new EventEmitter<void>();
   @Output() deleteAll = new EventEmitter<void>();
   @Output() export = new EventEmitter<void>();
@@ -28,6 +43,7 @@ export class CRUDComponent {
   @Output() delete = new EventEmitter<any>();
   @Output() search = new EventEmitter<string>();
 
+  // Parámetro de búsqueda
   searchQuery = '';
 
   onCreate() {
@@ -57,5 +73,10 @@ export class CRUDComponent {
   clearSearch() {
     this.searchQuery = '';
     this.onSearch();
+  }
+
+   // Método para manejar los cambios en la selección
+   onSelectionChange(selectedItems: any[]) {
+    this.selectionChange.emit(selectedItems);
   }
 }

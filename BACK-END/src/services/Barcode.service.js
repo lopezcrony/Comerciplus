@@ -1,8 +1,8 @@
 const BarcodeRepository = require('../repositories/Barcode.repository');
 
-const getAllBarcodesByProduct = async (idProduct) => {
+const getAllBarcodesByProduct = async () => {
     try {
-        return await BarcodeRepository.findAllBarcodesByProduct(idProduct);
+        return await BarcodeRepository.findAllBarcodesByProduct();
     } catch (error) {
         throw error;
     }
