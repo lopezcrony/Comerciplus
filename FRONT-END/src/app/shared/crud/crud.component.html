@@ -14,31 +14,47 @@
     </div>
   </div>
   
-  <p-table [value]="items" [tableStyle]="{'min-width': '50rem'}" sortMode="multiple" [paginator]="true" [rows]="5"
-    [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [rowsPerPageOptions]="[5, 10, 25, 50]">
-    <ng-template pTemplate="header">
-      <tr>
-        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-          {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
-        </th>
-        <th>Actions</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-item>
-      <tr>
-        <td *ngFor="let col of columns">
-          {{item[col.field]}}
-        </td>
-        <td>
-          <div class="flex">
-            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-              (click)="onEdit(item)"></button>
-            <button *ngIf="canDelete" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-              (click)="onDelete(item)"></button>
-          </div>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+    <p-table 
+      [value]="items" 
+      [(selection)]="selection"
+      [dataKey]="dataKey"
+      (selectionChange)="onSelectionChange($event)"
+      [tableStyle]="{'min-width': '50rem'}" 
+      sortMode="multiple" 
+      [paginator]="true" 
+      [rows]="5"
+      [showCurrentPageReport]="true" 
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [rowsPerPageOptions]="[5, 10, 25]">
+  
+      <!-- Encabezado de la tabla -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 4rem"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+          <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+            {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
+          </th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+  
+      <!-- Cuerpo de la tabla -->
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+          <td *ngFor="let col of columns">
+            {{item[col.field]}}
+          </td>
+          <td>
+            <div class="flex">
+              <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                (click)="onEdit(item)"></button>
+              <button *ngIf="canDelete" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                (click)="onDelete(item)"></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  
 </div>

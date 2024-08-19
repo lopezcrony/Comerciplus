@@ -1,8 +1,19 @@
 <!-- PLANTILLA CRUD -->
+ 
 <!-- aqui se llaman  las funciones definidas en el component.ts -->
-<app-crud [items]="filteredCategories" [columns]="columns" [canDelete]="true" (create)="openCreateModal()"
-    (deleteAll)="deleteAllCategories()" (export)="exportCategorie()" (edit)="openEditModal($event)"
-    (delete)="confirmDelete($event)" (search)="searchCategorie($event)">
+<app-crud 
+    [items]="filteredCategories"
+    [columns]="columns" 
+    [canDelete]="true" 
+    [canExport]="false" 
+    [(selection)]="selectedCategories"
+    [dataKey]="'idCategoria'"
+    (create)="openCreateModal()"
+    (deleteAll)="deleteAllCategories()" 
+    (export)="exportCategorie()" 
+    (edit)="openEditModal($event)"
+    (delete)="confirmDelete($event)" 
+    (search)="searchCategorie($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->

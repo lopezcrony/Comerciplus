@@ -5,10 +5,9 @@ import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { ConfirmationServiceMessage } from '../../shared/alerts/alerts.service';
+import { AlertsService } from '../../shared/alerts/alerts.service';
 import { Categorie } from './categories.model';
 import { CategoriesService } from './categories.service';
-// import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @Component({
   selector: 'app-categories',
@@ -17,7 +16,6 @@ import { CategoriesService } from './categories.service';
     ...SHARED_IMPORTS,
     CRUDComponent,
     CrudModalDirective,
-    // AutoCompleteModule
     ],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.css'
@@ -30,6 +28,8 @@ export class CategoriesComponent implements OnInit{
   categories:Categorie[]=[];
   //busca relaciones de los registros
   filteredCategories:Categorie[]=[];
+  // Array para manejar las categorias seleccionados
+  selectedCategories: any[] = [];
 
 
   //esta es la info que se muestra en el crud, y los campos (field donde se muestran(llamalos como en el modelo) ) y el (header el nombre del campo)
@@ -54,7 +54,7 @@ export class CategoriesComponent implements OnInit{
     //aqui se llama el categoria service y se le asigna a categorieService
     private categorieService: CategoriesService,
     private fb: FormBuilder,
-    private confirmationService: ConfirmationServiceMessage,
+    private confirmationService: AlertsService,
     private toastr: ToastrService
   ) {
     //aqui se llama la variable del form :) el el categorieForm

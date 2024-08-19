@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-// import { ConfirmationServiceMessage } from '../../shared/alerts/confirmation.service';
+// import { AlertsService } from '../../shared/alerts/confirmation.service';
 
 import { LossService } from './loss.service';
 import { Loss } from './loss.model';
@@ -40,7 +40,7 @@ export class LossComponent {
   constructor(
     private lossService: LossService,
     private fb: FormBuilder,
-    // private confirmationService: ConfirmationServiceMessage,
+    // private confirmationService: AlertsService,
     private toastr: ToastrService
   ){
     this.LossForm = this.fb.group({

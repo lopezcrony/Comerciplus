@@ -4,6 +4,8 @@
   [columns]="columns" 
   [canDelete]="true"
   [canExport]="false" 
+  [(selection)]="selectedProviders"
+  [dataKey]="'idProveedor'"
   (create)="openCreateModal()"
   (deleteAll)="deleteAllProviders()" 
   (export)="exportProviders()" 
@@ -11,7 +13,6 @@
   (delete)="confirmDelete($event)" 
   (search)="searchProviders($event)">
 </app-crud>
-
 
 <!-- FORMULARIOS -->
 

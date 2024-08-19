@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
+import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { ConfirmationServiceMessage } from '../../shared/alerts/alerts.service';
-import { SHARED_IMPORTS } from '../../shared/shared-imports';
+import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { ProvidersService } from './providers.service';
 import { Proveedor } from './providers.model';
@@ -15,17 +15,19 @@ import { Proveedor } from './providers.model';
   standalone: true,
   imports: [
     ...SHARED_IMPORTS,
-    FormsModule,
-    ReactiveFormsModule,
     CRUDComponent,
-    CrudModalDirective,
-  ],
+    CrudModalDirective
+    ],
   templateUrl: './providers.component.html',
 })
 
 export class ProvidersComponent implements OnInit {
+
   providers: Proveedor[] = [];
+  // Aquí se guardan los proveedores filtrados según la búsqueda
   filteredProviders: Proveedor[] = [];
+  // Array para manejar los proveedores seleccionados
+   selectedProviders: any[] = [];
 
   columns: { field: string, header: string }[] = [
     { field: 'nitProveedor', header: 'NIT' },
@@ -41,7 +43,7 @@ export class ProvidersComponent implements OnInit {
   constructor(
     private providersService: ProvidersService,
     private fb: FormBuilder,
-    private confirmationService: ConfirmationServiceMessage,
+    private confirmationService: AlertsService,
     private toastr: ToastrService) {
     this.providerForm = this.fb.group({
       idProveedor: [null],
@@ -49,36 +51,31 @@ export class ProvidersComponent implements OnInit {
       nombreProveedor: ['', Validators.required],
       direccionProveedor: ['', Validators.required],
       telefonoProveedor: ['', Validators.required],
-      estadoProveedor: [true] // Valor predeterminado
+      estadoProveedor: [true]
     });
-
   }
   
   // Cargar la lista de proveedores
   loadProviders() {
     this.providersService.getAllProviders().subscribe(data => {
-      console.log('Datos recibidos:', data); // Verifica aquí
       this.providers = data;
       this.filteredProviders = data;
     });
   }
 
-
   ngOnInit() {
     this.loadProviders();
   }
 
-
-
   openCreateModal() {
     this.isEditing = false;
-    this.providerForm.reset({ estadoCliente: true });
+    this.providerForm.reset({ estadoProveedor: true });
     this.showModal = true;
   }
 
-  openEditModal(client: Proveedor) {
+  openEditModal(provider: Proveedor) {
     this.isEditing = true;
-    this.providerForm.patchValue(client);
+    this.providerForm.patchValue(provider);
     this.showModal = true;
   }
 
@@ -87,7 +84,7 @@ export class ProvidersComponent implements OnInit {
     this.providerForm.reset();
   }
 
-  // Crear o actualizar un proveedor
+  // Crea o actualiza un proveedor
   saveProvider() {
     if (this.providerForm.valid) {
       const providerData = { ...this.providerForm.value, estadoProveedor: this.providerForm.value.estadoProveedor ?? true };
@@ -97,7 +94,7 @@ export class ProvidersComponent implements OnInit {
   
       request.subscribe({
         next: () => {
-          this.toastr.success('Proveedor guardado con éxito!', 'Éxito');
+          this.toastr.success('¡Proveedor guardado con éxito!', 'Éxito');
           this.loadProviders();
           this.closeModal();
         },
@@ -109,13 +106,6 @@ export class ProvidersComponent implements OnInit {
     } else {
       this.toastr.warning('Por favor, completa todos los campos requeridos.', 'Advertencia');
     }
-  }
-
-  confirmDelete(provider: Proveedor) {
-    this.confirmationService.confirm(
-      `¿Estás seguro de eliminar a ${provider.nombreProveedor}?`,
-      () => this.deleteProvider(provider.idProveedor)
-    );
   }
 
   deleteProvider(id: number) {
@@ -135,6 +125,13 @@ export class ProvidersComponent implements OnInit {
     });
   }
 
+  confirmDelete(provider: Proveedor) {
+    this.confirmationService.confirm(
+      `¿Estás seguro de eliminar a ${provider.nombreProveedor}?`,
+      () => this.deleteProvider(provider.idProveedor)
+    );
+  }
+
   searchProviders(query: string) {
     this.filteredProviders = this.providers.filter(provider =>
       provider.nitProveedor.toLowerCase().includes(query.toLowerCase()) ||
@@ -144,10 +141,7 @@ export class ProvidersComponent implements OnInit {
     );
   }
 
-
   deleteAllProviders() { }
 
   exportProviders() { }
-
-
 }
