@@ -1,9 +1,8 @@
 const Barcode = require('../models/Barcode.model');
 
-const findAllBarcodesByProduct = async (idProduct) => {
-    return await Barcode.findAll({
-        where : {idProducto : idProduct}
-    });
+const findAllBarcodesByProduct = async (
+) => {
+    return await Barcode.findAll();
 };
 
 const findBarcodeById = async (id) => {
