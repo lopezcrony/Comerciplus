@@ -64,7 +64,6 @@ export class CategoriesComponent implements OnInit{
       nombreCategoria: ['', Validators.required],
       descripcionCategoria:"",
       estadoCategoria: [true]
-      // telefonoCliente: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(10)]],
     });
   }
 

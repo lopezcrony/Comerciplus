@@ -7,13 +7,13 @@
 
 <!-- FORMULARIOS -->
 
-<p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Cliente' : 'Crear Cliente'"
+<p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Categoria' : 'Crear Categoria'"
     [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveCategorie()"
     (cancel)="closeModal()">
     <ng-template pTemplate="content">
         <form [formGroup]="categorieForm">
-<!-- pa mostrar los campos al frenta -->
-            <div class="field-group"> 
+            <!-- pa mostrar los campos al frenta -->
+            <div class="field-group">
                 <div class="field">
                     <label for="nombreCategoria">Nombre categoria</label>
                     <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria" required
@@ -26,7 +26,7 @@
 
                 <div class="field">
                     <label for="descripcionCategoria">Descripcion</label>
-                    <input type="text" pInputText id="descripcionCategoria" formControlName="descripcionCategoria"/>
+                    <input type="text" pInputText id="descripcionCategoria" formControlName="descripcionCategoria" />
                 </div>
             </div>
         </form>

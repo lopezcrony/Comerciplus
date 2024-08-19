@@ -3,6 +3,7 @@ import { ProvidersComponent } from './modules/providers/providers.component';
 import { LayoutComponent } from './layout/main-layout/layout.component';
 import { ClientsComponent } from './modules/clients/clients.component';
 import { CategoriesComponent } from './modules/categories/categories.component';
+import { ProductsComponent } from './modules/products/products.component';
 
 export const routes: Routes = [
   {
@@ -12,6 +13,7 @@ export const routes: Routes = [
       { path: 'providers', component: ProvidersComponent },
       { path: 'clients', component: ClientsComponent},
       { path: 'categories', component: CategoriesComponent},
+      { path: 'products', component: ProductsComponent},
       { path: '', redirectTo: 'crud', pathMatch: 'full' },
     ]
   }
