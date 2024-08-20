@@ -2,10 +2,15 @@
 <app-crud 
   [items]="filteredLoss" 
   [columns]="colums" 
-  [canDelete]="false" 
-
+  [canDelete]="false"
+  [canExport]="false" 
+  [canEdit]="false"
+  [Check]="false"
+  [actions]="false"
+  [DeleteGeneral]="false"
+  [dataKey]="'idDevolucionDeBaja'"  
   (create)="openCreateModal()"
-  (search)="searchClients($event)">
+  (search)="searchLoss($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->

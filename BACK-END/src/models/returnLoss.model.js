@@ -25,7 +25,8 @@ const returnLoss=sequelize.define('returnLoss',{
     },
     fechaDeBaja:{
         type: DataTypes.DATE,
-        allowNull:false
+        allowNull:false,
+        defaultValue: DataTypes.NOW
     },
     motivo:{
         type: DataTypes.STRING(100),
@@ -33,6 +34,14 @@ const returnLoss=sequelize.define('returnLoss',{
         validate: {
             is: /^[a-zA-Záéíóúñ ]+$/,
         },
+    },
+    CodigoProducto:{
+        type:DataTypes.INTEGER,
+        allowNull: false,
+    },
+    NombreProducto:{
+        type:DataTypes.STRING,
+        allowNull: false,
     }
     
 },{tableName:'darDeBaja',
