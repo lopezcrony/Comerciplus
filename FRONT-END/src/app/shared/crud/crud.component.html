@@ -1,16 +1,15 @@
 <div class="card">
   <div class="flex justify-between mb-3 items-center">
     <div class="flex space-x-2">
-      <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success" (click)="onCreate()"></button>
-      <button *ngIf="DeleteGeneral" pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="onDeleteAll()"></button>
+      <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success" (click)="onCreate()"></button>
+      <button *ngIf="DeleteGeneral" pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger" (click)="onDeleteAll()"></button>
     </div>
     <div class="relative ml-auto flex items-center space-x-2">
-      <button *ngIf="canExport" pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
+      <button *ngIf="canExport" pButton pRipple label="Exportar" icon="pi pi-download" class="p-button-help"
         (click)="onExport()"></button>
         <input pInputText type="text" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Buscar" class="pr-10" />
         <i *ngIf="searchQuery" class="pi pi-times absolute top-3 right-3 transform -translate-y-1/2 cursor-pointer text-gray-500"
            (click)="clearSearch()"></i>
-        
     </div>
   </div>
   
@@ -24,7 +23,7 @@
       [paginator]="true" 
       [rows]="5"
       [showCurrentPageReport]="true" 
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} registros"
       [rowsPerPageOptions]="[5, 10, 25]">
   
       <!-- Encabezado de la tabla -->
@@ -34,7 +33,7 @@
           <th *ngFor="let col of columns" [pSortableColumn]="col.field">
             {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
           </th>
-          <th *ngIf="actions">Actions</th>
+          <th *ngIf="actions">Acciones</th>
         </tr>
       </ng-template>
   
