@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { ConfirmationServiceMessage } from '../../shared/alerts/alerts.service';
+import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { Product} from "../products/products.model";
 import { ProductsService} from "../products/products.service";
@@ -52,24 +52,22 @@ export class ProductsComponent implements OnInit {
 
   //constructor para importar el service y validar campos de formulario
   constructor(
-    //aqui se llama el product service y se le asigna a productService
     private productService: ProductsService,
     private fb: FormBuilder,
-    private confirmationService: ConfirmationServiceMessage,
+    private confirmationService: AlertsService,
     private toastr: ToastrService
   ) {
-    //aqui se llama la variable del form :) el el productForm
     this.productForm = this.fb.group({
-      //estos son los campos que van a ser validados en formulario
       idProducto: [null],
       idCategoria: ['', Validators.required],
-      imagenProducto:[''],
-      nombreProducto:['', Validators.required],
-      stock:['', Validators.required,Validators.pattern('^[0-9]+$')],
-      precioVenta: ['', Validators.required,Validators.pattern('^(|[1-9][0-9]*)(\\.[0-9]+)?$')],
+      imagenProducto: [''],
+      nombreProducto: ['', Validators.required],
+      stock: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      precioVenta: ['', [Validators.required, Validators.pattern('^(|[1-9][0-9]*)(\\.[0-9]+)?$')]],
       estadoProducto: [true],
     });
   }
+  
 
   loadProducts() {
     this.productService.getAllProducts().subscribe(data => {
