@@ -26,6 +26,12 @@ export class CRUDComponent {
   @Input() canDelete: boolean = true;
   @Input() canExport: boolean = true;
   @Input() dataKey: string = 'id';
+  @Input() canEdit: boolean=true;
+  @Input() Check: boolean=true;
+  @Input() DeleteGeneral: boolean = true;
+  @Input() actions: boolean=true;
+
+
 
   // Datos de entrada para la tabla
   @Input() items: any[] = [];

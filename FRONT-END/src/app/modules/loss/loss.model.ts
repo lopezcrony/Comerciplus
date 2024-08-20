@@ -1,7 +1,9 @@
 export interface Loss{
-    idDevolucionDeBaja: number,
-    idCodigoBarra: number, 
+    idDevolucionDeBaja: string,
+    idCodigoBarra: string, 
     cantidad: number, 
     fechaDeBaja: Date, 
-    motivo:string
+    motivo:string,
+    CodigoProducto: string,
+    NombreProducto:String
 }

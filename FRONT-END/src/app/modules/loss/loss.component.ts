@@ -5,7 +5,8 @@ import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-// import { AlertsService } from '../../shared/alerts/confirmation.service';
+import { AlertsService } from '../../shared/alerts/alerts.service';
+// import {ProductsService} from '../products/products.service'
 
 import { LossService } from './loss.service';
 import { Loss } from './loss.model';
@@ -20,16 +21,16 @@ import { Loss } from './loss.model';
   templateUrl: './loss.component.html',
   styleUrl: './loss.component.css'
 })
-export class LossComponent {
+export class LossComponent implements OnInit {
   loss: Loss[]=[];
   filteredLoss: Loss[]=[];
 
   colums:{field: string, header: string}[]=[
-    {field: 'idDevolucionDeBaja', header: 'ID'},
-    {field:'idCodigoBarra', header: 'FK_Cod'},
+    {field: 'CodigoProducto', header: 'Codigo'},
+    {field: 'NombreProducto', header: 'Producto'},
     {field: 'cantidad', header:'Cantidad'}, 
     {field: 'fechaDeBaja', header:'Fecha'}, 
-    {field:'motivo', header: 'Motivo'}
+    {field: 'motivo', header: 'Motivo'}
   ];
 
   LossForm: FormGroup;
@@ -40,14 +41,14 @@ export class LossComponent {
   constructor(
     private lossService: LossService,
     private fb: FormBuilder,
-    // private confirmationService: AlertsService,
+    private confirmationService: AlertsService,
     private toastr: ToastrService
   ){
     this.LossForm = this.fb.group({
       idDevolucionDeBaja: [null],
       idCodigoBarra: ['', Validators.required],
-      cantidad: ['', Validators.required, Validators.min(0)],
-      fechaDeBaja: ['',],
+      cantidad: ['', Validators.min(0)],
+      fechaDeBaja: [new Date()],
       motivo: ['', Validators.required],      
     });
   }
@@ -57,12 +58,10 @@ export class LossComponent {
   }
 
   loadLoss() {
-    this.lossService.getLoss().subscribe(
-      (data: Loss[]) => {
+    this.lossService.getLoss().subscribe(data => {
         this.loss = data;
         this.filteredLoss = data;
       },
-      error => console.error('Error al cargar registros:', error)
     );
   }
 
@@ -78,13 +77,21 @@ export class LossComponent {
       this.lossService.createLoss(lossData) :
         this.lossService.createLoss(lossData);
 
-      request.subscribe({
-        next: () => {
-          this.loadLoss();
-          this.closeModal();
-        },
-        error: (error) => console.error('Error al guardar las pérdidas:', error)
-      });
+        request.subscribe({
+          next: () => {
+            this.toastr.success('Pérdida guardada con éxito!', 'Éxito');
+            this.loadLoss();
+            this.closeModal();
+          },
+          error: (error) => {
+            console.error('Error al agregar un registro revise el stock:', error);
+            if (error.status === 500) {
+              this.toastr.error('No se puede agregar una pérdida revise el stock', 'Error');
+            } else {
+              this.toastr.error('Ocurrió un error al agregar la pérdida revise el stock.', 'Error');
+            }
+          }
+        });
     }
   }
 
@@ -94,13 +101,17 @@ export class LossComponent {
   }
 
 
-  searchClients(query: string) {
+  searchLoss(query: string) {
+    const lowerCaseQuery = query.toLowerCase();
+  
+    // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
+    
     this.filteredLoss = this.loss.filter(loss =>
-      loss.idDevolucionDeBaja.toFixed().includes(query.toLowerCase()) ||
-      loss.idCodigoBarra.toFixed().includes(query.toLowerCase()) ||
-      loss.cantidad.toFixed().includes(query.toLowerCase()) ||
-      loss.fechaDeBaja.toISOString().includes(query.toLowerCase()) ||
-      loss.motivo.toLowerCase().includes(query.toLowerCase())
+      loss.CodigoProducto.toLowerCase().includes(lowerCaseQuery) ||
+      loss.NombreProducto.toLowerCase().includes(lowerCaseQuery) ||
+      // loss.fechaDeBaja ||
+      // loss.cantidad ||
+      loss.motivo.toLowerCase().includes(lowerCaseQuery)
     );
   }
 

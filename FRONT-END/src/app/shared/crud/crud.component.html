@@ -2,7 +2,7 @@
   <div class="flex justify-between mb-3 items-center">
     <div class="flex space-x-2">
       <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success" (click)="onCreate()"></button>
-      <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="onDeleteAll()"></button>
+      <button *ngIf="DeleteGeneral" pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="onDeleteAll()"></button>
     </div>
     <div class="relative ml-auto flex items-center space-x-2">
       <button *ngIf="canExport" pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"
@@ -34,20 +34,20 @@
           <th *ngFor="let col of columns" [pSortableColumn]="col.field">
             {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
           </th>
-          <th>Actions</th>
+          <th *ngIf="actions">Actions</th>
         </tr>
       </ng-template>
   
       <!-- Cuerpo de la tabla -->
       <ng-template pTemplate="body" let-item>
         <tr>
-          <td><p-tableCheckbox [value]="item"></p-tableCheckbox></td>
+          <td><p-tableCheckbox [value]="item" *ngIf="Check"></p-tableCheckbox></td>
           <td *ngFor="let col of columns">
             {{item[col.field]}}
           </td>
           <td>
             <div class="flex">
-              <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+              <button *ngIf="canEdit" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                 (click)="onEdit(item)"></button>
               <button *ngIf="canDelete" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
                 (click)="onDelete(item)"></button>
