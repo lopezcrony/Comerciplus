@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { ConfirmationServiceMessage } from '../../shared/alerts/alerts.service';
+import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { Product} from "../products/products.model";
 import { ProductsService} from "../products/products.service";
@@ -55,7 +55,7 @@ export class ProductsComponent implements OnInit {
     //aqui se llama el product service y se le asigna a productService
     private productService: ProductsService,
     private fb: FormBuilder,
-    private confirmationService: ConfirmationServiceMessage,
+    private confirmationService: AlertsService,
     private toastr: ToastrService
   ) {
     //aqui se llama la variable del form :) el el productForm
