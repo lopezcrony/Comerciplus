@@ -1,7 +1,7 @@
 <!-- PLANTILLA CRUD -->
 <!-- aqui se llaman  las funciones definidas en el component.ts -->
 <app-crud [items]="filteredProducts" [columns]="columns" [canDelete]="true" (create)="openCreateModal()"
-    (deleteAll)="deleteAllProduct()" (export)="exportProduct()" (edit)="openEditModal($event)"
+    (deleteAll)="deleteAllProduct()" [DeleteGeneral]="false" [Check]="false" (export)="exportProduct()" (edit)="openEditModal($event)"
     (delete)="confirmDelete($event)" (search)="searchProduct($event)">
 </app-crud>
 
@@ -45,7 +45,7 @@
             <div class="field-group">
                 <div class="field">
                     <label for="precioVenta">Precio venta</label>
-                    <input type="text" pInputText id="precioVenta" formControlName="precioVenta" required
+                    <input type="number" pInputText id="precioVenta" formControlName="precioVenta" required
                         autofocus />
                     <small class="p-error"
                         *ngIf="productForm.get('precioVenta')?.invalid && productForm.get('precioVenta')?.touched">
@@ -55,7 +55,7 @@
 
                 <div class="field">
                     <label for="stock">Stock</label>
-                    <input type="text" pInputText id="stock" formControlName="stock" />
+                    <input type="number" pInputText id="stock" formControlName="stock" />
                 </div>
             </div>
         </form>

@@ -124,14 +124,16 @@ export class ProductsComponent implements OnInit {
       const request = this.isEditing ?
         this.productService.updateProduct(productData) :
         this.productService.createProduct(productData);
-
+        
       request.subscribe({
         next: () => {
           this.loadProducts();
           this.isEditing? this.toastr.success('Producto actualizado exitosamente.', 'Éxito'):this.toastr.success('Producto creado exitosamente.', 'Éxito');
           this.closeModal();
         },
-        error: (error) => console.error('Error al guardar el producto:', error)
+        error: (error) => { 
+          this.toastr.error(error.message, 'Error');
+          console.error('Error al guardar el producto:', error);}
       });
     }
   }

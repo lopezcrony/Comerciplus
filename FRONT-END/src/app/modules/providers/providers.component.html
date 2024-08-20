@@ -35,7 +35,7 @@
 
         <div class="field">
           <label for="nombreProveedor">Nombre</label>
-          <input type="text" pInputText id="nombreProveedor" formControlName="nombreProveedor" required />
+          <input type="text" pInputText id="nombreProveedor" formControlName="nombreProveedor" required autofocus/>
           <small class="p-error"
             *ngIf="providerForm.get('nombreProveedor')?.invalid && providerForm.get('nombreProveedor')?.touched">
             El nombre es obligatorio.
@@ -46,7 +46,7 @@
       <div class="field-group">
         <div class="field">
           <label for="direccionProveedor">Dirección</label>
-          <input type="text" pInputText id="direccionProveedor" formControlName="direccionProveedor" required />
+          <input type="text" pInputText id="direccionProveedor" formControlName="direccionProveedor" required autofocus/>
           <small class="p-error"
             *ngIf="providerForm.get('direccionProveedor')?.invalid && providerForm.get('direccionProveedor')?.touched">
             La dirección es obligatoria.
@@ -55,7 +55,7 @@
 
         <div class="field">
           <label for="telefonoProveedor">Teléfono</label>
-          <input type="text" pInputText id="telefonoProveedor" formControlName="telefonoProveedor" required />
+          <input type="text" pInputText id="telefonoProveedor" formControlName="telefonoProveedor" required autofocus/>
           <small class="p-error"
             *ngIf="providerForm.get('telefonoProveedor')?.invalid && providerForm.get('telefonoProveedor')?.touched">
             El teléfono es obligatorio.

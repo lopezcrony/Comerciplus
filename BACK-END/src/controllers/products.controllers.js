@@ -23,7 +23,7 @@ const createProduct = async (req, res) => {
         const newproduct = await productService.createProduct(req.body);
         res.status(201).json({ message: 'Producto registrado exitosamente.', newproduct });
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER', error: error.message });
+        res.status(500).json({ message:  error.message});
     }
 };
 
