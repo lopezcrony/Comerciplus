@@ -47,8 +47,9 @@ const createReturnLoss = async (ReturnLossData) => {
             ReturnLossData.NombreProducto= nombreProducto
         }
 
-        
-        
+        // Se actualiza el stock del producto
+        const newStock = product.stock - ReturnLossData.cantidad;
+        await productRepository.updateProductoStock(product.idProducto, newStock, { transaction });     
 
 
         const NewReturn=await ReturnLossRepository.createreturnLoss(ReturnLossData, {transaction})
