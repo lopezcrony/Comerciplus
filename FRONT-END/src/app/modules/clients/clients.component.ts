@@ -25,7 +25,6 @@ export class ClientsComponent implements OnInit {
 
   clients: Client[] = [];
   filteredClients: Client[] = [];
-  selectedClients: any[] = [];
 
   columns: { field: string, header: string }[] = [
     { field: 'cedulaCliente', header: 'Cédula' },
@@ -55,7 +54,6 @@ export class ClientsComponent implements OnInit {
       estadoCliente: [true]
     });
   }
-  
 
   loadClients() {
     this.clientService.getClients().subscribe(data => {
@@ -136,8 +134,6 @@ export class ClientsComponent implements OnInit {
       client.telefonoCliente.toLowerCase().includes(query.toLowerCase())
     );
   }
-
-  deleteAllClients() { }
 
   exportClients() { }
 }

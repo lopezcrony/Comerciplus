@@ -12,7 +12,6 @@ import { ProductsService} from "../products/products.service";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DropdownModule } from 'primeng/dropdown';
 
-
 @Component({
   selector: 'app-products',
   standalone: true,
@@ -34,7 +33,6 @@ export class ProductsComponent implements OnInit {
   products:Product[]=[];
   filteredProducts:Product[]=[];
   categories: any[] = []; 
-
 
   columns:{ field: string, header: string }[] = [
     { field: 'nombreProducto', header: 'Nombre producto' },
@@ -71,8 +69,6 @@ export class ProductsComponent implements OnInit {
 
   loadProducts() {
     this.productService.getAllProducts().subscribe(data => {
-      console.log('Datos recibidos con exito:', data); // Verifica aquí
-      //aqui se llaman las variables que definimos para buscar y guardar los datos
       this.products = data;
       this.filteredProducts = data;
     });
@@ -85,7 +81,6 @@ export class ProductsComponent implements OnInit {
       this.categories = data;
     });
   }
-
 
   //funcion inicializadora(todo lo de aqui se inicia de una)
   ngOnInit(){
@@ -112,8 +107,6 @@ export class ProductsComponent implements OnInit {
     this.showModal = false;
     this.productForm.reset();
   }
-
-
 
   //funcion para guardar o actualizar una categoria
   saveProduct() {
@@ -167,8 +160,7 @@ export class ProductsComponent implements OnInit {
       () => this.deleteProduct(product.idProducto)
     );
   }
-
-  deleteAllProduct() { }
+  
   exportProduct() { }
 
   searchProduct(query: string) {
@@ -187,6 +179,5 @@ export class ProductsComponent implements OnInit {
       return nombreProductoMatch || stockMatch;
     });
   }
-  
-  
+
 }

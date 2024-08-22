@@ -26,8 +26,6 @@ export class ProvidersComponent implements OnInit {
   providers: Proveedor[] = [];
   // Aquí se guardan los proveedores filtrados según la búsqueda
   filteredProviders: Proveedor[] = [];
-  // Array para manejar los proveedores seleccionados
-   selectedProviders: any[] = [];
 
   columns: { field: string, header: string }[] = [
     { field: 'nitProveedor', header: 'NIT' },
@@ -140,8 +138,6 @@ export class ProvidersComponent implements OnInit {
       provider.telefonoProveedor.toLowerCase().includes(query.toLowerCase())
     );
   }
-
-  deleteAllProviders() { }
 
   exportProviders() { }
 }
