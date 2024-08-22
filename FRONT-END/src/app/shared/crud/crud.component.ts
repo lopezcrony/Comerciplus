@@ -25,23 +25,14 @@ export class CRUDComponent {
   // Configuraciones de la tabla y permisos
   @Input() canDelete: boolean = true;
   @Input() canExport: boolean = true;
-  @Input() dataKey: string = 'id';
   @Input() canEdit: boolean=true;
-  @Input() Check: boolean=true;
-  @Input() DeleteGeneral: boolean = true;
   @Input() actions: boolean=true;
-
-
 
   // Datos de entrada para la tabla
   @Input() items: any[] = [];
   @Input() columns: { field: string, header: string }[] = [];
 
-  // Para manejar la selección de filas
-  @Input() selection: any[] = [];
-  @Output() selectionChange = new EventEmitter<any[]>();
-
-  // Funciones del CRUD
+ // Funciones del CRUD
   @Output() create = new EventEmitter<void>();
   @Output() deleteAll = new EventEmitter<void>();
   @Output() export = new EventEmitter<void>();
@@ -54,10 +45,6 @@ export class CRUDComponent {
 
   onCreate() {
     this.create.emit();
-  }
-
-  onDeleteAll() {
-    this.deleteAll.emit();
   }
 
   onExport() {
@@ -81,8 +68,4 @@ export class CRUDComponent {
     this.onSearch();
   }
 
-   // Método para manejar los cambios en la selección
-   onSelectionChange(selectedItems: any[]) {
-    this.selectionChange.emit(selectedItems);
-  }
 }

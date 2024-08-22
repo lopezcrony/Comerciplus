@@ -7,8 +7,6 @@ import { environment } from '../../../environments/environment';
 
 import { Loss } from './loss.model';
 
-
-
 @Injectable({
   providedIn: 'root'
 })

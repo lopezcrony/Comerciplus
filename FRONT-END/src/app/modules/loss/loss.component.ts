@@ -19,7 +19,6 @@ import { Loss } from './loss.model';
     CRUDComponent,    
     CrudModalDirective],
   templateUrl: './loss.component.html',
-  styleUrl: './loss.component.css'
 })
 export class LossComponent implements OnInit {
   loss: Loss[]=[];

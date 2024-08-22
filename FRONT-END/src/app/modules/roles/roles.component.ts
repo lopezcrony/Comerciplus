@@ -93,8 +93,6 @@ export class RolesComponent implements OnInit {
     }
   }
 
-  deleteAllRoles() { }
-
   closeModal() {
     this.showModal = false;
   }

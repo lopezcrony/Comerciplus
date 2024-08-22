@@ -18,7 +18,6 @@ import { CategoriesService } from './categories.service';
     CrudModalDirective,
     ],
   templateUrl: './categories.component.html',
-  styleUrl: './categories.component.css'
 })
 
 //el implement oninit es el ejecutador de todos los metodos cuando se inicia en esa pagina(modulo)
@@ -28,9 +27,6 @@ export class CategoriesComponent implements OnInit{
   categories:Categorie[]=[];
   //busca relaciones de los registros
   filteredCategories:Categorie[]=[];
-  // Array para manejar las categorias seleccionados
-  selectedCategories: any[] = [];
-
 
   //esta es la info que se muestra en el crud, y los campos (field donde se muestran(llamalos como en el modelo) ) y el (header el nombre del campo)
   columns: { field: string, header: string }[] = [
@@ -39,15 +35,11 @@ export class CategoriesComponent implements OnInit{
     { field: 'estadoCategoria', header: 'Estado' }
   ];
 
-
   //aqui se define la variable del formulario
   categorieForm: FormGroup;
 
-
-
   showModal = false;
   isEditing = false;
-
 
 //constructor para importar el service y validar campos de formulario
   constructor(
@@ -69,8 +61,6 @@ export class CategoriesComponent implements OnInit{
 
   loadCategories() {
     this.categorieService.getAllCategories().subscribe(data => {
-      console.log('Datos recibidos con exito:', data); // Verifica aquí
-      //aqui se llaman las variables que definimos en las lineas 30 y 32
       this.categories = data;
       this.filteredCategories = data;
     });
@@ -146,7 +136,6 @@ export class CategoriesComponent implements OnInit{
     });
   }
 
-
   confirmDelete(categorie:Categorie) {
     this.confirmationService.confirm(
       `¿Quieres eliminar la categoria: ${categorie.nombreCategoria}?`,
@@ -154,7 +143,6 @@ export class CategoriesComponent implements OnInit{
     );
   }
 
-  deleteAllCategories() { }
   exportCategorie() { }
 
   searchCategorie(query: string) {
