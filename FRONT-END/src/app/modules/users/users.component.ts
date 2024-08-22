@@ -13,8 +13,6 @@ import { RolesService } from '../roles/roles.service';
 import { User } from './users.model';
 import { Roles } from '../roles/roles.model';
 
-
-
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -36,7 +34,7 @@ export class UsersComponent implements OnInit {
     { field: 'apellidoUsuario', header: 'Apellido' },
     { field: 'telefonoUsuario', header: 'Teléfono' },
     { field: 'correoUsuario', header: 'Correo' },
-    { field: 'idRol', header: 'Rol' }
+    { field: 'nombreRol', header: 'Rol' }
   ];
   userForm: FormGroup;
   showModal = false;
@@ -62,20 +60,23 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadUsers();
     this.loadRoles();
-  }
-
-  loadUsers() {
-    this.userService.getAllUsers().subscribe(data => {
-      this.users = data;
-      this.filteredUsers = data;
-    });
+    this.loadUsers();
   }
 
   loadRoles() {
     this.roleService.getAllRoles().subscribe(data => {
       this.roles = data;
+    });
+  }
+
+  loadUsers() {
+    this.userService.getAllUsers().subscribe(data => {
+      this.users = data.map(user => {
+        const role = this.roles.find(r => r.idRol === user.idRol)!;
+        return { ...user, nombreRol: role.nombreRol };
+      });
+      this.filteredUsers = this.users;
     });
   }
 
