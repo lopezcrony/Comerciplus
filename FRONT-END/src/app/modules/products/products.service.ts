@@ -50,7 +50,7 @@ export class ProductsService {
     );
   }
   
-  // Método para eliminar un cliente
+  // Método para eliminar
   deleteProduct(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }

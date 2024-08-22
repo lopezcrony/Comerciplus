@@ -151,7 +151,7 @@ export class ProductsComponent implements OnInit {
       //si es error muestra el error
       error: (error) => {
         console.error('Error al eliminar el producto:', error);
-        if (error.status === 500 && error.error.mensagge.includes('Cannot delete or update a parent row')) {
+        if (error.status === 500) {
           this.toastr.error('No se puede eliminar el producto porque tiene una compra asociada.', 'Error');
         } else {
           this.toastr.error('Ocurrió un error al eliminar el producto.', 'Error');
@@ -164,7 +164,7 @@ export class ProductsComponent implements OnInit {
   confirmDelete(product:Product) {
     this.confirmationService.confirm(
       `¿Quieres eliminar el producto: ${product.nombreProducto}?`,
-      () => this.deleteProduct(product.idCategoria)
+      () => this.deleteProduct(product.idProducto)
     );
   }
 

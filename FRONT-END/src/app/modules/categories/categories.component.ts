@@ -137,7 +137,7 @@ export class CategoriesComponent implements OnInit{
       //si es error muestra el error
       error: (error) => {
         console.error('Error al eliminar la categoria:', error);
-        if (error.status === 500 && error.error.mensagge.includes('Cannot delete or update a parent row')) {
+        if (error.status === 500 || error.error.mensagge.includes('Cannot delete or update a parent row')) {
           this.toastr.error('No se puede eliminar la categoria porque tiene productos asociados.', 'Error');
         } else {
           this.toastr.error('Ocurrió un error al eliminar la categoria.', 'Error');
