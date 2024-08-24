@@ -18,73 +18,84 @@
 
       <div class="field-group">
 
-        <div class="field">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('cedulaUsuario')}">
           <label for="cedulaUsuario">Cédula</label>
           <input type="text" pInputText id="cedulaUsuario" formControlName="cedulaUsuario" required autofocus />
-          <small class="p-error"
-            *ngIf="userForm.get('cedulaUsuario')?.invalid && userForm.get('cedulaUsuario')?.touched">
-            La cédula es obligatoria.
+          <small class="p-error" *ngIf="isFieldInvalid('cedulaUsuario')">
+            {{ getErrorMessage('cedulaUsuario') }}
           </small>
         </div>
 
-        <div class="field">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('idRol')}">
           <label for="idRol">Rol</label>
           <p-dropdown [options]="roles" formControlName="idRol" optionLabel="nombreRol" optionValue="idRol"
             placeholder="Seleccionar rol"></p-dropdown>
-          <small class="p-error" *ngIf="userForm.get('idRol')?.invalid && userForm.get('idRol')?.touched">
-            El rol es obligatorio.
+          <small class="p-error" *ngIf="isFieldInvalid('idRol')">
+            {{ getErrorMessage('idRol') }}
           </small>
         </div>
       </div>
 
       <div class="field-group">
 
-        <div class="field">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('nombreUsuario')}">
           <label for="nombreUsuario">Nombre</label>
           <input type="text" pInputText id="nombreUsuario" formControlName="nombreUsuario" required />
+          <small class="p-error" *ngIf="isFieldInvalid('nombreUsuario')">
+            {{ getErrorMessage('nombreUsuario') }}
+          </small>
+
         </div>
 
-        <div class="field">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('apellidoUsuario')}">
           <label for="apellidoUsuario">Apellido</label>
           <input type="text" pInputText id="apellidoUsuario" formControlName="apellidoUsuario" />
+          <small class="p-error" *ngIf="isFieldInvalid('apellidoUsuario')">
+            {{ getErrorMessage('apellidoUsuario') }}
+          </small>
         </div>
       </div>
 
-      <div class="field">
+      <div class="field" [ngClass]="{'error': isFieldInvalid('telefonoUsuario')}">
         <label for="telefonoUsuario">Teléfono</label>
         <input type="text" maxlength="8" pInputText id="telefonoUsuario" formControlName="telefonoUsuario" />
+        <small class="p-error" *ngIf="isFieldInvalid('telefonoUsuario')">
+          {{ getErrorMessage('telefonoUsuario') }}
+        </small>
       </div>
 
-      <div class="field">
+      <div class="field" [ngClass]="{'error': isFieldInvalid('correoUsuario')}">
         <label for="correoUsuario">Correo</label>
         <input type="email" pInputText id="correoUsuario" formControlName="correoUsuario" />
+        <small class="p-error" *ngIf="isFieldInvalid('correoUsuario')">
+          {{ getErrorMessage('correoUsuario') }}
+        </small>
       </div>
 
       <div class="field-group">
-      <div class="field">
-        <label for="contraseñaUsuario">Contraseña</label>
-        <input type="password" pInputText id="contraseñaUsuario" formControlName="contraseñaUsuario" required />
-        <small class="p-error"
-          *ngIf="userForm.get('contraseñaUsuario')?.invalid && userForm.get('contraseñaUsuario')?.touched">
-          La contraseña es obligatoria.
-        </small>
-      </div>
+        <div class="field" [ngClass]="{'error': isFieldInvalid('contraseñaUsuario')}">
+          <label for="contraseñaUsuario">Contraseña</label>
+          <input type="password" pInputText id="contraseñaUsuario" formControlName="contraseñaUsuario" required />
+          <small class="p-error" *ngIf="isFieldInvalid('contraseñaUsuario')">
+            {{ getErrorMessage('contraseñaUsuario') }}
+          </small>
+        </div>
 
-      <div class="field">
-        <label for="contraseñaUsuario">Confirmar contraseña</label>
-        <input type="password" pInputText id="contraseñaUsuario" formControlName="contraseñaUsuario" required />
-        <small class="p-error"
-          *ngIf="userForm.get('contraseñaUsuario')?.invalid && userForm.get('contraseñaUsuario')?.touched">
-          La contraseña es obligatoria.
-        </small>
+        <div class="field">
+          <label for="contraseñaUsuario">Confirmar contraseña</label>
+          <input type="password" pInputText id="contraseñaUsuario" formControlName="contraseñaUsuario" required />
+          <small class="p-error" *ngIf="isFieldInvalid('contraseñaUsuario')">
+            {{ getErrorMessage('contraseñaUsuario') }}
+          </small>
+        </div>
       </div>
-    </div>
 
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" (click)="closeModal()"></button>
-    <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn"
-      (click)="saveUser()"></button>
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
+      (click)="closeModal()"></button>
+    <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check"
+      class="p-button-text custom-save-btn" (click)="saveUser()"></button>
   </ng-template>
 </p-dialog>

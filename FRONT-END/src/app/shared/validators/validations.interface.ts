@@ -1,7 +1,10 @@
-import { AbstractControl } from "@angular/forms";
+import { AbstractControl } from '@angular/forms';
+
+export type ValidationType =
+  | 'required' | 'minLength' | 'maxLength' | 'pattern' | 'custom' | 'min' | 'max';
 
 export interface ValidationRule {
-  type: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'custom';
+  type: ValidationType;
   value?: any;
   message: string;
   validator?: (control: AbstractControl) => { [key: string]: any } | null;

@@ -15,27 +15,28 @@
 </app-crud>
 
 <!-- FORMULARIOS -->
-
-<p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Categoria' : 'Crear Categoria'"
-    [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveCategorie()"
-    (cancel)="closeModal()">
+<p-dialog [(visible)]="showModal" [style]="{width: '450px'}"
+    [header]="isEditing ? 'Editar Categoria' : 'Crear Categoria'" [modal]="true" class="p-fluid" appCrudModal
+    [isEditing]="isEditing" (save)="saveCategorie()" (cancel)="closeModal()">
     <ng-template pTemplate="content">
         <form [formGroup]="categorieForm">
             <!-- pa mostrar los campos al frenta -->
             <div class="field-group">
-                <div class="field">
+                <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
                     <label for="nombreCategoria">Nombre categoria</label>
                     <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria" required
                         autofocus />
-                    <small class="p-error"
-                        *ngIf="categorieForm.get('nombreCategoria')?.invalid && categorieForm.get('nombreCategoria')?.touched">
-                        El nombre es obligatorio.
+                    <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
+                        {{ getErrorMessage('nombreCategoria') }}
                     </small>
                 </div>
 
-                <div class="field">
+                <div class="field" [ngClass]="{'error': isFieldInvalid('descripcionCategoria')}">
                     <label for="descripcionCategoria">Descripcion</label>
                     <input type="text" pInputText id="descripcionCategoria" formControlName="descripcionCategoria" />
+                    <small class="p-error" *ngIf="isFieldInvalid('descripcionCategoria')">
+                        {{ getErrorMessage('descripcionCategoria') }}
+                    </small>
                 </div>
             </div>
         </form>
@@ -43,7 +44,7 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
             (click)="closeModal()"></button>
-        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn"
-            (click)="saveCategorie()"></button>
+        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check"
+            class="p-button-text custom-save-btn" (click)="saveCategorie()"></button>
     </ng-template>
 </p-dialog>

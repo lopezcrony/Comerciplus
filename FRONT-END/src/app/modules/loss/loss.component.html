@@ -19,31 +19,28 @@
     <form [formGroup]="LossForm">
       
       <div class="field-group">
-        <div class="field">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('idCodigoBarra')}">
           <label for="idCodigoBarra">Codigo Barra</label>
           <input type="text" pInputText id="idCodigoBarra" formControlName="idCodigoBarra" required />
-          <small class="p-error"
-            *ngIf="LossForm.get('idCodigoBarra')?.invalid && LossForm.get('idCodigoBarra')?.touched">
-            El codigo es obligatorio.
-          </small>
+          <small class="p-error" *ngIf="isFieldInvalid('idCodigoBarra')">
+            {{ getErrorMessage('idCodigoBarra') }}
+          </small> 
         </div>
 
-        <div class="field">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('cantidad')}">
           <label for="cantidad">cantidad</label>
           <input type="text" pInputText id="cantidad" formControlName="cantidad" required />
-          <small class="p-error"
-            *ngIf="LossForm.get('cantidad')?.invalid && LossForm.get('cantidad')?.touched">
-            La cantidad es obligatoria.
-          </small>
+          <small class="p-error" *ngIf="isFieldInvalid('cantidad')">
+            {{ getErrorMessage('cantidad') }}
+          </small> 
         </div>
       </div>
         
-        <div class="field">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('motivo')}">
           <label for="motivo">Motivo</label>
           <input type="text" pInputText id="motivo" formControlName="motivo" required />
-          <small class="p-error"
-            *ngIf="LossForm.get('motivo')?.invalid && LossForm.get('motivo')?.touched">
-            El motivo es obligatorio.
+          <small class="p-error" *ngIf="isFieldInvalid('motivo')">
+            {{ getErrorMessage('motivo') }}
           </small>
         </div>
     </form>

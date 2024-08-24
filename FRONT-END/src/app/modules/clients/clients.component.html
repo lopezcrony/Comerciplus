@@ -8,7 +8,6 @@
   (create)="openCreateModal()"
   (export)="exportClients()" 
   (edit)="openEditModal($event)"
-  (delete)="confirmDelete($event)" 
   (search)="searchClients($event)">
 </app-crud>
 
@@ -19,45 +18,45 @@
   <ng-template pTemplate="content">
     <form [formGroup]="clientForm">    
 
-      <div class="field" [ngClass]="{'error': clientForm.get('cedulaCliente')?.invalid && clientForm.get('cedulaCliente')?.touched}">
+      <div class="field" [ngClass]="{'error': isFieldInvalid('cedulaCliente')}">
         <label for="cedulaCliente">Cédula</label>
-        <input type="text" pInputText id="cedulaCliente" formControlName="cedulaCliente" maxlength="15" required autofocus />
-        <small class="p-error" *ngIf="clientForm.get('cedulaCliente')?.invalid && clientForm.get('cedulaCliente')?.touched || clientForm.get('cedulaCliente')?.dirty">
+        <input type="text" pInputText id="cedulaCliente" formControlName="cedulaCliente" maxlength="15" autofocus />
+        <small class="p-error" *ngIf="isFieldInvalid('cedulaCliente')">
           {{ getErrorMessage('cedulaCliente') }}
-        </small>
+        </small>        
       </div>
 
       <div class="field-group">
-        <div class="field" [ngClass]="{'error': clientForm.get('nombreCliente')?.invalid && clientForm.get('nombreCliente')?.touched}">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCliente')}">
           <label for="nombreCliente">Nombre</label>
-          <input type="text" pInputText id="nombreCliente" formControlName="nombreCliente" required />
-          <small class="p-error" *ngIf="clientForm.get('nombreCliente')?.invalid && clientForm.get('nombreCliente')?.touched || clientForm.get('nombreCliente')?.dirty">
+          <input type="text" pInputText id="nombreCliente" formControlName="nombreCliente" />
+          <small class="p-error" *ngIf="isFieldInvalid('nombreCliente')">
             {{ getErrorMessage('nombreCliente') }}
           </small>
         </div>
 
-        <div class="field" [ngClass]="{'error': clientForm.get('apellidoCliente')?.invalid && clientForm.get('apellidoCliente')?.touched}">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('apellidoCliente')}">
           <label for="apellidoCliente">Apellido</label>
-          <input type="text" pInputText id="apellidoCliente" formControlName="apellidoCliente" required />
-          <small class="p-error" *ngIf="clientForm.get('apellidoCliente')?.invalid && clientForm.get('apellidoCliente')?.touched || clientForm.get('apellidoCliente')?.dirty">
+          <input type="text" pInputText id="apellidoCliente" formControlName="apellidoCliente" />
+          <small class="p-error" *ngIf="isFieldInvalid('apellidoCliente')">
             {{ getErrorMessage('apellidoCliente') }}
           </small>
         </div>
       </div>
 
       <div class="field-group">
-        <div class="field" [ngClass]="{'error': clientForm.get('direccionCliente')?.invalid && clientForm.get('direccionCliente')?.touched}">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('direccionCliente')}">
           <label for="direccionCliente">Dirección</label>
-          <input type="text" pInputText id="direccionCliente" formControlName="direccionCliente" required />
-          <small class="p-error" *ngIf="clientForm.get('direccionCliente')?.invalid && clientForm.get('direccionCliente')?.touched || clientForm.get('direccionCliente')?.dirty">
+          <input type="text" pInputText id="direccionCliente" formControlName="direccionCliente" />
+          <small class="p-error" *ngIf="isFieldInvalid('direccionCliente')">
             {{ getErrorMessage('direccionCliente') }}
           </small>
         </div>
         
-        <div class="field" [ngClass]="{'error': clientForm.get('telefonoCliente')?.invalid && clientForm.get('telefonoCliente')?.touched}">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('telefonoCliente')}">
           <label for="telefonoCliente">Teléfono</label>
-          <input type="text" pInputText id="telefonoCliente" formControlName="telefonoCliente" minlength="7" maxlength="10" required />
-          <small class="p-error" *ngIf="clientForm.get('telefonoCliente')?.invalid && clientForm.get('telefonoCliente')?.touched || clientForm.get('telefonoCliente')?.dirty">
+          <input type="text" pInputText id="telefonoCliente" formControlName="telefonoCliente" minlength="7" maxlength="10" />
+          <small class="p-error" *ngIf="isFieldInvalid('telefonoCliente')">
             {{ getErrorMessage('telefonoCliente') }}
           </small>
         </div>
@@ -65,8 +64,10 @@
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" (click)="closeModal()"></button>
-<button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn" (click)="saveClient()"></button>
-
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" 
+            (click)="closeModal()" aria-label="Cancelar"></button>
+    <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" 
+            class="p-button-text custom-save-btn" (click)="saveClient()" aria-label="Guardar"></button>
   </ng-template>
 </p-dialog>
+

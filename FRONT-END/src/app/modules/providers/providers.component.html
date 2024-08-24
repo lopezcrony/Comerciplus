@@ -6,8 +6,7 @@
   [canSeeDetail]="false" 
   (create)="openCreateModal()"
   (export)="exportProviders()" 
-  (edit)="openEditModal($event)"
-  (delete)="confirmDelete($event)" 
+  (edit)="openEditModal($event)" 
   (search)="searchProviders($event)">
 </app-crud>
 
@@ -18,23 +17,24 @@
   [isEditing]="isEditing" (save)="saveProvider()" (cancel)="closeModal()">
   <ng-template pTemplate="content">
     <form [formGroup]="providerForm">
+
       <div class="field-group">
         <div class="field"
-          [ngClass]="{'error': providerForm.get('nitProveedor')?.invalid && (providerForm.get('nitProveedor')?.touched || providerForm.get('nitProveedor')?.dirty)}">
+          [ngClass]="{'error': isFieldInvalid('nitProveedor')}">
           <label for="nitProveedor">NIT</label>
           <input type="text" pInputText id="nitProveedor" formControlName="nitProveedor" maxlength="9" required autofocus />
           <small class="p-error"
-            *ngIf="providerForm.get('nitProveedor')?.invalid && (providerForm.get('nitProveedor')?.touched || providerForm.get('nitProveedor')?.dirty)">
+            *ngIf="isFieldInvalid('nitProveedor')">
             {{ getErrorMessage('nitProveedor') }}
           </small>
         </div>
 
         <div class="field"
-          [ngClass]="{'error': providerForm.get('nombreProveedor')?.invalid && (providerForm.get('nombreProveedor')?.touched || providerForm.get('nombreProveedor')?.dirty)}">
+          [ngClass]="{'error': isFieldInvalid('nombreProveedor')}">
           <label for="nombreProveedor">Nombre</label>
           <input type="text" pInputText id="nombreProveedor" formControlName="nombreProveedor" required autofocus />
           <small class="p-error"
-            *ngIf="providerForm.get('nombreProveedor')?.invalid && (providerForm.get('nombreProveedor')?.touched || providerForm.get('nombreProveedor')?.dirty)">
+            *ngIf="isFieldInvalid('nombreProveedor')">
             {{ getErrorMessage('nombreProveedor') }}
           </small>
         </div>
@@ -42,21 +42,21 @@
 
       <div class="field-group">
         <div class="field"
-          [ngClass]="{'error': providerForm.get('direccionProveedor')?.invalid && (providerForm.get('direccionProveedor')?.touched || providerForm.get('direccionProveedor')?.dirty)}">
+          [ngClass]="{'error': isFieldInvalid('direccionProveedor')}">
           <label for="direccionProveedor">Dirección</label>
           <input type="text" pInputText id="direccionProveedor" formControlName="direccionProveedor" required autofocus />
           <small class="p-error"
-            *ngIf="providerForm.get('direccionProveedor')?.invalid && (providerForm.get('direccionProveedor')?.touched || providerForm.get('direccionProveedor')?.dirty)">
+            *ngIf="isFieldInvalid('direccionProveedor')">
             {{ getErrorMessage('direccionProveedor') }}
           </small>
         </div>
 
         <div class="field"
-          [ngClass]="{'error': providerForm.get('telefonoProveedor')?.invalid && (providerForm.get('telefonoProveedor')?.touched || providerForm.get('telefonoProveedor')?.dirty)}">
+          [ngClass]="{'error':isFieldInvalid('telefonoProveedor')}">
           <label for="telefonoProveedor">Teléfono</label>
           <input type="text" pInputText id="telefonoProveedor" formControlName="telefonoProveedor" maxlength="10" autofocus />
           <small class="p-error"
-            *ngIf="providerForm.get('telefonoProveedor')?.invalid && (providerForm.get('telefonoProveedor')?.touched || providerForm.get('telefonoProveedor')?.dirty)">
+            *ngIf="isFieldInvalid('telefonoProveedor')">
             {{ getErrorMessage('telefonoProveedor') }}
           </small>
         </div>

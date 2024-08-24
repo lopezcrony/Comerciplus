@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { RolesService } from './roles.service';
+import { Roles } from './roles.model';
+import { ValidationService } from '../../shared/validators/validations.service';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
-import { RolesService } from './roles.service';
-import { Roles } from './roles.model';
 
 
 @Component({
@@ -35,11 +36,12 @@ export class RolesComponent implements OnInit {
   constructor(
     private rolesService: RolesService,
     private fb: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private validationService: ValidationService,
   ) {
     this.rolesForm = this.fb.group({
       idRol: [null],
-      nombreRol: ['', Validators.required]
+      nombreRol: ['', this.validationService.getValidatorsForField('roles','nombreRol')]
     });
   }
 
@@ -65,23 +67,43 @@ export class RolesComponent implements OnInit {
     this.showModal = true;
   }
 
-  saveRole() {
-    if (this.rolesForm.valid) {
-      const role: Roles = this.rolesForm.value;
-      if (this.isEditing) {
-        this.rolesService.updateRoles(role).subscribe(() => {
-          this.toastr.success('Rol actualizado exitosamente');
-          this.loadRoles();
-          this.closeModal();
-        });
-      } else {
-        this.rolesService.createRoles(role).subscribe(() => {
-          this.toastr.success('Rol creado exitosamente');
-          this.loadRoles();
-          this.closeModal();
-        });
-      }
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.rolesForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  }  
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.rolesForm.get(fieldName);
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('roles', fieldName, errorKey);
     }
+    return '';
+  }
+
+  private markFormFieldsAsTouched() {
+    Object.values(this.rolesForm.controls).forEach(control => control.markAsTouched());
+  }
+
+  saveRole() {
+    if (this.rolesForm.invalid) {
+      this.markFormFieldsAsTouched();
+      return;
+    }
+
+    const roleData = this.rolesForm.value;
+    const request = this.isEditing 
+      ? this.rolesService.updateRoles(roleData) 
+      : this.rolesService.createRoles(roleData);
+
+    request.subscribe({
+      next: () => {
+        this.toastr.success('¡Rol guardado con éxito!', 'Éxito');
+        this.loadRoles();
+        this.closeModal();
+      },
+      error: () => this.toastr.error('Error al guardar rol', 'Error')
+    });
   }
 
   confirmDelete(roles: Roles) {

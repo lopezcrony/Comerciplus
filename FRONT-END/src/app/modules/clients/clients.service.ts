@@ -12,7 +12,7 @@ import { Client } from './client.model';
   providedIn: 'root'
 })
 export class ClientService {
-  private apiUrl = `${environment.apiUrl}/clientes`; // Cambia esta URL por la de tu API
+  private apiUrl = `${environment.apiUrl}/clientes`;
 
   constructor(private http: HttpClient) { }
 

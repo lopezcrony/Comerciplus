@@ -6,50 +6,45 @@
     <div class="relative ml-auto flex items-center space-x-2">
       <button *ngIf="canExport" pButton pRipple label="Exportar" icon="pi pi-download" class="p-button-help"
         (click)="onExport()"></button>
-        <input pInputText type="text" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Buscar" class="pr-10" />
-        <i *ngIf="searchQuery" class="pi pi-times absolute top-3 right-3 transform -translate-y-1/2 cursor-pointer text-gray-500"
-           (click)="clearSearch()"></i>
+      <input pInputText type="text" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Buscar" class="pr-10" />
+      <i *ngIf="searchQuery"
+        class="pi pi-times absolute top-3 right-3 transform -translate-y-1/2 cursor-pointer text-gray-500"
+        (click)="clearSearch()"></i>
     </div>
   </div>
-  
-    <p-table 
-      [value]="items" 
-      [tableStyle]="{'min-width': '50rem'}" 
-      sortMode="multiple" 
-      [paginator]="true" 
-      [rows]="5"
-      [showCurrentPageReport]="true" 
-      currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} registros"
-      [rowsPerPageOptions]="[5, 10, 25]">
-  
-      <!-- Encabezado de la tabla -->
-      <ng-template pTemplate="header">
-        <tr>
-          <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-            {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
-          </th>
-          <th *ngIf="actions">Acciones</th>
-        </tr>
-      </ng-template>
-  
-      <!-- Cuerpo de la tabla -->
-      <ng-template pTemplate="body" let-item>
-        <tr>
-          <td *ngFor="let col of columns">
-            {{item[col.field]}}
-          </td>
-          <td>
-            <div class="flex">
-              <button *ngIf="canEdit" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                (click)="onEdit(item)"></button>
-              <button *ngIf="canDelete" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning mr-2"
-                (click)="onDelete(item)"></button>
-              <button *ngIf="canSeeDetail" pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info"
-                (click)="onDetail(item)"></button>
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  
+
+  <p-table [value]="items" [tableStyle]="{'min-width': '50rem'}" sortMode="multiple" [paginator]="true" [rows]="5"
+    [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} registros"
+    [rowsPerPageOptions]="[5, 10, 25]">
+
+    <!-- Encabezado de la tabla -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+          {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+        <th *ngIf="actions">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <!-- Cuerpo de la tabla -->
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td *ngFor="let col of columns">
+          {{item[col.field]}}
+        </td>
+        <td>
+          <div class="flex">
+            <button *ngIf="canEdit" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+              (click)="onEdit(item)"></button>
+            <button *ngIf="canDelete" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning mr-2"
+              (click)="onDelete(item)"></button>
+            <button *ngIf="canSeeDetail" pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info"
+              (click)="onDetail(item)"></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
 </div>

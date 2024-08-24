@@ -39,7 +39,8 @@ export class CRUDComponent {
   @Output() export = new EventEmitter<void>();
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
-  @Output() deatil = new EventEmitter<any>();
+  @Output() detail = new EventEmitter<any>();
+  @Output() status = new EventEmitter<any>()
   @Output() search = new EventEmitter<string>();
 
 
@@ -63,7 +64,7 @@ export class CRUDComponent {
   }
 
   onDetail(item: any){
-    this.deatil.emit(item);
+    this.detail.emit(item);
   }
   
   onSearch() {

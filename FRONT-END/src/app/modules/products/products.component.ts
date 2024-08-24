@@ -11,6 +11,7 @@ import { Product} from "../products/products.model";
 import { ProductsService} from "../products/products.service";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DropdownModule } from 'primeng/dropdown';
+import { ValidationService } from '../../shared/validators/validations.service';
 
 @Component({
   selector: 'app-products',
@@ -23,7 +24,6 @@ import { DropdownModule } from 'primeng/dropdown';
     DropdownModule
     ],
   templateUrl: './products.component.html',
-  styleUrl: './products.component.css'
 })
 
 
@@ -35,9 +35,9 @@ export class ProductsComponent implements OnInit {
   categories: any[] = []; 
 
   columns:{ field: string, header: string }[] = [
-    { field: 'nombreProducto', header: 'Nombre producto' },
-    { field: 'imagenProducto', header: 'Imagen' },
-    { field: 'idCategoria', header: 'Categoria' },
+    { field: 'nombreProducto', header: 'Producto' },
+    { field: 'imagenProducto', header: 'Imágen' },
+    { field: 'idCategoria', header: 'Categoría' },
     { field: 'precioVenta', header: 'Precio venta' },
     { field: 'stock', header: 'Stock' },
     { field: 'estadoProducto', header: 'Estado' }
@@ -53,15 +53,16 @@ export class ProductsComponent implements OnInit {
     private productService: ProductsService,
     private fb: FormBuilder,
     private confirmationService: AlertsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private validationService: ValidationService,
   ) {
     this.productForm = this.fb.group({
       idProducto: [null],
-      idCategoria: ['', Validators.required],
+      idCategoria: ['', this.validationService.getValidatorsForField('products', 'idCategoria')],
       imagenProducto: [''],
-      nombreProducto: ['', Validators.required],
-      stock: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
-      precioVenta: ['', [Validators.required, Validators.pattern('^(|[1-9][0-9]*)(\\.[0-9]+)?$')]],
+      nombreProducto: ['', this.validationService.getValidatorsForField('products', 'nombreProducto')],
+      stock: ['', this.validationService.getValidatorsForField('products', 'stock')],
+      precioVenta: ['', this.validationService.getValidatorsForField('products', 'precioVenta')],
       estadoProducto: [true],
     });
   }
@@ -77,7 +78,6 @@ export class ProductsComponent implements OnInit {
   //funcion para traer las categorias y luego llenar el select de productos
   loadCategories() {
     this.productService.getAllCategories().subscribe(data => {
-      console.log('Categorías recibidas con éxito:', data);
       this.categories = data;
     });
   }
@@ -108,9 +108,33 @@ export class ProductsComponent implements OnInit {
     this.productForm.reset();
   }
 
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.productForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  }  
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.productForm.get(fieldName);
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('products', fieldName, errorKey);
+    }
+    return '';
+  }
+
+  private markFormFieldsAsTouched() {
+    Object.values(this.productForm.controls).forEach(control => control.markAsTouched());
+  }
+
   //funcion para guardar o actualizar una categoria
   saveProduct() {
-    if (this.productForm.valid) {
+
+    // Válida el formulario antes de enviarlo
+    if (this.productForm.invalid) {
+      this.markFormFieldsAsTouched();
+      return;
+    }
+
       //categoriadata guarda todo lo del form(informacion)
       const productData = this.productForm.value;
       //si es editing edita y se llama esa funcion si no entonces es crear y llama crear :)
@@ -128,7 +152,7 @@ export class ProductsComponent implements OnInit {
           this.toastr.error(error.message, 'Error');
           console.error('Error al guardar el producto:', error);}
       });
-    }
+    
   }
 
 

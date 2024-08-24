@@ -1,27 +1,45 @@
+// src/app/validations/validation.service.ts
+
 import { Injectable } from '@angular/core';
-import { ValidatorFn, Validators } from '@angular/forms';
-import { ModuleValidationConfig, ValidationPatterns, ValidationRule } from './validations.interface';
+import { ValidatorFn, Validators, AbstractControl } from '@angular/forms';
+import { validationsConfig } from './validations.config';
+import { validationPatterns } from './validation.patterns';
+import {
+  ModuleValidationConfig,
+  ValidationPatterns,
+  ValidationRule,
+  FieldValidation,
+} from './validations.interface';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ValidationService {
-  private validationConfig: ModuleValidationConfig = {};
-  private patterns: ValidationPatterns = {};
+  private validationConfig: ModuleValidationConfig = validationsConfig;
+  private patterns: ValidationPatterns = validationPatterns;
 
-  setConfig(config: ModuleValidationConfig) {
-    this.validationConfig = config;
-  }
-
-  setPatterns(patterns: ValidationPatterns) {
-    this.patterns = patterns;
-  }
+  constructor() { }
 
   getValidatorsForField(module: string, fieldName: string): ValidatorFn[] {
-    const fieldConfig = this.validationConfig[module]?.find(field => field.name === fieldName);
+    const fieldConfig = this.getFieldConfig(module, fieldName);
     if (!fieldConfig) return [];
 
-    return fieldConfig.rules.map(rule => this.createValidator(rule));
+    return fieldConfig.rules.map((rule) => this.createValidator(rule));
+  }
+
+  getErrorMessage(module: string, fieldName: string, errorKey: string): string {
+    const fieldConfig = this.getFieldConfig(module, fieldName);
+    if (!fieldConfig) return '';
+
+    const rule = fieldConfig.rules.find(
+      (r) => r.type === errorKey || (r.type === 'pattern' && errorKey === 'pattern')
+    );
+
+    return rule ? rule.message : '';
+  }
+
+  private getFieldConfig(module: string, fieldName: string): FieldValidation | undefined {
+    return this.validationConfig[module]?.find((field) => field.name === fieldName);
   }
 
   private createValidator(rule: ValidationRule): ValidatorFn {
@@ -33,19 +51,14 @@ export class ValidationService {
       case 'maxLength':
         return Validators.maxLength(rule.value);
       case 'pattern':
-        return Validators.pattern(this.patterns[rule.value] || rule.value);
+        const pattern = this.patterns[rule.value] || rule.value;
+        return Validators.pattern(pattern);
+      case 'min':
+        return Validators.min(rule.value);
       case 'custom':
         return rule.validator || (() => null);
       default:
         return () => null;
     }
-  }
-
-  getErrorMessage(module: string, fieldName: string, errorKey: string): string {
-    const fieldConfig = this.validationConfig[module]?.find(field => field.name === fieldName);
-    if (!fieldConfig) return '';
-
-    const rule = fieldConfig.rules.find(r => r.type === errorKey || (r.type === 'pattern' && errorKey === 'pattern'));
-    return rule ? rule.message : '';
   }
 }

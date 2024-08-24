@@ -13,24 +13,25 @@
 
 <!-- FORMULARIOS -->
 <p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Rol' : 'Crear Rol'"
-    [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveRole()"
-    (cancel)="closeModal()">
+    [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveRole()" (cancel)="closeModal()">
+    
     <ng-template pTemplate="content">
         <form [formGroup]="rolesForm">
-            <div class="field-group">
-                <div class="field">
-                    <label for="nombreRol">Nombre</label>
-                    <input type="text" pInputText id="nombreRol" formControlName="nombreRol" required autofocus />
-                    <small class="p-error" *ngIf="rolesForm.get('nombreRol')?.invalid && rolesForm.get('nombreRol')?.touched">
-                        El nombre es obligatorio.
-                    </small>
-                </div>
+            <div class="field" [ngClass]="{'error': isFieldInvalid('nombreRol')}">
+                <label for="nombreRol">Nombre</label>
+                <input type="text" pInputText id="nombreRol" formControlName="nombreRol" autofocus />
+                <small class="p-error" *ngIf="isFieldInvalid('nombreRol')">
+                    {{ getErrorMessage('nombreRol') }}
+                </small>
             </div>
         </form>
     </ng-template>
+
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" (click)="closeModal()"></button>
-        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn"
-            (click)="saveRole()"></button>
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
+            (click)="closeModal()"></button>
+        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check"
+            class="p-button-text custom-save-btn" (click)="saveRole()"></button>
     </ng-template>
+
 </p-dialog>

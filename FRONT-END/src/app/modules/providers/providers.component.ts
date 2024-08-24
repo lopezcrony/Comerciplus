@@ -10,7 +10,6 @@ import { AlertsService } from '../../shared/alerts/alerts.service';
 import { ProvidersService } from './providers.service';
 import { Proveedor } from './providers.model';
 import { ValidationService } from '../../shared/validators/validations.service';
-import { validationConfig, validationPatterns } from '../../shared/validators/validations.config';
 
 @Component({
   selector: 'app-providers',
@@ -43,12 +42,10 @@ export class ProvidersComponent implements OnInit {
   constructor(
     private providersService: ProvidersService,
     private fb: FormBuilder,
-    private confirmationService: AlertsService,
+    private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService
   ) {
-    this.validationService.setConfig(validationConfig);
-    this.validationService.setPatterns(validationPatterns);
 
     this.providerForm = this.fb.group({
       idProveedor: [null],
@@ -89,20 +86,35 @@ export class ProvidersComponent implements OnInit {
     this.providerForm.reset();
   }
 
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.providerForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  } 
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.providerForm.get(fieldName);
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('providers', fieldName, errorKey);
+    }
+    return '';
+  }
+
+  private markFormFieldsAsTouched() {
+    Object.values(this.providerForm.controls).forEach(control => control.markAsTouched());
+  }
+
   // Crea o actualiza un proveedor
   saveProvider() {
 
     if (this.providerForm.invalid) {
-      Object.keys(this.providerForm.controls).forEach(field => {
-        const control = this.providerForm.get(field);
-        control?.markAsTouched({ onlySelf: true });
-      });
+      this.markFormFieldsAsTouched();
       return;
     }
       const providerData = { ...this.providerForm.value, estadoProveedor: this.providerForm.value.estadoProveedor ?? true };
-      const request = this.isEditing ?
-        this.providersService.updateProvider(providerData) :
-        this.providersService.createProvider(providerData);
+      const request = this.isEditing 
+      ? this.providersService.updateProvider(providerData) 
+      : this.providersService.createProvider(providerData);
   
       request.subscribe({
         next: () => {
@@ -115,39 +127,6 @@ export class ProvidersComponent implements OnInit {
           this.toastr.error('Error al guardar proveedor. Inténtalo de nuevo.', 'Error');
         }
       });
-  }
-
-  getErrorMessage(fieldName: string): string {
-    const control = this.providerForm.get(fieldName);
-    if (control?.errors) {
-      const firstErrorKey = Object.keys(control.errors)[0];
-      return this.validationService.getErrorMessage('providers', fieldName, firstErrorKey);
-    }
-    return '';
-  }
-
-  deleteProvider(id: number) {
-    this.providersService.deleteProvider(id).subscribe({
-      next: () => {
-        this.loadProviders();
-        this.toastr.success('Proveedor eliminado exitosamente.', 'Éxito');
-      },
-      error: (error) => {
-        console.error('Error al eliminar registro:', error);
-        if (error.status === 500 && error.error.mensagge.includes('Cannot delete or update a parent row')) {
-          this.toastr.error('No se puede eliminar el proveedor porque tiene créditos asociados.', 'Error');
-        } else {
-          this.toastr.error('Ocurrió un error al eliminar el proveedor.', 'Error');
-        }
-      }
-    });
-  }
-
-  confirmDelete(provider: Proveedor) {
-    this.confirmationService.confirm(
-      `¿Estás seguro de eliminar a ${provider.nombreProveedor}?`,
-      () => this.deleteProvider(provider.idProveedor)
-    );
   }
 
   searchProviders(query: string) {

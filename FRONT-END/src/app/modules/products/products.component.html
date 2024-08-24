@@ -15,48 +15,39 @@
 <!-- FORMULARIOS -->
 
 <p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Producto' : 'Crear Producto'"
-    [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveProduct()"
-    (cancel)="closeModal()">
+    [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveProduct()" (cancel)="closeModal()">
     <ng-template pTemplate="content">
         <form [formGroup]="productForm">
+            
             <!-- pa mostrar los campos al frenta -->
             <div class="field-group">
-                <div class="field">
+                <div class="field" [ngClass]="{'error': isFieldInvalid('nombreProducto')}">
                     <label for="nombreProducto">Nombre Producto</label>
                     <input type="text" pInputText id="nombreProducto" formControlName="nombreProducto" required
                         autofocus />
-                    <small class="p-error"
-                        *ngIf="productForm.get('nombreProducto')?.invalid && productForm.get('nombreProducto')?.touched">
-                        El nombre es obligatorio.
+                    <small class="p-error" *ngIf="isFieldInvalid('nombreProducto')">
+                        {{ getErrorMessage('nombreProducto') }}
                     </small>
                 </div>
 
-                <div class="field">
+                <div class="field" [ngClass]="{'error': isFieldInvalid('idCategoria')}">
                     <label for="categoria">Categoría</label>
-                    <p-dropdown 
-                      [options]="categories" 
-                      formControlName="idCategoria"
-                      optionLabel="nombreCategoria"
-                      optionValue="idCategoria"
-                      placeholder="Seleccionar categoría"
-                      [virtualScroll]="true"
-                      [virtualScrollItemSize]="38">
+                    <p-dropdown [options]="categories" formControlName="idCategoria" optionLabel="nombreCategoria"
+                        optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="true"
+                        [virtualScrollItemSize]="38">
                     </p-dropdown>
-                    <small class="p-error" *ngIf="productForm.get('idCategoria')?.invalid && productForm.get('idCategoria')?.touched">
-                      La categoría es obligatoria.
+                    <small class="p-error" *ngIf="isFieldInvalid('idCategoria')">
+                        {{ getErrorMessage('idCategoria') }}
                     </small>
-                  </div>
-                  
+                </div>
             </div>
 
             <div class="field-group">
-                <div class="field">
+                <div class="field" [ngClass]="{'error': isFieldInvalid('precioVenta')}">
                     <label for="precioVenta">Precio venta</label>
-                    <input type="number" pInputText id="precioVenta" formControlName="precioVenta" required
-                        autofocus />
-                    <small class="p-error"
-                        *ngIf="productForm.get('precioVenta')?.invalid && productForm.get('precioVenta')?.touched">
-                        El precio de venta es obligatorio.
+                    <input type="number" pInputText id="precioVenta" formControlName="precioVenta" required autofocus />
+                    <small class="p-error" *ngIf="isFieldInvalid('precioVenta')">
+                        {{ getErrorMessage('precioVenta') }}
                     </small>
                 </div>
 
@@ -70,7 +61,7 @@
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
             (click)="closeModal()"></button>
-        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn"
-            (click)="saveProduct()"></button>
+        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check"
+            class="p-button-text custom-save-btn" (click)="saveProduct()"></button>
     </ng-template>
 </p-dialog>

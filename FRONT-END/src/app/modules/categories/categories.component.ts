@@ -6,8 +6,10 @@ import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para la
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
+
 import { Categorie } from './categories.model';
 import { CategoriesService } from './categories.service';
+import { ValidationService } from '../../shared/validators/validations.service';
 
 @Component({
   selector: 'app-categories',
@@ -16,17 +18,17 @@ import { CategoriesService } from './categories.service';
     ...SHARED_IMPORTS,
     CRUDComponent,
     CrudModalDirective,
-    ],
+  ],
   templateUrl: './categories.component.html',
 })
 
 //el implement oninit es el ejecutador de todos los metodos cuando se inicia en esa pagina(modulo)
-export class CategoriesComponent implements OnInit{
+export class CategoriesComponent implements OnInit {
 
   //guarda la informacion del modelo en esa variable
-  categories:Categorie[]=[];
+  categories: Categorie[] = [];
   //busca relaciones de los registros
-  filteredCategories:Categorie[]=[];
+  filteredCategories: Categorie[] = [];
 
   //esta es la info que se muestra en el crud, y los campos (field donde se muestran(llamalos como en el modelo) ) y el (header el nombre del campo)
   columns: { field: string, header: string }[] = [
@@ -41,20 +43,21 @@ export class CategoriesComponent implements OnInit{
   showModal = false;
   isEditing = false;
 
-//constructor para importar el service y validar campos de formulario
+  //constructor para importar el service y validar campos de formulario
   constructor(
     //aqui se llama el categoria service y se le asigna a categorieService
     private categorieService: CategoriesService,
     private fb: FormBuilder,
     private confirmationService: AlertsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private validationService: ValidationService,
   ) {
     //aqui se llama la variable del form :) el el categorieForm
     this.categorieForm = this.fb.group({
       //estos son los campos que van a ser validados en formulario
       idCategoria: [null],
-      nombreCategoria: ['', Validators.required],
-      descripcionCategoria:"",
+      nombreCategoria: ['', this.validationService.getValidatorsForField('categories', 'nombreCategoria')],
+      descripcionCategoria: ['', this.validationService.getValidatorsForField('categories', 'descripcionCategoria')],
       estadoCategoria: [true]
     });
   }
@@ -67,11 +70,11 @@ export class CategoriesComponent implements OnInit{
   }
 
   //funcion inicializadora(todo lo de aqui se inicia de una)
-  ngOnInit(){
+  ngOnInit() {
     this.loadCategories();
   }
 
-//esta abre la modal de crear  y diferencia si se esta creando o editando
+  //esta abre la modal de crear  y diferencia si se esta creando o editando
   openCreateModal() {
     this.isEditing = false;
     this.categorieForm.reset({ estadoCategoria: true });
@@ -91,29 +94,48 @@ export class CategoriesComponent implements OnInit{
     this.categorieForm.reset();
   }
 
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.categorieForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  }
 
+  getErrorMessage(fieldName: string): string {
+    const control = this.categorieForm.get(fieldName);
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('categories', fieldName, errorKey);
+    }
+    return '';
+  }
+
+  private markFormFieldsAsTouched() {
+    Object.values(this.categorieForm.controls).forEach(control => control.markAsTouched());
+  }
 
   //funcion para guardar o actualizar una categoria
   saveCategorie() {
-    if (this.categorieForm.valid) {
-      //categoriadata guarda todo lo del form(informacion)
-      const categorieData = this.categorieForm.value;
-      //si es editing edita y se llama esa funcion si no entonces es crear y llama crear :)
-      const request = this.isEditing ?
-        this.categorieService.updateCategorie(categorieData) :
-        this.categorieService.createCategorie(categorieData);
 
-      request.subscribe({
-        next: () => {
-          this.loadCategories();
-          this.isEditing? this.toastr.success('Categoria actualizada exitosamente.', 'Éxito'):this.toastr.success('Categoria creada exitosamente.', 'Éxito');
-          this.closeModal();
-        },
-        error: (error) => console.error('Error al guardar la categoria:', error)
-      });
+    // Válida el formulario antes de enviarlo
+    if (this.categorieForm.invalid) {
+      this.markFormFieldsAsTouched();
+      return;
     }
-  }
+    //categorieData guarda la información del formulario
+    const categorieData = this.categorieForm.value;
+    //si es editing edita y se llama esa funcion si no entonces es crear y llama crear :)
+    const request = this.isEditing ?
+      this.categorieService.updateCategorie(categorieData) :
+      this.categorieService.createCategorie(categorieData);
 
+    request.subscribe({
+      next: () => {
+        this.loadCategories();
+        this.isEditing ? this.toastr.success('Categoria actualizada exitosamente.', 'Éxito') : this.toastr.success('Categoria creada exitosamente.', 'Éxito');
+        this.closeModal();
+      },
+      error: (error) => console.error('Error al guardar la categoria:', error)
+    });
+  }
 
   deleteCategorie(id: number) {
     //el suscribe es un tipo de try catch
@@ -136,29 +158,25 @@ export class CategoriesComponent implements OnInit{
     });
   }
 
-  confirmDelete(categorie:Categorie) {
+  confirmDelete(categorie: Categorie) {
     this.confirmationService.confirm(
       `¿Quieres eliminar la categoria: ${categorie.nombreCategoria}?`,
       () => this.deleteCategorie(categorie.idCategoria)
     );
   }
 
-  exportCategorie() { }
-
   searchCategorie(query: string) {
     const lowerCaseQuery = query.toLowerCase();
-  
+
     // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
     const isSearchingForTrue = lowerCaseQuery === 'true';
-  
+
     this.filteredCategories = this.categories.filter(categorie =>
       categorie.nombreCategoria?.toLowerCase().includes(lowerCaseQuery) ||
       categorie.descripcionCategoria?.toLowerCase().includes(lowerCaseQuery) ||
       categorie.estadoCategoria === isSearchingForTrue
     );
   }
-  
-  
 
-
+  exportCategorie() { }
 }

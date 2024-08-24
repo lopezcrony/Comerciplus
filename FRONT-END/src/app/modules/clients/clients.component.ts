@@ -1,7 +1,6 @@
 import { ClientService } from './clients.service';
 import { Client } from './client.model';
 import { ValidationService } from '../../shared/validators/validations.service';
-import { validationConfig, validationPatterns } from '../../shared/validators/validations.config';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
@@ -45,13 +44,10 @@ export class ClientsComponent implements OnInit {
   constructor(
     private clientService: ClientService,
     private fb: FormBuilder,
-    private confirmationService: AlertsService,
+    private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService
   ) {
-    this.validationService.setConfig(validationConfig);
-    this.validationService.setPatterns(validationPatterns);
-
     this.clientForm = this.fb.group({
       idCliente: [null],
       cedulaCliente: ['', this.validationService.getValidatorsForField('clients', 'cedulaCliente')],
@@ -92,61 +88,43 @@ export class ClientsComponent implements OnInit {
     this.clientForm.reset();
   }
 
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.clientForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  }  
+
   getErrorMessage(fieldName: string): string {
     const control = this.clientForm.get(fieldName);
     if (control?.errors) {
-      const firstErrorKey = Object.keys(control.errors)[0];
-      return this.validationService.getErrorMessage('clients', fieldName, firstErrorKey);
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('clients', fieldName, errorKey);
     }
     return '';
   }
 
+  private markFormFieldsAsTouched() {
+    Object.values(this.clientForm.controls).forEach(control => control.markAsTouched());
+  }
+
   saveClient() {
     if (this.clientForm.invalid) {
-      Object.keys(this.clientForm.controls).forEach(field => {
-        const control = this.clientForm.get(field);
-        control?.markAsTouched({ onlySelf: true });
-      });
+      this.markFormFieldsAsTouched();
       return;
     }
+
     const clientData = this.clientForm.value;
-    const request = this.isEditing ?
-      this.clientService.updateClient(clientData) :
-      this.clientService.createClient(clientData);
-  
+    const request = this.isEditing 
+      ? this.clientService.updateClient(clientData) 
+      : this.clientService.createClient(clientData);
+
     request.subscribe({
       next: () => {
         this.toastr.success('¡Cliente guardado con éxito!', 'Éxito');
         this.loadClients();
         this.closeModal();
       },
-      error: (error) => console.error('Error al guardar cliente:', error)
+      error: () => this.toastr.error('Error al guardar cliente', 'Error')
     });
-  }
-  
-
-  deleteClient(id: number) {
-    this.clientService.deleteClient(id).subscribe({
-      next: () => {
-        this.loadClients();
-        this.toastr.success('Cliente eliminado exitosamente.', 'Éxito');
-      },
-      error: (error) => {
-        console.error('Error al eliminar registro:', error);
-        if (error.status === 500 && error.error.mensagge.includes('Cannot delete or update a parent row')) {
-          this.toastr.error('No se puede eliminar el cliente porque tiene créditos asociados.', 'Error');
-        } else {
-          this.toastr.error('Ocurrió un error al eliminar el cliente.', 'Error');
-        }
-      }
-    });
-  }
-
-  confirmDelete(client: Client) {
-    this.confirmationService.confirm(
-      `¿Estás seguro de eliminar a ${client.nombreCliente} ${client.apellidoCliente}?`,
-      () => this.deleteClient(client.idCliente)
-    );
   }
 
   searchClients(query: string) {
@@ -157,6 +135,5 @@ export class ClientsComponent implements OnInit {
       client.telefonoCliente.toLowerCase().includes(query.toLowerCase())
     );
   }
-
   exportClients() { }
 }

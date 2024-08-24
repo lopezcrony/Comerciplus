@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 import { RolesService } from '../roles/roles.service';
 import { User } from './users.model';
 import { Roles } from '../roles/roles.model';
+import { ValidationService } from '../../shared/validators/validations.service';
 
 @Component({
   selector: 'app-users',
@@ -45,17 +46,18 @@ export class UsersComponent implements OnInit {
     private roleService: RolesService,
     private confirmationService: AlertsService,
     private fb: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private validationService: ValidationService,
   ) {
     this.userForm = this.fb.group({
       idUsuario: [null],
-      idRol: ['', Validators.required],
-      cedulaUsuario: ['', Validators.required],
-      nombreUsuario: [''],
-      apellidoUsuario: [''],
-      telefonoUsuario: [''],
-      correoUsuario: [''],
-      contraseñaUsuario: ['']
+      idRol: ['', validationService.getValidatorsForField('users', 'idRol')],
+      cedulaUsuario: ['', validationService.getValidatorsForField('users', 'cedulaUsuario')],
+      nombreUsuario: ['', validationService.getValidatorsForField('users', 'nombreUsuario')],
+      apellidoUsuario: ['', validationService.getValidatorsForField('users', 'apellidoUsuario')],
+      telefonoUsuario: ['', validationService.getValidatorsForField('users', 'telefonoUsuario')],
+      correoUsuario: ['', validationService.getValidatorsForField('users', 'correoUsuario')],
+      contraseñaUsuario: ['', validationService.getValidatorsForField('users', 'contraseñaUsuario')]
     });
   }
 
@@ -92,23 +94,49 @@ export class UsersComponent implements OnInit {
     this.showModal = true;
   }
 
-  saveUser() {
-    if (this.userForm.valid) {
-      const user: User = this.userForm.value;
-      if (this.isEditing) {
-        this.userService.updateUser(user).subscribe(() => {
-          this.toastr.success('Usuario actualizado exitosamente');
-          this.loadUsers();
-          this.closeModal();
-        });
-      } else {
-        this.userService.createUser(user).subscribe(() => {
-          this.toastr.success('Usuario creado exitosamente');
-          this.loadUsers();
-          this.closeModal();
-        });
-      }
+  closeModal() {
+    this.showModal = false;
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.userForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.userForm.get(fieldName);
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('users', fieldName, errorKey);
     }
+    return '';
+  }
+
+  private markFormFieldsAsTouched() {
+    Object.values(this.userForm.controls).forEach(control => control.markAsTouched());
+  }
+
+  saveUser() {
+
+    if (this.userForm.invalid) {
+      this.markFormFieldsAsTouched();
+      return;
+    }
+    const user: User = this.userForm.value;
+    if (this.isEditing) {
+      this.userService.updateUser(user).subscribe(() => {
+        this.toastr.success('Usuario actualizado exitosamente', 'Éxito');
+        this.loadUsers();
+        this.closeModal();
+      });
+    } else {
+      this.userService.createUser(user).subscribe(() => {
+        this.toastr.success('Usuario creado exitosamente', 'Éxito');
+        this.loadUsers();
+        this.closeModal();
+      });
+    }
+
   }
 
   confirmDelete(user: User) {
@@ -121,11 +149,6 @@ export class UsersComponent implements OnInit {
       })
 
     );
-  }
-
-
-  closeModal() {
-    this.showModal = false;
   }
 
   searchUser(query: string) {
