@@ -4,6 +4,7 @@
 [columns]="columns" 
 [canDelete]="true"
 [canExport]="false"
+[canSeeDetail]="true" 
 (create)="openCreateModal()" 
 (edit)="openEditModal($event)" 
 (delete)="confirmDelete($event)"
@@ -28,8 +29,8 @@
         </form>
     </ng-template>
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="closeModal()"></button>
-        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text"
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" (click)="closeModal()"></button>
+        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn"
             (click)="saveRole()"></button>
     </ng-template>
 </p-dialog>

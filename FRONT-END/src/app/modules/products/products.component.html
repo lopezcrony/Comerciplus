@@ -4,6 +4,7 @@
 [items]="filteredProducts" 
 [columns]="columns" 
 [canDelete]="true" 
+[canSeeDetail]="true" 
 (create)="openCreateModal()"
 (export)="exportProduct()" 
 (edit)="openEditModal($event)"
@@ -67,9 +68,9 @@
         </form>
     </ng-template>
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
             (click)="closeModal()"></button>
-        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text"
+        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn"
             (click)="saveProduct()"></button>
     </ng-template>
 </p-dialog>

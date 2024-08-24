@@ -59,3 +59,14 @@ html, body {
 .toast-message {
   font-size: 14px;
 }
+/* MODAL FORM */
+
+/* Botón Cancelar */
+/* .custom-cancel-btn {
+  color: rgba(129, 128, 128, 0.856)
+} */
+
+/* Botón de Guardar o Actualizar */
+.custom-save-btn {
+  color: rgb(56, 194, 56); 
+}

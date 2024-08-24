@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { ClientService } from './clients.service';
+import { Client } from './client.model';
+import { ValidationService } from '../../shared/validators/validations.service';
+import { validationConfig, validationPatterns } from '../../shared/validators/validations.config';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
-import { ClientService } from './clients.service';
-import { Client } from './client.model';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-clients',
@@ -16,8 +19,9 @@ import { Client } from './client.model';
   imports: [
     ...SHARED_IMPORTS,
     CRUDComponent,
-    CrudModalDirective
-    ],
+    CrudModalDirective,
+    FloatLabelModule
+  ],
   templateUrl: './clients.component.html'
 })
 
@@ -33,7 +37,7 @@ export class ClientsComponent implements OnInit {
     { field: 'telefonoCliente', header: 'Teléfono' },
     { field: 'estadoCliente', header: 'Estado' }
   ];
-  
+
   clientForm: FormGroup;
   showModal = false;
   isEditing = false;
@@ -42,24 +46,28 @@ export class ClientsComponent implements OnInit {
     private clientService: ClientService,
     private fb: FormBuilder,
     private confirmationService: AlertsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private validationService: ValidationService
   ) {
+    this.validationService.setConfig(validationConfig);
+    this.validationService.setPatterns(validationPatterns);
+
     this.clientForm = this.fb.group({
       idCliente: [null],
-      cedulaCliente: ['', Validators.required],
-      nombreCliente: ['', Validators.required],
-      apellidoCliente: ['', Validators.required],
-      direccionCliente: ['', Validators.required],
-      telefonoCliente: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(10)]],
+      cedulaCliente: ['', this.validationService.getValidatorsForField('clients', 'cedulaCliente')],
+      nombreCliente: ['', this.validationService.getValidatorsForField('clients', 'nombreCliente')],
+      apellidoCliente: ['', this.validationService.getValidatorsForField('clients', 'apellidoCliente')],
+      direccionCliente: ['', this.validationService.getValidatorsForField('clients', 'direccionCliente')],
+      telefonoCliente: ['', this.validationService.getValidatorsForField('clients', 'telefonoCliente')],
       estadoCliente: [true]
     });
   }
 
   loadClients() {
     this.clientService.getClients().subscribe(data => {
-        this.clients = data;
-        this.filteredClients = data;
-      },
+      this.clients = data;
+      this.filteredClients = data;
+    },
     );
   }
 
@@ -84,23 +92,38 @@ export class ClientsComponent implements OnInit {
     this.clientForm.reset();
   }
 
-  saveClient() {
-    if (this.clientForm.valid) {
-      const clientData = this.clientForm.value;
-      const request = this.isEditing ?
-        this.clientService.updateClient(clientData) :
-        this.clientService.createClient(clientData);
-
-      request.subscribe({
-        next: () => {
-          this.toastr.success('Cliente guardado con éxito!', 'Éxito');
-          this.loadClients();
-          this.closeModal();
-        },
-        error: (error) => console.error('Error al guardar cliente:', error)
-      });
+  getErrorMessage(fieldName: string): string {
+    const control = this.clientForm.get(fieldName);
+    if (control?.errors) {
+      const firstErrorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('clients', fieldName, firstErrorKey);
     }
+    return '';
   }
+
+  saveClient() {
+    if (this.clientForm.invalid) {
+      Object.keys(this.clientForm.controls).forEach(field => {
+        const control = this.clientForm.get(field);
+        control?.markAsTouched({ onlySelf: true });
+      });
+      return;
+    }
+    const clientData = this.clientForm.value;
+    const request = this.isEditing ?
+      this.clientService.updateClient(clientData) :
+      this.clientService.createClient(clientData);
+  
+    request.subscribe({
+      next: () => {
+        this.toastr.success('¡Cliente guardado con éxito!', 'Éxito');
+        this.loadClients();
+        this.closeModal();
+      },
+      error: (error) => console.error('Error al guardar cliente:', error)
+    });
+  }
+  
 
   deleteClient(id: number) {
     this.clientService.deleteClient(id).subscribe({

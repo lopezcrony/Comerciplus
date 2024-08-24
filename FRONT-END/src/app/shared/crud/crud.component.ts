@@ -23,6 +23,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 export class CRUDComponent {
 
   // Configuraciones de la tabla y permisos
+  @Input() canSeeDetail: boolean = true;
   @Input() canDelete: boolean = true;
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean=true;
@@ -38,7 +39,9 @@ export class CRUDComponent {
   @Output() export = new EventEmitter<void>();
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
+  @Output() deatil = new EventEmitter<any>();
   @Output() search = new EventEmitter<string>();
+
 
   // Parámetro de búsqueda
   searchQuery = '';
@@ -59,6 +62,10 @@ export class CRUDComponent {
     this.delete.emit(item);
   }
 
+  onDetail(item: any){
+    this.deatil.emit(item);
+  }
+  
   onSearch() {
     this.search.emit(this.searchQuery);
   }

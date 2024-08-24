@@ -9,6 +9,8 @@ import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { ProvidersService } from './providers.service';
 import { Proveedor } from './providers.model';
+import { ValidationService } from '../../shared/validators/validations.service';
+import { validationConfig, validationPatterns } from '../../shared/validators/validations.config';
 
 @Component({
   selector: 'app-providers',
@@ -42,13 +44,18 @@ export class ProvidersComponent implements OnInit {
     private providersService: ProvidersService,
     private fb: FormBuilder,
     private confirmationService: AlertsService,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private validationService: ValidationService
+  ) {
+    this.validationService.setConfig(validationConfig);
+    this.validationService.setPatterns(validationPatterns);
+
     this.providerForm = this.fb.group({
       idProveedor: [null],
-      nitProveedor: ['', Validators.required],
-      nombreProveedor: ['', Validators.required],
-      direccionProveedor: ['', Validators.required],
-      telefonoProveedor: ['', Validators.required],
+      nitProveedor: ['', this.validationService.getValidatorsForField('providers', 'nitProveedor')],
+      nombreProveedor: ['', this.validationService.getValidatorsForField('providers', 'nombreProveedor')],
+      direccionProveedor: ['', this.validationService.getValidatorsForField('providers', 'direccionProveedor')],
+      telefonoProveedor: ['', this.validationService.getValidatorsForField('providers', 'telefonoProveedor')],
       estadoProveedor: [true]
     });
   }
@@ -84,7 +91,14 @@ export class ProvidersComponent implements OnInit {
 
   // Crea o actualiza un proveedor
   saveProvider() {
-    if (this.providerForm.valid) {
+
+    if (this.providerForm.invalid) {
+      Object.keys(this.providerForm.controls).forEach(field => {
+        const control = this.providerForm.get(field);
+        control?.markAsTouched({ onlySelf: true });
+      });
+      return;
+    }
       const providerData = { ...this.providerForm.value, estadoProveedor: this.providerForm.value.estadoProveedor ?? true };
       const request = this.isEditing ?
         this.providersService.updateProvider(providerData) :
@@ -101,9 +115,15 @@ export class ProvidersComponent implements OnInit {
           this.toastr.error('Error al guardar proveedor. Inténtalo de nuevo.', 'Error');
         }
       });
-    } else {
-      this.toastr.warning('Por favor, completa todos los campos requeridos.', 'Advertencia');
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.providerForm.get(fieldName);
+    if (control?.errors) {
+      const firstErrorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('providers', fieldName, firstErrorKey);
     }
+    return '';
   }
 
   deleteProvider(id: number) {

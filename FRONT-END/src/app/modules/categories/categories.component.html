@@ -5,7 +5,8 @@
     [items]="filteredCategories"
     [columns]="columns" 
     [canDelete]="true" 
-    [canExport]="false" 
+    [canExport]="false"
+    [canSeeDetail]="false"  
     (create)="openCreateModal()"
     (export)="exportCategorie()" 
     (edit)="openEditModal($event)"
@@ -40,9 +41,9 @@
         </form>
     </ng-template>
     <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
             (click)="closeModal()"></button>
-        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text"
+        <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn"
             (click)="saveCategorie()"></button>
     </ng-template>
 </p-dialog>
