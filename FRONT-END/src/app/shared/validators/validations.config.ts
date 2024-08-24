@@ -3,10 +3,11 @@ import { ModuleValidationConfig, ValidationPatterns } from './validations.interf
 export const validationPatterns: ValidationPatterns = {
     // Validaciones generales
     onlyNumbers: /^[0-9]+$/, 
-    onlyLetters: /^[A-Za-zÀ-ÿñÑ\s]+$/,
+    onlyLetters: /^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/,
 
-    // validaciones especificas
+    // validaciones específicas
     cedula: /^[0-9]{5,10}$/,  
+    nit: /^[0-9]{9}$/, 
     telefono: /^[0-9]{7,10}$/,
   };
   
@@ -17,21 +18,22 @@ export const validationPatterns: ValidationPatterns = {
         name: 'cedulaCliente',
         rules: [
           { type: 'required', message: 'La cédula es obligatoria.' },
-          { type: 'pattern', value: 'cedula', message: 'Ingresa una cédula válida.' }
+          { type: 'pattern', value: 'cedula', message: 'Ingrese una cédula válida. (Mínimo 5 digitos)' }
+
         ]
       },
       {
         name: 'nombreCliente',
         rules: [
           { type: 'required', message: 'El nombre es obligatorio.' },
-          { type: 'pattern', value: 'onlyLetters', message: 'Ingresa un nombre válido.' }
+          { type: 'pattern', value: 'onlyLetters', message: 'Ingrese un nombre válido.' }
         ]
       },
       {
         name: 'apellidoCliente',
         rules: [
           { type: 'required', message: 'El apellido es obligatorio.' },
-          { type: 'pattern', value: 'onlyLetters', message: 'Ingresa un apellido válido.' }
+          { type: 'pattern', value: 'onlyLetters', message: 'Ingrese un apellido válido.' }
         ]
       },
       {
@@ -44,7 +46,7 @@ export const validationPatterns: ValidationPatterns = {
         name: 'telefonoCliente',
         rules: [
           { type: 'required', message: 'El teléfono es obligatorio.' },
-          { type: 'pattern', value: 'telefono', message: 'Ingresa un número de teléfono válido.' }
+          { type: 'pattern', value: 'telefono', message: 'Ingrese un número válido.  (Mínimo 7 dígitos.)' }
         ]
       }
     ],
@@ -54,14 +56,14 @@ export const validationPatterns: ValidationPatterns = {
         name: 'nitProveedor',
         rules: [
           { type: 'required', message: 'El NIT es obligatorio.' },
-          { type: 'pattern', value: 'onlyNumbers', message: 'Por favor ingresa un NIT válido.' }
+          { type: 'pattern', value: 'nit', message: 'Ingrese un NIT válido. (Mínimo 9 dígitos)' }
         ]
       },
       {
         name: 'nombreProveedor',
         rules: [
           { type: 'required', message: 'El nombre es obligatorio.' },
-          { type: 'pattern', value: 'onlyLetters', message: 'Por favor ingresa un nombre válido.' }
+          { type: 'pattern', value: 'onlyLetters', message: 'Ingrese un nombre válido.' }
         ]
       },
       {
@@ -74,7 +76,7 @@ export const validationPatterns: ValidationPatterns = {
         name: 'telefonoProveedor',
         rules: [
           { type: 'required', message: 'El teléfono es obligatorio.' },
-          { type: 'pattern', value: 'telefono', message: 'Ingresa un número de teléfono válido.' }
+          { type: 'pattern', value: 'telefono', message: 'Ingresa un número válido. (Mínimo 7 dígitos.)' }
         ]
       },
     ],

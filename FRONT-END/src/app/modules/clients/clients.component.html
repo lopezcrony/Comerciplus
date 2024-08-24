@@ -21,43 +21,43 @@
 
       <div class="field" [ngClass]="{'error': clientForm.get('cedulaCliente')?.invalid && clientForm.get('cedulaCliente')?.touched}">
         <label for="cedulaCliente">Cédula</label>
-        <input type="text" pInputText id="cedulaCliente" formControlName="cedulaCliente" maxlength="10" required autofocus />
-        <small class="p-error" *ngIf="clientForm.get('cedulaCliente')?.invalid && clientForm.get('cedulaCliente')?.touched">
+        <input type="text" pInputText id="cedulaCliente" formControlName="cedulaCliente" maxlength="15" required autofocus />
+        <small class="p-error" *ngIf="clientForm.get('cedulaCliente')?.invalid && clientForm.get('cedulaCliente')?.touched || clientForm.get('cedulaCliente')?.dirty">
           {{ getErrorMessage('cedulaCliente') }}
         </small>
       </div>
 
       <div class="field-group">
-        <div class="field">
+        <div class="field" [ngClass]="{'error': clientForm.get('nombreCliente')?.invalid && clientForm.get('nombreCliente')?.touched}">
           <label for="nombreCliente">Nombre</label>
-          <input type="text" pInputText id="nombreCliente" formControlName="nombreCliente" pattern="[A-Za-z\s]+" required />
-          <small class="p-error" *ngIf="clientForm.get('nombreCliente')?.invalid && clientForm.get('nombreCliente')?.touched">
+          <input type="text" pInputText id="nombreCliente" formControlName="nombreCliente" required />
+          <small class="p-error" *ngIf="clientForm.get('nombreCliente')?.invalid && clientForm.get('nombreCliente')?.touched || clientForm.get('nombreCliente')?.dirty">
             {{ getErrorMessage('nombreCliente') }}
           </small>
         </div>
 
-        <div class="field">
+        <div class="field" [ngClass]="{'error': clientForm.get('apellidoCliente')?.invalid && clientForm.get('apellidoCliente')?.touched}">
           <label for="apellidoCliente">Apellido</label>
-          <input type="text" pInputText id="apellidoCliente" formControlName="apellidoCliente" pattern="[A-Za-z\s]+" required />
-          <small class="p-error" *ngIf="clientForm.get('apellidoCliente')?.invalid && clientForm.get('apellidoCliente')?.touched">
+          <input type="text" pInputText id="apellidoCliente" formControlName="apellidoCliente" required />
+          <small class="p-error" *ngIf="clientForm.get('apellidoCliente')?.invalid && clientForm.get('apellidoCliente')?.touched || clientForm.get('apellidoCliente')?.dirty">
             {{ getErrorMessage('apellidoCliente') }}
           </small>
         </div>
       </div>
 
       <div class="field-group">
-        <div class="field">
+        <div class="field" [ngClass]="{'error': clientForm.get('direccionCliente')?.invalid && clientForm.get('direccionCliente')?.touched}">
           <label for="direccionCliente">Dirección</label>
           <input type="text" pInputText id="direccionCliente" formControlName="direccionCliente" required />
-          <small class="p-error" *ngIf="clientForm.get('direccionCliente')?.invalid && clientForm.get('direccionCliente')?.touched">
+          <small class="p-error" *ngIf="clientForm.get('direccionCliente')?.invalid && clientForm.get('direccionCliente')?.touched || clientForm.get('direccionCliente')?.dirty">
             {{ getErrorMessage('direccionCliente') }}
           </small>
         </div>
         
-        <div class="field">
+        <div class="field" [ngClass]="{'error': clientForm.get('telefonoCliente')?.invalid && clientForm.get('telefonoCliente')?.touched}">
           <label for="telefonoCliente">Teléfono</label>
-          <input type="text" pInputText id="telefonoCliente" formControlName="telefonoCliente"  pattern="[0-9]+" minlength="7" maxlength="10" required />
-          <small class="p-error" *ngIf="clientForm.get('telefonoCliente')?.invalid && clientForm.get('telefonoCliente')?.touched">
+          <input type="text" pInputText id="telefonoCliente" formControlName="telefonoCliente" minlength="7" maxlength="10" required />
+          <small class="p-error" *ngIf="clientForm.get('telefonoCliente')?.invalid && clientForm.get('telefonoCliente')?.touched || clientForm.get('telefonoCliente')?.dirty">
             {{ getErrorMessage('telefonoCliente') }}
           </small>
         </div>

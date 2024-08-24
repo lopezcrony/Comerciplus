@@ -20,21 +20,21 @@
     <form [formGroup]="providerForm">
       <div class="field-group">
         <div class="field"
-          [ngClass]="{'error': providerForm.get('nitProveedor')?.invalid && providerForm.get('nitProveedor')?.touched}">
+          [ngClass]="{'error': providerForm.get('nitProveedor')?.invalid && (providerForm.get('nitProveedor')?.touched || providerForm.get('nitProveedor')?.dirty)}">
           <label for="nitProveedor">NIT</label>
-          <input type="text" pInputText id="nitProveedor" formControlName="nitProveedor" maxlength="10" required autofocus />
+          <input type="text" pInputText id="nitProveedor" formControlName="nitProveedor" maxlength="9" required autofocus />
           <small class="p-error"
-            *ngIf="providerForm.get('nitProveedor')?.invalid && providerForm.get('nitProveedor')?.touched">
+            *ngIf="providerForm.get('nitProveedor')?.invalid && (providerForm.get('nitProveedor')?.touched || providerForm.get('nitProveedor')?.dirty)">
             {{ getErrorMessage('nitProveedor') }}
           </small>
         </div>
 
         <div class="field"
-          [ngClass]="{'error': providerForm.get('nombreProveedor')?.invalid && providerForm.get('nombreProveedor')?.touched}">
+          [ngClass]="{'error': providerForm.get('nombreProveedor')?.invalid && (providerForm.get('nombreProveedor')?.touched || providerForm.get('nombreProveedor')?.dirty)}">
           <label for="nombreProveedor">Nombre</label>
           <input type="text" pInputText id="nombreProveedor" formControlName="nombreProveedor" required autofocus />
           <small class="p-error"
-            *ngIf="providerForm.get('nombreProveedor')?.invalid && providerForm.get('nombreProveedor')?.touched">
+            *ngIf="providerForm.get('nombreProveedor')?.invalid && (providerForm.get('nombreProveedor')?.touched || providerForm.get('nombreProveedor')?.dirty)">
             {{ getErrorMessage('nombreProveedor') }}
           </small>
         </div>
@@ -42,33 +42,29 @@
 
       <div class="field-group">
         <div class="field"
-          [ngClass]="{'error': providerForm.get('direccionProveedor')?.invalid && providerForm.get('direccionProveedor')?.touched}">
+          [ngClass]="{'error': providerForm.get('direccionProveedor')?.invalid && (providerForm.get('direccionProveedor')?.touched || providerForm.get('direccionProveedor')?.dirty)}">
           <label for="direccionProveedor">Dirección</label>
-          <input type="text" pInputText id="direccionProveedor" formControlName="direccionProveedor" required
-            autofocus />
+          <input type="text" pInputText id="direccionProveedor" formControlName="direccionProveedor" required autofocus />
           <small class="p-error"
-            *ngIf="providerForm.get('direccionProveedor')?.invalid && providerForm.get('direccionProveedor')?.touched">
+            *ngIf="providerForm.get('direccionProveedor')?.invalid && (providerForm.get('direccionProveedor')?.touched || providerForm.get('direccionProveedor')?.dirty)">
             {{ getErrorMessage('direccionProveedor') }}
           </small>
         </div>
 
         <div class="field"
-          [ngClass]="{'error': providerForm.get('telefonoProveedor')?.invalid && providerForm.get('telefonoProveedor')?.touched}">
+          [ngClass]="{'error': providerForm.get('telefonoProveedor')?.invalid && (providerForm.get('telefonoProveedor')?.touched || providerForm.get('telefonoProveedor')?.dirty)}">
           <label for="telefonoProveedor">Teléfono</label>
           <input type="text" pInputText id="telefonoProveedor" formControlName="telefonoProveedor" maxlength="10" autofocus />
           <small class="p-error"
-            *ngIf="providerForm.get('telefonoProveedor')?.invalid && providerForm.get('telefonoProveedor')?.touched">
+            *ngIf="providerForm.get('telefonoProveedor')?.invalid && (providerForm.get('telefonoProveedor')?.touched || providerForm.get('telefonoProveedor')?.dirty)">
             {{ getErrorMessage('telefonoProveedor') }}
           </small>
         </div>
-
       </div>
-
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" (click)="closeModal()"></button>
-    <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn"
-      (click)="saveProvider()"></button>
+    <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn" (click)="saveProvider()"></button>
   </ng-template>
 </p-dialog>
