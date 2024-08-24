@@ -33,8 +33,7 @@ export class CategoriesComponent implements OnInit {
   //esta es la info que se muestra en el crud, y los campos (field donde se muestran(llamalos como en el modelo) ) y el (header el nombre del campo)
   columns: { field: string, header: string }[] = [
     { field: 'nombreCategoria', header: 'Nombre' },
-    { field: 'descripcionCategoria', header: 'Descripción' },
-    { field: 'estadoCategoria', header: 'Estado' }
+    { field: 'descripcionCategoria', header: 'Descripción' }  
   ];
 
   //aqui se define la variable del formulario
@@ -179,4 +178,24 @@ export class CategoriesComponent implements OnInit {
   }
 
   exportCategorie() { }
+
+  changeCategorieStatus(updatedCategorie: Categorie) {
+    const estadoCategoria = updatedCategorie.estadoCategoria ?? false;
+  
+    this.categorieService.updateStatusCategorie(updatedCategorie.idCategoria, estadoCategoria).subscribe({
+      next: () => {
+        [this.categories, this.filteredCategories].forEach(list => {
+          const index = list.findIndex(c => c.idCategoria === updatedCategorie.idCategoria);
+          if (index !== -1) {
+            list[index] = { ...list[index], ...updatedCategorie };
+          }
+        });
+        this.toastr.success('Estado actualizado con éxito', 'Éxito');
+      },
+      error: () => {
+        this.toastr.error('Error al actualizar el estado', 'Error');
+      }
+    });
+  } 
+
 }

@@ -23,7 +23,7 @@ export class ProvidersService {
   updateProvider(proveedor: Proveedor): Observable<Proveedor> {
     return this.http.put<Proveedor>(`${this.apiUrl}/${proveedor.idProveedor}`, proveedor);
   }
-  updateStatusProveedor(id:number, status: boolean):Observable<Proveedor> {
+  updateStatusProvider(id:number, status: boolean):Observable<Proveedor> {
     const body = { estadoProveedor: status };
 
     return this.http.patch<Proveedor>(`${this.apiUrl}/${id}`, body);

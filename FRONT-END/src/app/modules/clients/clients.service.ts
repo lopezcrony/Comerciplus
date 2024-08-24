@@ -41,9 +41,7 @@ export class ClientService {
   }
 
   updateStatusClient(id: number, status: boolean): Observable<Client> {
-    const body = { estadoCliente: status };
-    
-    return this.http.patch<Client>(`${this.apiUrl}/${id}`, body).pipe(
+    return this.http.patch<Client>(`${this.apiUrl}/${id}`, { estadoCliente: status }).pipe(
       catchError(this.handleError)
     );
   }

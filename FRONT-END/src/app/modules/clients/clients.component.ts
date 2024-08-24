@@ -2,7 +2,7 @@ import { ClientService } from './clients.service';
 import { Client } from './client.model';
 import { ValidationService } from '../../shared/validators/validations.service';
 
-import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
+import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
@@ -33,8 +33,7 @@ export class ClientsComponent implements OnInit {
     { field: 'cedulaCliente', header: 'Cédula' },
     { field: 'nombreCliente', header: 'Nombre' },
     { field: 'apellidoCliente', header: 'Apellido' },
-    { field: 'telefonoCliente', header: 'Teléfono' },
-    { field: 'estadoCliente', header: 'Estado' }
+    { field: 'telefonoCliente', header: 'Teléfono' }
   ];
 
   clientForm: FormGroup;
@@ -135,5 +134,26 @@ export class ClientsComponent implements OnInit {
       client.telefonoCliente.toLowerCase().includes(query.toLowerCase())
     );
   }
+
   exportClients() { }
+
+  changeClientStatus(updatedClient: Client) {
+    const estadoCliente = updatedClient.estadoCliente ?? false;
+  
+    this.clientService.updateStatusClient(updatedClient.idCliente, estadoCliente).subscribe({
+      next: () => {
+        [this.clients, this.filteredClients].forEach(list => {
+          const index = list.findIndex(c => c.idCliente === updatedClient.idCliente);
+          if (index !== -1) {
+            list[index] = { ...list[index], ...updatedClient };
+          }
+        });
+        this.toastr.success('Estado del cliente actualizado con éxito', 'Éxito');
+      },
+      error: () => {
+        this.toastr.error('Error al actualizar el estado del cliente', 'Error');
+      }
+    });
+  }  
+  
 }

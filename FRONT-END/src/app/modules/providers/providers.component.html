@@ -1,13 +1,19 @@
 <!-- PLANTILLA CRUD -->
-<app-crud [items]="filteredProviders" 
+<app-crud 
+  [items]="filteredProviders" 
   [columns]="columns" 
   [canDelete]="false"
   [canExport]="false" 
-  [canSeeDetail]="false" 
+  [canSeeDetail]="false"
+  [canChangeStatus]="true" 
+  [showStateColumn]="true"
+  [statusField]="'estadoProveedor'"
+
   (create)="openCreateModal()"
   (export)="exportProviders()" 
   (edit)="openEditModal($event)" 
-  (search)="searchProviders($event)">
+  (search)="searchProviders($event)"
+  (statusChange)="changeProviderStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->

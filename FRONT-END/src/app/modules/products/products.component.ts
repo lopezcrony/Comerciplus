@@ -39,8 +39,7 @@ export class ProductsComponent implements OnInit {
     { field: 'imagenProducto', header: 'Imágen' },
     { field: 'idCategoria', header: 'Categoría' },
     { field: 'precioVenta', header: 'Precio venta' },
-    { field: 'stock', header: 'Stock' },
-    { field: 'estadoProducto', header: 'Estado' }
+    { field: 'stock', header: 'Stock' }
   ];
 
   productForm: FormGroup;
@@ -203,5 +202,24 @@ export class ProductsComponent implements OnInit {
       return nombreProductoMatch || stockMatch;
     });
   }
+
+  changeProductStatus(updatedProduct: Product) {
+    const estadoProducto = updatedProduct.estadoProducto ?? false;
+  
+    this.productService.updateStatusProduct(updatedProduct.idProducto, estadoProducto).subscribe({
+      next: () => {
+        [this.products, this.filteredProducts].forEach(list => {
+          const index = list.findIndex(c => c.idProducto === updatedProduct.idProducto);
+          if (index !== -1) {
+            list[index] = { ...list[index], ...updatedProduct };
+          }
+        });
+        this.toastr.success('Estado actualizado con éxito', 'Éxito');
+      },
+      error: () => {
+        this.toastr.error('Error al actualizar el estado', 'Error');
+      }
+    });
+  } 
 
 }

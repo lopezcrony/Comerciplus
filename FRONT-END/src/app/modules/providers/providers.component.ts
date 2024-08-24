@@ -32,8 +32,7 @@ export class ProvidersComponent implements OnInit {
     { field: 'nitProveedor', header: 'NIT' },
     { field: 'nombreProveedor', header: 'Nombre' },
     { field: 'direccionProveedor', header: 'Dirección' },
-    { field: 'telefonoProveedor', header: 'Teléfono' },
-    { field: 'estadoProveedor', header: 'Estado' }
+    { field: 'telefonoProveedor', header: 'Teléfono' }
   ];
   providerForm: FormGroup;
   showModal = false;
@@ -137,6 +136,25 @@ export class ProvidersComponent implements OnInit {
       provider.telefonoProveedor.toLowerCase().includes(query.toLowerCase())
     );
   }
+
+  changeProviderStatus(updatedProvider: Proveedor) {
+    const estadoCliente = updatedProvider.estadoProveedor ?? false;
+  
+    this.providersService.updateStatusProvider(updatedProvider.idProveedor, estadoCliente).subscribe({
+      next: () => {
+        [this.providers, this.filteredProviders].forEach(list => {
+          const index = list.findIndex(p => p.idProveedor === updatedProvider.idProveedor);
+          if (index !== -1) {
+            list[index] = { ...list[index], ...updatedProvider };
+          }
+        });
+        this.toastr.success('Estado del proveedor actualizado con éxito', 'Éxito');
+      },
+      error: () => {
+        this.toastr.error('Error al actualizar el estado del proveedor', 'Error');
+      }
+    });
+  } 
 
   exportProviders() { }
 }

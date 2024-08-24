@@ -70,3 +70,16 @@ html, body {
 .custom-save-btn {
   color: rgb(56, 194, 56); 
 }
+
+
+/* Estilo para el toggle activado */
+.ui-togglebutton.ui-button-active {
+  background-color: #4caf50; /* Verde */
+  color: white; /* Texto blanco */
+}
+
+/* Estilo para el toggle desactivado */
+.ui-togglebutton {
+  background-color: #f44336; /* Rojo */
+  color: white; /* Texto blanco */
+}

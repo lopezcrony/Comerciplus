@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { IconFieldModule } from 'primeng/iconfield';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 @Component({
   selector: 'app-crud',
@@ -15,7 +16,8 @@ import { IconFieldModule } from 'primeng/iconfield';
     ButtonModule,
     InputTextModule,
     FormsModule,
-    IconFieldModule
+    IconFieldModule,
+    ToggleButtonModule
   ],
   templateUrl: './crud.component.html',
   styleUrl: './crud.component.css'
@@ -26,23 +28,25 @@ export class CRUDComponent {
   @Input() canSeeDetail: boolean = true;
   @Input() canDelete: boolean = true;
   @Input() canExport: boolean = true;
-  @Input() canEdit: boolean=true;
-  @Input() actions: boolean=true;
+  @Input() canEdit: boolean = true;
+  @Input() canChangeStatus: boolean = false;
+  @Input() showStateColumn: boolean = false;
+  @Input() actions: boolean = true;
 
   // Datos de entrada para la tabla
   @Input() items: any[] = [];
   @Input() columns: { field: string, header: string }[] = [];
+  @Input() statusField: string = 'estado';
 
- // Funciones del CRUD
+  // Funciones del CRUD
   @Output() create = new EventEmitter<void>();
   @Output() deleteAll = new EventEmitter<void>();
   @Output() export = new EventEmitter<void>();
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
   @Output() detail = new EventEmitter<any>();
-  @Output() status = new EventEmitter<any>()
+  @Output() statusChange = new EventEmitter<any>();
   @Output() search = new EventEmitter<string>();
-
 
   // Parámetro de búsqueda
   searchQuery = '';
@@ -63,7 +67,7 @@ export class CRUDComponent {
     this.delete.emit(item);
   }
 
-  onDetail(item: any){
+  onDetail(item: any) {
     this.detail.emit(item);
   }
   
@@ -76,4 +80,12 @@ export class CRUDComponent {
     this.onSearch();
   }
 
+  getEstado(item: any): boolean {
+    return item[this.statusField];
+  }
+
+  cambiarEstado(item: any) {
+    const updatedItem = { ...item, [this.statusField]: !item[this.statusField] };
+    this.statusChange.emit(updatedItem);
+  }
 }

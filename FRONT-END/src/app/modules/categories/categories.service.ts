@@ -44,9 +44,7 @@ export class CategoriesService {
   }
 
   updateStatusCategorie(id: number, status: boolean): Observable<Categorie> {
-    const body = { estadoCategoria: status };
-    
-    return this.http.patch<Categorie>(`${this.apiUrl}/${id}`, body).pipe(
+    return this.http.patch<Categorie>(`${this.apiUrl}/${id}`, { estadoCategoria: status }).pipe(
       catchError(this.handleError)
     );
   }

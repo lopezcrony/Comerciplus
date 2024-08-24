@@ -23,6 +23,7 @@
         <th *ngFor="let col of columns" [pSortableColumn]="col.field">
           {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
+        <th *ngIf="showStateColumn">Estado</th>
         <th *ngIf="actions">Acciones</th>
       </tr>
     </ng-template>
@@ -32,6 +33,12 @@
       <tr>
         <td *ngFor="let col of columns">
           {{item[col.field]}}
+        </td>
+        <td *ngIf="canChangeStatus">
+          <p-toggleButton [ngModel]="getEstado(item)" (onChange)="cambiarEstado(item)" onLabel="Activo"
+            offLabel="Inactivo">
+          </p-toggleButton>
+
         </td>
         <td>
           <div class="flex">

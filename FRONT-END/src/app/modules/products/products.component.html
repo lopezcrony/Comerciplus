@@ -5,11 +5,15 @@
 [columns]="columns" 
 [canDelete]="true" 
 [canSeeDetail]="true" 
+[canChangeStatus]="true"
+[showStateColumn]="true"
+[statusField]="'estadoProducto'"
 (create)="openCreateModal()"
 (export)="exportProduct()" 
 (edit)="openEditModal($event)"
 (delete)="confirmDelete($event)" 
-(search)="searchProduct($event)">
+(search)="searchProduct($event)"
+(statusChange)="changeProductStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->
