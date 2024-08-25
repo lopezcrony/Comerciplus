@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http'; // Importar HttpClient
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable } from 'rxjs';
 import { Proveedor } from './providers.model';
 import { environment } from '../../../environments/environment'; 
@@ -8,9 +8,9 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root' 
 })
 export class ProvidersService {
-  private apiUrl = `${environment.apiUrl}/proveedores`; // URL de la API
+  private apiUrl = `${environment.apiUrl}/proveedores`;
 
-  constructor(private http: HttpClient) { } // Inyectar HttpClient
+  constructor(private http: HttpClient) { }
 
   getAllProviders(): Observable<Proveedor[]> {
     return this.http.get<Proveedor[]>(this.apiUrl);
@@ -24,18 +24,10 @@ export class ProvidersService {
     return this.http.put<Proveedor>(`${this.apiUrl}/${proveedor.idProveedor}`, proveedor);
   }
   updateStatusProvider(id:number, status: boolean):Observable<Proveedor> {
-    const body = { estadoProveedor: status };
-
-    return this.http.patch<Proveedor>(`${this.apiUrl}/${id}`, body);
+    return this.http.patch<Proveedor>(`${this.apiUrl}/${id}`, { estadoProveedor: status });
   }
 
   deleteProvider(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
-
-  deleteProviders(ids: number[]): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/delete-multiple`, { ids });
-  }
-
- 
 }

@@ -46,7 +46,6 @@ export class ClientService {
     );
   }
   
-  // Método para eliminar un cliente
   deleteClient(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }  

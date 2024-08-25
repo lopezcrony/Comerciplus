@@ -1,7 +1,7 @@
 import { ClientService } from './clients.service';
 import { Client } from './client.model';
-import { ValidationService } from '../../shared/validators/validations.service';
 
+import { ValidationService } from '../../shared/validators/validations.service';
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';

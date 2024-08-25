@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { ProvidersService } from './providers.service';
+import { Proveedor } from './providers.model';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
-
-import { ProvidersService } from './providers.service';
-import { Proveedor } from './providers.model';
 import { ValidationService } from '../../shared/validators/validations.service';
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-providers',
@@ -110,7 +110,7 @@ export class ProvidersComponent implements OnInit {
       this.markFormFieldsAsTouched();
       return;
     }
-      const providerData = { ...this.providerForm.value, estadoProveedor: this.providerForm.value.estadoProveedor ?? true };
+      const providerData = this.providerForm.value
       const request = this.isEditing 
       ? this.providersService.updateProvider(providerData) 
       : this.providersService.createProvider(providerData);
