@@ -51,7 +51,7 @@ export class ProductsComponent implements OnInit {
   constructor(
     private productService: ProductsService,
     private fb: FormBuilder,
-    private confirmationService: AlertsService,
+    private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService,
   ) {
@@ -118,6 +118,10 @@ export class ProductsComponent implements OnInit {
   closeModal() {
     this.showModal = false;
     this.productForm.reset();
+  }
+
+  cancelModalMessage(){
+    this.alertsService.menssageCancel()
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -191,7 +195,7 @@ export class ProductsComponent implements OnInit {
 
 
   confirmDelete(product:Product) {
-    this.confirmationService.confirm(
+    this.alertsService.confirm(
       `¿Quieres eliminar el producto: ${product.nombreProducto}?`,
       () => this.deleteProduct(product.idProducto)
     );

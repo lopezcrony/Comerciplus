@@ -94,7 +94,7 @@
   </ng-template>
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
-      (click)="closeModal()"></button>
+      (click)="closeModal()" (click)="cancelModalMessage()"></button>
     <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check"
       class="p-button-text custom-save-btn" (click)="saveUser()"></button>
   </ng-template>
