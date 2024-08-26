@@ -43,18 +43,29 @@
             <!-- Modal for Adding Category -->
             <p-dialog header="Agregar Categoría" [modal]="true" [(visible)]="categoryModalVisible"
                 [style]="{width: '500px', minWidth: '300px'}">
-                <div class="p-fluid">
-                    <div class="field">
-                        <label for="nombreCategoria" class="font-bold">Nombre</label>
-                        <input id="nombreCategoria" type="text" pInputText formControlName="nombreCategoria"
-                            placeholder="Nombre de la categoría" />
-                    </div>
-                    <div class="field">
-                        <label for="descripcionCategoria" class="font-bold">Descripción</label>
-                        <input id="descripcionCategoria" type="text" pInputText formControlName="descripcionCategoria"
-                            placeholder="Descripción de la categoría" />
-                    </div>
-                </div>
+                <ng-template pTemplate="content">
+                    <form [formGroup]="categorieForm">
+                        <!-- pa mostrar los campos al frenta -->
+                        <div class="field-group">
+                            <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
+                                <label for="nombreCategoria">Nombre categoria</label>
+                                <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria" required
+                                    autofocus />
+                                <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
+                                    {{ getErrorMessage('nombreCategoria') }}
+                                </small>
+                            </div>
+            
+                            <div class="field" [ngClass]="{'error': isFieldInvalid('descripcionCategoria')}">
+                                <label for="descripcionCategoria">Descripcion</label>
+                                <input type="text" pInputText id="descripcionCategoria" formControlName="descripcionCategoria" />
+                                <small class="p-error" *ngIf="isFieldInvalid('descripcionCategoria')">
+                                    {{ getErrorMessage('descripcionCategoria') }}
+                                </small>
+                            </div>
+                        </div>
+                    </form>
+                </ng-template>
                 <ng-template pTemplate="footer">
                     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
                         (click)="categoryModalVisible = false"></button>
