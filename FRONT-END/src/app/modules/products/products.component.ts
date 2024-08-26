@@ -12,6 +12,7 @@ import { ProductsService} from "../products/products.service";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DropdownModule } from 'primeng/dropdown';
 import { ValidationService } from '../../shared/validators/validations.service';
+import { CategoriesService } from '../categories/categories.service';
 
 @Component({
   selector: 'app-products',
@@ -43,6 +44,7 @@ export class ProductsComponent implements OnInit {
   ];
 
   productForm: FormGroup;
+  categorieForm: FormGroup;
 
   showModal = false;
   isEditing = false;
@@ -50,6 +52,7 @@ export class ProductsComponent implements OnInit {
   //constructor para importar el service y validar campos de formulario
   constructor(
     private productService: ProductsService,
+    private categorieService: CategoriesService,
     private fb: FormBuilder,
     private confirmationService: AlertsService,
     private toastr: ToastrService,
@@ -64,6 +67,13 @@ export class ProductsComponent implements OnInit {
       precioVenta: ['', this.validationService.getValidatorsForField('products', 'precioVenta')],
       estadoProducto: [true],
     });
+    this.categorieForm = this.fb.group({
+      //validar categoría
+      idCategoria: [null],
+      nombreCategoria: ['', this.validationService.getValidatorsForField('categories', 'nombreCategoria')],
+      descripcionCategoria: ['', this.validationService.getValidatorsForField('categories', 'descripcionCategoria')],
+      estadoCategoria: [true]
+    });
   }
   
   categoryModalVisible: boolean = false;
@@ -74,10 +84,23 @@ export class ProductsComponent implements OnInit {
   }
 
   saveCategory() {
-      // Lógica para guardar la nueva categoría
-      // Ejemplo: this.categories.push(this.newCategory);
-      this.newCategory = { name: '', description: '' }; // Limpiar campos
-      this.categoryModalVisible = false;
+    if (this.categorieForm.invalid) {
+      this.markFormFieldsAsTouched();
+      return;
+    }
+    const categoriaData = this.categorieForm.value;
+    const request = this.categorieService.createCategorie(categoriaData);
+
+    request.subscribe({
+      next: () => {
+        this.toastr.success('Categoría creada exitosamente.', 'Éxito');
+        this.categoryModalVisible = false;
+        this.loadCategories();
+      },
+      error: (error) => { 
+        this.toastr.error(error.message, 'Error');}
+    });
+
   }
   
   loadProducts() {
@@ -157,16 +180,16 @@ export class ProductsComponent implements OnInit {
       request.subscribe({
         next: () => {
           this.loadProducts();
-          this.isEditing? this.toastr.success('Producto actualizado exitosamente.', 'Éxito'):this.toastr.success('Producto creado exitosamente.', 'Éxito');
+          this.isEditing
+          ? this.toastr.success('Producto actualizado exitosamente.', 'Éxito')
+          : this.toastr.success('Producto creado exitosamente.', 'Éxito');
           this.closeModal();
         },
         error: (error) => { 
           this.toastr.error(error.message, 'Error');
           console.error('Error al guardar el producto:', error);}
       });
-    
   }
-
 
   deleteProduct(id: number) {
     //el suscribe es un tipo de try catch
