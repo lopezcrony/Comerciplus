@@ -66,7 +66,20 @@ export class ProductsComponent implements OnInit {
     });
   }
   
+  categoryModalVisible: boolean = false;
+  newCategory = { name: '', description: '' };
 
+  showCategoryModal() {
+      this.categoryModalVisible = true;
+  }
+
+  saveCategory() {
+      // Lógica para guardar la nueva categoría
+      // Ejemplo: this.categories.push(this.newCategory);
+      this.newCategory = { name: '', description: '' }; // Limpiar campos
+      this.categoryModalVisible = false;
+  }
+  
   loadProducts() {
     this.productService.getAllProducts().subscribe(data => {
       this.products = data;

@@ -13,7 +13,7 @@ import { Categorie } from './categories.model';
 
 export class CategoriesService {
 //se define el api url
-  private apiUrl = `${environment.apiUrl}/categorias`; // Cambia esta URL por la de tu API
+  private apiUrl = `${environment.apiUrl}/categorias`; 
 
   //el client de http es el estandar para conectar la base de datos, no es nada del modulo de clientes
   constructor(private http:HttpClient) { }
