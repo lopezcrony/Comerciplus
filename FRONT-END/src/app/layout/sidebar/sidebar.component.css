@@ -99,3 +99,21 @@
   --active-text-color: #0056b3; /* Color de texto cuando el ítem está activo */
   --surface-overlay: #fff;
 }
+
+
+.submenu {
+  list-style-type: none;
+  padding-left: 15px;
+}
+
+.submenu li {
+  margin: 5px 0;
+}
+
+.submenu a {
+  color: #ddd;
+}
+
+.submenu a:hover {
+  color: #fff;
+}
