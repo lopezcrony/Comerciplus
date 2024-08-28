@@ -10,7 +10,10 @@ const Roles = sequelize.define('Roles', {
   },
   nombreRol: {
     type: DataTypes.STRING(100),
-    unique: true,
+    unique: {
+      name: 'unique_nombreRol', // Nombre del índice existente
+      msg: 'El nombre del rol debe ser único.'
+    },
     allowNull: false
   }
 }, {

@@ -14,10 +14,19 @@ export class ProductsService {
 
 
   private apiUrl=`${environment.apiUrl}/productos`;
+  private baseUrl = 'http://localhost:3006/uploads';
 
 
   constructor(private http:HttpClient) {}
 
+
+  uploadImage(file: File) {
+    const formData = new FormData();
+    formData.append('img', file); // Campo 'img'
+
+    return this.http.post<{ nombre: string }>(`${this.baseUrl}`, formData);
+  }
+  
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl).pipe(
       catchError(this.handleError)

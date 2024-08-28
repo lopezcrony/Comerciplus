@@ -30,7 +30,7 @@
                             optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="true"
                             [virtualScrollItemSize]="38" styleClass="w-full">
                         </p-dropdown>
-                        <button pButton pRipple type="button" icon="pi pi-plus" 
+                        <button pButton pRipple type="button" icon="pi pi-plus"
                             class="p-button p-button-success p-button-icon-only p-button-sm ml-2"
                             (click)="showCategoryModal()"></button>
                     </div>
@@ -39,6 +39,7 @@
                     </small>
                 </div>
             </div>
+
 
             <!-- Modal for Adding Category -->
             <p-dialog header="Agregar Categoría" [modal]="true" [(visible)]="categoryModalVisible"
@@ -49,16 +50,17 @@
                         <div class="field-group">
                             <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
                                 <label for="nombreCategoria">Nombre categoria</label>
-                                <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria" required
-                                    autofocus />
+                                <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria"
+                                    required autofocus />
                                 <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
                                     {{ getErrorMessage('nombreCategoria') }}
                                 </small>
                             </div>
-            
+
                             <div class="field" [ngClass]="{'error': isFieldInvalid('descripcionCategoria')}">
                                 <label for="descripcionCategoria">Descripcion</label>
-                                <input type="text" pInputText id="descripcionCategoria" formControlName="descripcionCategoria" />
+                                <input type="text" pInputText id="descripcionCategoria"
+                                    formControlName="descripcionCategoria" />
                                 <small class="p-error" *ngIf="isFieldInvalid('descripcionCategoria')">
                                     {{ getErrorMessage('descripcionCategoria') }}
                                 </small>
@@ -90,6 +92,20 @@
                     <input type="number" pInputText id="stock" formControlName="stock" />
                 </div>
             </div>
+
+
+            <div class="fiel-group">
+                <div class="field">
+                    <label for="precioVenta">Cargar imagen</label>
+                    <p-fileUpload mode="basic" chooseLabel="Subir" chooseIcon="pi pi-upload" name="imagenProducto"
+                        (onSelect)="onFileSelect($event)" accept="image/*" maxFileSize="1000000">
+                    </p-fileUpload>
+
+                </div>
+
+            </div>
+
+
         </form>
     </ng-template>
     <ng-template pTemplate="footer">
@@ -99,3 +115,4 @@
             class="p-button-text custom-save-btn" (click)="saveProduct()"></button>
     </ng-template>
 </p-dialog>
+

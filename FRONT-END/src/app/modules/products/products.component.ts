@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
+import { FileUploadModule } from 'primeng/fileupload';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { Product} from "../products/products.model";
@@ -22,7 +23,8 @@ import { CategoriesService } from '../categories/categories.service';
     CRUDComponent,
     CrudModalDirective,
     AutoCompleteModule,
-    DropdownModule
+    DropdownModule,
+    FileUploadModule
     ],
   templateUrl: './products.component.html',
 })
@@ -32,6 +34,7 @@ export class ProductsComponent implements OnInit {
 
 
   products:Product[]=[];
+  
   filteredProducts:Product[]=[];
   categories: any[] = []; 
 
@@ -45,9 +48,10 @@ export class ProductsComponent implements OnInit {
 
   productForm: FormGroup;
   categorieForm: FormGroup;
-
+  selectedFile: File | null = null;
   showModal = false;
   isEditing = false;
+  baseUrl = 'http://localhost:3006/uploads';
 
   //constructor para importar el service y validar campos de formulario
   constructor(
@@ -122,6 +126,7 @@ export class ProductsComponent implements OnInit {
     this.loadProducts();
     this.loadCategories(); 
   }
+
 
 //esta abre la modal de crear  y diferencia si se esta creando o editando
   openCreateModal() {
@@ -261,5 +266,38 @@ export class ProductsComponent implements OnInit {
       }
     });
   } 
+
+
+  // funciones para la carga de imagenes en productos
+
+
+  getImageUrl(productId: number): string {
+    return `http://localhost:3006/uploads/productos/${productId}`;
+  }
+
+
+  onFileSelect(event: any) {
+    const file: File = event.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.uploadImage();
+    }
+  }
+  
+  uploadImage() {
+    if (this.selectedFile) {
+      this.productService.uploadImage(this.selectedFile).subscribe({
+        next: (response) => {
+          // Guarda el nombre de la imagen en el formulario
+          this.productForm.patchValue({ imagenProducto: response.nombre });
+        },
+        error: (error) => {
+          this.toastr.error(error.message, 'Error');
+        }
+      });
+    }
+  }
+
+
 
 }
