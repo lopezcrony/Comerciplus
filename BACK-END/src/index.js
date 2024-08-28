@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
+const path = require('path');
+
+
 
 class Server{
 
@@ -14,6 +17,7 @@ class Server{
     };
 
     middlewares(){
+        this.app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
         //CORS
         this.app.use(cors());
         //Parseo a json
@@ -47,6 +51,8 @@ class Server{
         this.app.use('/compras', require('./routers/shopping.routers.js'));
         this.app.use('/detallecompras', require('./routers/shoppingdetails.routers.js'));
         this.app.use('/uploads', require('./routers/uploads.js'));
+        
+        
     };
 
     listen(){

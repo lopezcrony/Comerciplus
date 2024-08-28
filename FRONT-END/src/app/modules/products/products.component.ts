@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
+import { FileUploadModule } from 'primeng/fileupload';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { Product} from "../products/products.model";
@@ -12,6 +13,7 @@ import { ProductsService} from "../products/products.service";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DropdownModule } from 'primeng/dropdown';
 import { ValidationService } from '../../shared/validators/validations.service';
+import { CategoriesService } from '../categories/categories.service';
 
 @Component({
   selector: 'app-products',
@@ -21,7 +23,8 @@ import { ValidationService } from '../../shared/validators/validations.service';
     CRUDComponent,
     CrudModalDirective,
     AutoCompleteModule,
-    DropdownModule
+    DropdownModule,
+    FileUploadModule
     ],
   templateUrl: './products.component.html',
 })
@@ -31,6 +34,7 @@ export class ProductsComponent implements OnInit {
 
 
   products:Product[]=[];
+  
   filteredProducts:Product[]=[];
   categories: any[] = []; 
 
@@ -43,15 +47,18 @@ export class ProductsComponent implements OnInit {
   ];
 
   productForm: FormGroup;
-
+  categorieForm: FormGroup;
+  selectedFile: File | null = null;
   showModal = false;
   isEditing = false;
+  baseUrl = 'http://localhost:3006/uploads';
 
   //constructor para importar el service y validar campos de formulario
   constructor(
     private productService: ProductsService,
+    private categorieService: CategoriesService,
     private fb: FormBuilder,
-    private confirmationService: AlertsService,
+    private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService,
   ) {
@@ -64,9 +71,42 @@ export class ProductsComponent implements OnInit {
       precioVenta: ['', this.validationService.getValidatorsForField('products', 'precioVenta')],
       estadoProducto: [true],
     });
+    this.categorieForm = this.fb.group({
+      //validar categoría
+      idCategoria: [null],
+      nombreCategoria: ['', this.validationService.getValidatorsForField('categories', 'nombreCategoria')],
+      descripcionCategoria: ['', this.validationService.getValidatorsForField('categories', 'descripcionCategoria')],
+      estadoCategoria: [true]
+    });
   }
   
+  categoryModalVisible: boolean = false;
+  newCategory = { name: '', description: '' };
 
+  showCategoryModal() {
+      this.categoryModalVisible = true;
+  }
+
+  saveCategory() {
+    if (this.categorieForm.invalid) {
+      this.markFormFieldsAsTouched();
+      return;
+    }
+    const categoriaData = this.categorieForm.value;
+    const request = this.categorieService.createCategorie(categoriaData);
+
+    request.subscribe({
+      next: () => {
+        this.toastr.success('Categoría creada exitosamente.', 'Éxito');
+        this.categoryModalVisible = false;
+        this.loadCategories();
+      },
+      error: (error) => { 
+        this.toastr.error(error.message, 'Error');}
+    });
+
+  }
+  
   loadProducts() {
     this.productService.getAllProducts().subscribe(data => {
       this.products = data;
@@ -87,6 +127,7 @@ export class ProductsComponent implements OnInit {
     this.loadCategories(); 
   }
 
+
 //esta abre la modal de crear  y diferencia si se esta creando o editando
   openCreateModal() {
     this.isEditing = false;
@@ -105,6 +146,10 @@ export class ProductsComponent implements OnInit {
   closeModal() {
     this.showModal = false;
     this.productForm.reset();
+  }
+
+  cancelModalMessage(){
+    this.alertsService.menssageCancel()
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -144,16 +189,16 @@ export class ProductsComponent implements OnInit {
       request.subscribe({
         next: () => {
           this.loadProducts();
-          this.isEditing? this.toastr.success('Producto actualizado exitosamente.', 'Éxito'):this.toastr.success('Producto creado exitosamente.', 'Éxito');
+          this.isEditing
+          ? this.toastr.success('Producto actualizado exitosamente.', 'Éxito')
+          : this.toastr.success('Producto creado exitosamente.', 'Éxito');
           this.closeModal();
         },
         error: (error) => { 
           this.toastr.error(error.message, 'Error');
           console.error('Error al guardar el producto:', error);}
       });
-    
   }
-
 
   deleteProduct(id: number) {
     //el suscribe es un tipo de try catch
@@ -178,7 +223,7 @@ export class ProductsComponent implements OnInit {
 
 
   confirmDelete(product:Product) {
-    this.confirmationService.confirm(
+    this.alertsService.confirm(
       `¿Quieres eliminar el producto: ${product.nombreProducto}?`,
       () => this.deleteProduct(product.idProducto)
     );
@@ -221,5 +266,38 @@ export class ProductsComponent implements OnInit {
       }
     });
   } 
+
+
+  // funciones para la carga de imagenes en productos
+
+
+  getImageUrl(productId: number): string {
+    return `http://localhost:3006/uploads/productos/${productId}`;
+  }
+
+
+  onFileSelect(event: any) {
+    const file: File = event.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.uploadImage();
+    }
+  }
+  
+  uploadImage() {
+    if (this.selectedFile) {
+      this.productService.uploadImage(this.selectedFile).subscribe({
+        next: (response) => {
+          // Guarda el nombre de la imagen en el formulario
+          this.productForm.patchValue({ imagenProducto: response.nombre });
+        },
+        error: (error) => {
+          this.toastr.error(error.message, 'Error');
+        }
+      });
+    }
+  }
+
+
 
 }

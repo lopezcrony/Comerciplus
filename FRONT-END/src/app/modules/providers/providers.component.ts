@@ -73,7 +73,9 @@ export class ProvidersComponent implements OnInit {
     this.providerForm.reset({ estadoProveedor: true });
     this.showModal = true;
   }
-
+  cancelModalMessage(){
+    this.alertsService.menssageCancel()
+  }
   openEditModal(provider: Proveedor) {
     this.isEditing = true;
     this.providerForm.patchValue(provider);

@@ -26,4 +26,8 @@ export class AlertsService {
     });
   }
 
+
+  menssageCancel(){
+    this.toastr.info('Operación cancelada.');
+  }
 }
