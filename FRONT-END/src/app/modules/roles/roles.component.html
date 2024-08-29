@@ -1,14 +1,19 @@
 <!-- PLANTILLA CRUD -->
 <app-crud 
-[items]="roles" 
+[items]="filteredRoles" 
 [columns]="columns" 
-[canDelete]="true"
+[canDelete]="true" 
 [canExport]="false"
-[canSeeDetail]="true" 
-(create)="openCreateModal()" 
+[canSeeDetail]="false" 
+[canChangeStatus]="true"
+[showStateColumn]="true"
+[statusField]="'estadoRol'"
+(create)="openCreateModal()"
+(export)="exportRoles()" 
 (edit)="openEditModal($event)" 
 (delete)="confirmDelete($event)"
-(search)="searchRoles($event)">
+(search)="searchRoles($event)"
+(statusChange)="changeRoleStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->

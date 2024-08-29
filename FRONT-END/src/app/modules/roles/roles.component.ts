@@ -1,5 +1,5 @@
 import { RolesService } from './roles.service';
-import { Roles } from './roles.model';
+import { Role } from './roles.model';
 import { ValidationService } from '../../shared/validators/validations.service';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
@@ -25,7 +25,8 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class RolesComponent implements OnInit {
 
-  roles: Roles[] = [];
+  filteredRoles: Role[] = [];
+  roles: Role[] = [];
   columns = [
     { field: 'nombreRol', header: 'Nombre' }
   ];
@@ -34,7 +35,7 @@ export class RolesComponent implements OnInit {
   isEditing = false;
 
   constructor(
-    private rolesService: RolesService,
+    private roleService: RolesService,
     private alertsService: AlertsService,
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -42,7 +43,8 @@ export class RolesComponent implements OnInit {
   ) {
     this.rolesForm = this.fb.group({
       idRol: [null],
-      nombreRol: ['', this.validationService.getValidatorsForField('roles','nombreRol')]
+      nombreRol: ['', this.validationService.getValidatorsForField('roles','nombreRol')],
+      estadoRol: [true]
     });
   }
 
@@ -51,18 +53,21 @@ export class RolesComponent implements OnInit {
   }
 
   loadRoles() {
-    this.rolesService.getAllRoles().subscribe(data => {
+    this.roleService.getAllRoles().subscribe(data => {
+      console.log('Roles cargados:', data);
       this.roles = data;
+      this.filteredRoles = data;
+      console.log('Roles filtrados:', this.filteredRoles);
     });
   }
 
   openCreateModal() {
     this.isEditing = false;
-    this.rolesForm.reset();
+    this.rolesForm.reset({ estadoRol: true });
     this.showModal = true;
   }
 
-  openEditModal(roles: Roles) {
+  openEditModal(roles: Role) {
     this.isEditing = true;
     this.rolesForm.patchValue(roles);
     this.showModal = true;
@@ -97,8 +102,8 @@ export class RolesComponent implements OnInit {
 
     const roleData = this.rolesForm.value;
     const request = this.isEditing 
-      ? this.rolesService.updateRoles(roleData) 
-      : this.rolesService.createRoles(roleData);
+      ? this.roleService.updateRoles(roleData) 
+      : this.roleService.createRoles(roleData);
 
     request.subscribe({
       next: () => {
@@ -110,13 +115,16 @@ export class RolesComponent implements OnInit {
     });
   }
 
-  confirmDelete(roles: Roles) {
-    if (confirm('¿Está seguro de que desea eliminar este rol?')) {
-      this.rolesService.deleteRoles(roles.idRol).subscribe(() => {
-        this.toastr.success('Rol eliminado exitosamente');
+  confirmDelete(role: Role) {
+    this.alertsService.confirm(
+      `¿Estás seguro de eliminar a ${role.nombreRol} ?`,
+      () => this.roleService.deleteRoles(role.idRol).subscribe(() => {
+        this.toastr.success('Usuario eliminado exitosamente', 'Éxito');
         this.loadRoles();
-      });
-    }
+
+      })
+
+    );
   }
 
   closeModal() {
@@ -128,4 +136,27 @@ export class RolesComponent implements OnInit {
       roles.nombreRol.toLowerCase().includes(query.toLowerCase())
     );
   }
+
+  exportRoles() { }
+
+  changeRoleStatus(updatedRole: Role) {
+    const estadoRol = updatedRole.estadoRol ?? false;
+  
+    this.roleService.updateStatusRole(updatedRole.idRol, estadoRol).subscribe({
+      next: () => {
+        [this.roles, this.filteredRoles].forEach(list => {
+          const index = list.findIndex(c => c.idRol === updatedRole.idRol);
+          if (index !== -1) {
+            list[index] = { ...list[index], ...updatedRole };
+          }
+        });
+        this.toastr.success('Estado del rol actualizado con éxito', 'Éxito');
+      },
+      error: () => {
+        this.toastr.error('Error al actualizar el estado del rol', 'Error');
+      }
+    });
+  }  
+  
 }
+

@@ -11,7 +11,7 @@ import { CrudModalDirective } from '../../shared/directives/crud-modal.directive
 import { UsersService } from './users.service';
 import { RolesService } from '../roles/roles.service';
 import { User } from './users.model';
-import { Roles } from '../roles/roles.model';
+import { Role } from '../roles/roles.model';
 import { ValidationService } from '../../shared/validators/validations.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
 
@@ -30,7 +30,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 export class UsersComponent implements OnInit {
   users: User[] = [];
   filteredUsers: User[] = [];
-  roles: Roles[] = [];
+  roles: Role[] = [];
   columns = [
     { field: 'cedulaUsuario', header: 'Cédula' },
     { field: 'nombreUsuario', header: 'Nombre' },
