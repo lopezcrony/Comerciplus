@@ -13,6 +13,7 @@ import { RolesService } from '../roles/roles.service';
 import { User } from './users.model';
 import { Roles } from '../roles/roles.model';
 import { ValidationService } from '../../shared/validators/validations.service';
+import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-users',
@@ -22,8 +23,9 @@ import { ValidationService } from '../../shared/validators/validations.service';
     ...SHARED_IMPORTS,
     CRUDComponent,
     CrudModalDirective,
-    DropdownModule
-  ]
+    DropdownModule,
+    FloatLabelModule
+  ],
 })
 export class UsersComponent implements OnInit {
   users: User[] = [];
@@ -57,7 +59,8 @@ export class UsersComponent implements OnInit {
       apellidoUsuario: ['', validationService.getValidatorsForField('users', 'apellidoUsuario')],
       telefonoUsuario: ['', validationService.getValidatorsForField('users', 'telefonoUsuario')],
       correoUsuario: ['', validationService.getValidatorsForField('users', 'correoUsuario')],
-      contraseñaUsuario: ['', validationService.getValidatorsForField('users', 'contraseñaUsuario')]
+      contraseñaUsuario: ['', validationService.getValidatorsForField('users', 'contraseñaUsuario')],
+      estadoUsuario: [true]
     });
   }
 
@@ -84,7 +87,7 @@ export class UsersComponent implements OnInit {
 
   openCreateModal() {
     this.isEditing = false;
-    this.userForm.reset();
+    this.userForm.reset({ estadoUsuario: true });
     this.showModal = true;
   }
 
@@ -158,4 +161,26 @@ export class UsersComponent implements OnInit {
       user.apellidoUsuario.toLowerCase().includes(query.toLowerCase())
     );
   }
+
+  exportUsers() { }
+
+  changeUserStatus(updatedUser: User) {
+    const estadoUsuario = updatedUser.estadoUsuario ?? false;
+  
+    this.userService.updateStatusUser(updatedUser.idUsuario, estadoUsuario).subscribe({
+      next: () => {
+        [this.users, this.filteredUsers].forEach(list => {
+          const index = list.findIndex(c => c.idUsuario === updatedUser.idUsuario);
+          if (index !== -1) {
+            list[index] = { ...list[index], ...updatedUser };
+          }
+        });
+        this.toastr.success('Estado del usuario actualizado con éxito', 'Éxito');
+      },
+      error: () => {
+        this.toastr.error('Error al actualizar el estado del usuario', 'Error');
+      }
+    });
+  }  
+  
 }

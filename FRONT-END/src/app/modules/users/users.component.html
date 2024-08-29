@@ -1,13 +1,19 @@
 <!-- PLANTILLA CRUD -->
-<app-crud [items]="filteredUsers" 
+<app-crud 
+[items]="filteredUsers" 
 [columns]="columns" 
 [canDelete]="true" 
 [canExport]="false"
 [canSeeDetail]="false" 
+[canChangeStatus]="true"
+[showStateColumn]="true"
+[statusField]="'estadoUsuario'"
 (create)="openCreateModal()"
+(export)="exportUsers()" 
 (edit)="openEditModal($event)" 
 (delete)="confirmDelete($event)"
-(search)="searchUser($event)">
+(search)="searchUser($event)"
+(statusChange)="changeUserStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->
@@ -58,7 +64,7 @@
 
       <div class="field" [ngClass]="{'error': isFieldInvalid('telefonoUsuario')}">
         <label for="telefonoUsuario">Teléfono</label>
-        <input type="text" maxlength="8" pInputText id="telefonoUsuario" formControlName="telefonoUsuario" />
+        <input type="text" maxlength="10" pInputText id="telefonoUsuario" formControlName="telefonoUsuario" />
         <small class="p-error" *ngIf="isFieldInvalid('telefonoUsuario')">
           {{ getErrorMessage('telefonoUsuario') }}
         </small>
@@ -83,7 +89,7 @@
 
         <div class="field">
           <label for="contraseñaUsuario">Confirmar contraseña</label>
-          <input type="password" pInputText id="contraseñaUsuario" formControlName="contraseñaUsuario" required />
+          <input type="password" pInputText id="confirmarClave" formControlName="contraseñaUsuario" required />
           <small class="p-error" *ngIf="isFieldInvalid('contraseñaUsuario')">
             {{ getErrorMessage('contraseñaUsuario') }}
           </small>

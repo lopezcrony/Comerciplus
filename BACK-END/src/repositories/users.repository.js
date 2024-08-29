@@ -30,7 +30,7 @@ const updateOneUser = async (id, userData) => {
 
 const updateUserStatus = async (id, status) => {
 
-  const user = await findUserById(id);
+  const user = await getOneUser(id);
   if (user) {
       return await user.update({estadoUsuario : status});
   }
