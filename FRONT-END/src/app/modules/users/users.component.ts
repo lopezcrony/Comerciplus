@@ -46,7 +46,7 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UsersService,
     private roleService: RolesService,
-    private confirmationService: AlertsService,
+    private alertsService: AlertsService,
     private fb: FormBuilder,
     private toastr: ToastrService,
     private validationService: ValidationService,
@@ -97,6 +97,10 @@ export class UsersComponent implements OnInit {
     this.showModal = true;
   }
 
+  cancelModalMessage(){
+    this.alertsService.menssageCancel()
+  }
+
   closeModal() {
     this.showModal = false;
   }
@@ -143,7 +147,7 @@ export class UsersComponent implements OnInit {
   }
 
   confirmDelete(user: User) {
-    this.confirmationService.confirm(
+    this.alertsService.confirm(
       `¿Estás seguro de eliminar a ${user.nombreUsuario} ${user.apellidoUsuario}?`,
       () => this.userService.deleteUser(user.idUsuario).subscribe(() => {
         this.toastr.success('Usuario eliminado exitosamente', 'Éxito');

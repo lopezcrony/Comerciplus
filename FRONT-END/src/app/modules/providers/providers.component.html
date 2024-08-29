@@ -8,7 +8,6 @@
   [canChangeStatus]="true" 
   [showStateColumn]="true"
   [statusField]="'estadoProveedor'"
-
   (create)="openCreateModal()"
   (export)="exportProviders()" 
   (edit)="openEditModal($event)" 
@@ -70,7 +69,7 @@
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" (click)="closeModal()"></button>
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" (click)="closeModal()" (click)="cancelModalMessage()"></button>
     <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn" (click)="saveProvider()"></button>
   </ng-template>
 </p-dialog>

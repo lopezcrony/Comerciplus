@@ -70,7 +70,7 @@
   </ng-template>
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" 
-            (click)="closeModal()" aria-label="Cancelar"></button>
+            (click)="closeModal()" (click)="cancelModalMessage()" aria-label="Cancelar"></button>
     <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" 
             class="p-button-text custom-save-btn" (click)="saveClient()" aria-label="Guardar"></button>
   </ng-template>

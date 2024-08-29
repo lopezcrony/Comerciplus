@@ -47,7 +47,7 @@ export class CategoriesComponent implements OnInit {
     //aqui se llama el categoria service y se le asigna a categorieService
     private categorieService: CategoriesService,
     private fb: FormBuilder,
-    private confirmationService: AlertsService,
+    private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService,
   ) {
@@ -91,6 +91,10 @@ export class CategoriesComponent implements OnInit {
   closeModal() {
     this.showModal = false;
     this.categorieForm.reset();
+  }
+
+  cancelModalMessage(){
+    this.alertsService.menssageCancel()
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -158,7 +162,7 @@ export class CategoriesComponent implements OnInit {
   }
 
   confirmDelete(categorie: Categorie) {
-    this.confirmationService.confirm(
+    this.alertsService.confirm(
       `¿Quieres eliminar la categoria: ${categorie.nombreCategoria}?`,
       () => this.deleteCategorie(categorie.idCategoria)
     );

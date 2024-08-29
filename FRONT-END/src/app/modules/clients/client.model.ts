@@ -1,4 +1,3 @@
-// cliente.model.ts
 export interface Client {
   idCliente: number;
   cedulaCliente: string;

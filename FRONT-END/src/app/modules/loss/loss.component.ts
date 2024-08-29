@@ -41,7 +41,7 @@ export class LossComponent implements OnInit {
   constructor(
     private lossService: LossService,
     private fb: FormBuilder,
-    private confirmationService: AlertsService,
+    private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService,
   ) {

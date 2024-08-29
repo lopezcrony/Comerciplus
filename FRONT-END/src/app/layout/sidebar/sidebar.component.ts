@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { CommonModule} from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+// import {TopbarComponent} from '../topbar/topbar.component'
 
 @Component({
   selector: 'app-sidebar',
@@ -25,5 +26,13 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   ],
 })
 export class SidebarComponent {
+[x: string]: any;
   @Input() isSidebarVisible = false;
+
+  @Input() isSubmenuOpen: boolean = false;
+
+  // Método para cambiar el estado del submenu
+  toggleSubmenu() {
+    this.isSubmenuOpen = !this.isSubmenuOpen;
+  }
 }

@@ -1,19 +1,9 @@
 <!-- PLANTILLA CRUD -->
 <!-- aqui se llaman  las funciones definidas en el component.ts -->
-<app-crud 
-[items]="filteredProducts" 
-[columns]="columns" 
-[canDelete]="true" 
-[canSeeDetail]="true" 
-[canChangeStatus]="true"
-[showStateColumn]="true"
-[statusField]="'estadoProducto'"
-(create)="openCreateModal()"
-(export)="exportProduct()" 
-(edit)="openEditModal($event)"
-(delete)="confirmDelete($event)" 
-(search)="searchProduct($event)"
-(statusChange)="changeProductStatus($event)">
+<app-crud [items]="filteredProducts" [columns]="columns" [canDelete]="true" [canSeeDetail]="true"
+    [canChangeStatus]="true" [showStateColumn]="true" [statusField]="'estadoProducto'" (create)="openCreateModal()"
+    (export)="exportProduct()" (edit)="openEditModal($event)" (delete)="confirmDelete($event)"
+    (search)="searchProduct($event)" (statusChange)="changeProductStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->
@@ -22,29 +12,71 @@
     [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveProduct()" (cancel)="closeModal()">
     <ng-template pTemplate="content">
         <form [formGroup]="productForm">
-            
-            <!-- pa mostrar los campos al frenta -->
-            <div class="field-group">
-                <div class="field" [ngClass]="{'error': isFieldInvalid('nombreProducto')}">
-                    <label for="nombreProducto">Nombre Producto</label>
-                    <input type="text" pInputText id="nombreProducto" formControlName="nombreProducto" required
-                        autofocus />
-                    <small class="p-error" *ngIf="isFieldInvalid('nombreProducto')">
-                        {{ getErrorMessage('nombreProducto') }}
-                    </small>
-                </div>
 
+            <div class="field" [ngClass]="{'error': isFieldInvalid('nombreProducto')}">
+                <label for="nombreProducto">Nombre Producto</label>
+                <input type="text" pInputText id="nombreProducto" formControlName="nombreProducto" required autofocus />
+                <small class="p-error" *ngIf="isFieldInvalid('nombreProducto')">
+                    {{ getErrorMessage('nombreProducto') }}
+                </small>
+            </div>
+            <!-- pa mostrar los campos al frente -->
+
+            <div class="field-group">
                 <div class="field" [ngClass]="{'error': isFieldInvalid('idCategoria')}">
                     <label for="categoria">Categoría</label>
-                    <p-dropdown [options]="categories" formControlName="idCategoria" optionLabel="nombreCategoria"
-                        optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="true"
-                        [virtualScrollItemSize]="38">
-                    </p-dropdown>
+                    <div class="p-inputgroup">
+                        <p-dropdown [options]="categories" formControlName="idCategoria" optionLabel="nombreCategoria"
+                            optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="true"
+                            [virtualScrollItemSize]="38" styleClass="w-full">
+                        </p-dropdown>
+                        <button pButton pRipple type="button" icon="pi pi-plus"
+                            class="p-button p-button-success p-button-icon-only p-button-sm ml-2"
+                            (click)="showCategoryModal()"></button>
+                    </div>
                     <small class="p-error" *ngIf="isFieldInvalid('idCategoria')">
                         {{ getErrorMessage('idCategoria') }}
                     </small>
                 </div>
             </div>
+
+
+            <!-- Modal for Adding Category -->
+            <p-dialog header="Agregar Categoría" [modal]="true" [(visible)]="categoryModalVisible"
+                [style]="{width: '500px', minWidth: '300px'}">
+                <ng-template pTemplate="content">
+                    <form [formGroup]="categorieForm">
+                        <!-- pa mostrar los campos al frenta -->
+                        <div class="field-group">
+                            <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
+                                <label for="nombreCategoria">Nombre categoria</label>
+                                <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria"
+                                    required autofocus />
+                                <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
+                                    {{ getErrorMessage('nombreCategoria') }}
+                                </small>
+                            </div>
+
+                            <div class="field" [ngClass]="{'error': isFieldInvalid('descripcionCategoria')}">
+                                <label for="descripcionCategoria">Descripcion</label>
+                                <input type="text" pInputText id="descripcionCategoria"
+                                    formControlName="descripcionCategoria" />
+                                <small class="p-error" *ngIf="isFieldInvalid('descripcionCategoria')">
+                                    {{ getErrorMessage('descripcionCategoria') }}
+                                </small>
+                            </div>
+                        </div>
+                    </form>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                        (click)="categoryModalVisible = false"></button>
+                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                        (click)="saveCategory()"></button>
+                </ng-template>
+            </p-dialog>
+
+
 
             <div class="field-group">
                 <div class="field" [ngClass]="{'error': isFieldInvalid('precioVenta')}">
@@ -60,12 +92,27 @@
                     <input type="number" pInputText id="stock" formControlName="stock" />
                 </div>
             </div>
+
+
+            <div class="fiel-group">
+                <div class="field">
+                    <label for="precioVenta">Cargar imagen</label>
+                    <p-fileUpload mode="basic" chooseLabel="Subir" chooseIcon="pi pi-upload" name="imagenProducto"
+                        (onSelect)="onFileSelect($event)" accept="image/*" maxFileSize="1000000">
+                    </p-fileUpload>
+
+                </div>
+
+            </div>
+
+
         </form>
     </ng-template>
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
-            (click)="closeModal()"></button>
+            (click)="closeModal()" (click)="cancelModalMessage()"></button>
         <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check"
             class="p-button-text custom-save-btn" (click)="saveProduct()"></button>
     </ng-template>
 </p-dialog>
+
