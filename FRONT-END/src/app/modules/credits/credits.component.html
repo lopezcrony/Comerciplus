@@ -1,1 +1,24 @@
-<p>credits works!</p>
+<!-- PLANTILLA CRUD -->
+<app-crud 
+  [items]="filteredCredits" 
+  [columns]="columns" 
+  [canDelete]="false"
+  [canExport]="true" 
+  [canSeeDetail]="true"
+  [canCreate] = "false"
+  [canChangeStatus]="false"
+  [showStateColumn]="false"
+
+  (export)="exportCredits()" 
+  (search)="searchCredits($event)"
+>
+</app-crud>
+
+<!--   
+  (edit)="openEditModal($event)"
+
+(create)="openCreateModal()
+[statusField]="'estadoCliente'"
+(statusChange)="changeClientStatus($event)"
+  "
+    -->

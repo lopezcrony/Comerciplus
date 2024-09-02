@@ -59,7 +59,7 @@ export class ClientsComponent implements OnInit {
   }
 
   loadClients() {
-    this.clientService.getClients().subscribe(data => {
+    this.clientService.getAllClients().subscribe(data => {
       this.clients = data;
       this.filteredClients = data;
     },

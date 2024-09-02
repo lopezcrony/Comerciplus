@@ -1,7 +1,7 @@
 <div class="card">
   <div class="flex justify-between mb-3 items-center">
     <div class="flex space-x-2">
-      <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success" (click)="onCreate()"></button>
+      <button *ngIf="canCreate" pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success" (click)="onCreate()"></button>
     </div>
     <div class="relative ml-auto flex items-center space-x-2">
       <button *ngIf="canExport" pButton pRipple label="Exportar" icon="pi pi-download" class="p-button-help"
