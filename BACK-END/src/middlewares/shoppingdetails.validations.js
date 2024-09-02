@@ -3,7 +3,7 @@ const { body, validationResult } = require('express-validator');
 const validateShoppingDetail = [
     body('codigoBarra')
         .notEmpty().withMessage('Se requiere el código de barras')
-        .isString().withMessage('El código de barras debe ser una cadena de caracteres'),
+        .isString().withMessage('El código de barras debe ser una cadena de carácteres'),
 
     body('cantidadProducto')
         .notEmpty().withMessage('La cantidad de producto es obligatoria')

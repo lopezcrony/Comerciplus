@@ -26,11 +26,14 @@ export class CRUDComponent {
 
   // Configuraciones de la tabla y permisos
   @Input() canSeeDetail: boolean = true;
+  @Input() canCreate: boolean = true;
   @Input() canDelete: boolean = true;
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean = true;
   @Input() canChangeStatus: boolean = false;
+  @Input() canInstallment: boolean = false;
   @Input() showStateColumn: boolean = false;
+  @Input() creditColumn: boolean = false;
   @Input() actions: boolean = true;
 
   // Datos de entrada para la tabla
@@ -45,6 +48,7 @@ export class CRUDComponent {
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
   @Output() detail = new EventEmitter<any>();
+  @Output() installment = new EventEmitter<any>();
   @Output() statusChange = new EventEmitter<any>();
   @Output() search = new EventEmitter<string>();
 
@@ -69,6 +73,10 @@ export class CRUDComponent {
 
   onDetail(item: any) {
     this.detail.emit(item);
+  }
+
+  onInstallment(item: any){
+    this.installment.emit(item);
   }
   
   onSearch() {

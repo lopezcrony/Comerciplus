@@ -39,6 +39,19 @@ const updateShoppingStatus  = async (id, status) => {
     }
 }
 
+
+const deleteOneShopping = async (id) => {
+    try {
+        const result = await shoppingRepository.deleteShopping(id);
+        if (result === 0) {
+            throw new Error('Compra no encontrada');
+        }
+        return result;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const updateValorCompra = async (id,newValorCompra) => {
     try {
         const result =  shoppingRepository.updateValorShopping(id,newValorCompra);
@@ -57,5 +70,6 @@ module.exports = {
     getOneShopping,
     createShopping,
     updateShoppingStatus,
+    deleteOneShopping,
     updateValorCompra
 };

@@ -14,7 +14,7 @@ export class ProductsService {
 
 
   private apiUrl=`${environment.apiUrl}/productos`;
-  private baseUrl = 'http://localhost:3006/uploads';
+  private baseUrl = `${environment.apiUrl}/uploads`;
 
 
   constructor(private http:HttpClient) {}

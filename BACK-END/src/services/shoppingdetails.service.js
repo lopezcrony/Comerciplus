@@ -1,4 +1,8 @@
 const shoppingDetailRepository = require('../repositories/shoppingdetails.repository');
+const barcodeRepository = require('../repositories/Barcode.repository');
+const productRepository = require('../repositories/products.repository');
+const shoppingRepository = require('../repositories/shopping.repository');
+const { sequelize } = require('../config/db');
 
 const getAllShoppingDetails = async () => {
     try {
@@ -17,7 +21,13 @@ const getOneShoppingDetail = async (id) => {
 };
 
 const createShoppingDetail = async (shoppingdetailData) => {
+    const transaction = await sequelize.transaction();
     try {
+
+        const shopping = await shoppingRepository.findShoppingById(shoppingdetailData.idCompra, { transaction });
+        if(!shopping) throw new Error('SERVICE: No se encontró la compra.');
+
+
         const existingDetail = await shoppingDetailRepository.findShoppingDetailByCompraAndProducto(
             shoppingdetailData.idCompra, 
             shoppingdetailData.idProducto,
@@ -27,10 +37,29 @@ const createShoppingDetail = async (shoppingdetailData) => {
         if (existingDetail) {
             throw new Error('Ya existe un detalle de compra con este producto y código de barra para la misma compra.');
         }
+        const newShoppingDetail = await shoppingDetailRepository.createShoppingDetail(shoppingdetailData,{ transaction });
+        const newBarCode = {
+            idProducto:newShoppingDetail.idProducto,
+            codigoBarra:newShoppingDetail.codigoBarra,
+        }
 
-        return await shoppingDetailRepository.createShoppingDetail(shoppingdetailData);
+        const subtotal = shoppingdetailData.cantidadProducto * shoppingdetailData.precioCompraUnidad;
+        // Se actualiza / incrementa el valor total de la compra
+        shopping.valorCompra += subtotal;
+        await shopping.save({ transaction })
+
+        await barcodeRepository.createBarcode(newBarCode,{ transaction });
+        product = await productRepository.findProductById(newBarCode.idProducto)
+        // Se actualiza el stock del producto
+        const newStock = product.stock + shoppingdetailData.cantidadProducto;
+        await productRepository.updateProductoStock(product.idProducto, newStock, { transaction });
+
+        await transaction.commit();
+        return newShoppingDetail;
     } catch (error) {
-        throw error;
+          //Deshace todo
+        await transaction.rollback();
+        throw new Error('SERVICE:' + error.message);
     }
 };
 

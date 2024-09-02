@@ -28,7 +28,10 @@ const Compra = sequelize.define('Compra', {
     numeroFactura: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        unique: true,
+        unique: {
+            name: 'unique_numeroFactura', // Nombre del índice existente
+            msg: 'El numero de la factura debe ser único.'
+          },
     },
     valorCompra: {
         type: DataTypes.FLOAT,

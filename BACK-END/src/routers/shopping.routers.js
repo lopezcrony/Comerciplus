@@ -8,6 +8,7 @@ router
     .get('/', shoppingController.getAllShoppings)
     .get('/:id', shoppingController.getOneShopping)
     .post('/', validateShopping, shoppingController.createShopping)
+    .delete('/:id', shoppingController.deleteOneShopping)
     .patch('/:id', shoppingController.updateShoppingStatus)
 
 module.exports = router;

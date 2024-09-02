@@ -16,7 +16,7 @@ export class ClientService {
 
   constructor(private http: HttpClient) { }
 
-  getClients(): Observable<Client[]> {
+  getAllClients(): Observable<Client[]> {
     return this.http.get<Client[]>(this.apiUrl).pipe(
       catchError(this.handleError)
     );

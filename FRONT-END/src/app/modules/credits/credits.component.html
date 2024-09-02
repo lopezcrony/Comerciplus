@@ -1,1 +1,21 @@
-<p>credits works!</p>
+<!-- PLANTILLA CRUD -->
+<app-crud 
+  [items]="filteredCredits" 
+  [columns]="columns" 
+
+  [canEdit]="false"
+  [canExport]="true" 
+  [canCreate]="false"
+  [canDelete]="false"
+  [canSeeDetail]="true"
+  [canInstallment]="true"
+  [canChangeStatus]="false"
+
+  [showStateColumn]="false"
+  [creditColumn]="true"
+  [actions]="false"
+
+  (export)="exportCredits()" 
+  (search)="searchCredits($event)"
+>
+</app-crud>

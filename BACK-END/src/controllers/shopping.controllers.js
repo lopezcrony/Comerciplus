@@ -27,6 +27,18 @@ const createShopping = async (req, res) => {
     }
 };
 
+const deleteOneShopping = async (req, res) => {
+    try {
+        const shopping = await shoppingService.deleteOneShopping(req.params.id);
+        if(shopping){
+        res.json({ message: 'Compra eliminada con éxito.' });
+        }
+    } catch (error) {
+        res.status(500).json({mensagge : 'CONTROLLER:', error: error.message });
+    }
+};
+
+
 
 
 const updateShoppingStatus  = async (req, res) => {
@@ -55,5 +67,6 @@ module.exports = {
     getAllShoppings,
     getOneShopping,
     createShopping,
+    deleteOneShopping,
     updateShoppingStatus
 }
