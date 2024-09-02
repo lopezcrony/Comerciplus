@@ -1,11 +1,24 @@
 const User = require('../models/users.model');
 
+// const getAllUsers = async () => {
+//   return await User.findAll();
+// };
+
+// const getOneUser = async (id) => {
+//   return await User.findByPk(id);
+// };
+
 const getAllUsers = async () => {
-  return await User.findAll();
+  return await User.findAll({
+    attributes: { exclude: ['contraseñaUsuario'] }
+  });
 };
 
+
 const getOneUser = async (id) => {
-  return await User.findByPk(id);
+  return await User.findByPk(id, {
+    attributes: { exclude: ['contraseñaUsuario'] }
+  });
 };
 
 const createNewUser = async (user) => {
