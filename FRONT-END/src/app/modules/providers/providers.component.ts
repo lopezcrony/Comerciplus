@@ -64,6 +64,8 @@ export class ProvidersComponent implements OnInit {
     });
   }
 
+  
+
   ngOnInit() {
     this.loadProviders();
   }

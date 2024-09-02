@@ -9,6 +9,7 @@ import { ProductsComponent } from './modules/products/products.component';
 import { RolesComponent } from './modules/roles/roles.component';
 import {SalesComponent} from './modules/sales/sales.component'
 import {ReturnProviderComponent} from './modules/return-provider/return-provider.component'
+import { ReturnSaleComponent } from './modules/return-sale/return-sale.component';
 
 
 export const routes: Routes = [
@@ -23,6 +24,7 @@ export const routes: Routes = [
       { path: 'loss', component: LossComponent},
       { path: 'sales', component: SalesComponent},
       { path: 'returProvider', component: ReturnProviderComponent},
+      {path: 'returnSale', component: ReturnSaleComponent},
 
 
 
