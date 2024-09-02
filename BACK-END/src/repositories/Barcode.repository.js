@@ -4,6 +4,10 @@ const findAllBarcodesByProduct = async (idProduct) => {
     return await Barcode.findAll({where:{idProducto:idProduct}});
 };
 
+const findBarcodeByCode = async (codigo) => {
+    return await Barcode.findOne({ where: { codigoBarra: codigo } });
+};
+
 const findBarcodeById = async (id) => {
     return await Barcode.findByPk(id);
 };
@@ -18,9 +22,6 @@ const updateBarcode = async (id, barcodeData) => {
         return await Barcode.update(barcodeData);
     }
     throw new Error('Código no encontrado');
-};
-const findBarcodeByCode = async (codigo) => {
-    return await Barcode.findOne({ where: { codigoBarra: codigo } });
 };
 
 const deleteBarcode = async (id) => {
@@ -37,5 +38,5 @@ module.exports = {
     createBarcode,
     updateBarcode,
     deleteBarcode,
-    findBarcodeByCode,
+    findBarcodeByCode
 };

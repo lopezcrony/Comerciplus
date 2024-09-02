@@ -15,6 +15,10 @@ const Roles = sequelize.define('Roles', {
       msg: 'El nombre del rol debe ser único.'
     },
     allowNull: false
+  },
+  estadoRol: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
   }
 }, {
   tableName: 'roles',

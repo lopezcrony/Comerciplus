@@ -9,7 +9,20 @@
     <li class="item" routerLink="/providers"><a>Proveedores</a></li>
     <li class="item" routerLink="/clients"><a>Clientes</a></li>
 
-    <li class="item" routerLink="/loss"><a>Pérdidas</a></li>
+    <li class="item" routerLink="/sales"><a>Ventas</a></li>
+
+    <li class="item" routerLink="/credits"><a>Créditos</a></li>
+
+    <li>
+      <a (click)="toggleSubmenu()">Devoluciones </a>
+      <!-- Submenu que se despliega cuando isSubmenuOpen es true -->
+      <ul *ngIf="isSubmenuOpen" class="submenu">
+        <li routerLink="/loss"><a>Pérdidas</a></li>
+        <li  routerLink="/returProvider"><a>Proveeedor</a></li>
+        <li><a>Venta</a></li>
+      </ul>
+    </li>
+
 
     <li class="item" routerLink="/categories"><a>Categorías productos</a></li>
     <li class="item" routerLink="/products"><a>Productos</a></li>

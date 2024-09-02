@@ -26,6 +26,7 @@ export class CRUDComponent {
 
   // Configuraciones de la tabla y permisos
   @Input() canSeeDetail: boolean = true;
+  @Input() canCreate: boolean = true;
   @Input() canDelete: boolean = true;
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean = true;

@@ -24,10 +24,25 @@ const createReturnLoss = async (ReturnLossData) => {
     
     try {
 
-        
-        // Se valida que exista el codigo de barras
-        const barCode = await barCodeRepository.findBarcodeById(ReturnLossData.idCodigoBarra, { transaction });
+        const barCode= await barCodeRepository.findBarcodeByCode(ReturnLossData.CodigoProducto, {transaction})
+
         if (!barCode) throw new Error('SERVICE: No se encontró el código de barras.');
+
+        if(barCode){
+            const IdCode=barCode.idCodigoBarra
+            ReturnLossData.idCodigoBarra=IdCode
+        }
+        // Se valida que exista el codigo de barras
+        // const barCode = await barCodeRepository.findBarcodeById(ReturnLossData.codigoBarra, { transaction });
+        // // const Code = await barCodeRepository.findBarcodeById(ReturnLossData.codigoBarra, { transaction });
+
+        // // if(Code){
+            
+        // // }
+
+        // if (!barCode) throw new Error('SERVICE: No se encontró el código de barras.');
+
+
 
         //  Se valida que exista el producto utilizando el ID del producto del código de barras
         const product = await productRepository.findProductById(barCode.idProducto, { transaction });
@@ -36,8 +51,7 @@ const createReturnLoss = async (ReturnLossData) => {
         // const CodigoPerdida=getAllReturnLoss(ReturnLossData.idCodigoBarra)
 
         if (barCode) {
-            const Codigo = barCode.codigoBarra; 
-
+            const Codigo = barCode.codigoBarra;
             ReturnLossData.CodigoProducto = Codigo;
         }
 

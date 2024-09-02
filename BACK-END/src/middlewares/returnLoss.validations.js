@@ -2,10 +2,7 @@ const { body, validationResult } = require('express-validator');
 
 // Validaciones para el modelo returnLoss
 const validateReturnLoss = [
-    body('idCodigoBarra')
-        .notEmpty().withMessage('El id del código de barra es obligatorio')
-        .isInt({ min: 1 }).withMessage('El id del código de barra debe ser un número entero positivo'),
-
+   
     body('cantidad')
         .notEmpty().withMessage('La cantidad es obligatoria')
         .isInt({ min: 1 }).withMessage('La cantidad debe ser un número entero mayor o igual a 1'),

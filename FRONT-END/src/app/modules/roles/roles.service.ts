@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { Roles } from './roles.model';
+import { Role } from './roles.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,26 +13,32 @@ export class RolesService {
 
   constructor(private http: HttpClient) { }
 
-  getAllRoles(): Observable<Roles[]> {
-    return this.http.get<Roles[]>(this.apiUrl).pipe(
+  getAllRoles(): Observable<Role[]> {
+    return this.http.get<Role[]>(this.apiUrl).pipe(
       catchError(this.handleError)
     );
   }
 
-  getOneRoles(id: number): Observable<Roles> {
-    return this.http.get<Roles>(`${this.apiUrl}/${id}`).pipe(
+  getOneRole(id: number): Observable<Role> {
+    return this.http.get<Role>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  createRoles(roles: Roles): Observable<Roles> {
-    return this.http.post<Roles>(this.apiUrl, roles).pipe(
+  createRoles(roles: Role): Observable<Role> {
+    return this.http.post<Role>(this.apiUrl, roles).pipe(
       catchError(this.handleError)
     );
   }
 
-  updateRoles(roles: Roles): Observable<Roles> {
-    return this.http.put<Roles>(`${this.apiUrl}/${roles.idRol}`, roles).pipe(
+  updateRoles(roles: Role): Observable<Role> {
+    return this.http.put<Role>(`${this.apiUrl}/${roles.idRol}`, roles).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateStatusRole(id: number, status: boolean): Observable<Role> {
+    return this.http.patch<Role>(`${this.apiUrl}/${id}`, { estadoRol: status }).pipe(
       catchError(this.handleError)
     );
   }
