@@ -32,18 +32,7 @@ const createReturnLoss = async (ReturnLossData) => {
             const IdCode=barCode.idCodigoBarra
             ReturnLossData.idCodigoBarra=IdCode
         }
-        // Se valida que exista el codigo de barras
-        // const barCode = await barCodeRepository.findBarcodeById(ReturnLossData.codigoBarra, { transaction });
-        // // const Code = await barCodeRepository.findBarcodeById(ReturnLossData.codigoBarra, { transaction });
-
-        // // if(Code){
-            
-        // // }
-
-        // if (!barCode) throw new Error('SERVICE: No se encontró el código de barras.');
-
-
-
+        
         //  Se valida que exista el producto utilizando el ID del producto del código de barras
         const product = await productRepository.findProductById(barCode.idProducto, { transaction });
         if (!product) throw new Error('SERVICE: Producto no encontrado.');

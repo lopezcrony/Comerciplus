@@ -19,7 +19,7 @@ const returnProvider = sequelize.define('returnProvider', {
     },
     NombreProveedor:{
         type:DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     idCodigoBarra: {
         type: DataTypes.INTEGER,
@@ -31,7 +31,7 @@ const returnProvider = sequelize.define('returnProvider', {
     },
     CodigoProducto:{
         type:DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
     },
     cantidad: {
         type: DataTypes.INTEGER,
@@ -39,6 +39,11 @@ const returnProvider = sequelize.define('returnProvider', {
         validate: {
             min: 0
         }
+    },
+    fecha:{
+        type: DataTypes.DATE,
+        allowNull:false,
+        defaultValue: DataTypes.NOW
     },
     motivoDevolucion: {
         type: DataTypes.STRING(100),
