@@ -1,7 +1,8 @@
 <div class="card">
   <div class="flex justify-between mb-3 items-center">
     <div class="flex space-x-2">
-      <button *ngIf="canCreate" pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success" (click)="onCreate()"></button>
+      <button *ngIf="canCreate" pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success"
+        (click)="onCreate()"></button>
     </div>
     <div class="relative ml-auto flex items-center space-x-2">
       <button *ngIf="canExport" pButton pRipple label="Exportar" icon="pi pi-download" class="p-button-help"
@@ -24,6 +25,8 @@
           {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
         <th *ngIf="showStateColumn">Estado</th>
+        <th *ngIf="creditColumn">Abonar</th>
+        <th *ngIf="creditColumn">Historial</th>
         <th *ngIf="actions">Acciones</th>
       </tr>
     </ng-template>
@@ -34,12 +37,18 @@
         <td *ngFor="let col of columns">
           {{item[col.field]}}
         </td>
+
+        <td *ngIf="canInstallment">
+          <button *ngIf="canInstallment" pButton pRipple icon="pi pi-money-bill"
+            class="p-button-rounded p-button-success mr-2" (click)="onInstallment(item)"></button>
+        </td>
+
         <td *ngIf="canChangeStatus">
           <p-toggleButton [ngModel]="getEstado(item)" (onChange)="cambiarEstado(item)" onLabel="Activo"
             offLabel="Inactivo">
           </p-toggleButton>
-
         </td>
+
         <td>
           <div class="flex">
             <button *ngIf="canEdit" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"

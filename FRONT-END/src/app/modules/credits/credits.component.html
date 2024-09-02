@@ -2,23 +2,20 @@
 <app-crud 
   [items]="filteredCredits" 
   [columns]="columns" 
-  [canDelete]="false"
+
+  [canEdit]="false"
   [canExport]="true" 
+  [canCreate]="false"
+  [canDelete]="false"
   [canSeeDetail]="true"
-  [canCreate] = "false"
+  [canInstallment]="true"
   [canChangeStatus]="false"
+
   [showStateColumn]="false"
+  [creditColumn]="true"
+  [actions]="false"
 
   (export)="exportCredits()" 
   (search)="searchCredits($event)"
 >
 </app-crud>
-
-<!--   
-  (edit)="openEditModal($event)"
-
-(create)="openCreateModal()
-[statusField]="'estadoCliente'"
-(statusChange)="changeClientStatus($event)"
-  "
-    -->
