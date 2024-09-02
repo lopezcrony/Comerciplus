@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
+const CodigoBarra = require('./Barcode.model');
 
 const returnProvider = sequelize.define('returnProvider', {
     idDevolucionLocal: {
@@ -16,6 +17,10 @@ const returnProvider = sequelize.define('returnProvider', {
             key: 'idProveedor'
         }
     },
+    NombreProveedor:{
+        type:DataTypes.STRING,
+        allowNull: true,
+    },
     idCodigoBarra: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -23,6 +28,10 @@ const returnProvider = sequelize.define('returnProvider', {
             model: 'codigoBarras',
             key: 'idCodigoBarra'
         }
+    },
+    CodigoProducto:{
+        type:DataTypes.INTEGER,
+        allowNull: true,
     },
     cantidad: {
         type: DataTypes.INTEGER,
