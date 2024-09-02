@@ -3,7 +3,7 @@ const BarcodeController = require("../controllers/Barcode.controllers");
 const router = Router();
 
 router
-    .get('/', BarcodeController.getAllBarcodesByProduct)
+    .get('/:idProducto', BarcodeController.getAllBarcodesByProduct)
     .get('/:id', BarcodeController.getOneBarcode)
     .post('/', BarcodeController.createBarcode)
     .put('/:id', BarcodeController.updateBarcode)

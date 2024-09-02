@@ -20,6 +20,13 @@ const updateValorShopping = async (id, newTotalShopping) => {
     throw new Error('REPOSITORY: La compra no existe.');
 };
 
+const deleteShopping = async (id) => {
+    const result = await Shopping.destroy({
+        where: { 	idCompra : id }
+    });
+    return result;
+};
+
 const updateShoppingStatus = async (id, status) => {
     const shopping = await findProductById(id);
     if (shopping) {
@@ -33,6 +40,7 @@ module.exports = {
     findAllShoppings,
     findShoppingById,
     createShopping,
+    deleteShopping,
     updateValorShopping,
     updateShoppingStatus
 };

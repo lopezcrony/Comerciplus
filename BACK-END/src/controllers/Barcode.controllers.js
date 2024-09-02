@@ -2,7 +2,8 @@ const barcodeService = require('../services/Barcode.service')
 
 const getAllBarcodesByProduct = async (req, res) => {
     try {
-        const barcode = await barcodeService.getAllBarcodesByProduct();
+        const { idProducto } = req.params;
+        const barcode = await barcodeService.getAllBarcodesByProduct(idProducto);
         res.status(200).json(barcode);
     } catch (error) {
         res.status(500).json({ message: 'CONTROLLER: Error al obtener el codigo', error });

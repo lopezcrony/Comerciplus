@@ -10,7 +10,10 @@ const Permissions = sequelize.define('Permissions', {
     },
     nombrePermiso: {
         type: DataTypes.STRING(100),
-        unique: true,
+        unique: {
+            name: 'unique_nombrePermiso', // Nombre del índice existente
+            msg: 'El nombre del permiso debe ser único.'
+        },
         allowNull: false
     }
 }, {
