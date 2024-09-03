@@ -2,20 +2,90 @@
 <app-crud 
   [items]="filteredCredits" 
   [columns]="columns" 
-
-  [canEdit]="false"
+  [canEdit]="false" 
   [canExport]="true" 
-  [canCreate]="false"
-  [canDelete]="false"
-  [canSeeDetail]="true"
-  [canInstallment]="true"
-  [canChangeStatus]="false"
-
-  [showStateColumn]="false"
-  [creditColumn]="true"
-  [actions]="false"
-
+  [canCreate]="false" 
+  [canDelete]="false" 
+  [canSeeDetail]="true" 
+  [canInstallment]="true" 
+  [canChangeStatus]="false" 
+  [showStateColumn]="false" 
+  [creditColumn]="true" 
+  [actions]="false" 
+  (installment)="openModal($event)" 
+  (detail)="openHistoryModal($event)"
   (export)="exportCredits()" 
-  (search)="searchCredits($event)"
->
+  (search)="searchCredits($event)">
+  
+  <!-- Agrega esta plantilla para los botones de acción -->
+  <ng-template pTemplate="body" let-credit>
+    <td>
+      <button pButton pRipple icon="pi pi-money-bill" class="p-button-rounded p-button-success mr-2" (click)="openModal(credit)"></button>
+      <button pButton pRipple icon="pi pi-history" class="p-button-rounded p-button-info" (click)="openHistoryModal(credit)"></button>
+    </td>
+  </ng-template>
 </app-crud>
+
+<!-- FORMULARIO PARA ABONAR -->
+<p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [modal]="true" class="p-fluid" appCrudModal
+  (save)="saveInstallment()" (cancel)="closeModal()">
+  <ng-template pTemplate="content">
+    <form [formGroup]="installmentForm">
+      <div class="field">
+        <label for="totalCredito">Deuda actual</label>
+        <input type="number" pInputText id="totalCredito" formControlName="totalCredito" />
+      </div>
+      <div class="field">
+        <label for="montoAbonado">Abono</label>
+        <input type="number" pInputText id="montoAbonado" formControlName="montoAbonado" />
+      </div>
+    </form>
+  </ng-template>
+  
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
+      (click)="closeModal()"></button>
+    <button pButton pRipple label="Guardar" icon="pi pi-check"
+      class="p-button-text custom-save-btn" (click)="saveInstallment()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- MODAL PARA VER EL HISTORIAL DE CRÉDITO DEL USUARIO -->
+<p-dialog [(visible)]="showHistoryModal" [style]="{width: '80vw'}" [modal]="true" [resizable]="false" [draggable]="false">
+  <ng-template pTemplate="header">
+    Historial de Crédito
+  </ng-template>
+  <ng-template pTemplate="content">
+    <p-table [value]="historyItems" [paginator]="true" [rows]="10">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Fecha</th>
+          <th>Tipo</th>
+          <th>Monto</th>
+          <th>Saldo</th>
+          <th>Estado</th>
+          <th>Cancelar</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>{{item.fecha | date:'short'}}</td>
+          <td>{{item.tipo}}</td>
+          <td>{{item.monto | currency}}</td>
+          <td>{{item.saldo | currency}}</td>
+          <td>{{item.estadoAbono}}</td>
+          <td>
+            <button *ngIf="item.tipo === 'Abono' && item.estadoAbono !== false" 
+                    pButton pRipple icon="pi pi-times" 
+                    class="p-button-rounded p-button-danger" 
+                    (click)="confirmCancelInstallment(item)">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cerrar" icon="pi pi-times" (click)="closeHistoryModal()"></button>
+  </ng-template>
+</p-dialog>

@@ -33,16 +33,14 @@ const updateInstallment = async (req, res) => {
     }
 };
 
-const deleteOneInstallment = async (req, res) => {
+const cancelInstallment = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await installmentService.deleteOneInstallment(id);
-        if (result === 0) {
-            return res.status(404).json({ message: 'Abono no encontrado' });
-        }
-        res.status(200).json({ message: 'Abono eliminado con éxito.' });
+        await installmentService.cancelInstallment(id);
+
+        res.status(200).json({ message: 'Abono anulado con éxito' });
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER: Error al eliminar el abono', error: error.message });
+        res.status(500).json({ message: 'Error al anular el abono', error: error.message });
     }
 };
 
@@ -50,5 +48,5 @@ module.exports = {
     getInstallmentsByCredit,
     createInstallment,
     updateInstallment,
-    deleteOneInstallment
+    cancelInstallment
 };
