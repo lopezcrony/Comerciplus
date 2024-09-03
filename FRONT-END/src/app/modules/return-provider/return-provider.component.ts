@@ -26,8 +26,8 @@ import { ValidationService } from '../../shared/validators/validations.service';
     CrudModalDirective,
     DropdownModule,
 ],
-  templateUrl: './return-provider.component.html'
 
+  templateUrl: './return-provider.component.html',
 })
 export class ReturnProviderComponent implements OnInit{
   
@@ -40,7 +40,9 @@ export class ReturnProviderComponent implements OnInit{
     { field: 'CodigoProducto', header: 'Codigo Barras' },
     { field: 'cantidad', header: 'Cantidad' },
     { field: 'motivoDevolucion', header: 'Motivo' },
+    { field: 'fecha', header: 'fecha' },
     { field: 'estado', header: 'Estado' },
+    
 
   ];
 

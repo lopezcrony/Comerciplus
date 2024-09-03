@@ -29,8 +29,9 @@ export class LossComponent implements OnInit {
     { field: 'CodigoProducto', header: 'Código' },
     { field: 'NombreProducto', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
+    { field: 'motivo', header: 'Motivo' },
     { field: 'fechaDeBaja', header: 'Fecha' },
-    { field: 'motivo', header: 'Motivo' }
+
   ];
 
   LossForm: FormGroup;

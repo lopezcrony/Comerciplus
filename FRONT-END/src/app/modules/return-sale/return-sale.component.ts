@@ -7,6 +7,7 @@ import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
+import { DropdownModule } from 'primeng/dropdown';
 import { ReturnSaleService } from './return-sale.service';
 import { ReturnSaleModel } from './return-sale.model';
 import { ValidationService } from '../../shared/validators/validations.service';
@@ -18,7 +19,8 @@ import { ValidationService } from '../../shared/validators/validations.service';
   imports: [    
     ...SHARED_IMPORTS,
     CRUDComponent,
-    CrudModalDirective
+    CrudModalDirective,
+    DropdownModule
   ],
   templateUrl: './return-sale.component.html',
 })
@@ -29,15 +31,25 @@ export class ReturnSaleComponent implements OnInit {
 
   colums: { field: string, header: string }[] = [
     { field: 'CodigoBarra', header: 'Código' },
+    { field: 'NombreProducto', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
-    { field: 'fechaDevolucion', header: 'Fecha' },
-    { field: 'motivoDevolucion', header: 'Motivo' },
     { field: 'tipoReembolso', header: 'Tipo Reembolso' },
-    { field: 'valorDevolucion', header: 'Producto' },
+    { field: 'motivoDevolucion', header: 'Motivo' },   
+    { field: 'valorDevolucion', header: 'Valor' },
+    { field: 'fechaDevolucion', header: 'Fecha' },
+
   ];
 
   returnSaleForm: FormGroup;
+  options = [
+    { label: 'Dinero', value: 'Dinero' },
+    { label: 'Producto', value: 'Producto' },
+  ];
 
+  motivos = [
+    { label: 'Caducidad', value: 'Caducidad' },
+    { label: 'Equivocación', value: 'Equivocación' },
+  ];
   showModal = false;
   isEditing = false;
 
@@ -49,10 +61,12 @@ export class ReturnSaleComponent implements OnInit {
     private validationService: ValidationService,
   ) {
     this.returnSaleForm = this.fb.group({
-      CodigoProducto: ['', validationService.getValidatorsForField('returnSale', 'CodigoProducto')],      
+      CodigoBarra: ['', validationService.getValidatorsForField('returnSale', 'CodigoBarra')],      
       cantidad: ['', validationService.getValidatorsForField('returnSale', 'cantidad')],
       fechaDeBaja: new Date(),
-      motivo: ['', validationService.getValidatorsForField('returnSale', 'motivo')],
+      motivoDevolucion: ['', validationService.getValidatorsForField('returnSale', 'motivoDevolucion')],
+      tipoReembolso: ['', validationService.getValidatorsForField('returnSale', 'tipoReembolso')],
+    
     });
   }
 

@@ -1,3 +1,5 @@
+<h2 class="title" style="text-align: center;">Devolucion por Venta</h2>
+
 <!-- PLANTILLA CRUD -->
 <app-crud 
   [items]="filteredReturnSale" 
@@ -10,3 +12,66 @@
   (create)="openCreateModal()"
   (search)="searchReturnSale($event)">
 </app-crud>
+
+<p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Cliente' : 'Registrar devolución de venta'"
+  [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveReturnSale()" (cancel)="closeModal()">
+  <ng-template pTemplate="content">
+    <form [formGroup]="returnSaleForm" style="overflow: visible;">
+      
+      <div class="field-group">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('CodigoProducto')}">
+          <label for="CodigoProducto">Código de Barras</label>
+          <input type="text" pInputText id="CodigoProducto" formControlName="CodigoProducto" required />
+          <small class="p-error" *ngIf="isFieldInvalid('CodigoProducto')">
+            {{ getErrorMessage('CodigoProducto') }}
+          </small> 
+        </div>
+
+        <div class="field" [ngClass]="{'error': isFieldInvalid('cantidad')}">
+          <label for="cantidad">Cantidad</label>
+          <input type="text" pInputText id="cantidad" formControlName="cantidad" required />
+          <small class="p-error" *ngIf="isFieldInvalid('cantidad')">
+            {{ getErrorMessage('cantidad') }}
+          </small> 
+        </div>
+      </div>
+
+      <div class="field-group">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('opcion')}">
+            <label for="opcion">Tipo reembolso</label>
+            <div class="p-inputgroup">
+                <p-dropdown [options]="options" formControlName="tipoReembolso" optionLabel="label"
+                    optionValue="value" placeholder="Seleccionar tipo" [virtualScroll]="true"
+                    [virtualScrollItemSize]="38" styleClass="w-full" appendTo="body">
+                </p-dropdown>
+            </div>
+            <small class="p-error" *ngIf="isFieldInvalid('opcion')">
+                {{ getErrorMessage('opcion') }}
+            </small>
+        </div>
+      </div>
+      
+      <div class="field-group">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('opcion')}">
+            <label for="opcion">Motivo</label>
+            <div class="p-inputgroup">
+                <p-dropdown [options]="motivos" formControlName="motivoDevolucion" optionLabel="label"
+                    optionValue="value" placeholder="Seleccionar motivo" [virtualScroll]="true"
+                    [virtualScrollItemSize]="38" styleClass="w-full" appendTo="body">
+                </p-dropdown>
+            </div>
+            <small class="p-error" *ngIf="isFieldInvalid('motivo')">
+                {{ getErrorMessage('motivo') }}
+            </small>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" (click)="closeModal()"></button>
+    <button pButton pRipple [label]="isEditing ? 'Actualizar' : 'Guardar'" icon="pi pi-check" class="p-button-text custom-save-btn"
+      (click)="saveReturnSale()"></button>
+  </ng-template>
+</p-dialog>
+
+

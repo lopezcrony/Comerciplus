@@ -3,6 +3,7 @@ export interface ReturnSaleModel{
     idDetalleVenta:number, 
     idCodigoBarra:number,
     CodigoBarra:number, 
+    NombreProducto:string,
     cantidad:number, 
     fechaDevolucion:Date, 
     motivoDevolucion:string,
