@@ -1,1 +1,12 @@
-<p>return-sale works!</p>
+<!-- PLANTILLA CRUD -->
+<app-crud 
+  [items]="filteredReturnSale" 
+  [columns]="colums" 
+  [canDelete]="false"
+  [canExport]="false" 
+  [canEdit]="false"
+  [canSeeDetail]="false" 
+  [actions]="false"
+  (create)="openCreateModal()"
+  (search)="searchReturnSale($event)">
+</app-crud>
