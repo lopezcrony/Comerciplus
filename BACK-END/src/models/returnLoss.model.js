@@ -40,8 +40,11 @@ const returnLoss=sequelize.define('returnLoss',{
         allowNull: false,
     },
     NombreProducto:{
-        type:DataTypes.STRING,
+        type: DataTypes.STRING(100),
         allowNull: false,
+        validate: {
+            is: /^[a-zA-Záéíóúñ0-9 ]+$/,
+        },
     }
     
 },{tableName:'darDeBaja',

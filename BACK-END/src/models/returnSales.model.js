@@ -24,6 +24,20 @@ const returnSales = sequelize.define('returnSales', {
             key: 'idCodigoBarra'
         }
     },
+    CodigoBarra: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 0
+        }
+    },
+    NombreProducto: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        validate: {
+            is: /^[a-zA-Záéíóúñ0-9 ]+$/,
+        },
+    },
     cantidad: {
         type: DataTypes.INTEGER,
         allowNull: false,
