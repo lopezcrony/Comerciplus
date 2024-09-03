@@ -1,4 +1,6 @@
 const creditRepository = require('../repositories/credits.repository');
+const creditDeatilRepository = require('../repositories/detailCredit.repository');
+const installmentRepository = require('../repositories/installments.repository');
 
 const getAllCredits = async () => {
     try {
@@ -16,6 +18,49 @@ const getOneCredit = async (id) => {
     }
 };
 
+const getCreditHistory = async (idCredit) => {
+    const credit = await creditRepository.findCreditById(idCredit);
+    if (!credit) {
+        throw new Error('Crédito no encontrado');
+    }
+    const creditDetail = await creditDeatilRepository.getAllDetailCredit(idCredit);
+    const installments = await installmentRepository.getInstallmentsByCredit(idCredit);
+
+    // Se combinan las tablas de abonos y detalle de crédito y se ordenan por fecha
+    const historyItems = [
+        ...creditDetail.map(d => ({
+            fecha: d.createdAt,
+            tipo: 'Crédito',
+            monto: d.montoAcreditado,
+            plazoMaximo: d.plazoMaximo
+        })),
+        ...installments.map(a => ({
+            fecha: a.fechaAbono,
+            tipo: 'Abono',
+            monto: a.montoAbonado,
+            estadoAbono: a.estadoAbono,
+        }))
+    ].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+    // Calcula el total acumulado
+    let totalAcumulado = 0;
+    const historyWithTotal = historyItems.map(item => {
+        if (item.tipo === 'Crédito') {
+            totalAcumulado += item.monto;
+        } else if (item.tipo === 'Abono' && item.estado !== false) {
+            totalAcumulado -= item.monto;
+        } else if (item.tipo === 'Anulado') {
+            // No afecta el saldo, pero lo mostramos en el historial
+        }
+        return {
+            ...item,
+            saldo: totalAcumulado
+        };
+    });
+
+    return historyWithTotal;
+};
+
 const createCredit = async (creditData) => {
     try {
         return await creditRepository.createCredit(creditData);
@@ -30,8 +75,8 @@ const createCredit = async (creditData) => {
 const updateTotalCredit = async (id, newTotalCredit) => {
     try {
         const result = await creditRepository.updateTotalCredit(id, newTotalCredit);
-        if(!result){
-            throw new Error('El valor total del crédito no pudo ser actualizado.'); 
+        if (!result) {
+            throw new Error('El valor total del crédito no pudo ser actualizado.');
         };
         return result;
     } catch (error) {
@@ -54,6 +99,7 @@ const deleteOneCredit = async (id) => {
 module.exports = {
     getAllCredits,
     getOneCredit,
+    getCreditHistory,
     createCredit,
     updateTotalCredit,
     deleteOneCredit
