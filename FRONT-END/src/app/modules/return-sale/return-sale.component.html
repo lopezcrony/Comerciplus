@@ -13,12 +13,19 @@
   (search)="searchReturnSale($event)">
 </app-crud>
 
-<p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Cliente' : 'Registrar devolución de venta'"
+<p-dialog [(visible)]="showModal" [style]="{width: '550px'}" [header]="isEditing ? 'Editar Cliente' : 'Registrar devolución de venta'"
   [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveReturnSale()" (cancel)="closeModal()">
   <ng-template pTemplate="content">
     <form [formGroup]="returnSaleForm" style="overflow: visible;">
       
       <div class="field-group">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('idDetalleVenta')}">
+          <label for="idDetalleVenta">#Factura</label>
+          <input type="text" pInputText id="idDetalleVenta" formControlName="idDetalleVenta" required />
+          <small class="p-error" *ngIf="isFieldInvalid('idDetalleVenta')">
+            {{ getErrorMessage('idDetalleVenta') }}
+          </small> 
+        </div>
         <div class="field" [ngClass]="{'error': isFieldInvalid('CodigoProducto')}">
           <label for="CodigoProducto">Código de Barras</label>
           <input type="text" pInputText id="CodigoProducto" formControlName="CodigoProducto" required />
@@ -34,7 +41,24 @@
             {{ getErrorMessage('cantidad') }}
           </small> 
         </div>
+        
       </div>
+
+      <div class="field-group">
+        <div class="field" [ngClass]="{'error': isFieldInvalid('idProveedor')}">
+            <label for="proveedor">Proveedores</label>
+            <div class="p-inputgroup">
+                <p-dropdown [options]="providers" formControlName="idProveedor" optionLabel="nombreProveedor"
+                    optionValue="idProveedor" placeholder="Seleccionar proveedor" [virtualScroll]="true"
+                    [virtualScrollItemSize]="38" styleClass="w-full">
+                </p-dropdown>
+               
+            </div>
+            <small class="p-error" *ngIf="isFieldInvalid('idProveedor')">
+                {{ getErrorMessage('idProveedor') }}
+            </small>
+        </div>
+    </div>
 
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('opcion')}">

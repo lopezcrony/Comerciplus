@@ -7,6 +7,9 @@ import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
+import { ProvidersService } from '../providers/providers.service';
+
+
 import { DropdownModule } from 'primeng/dropdown';
 import { ReturnSaleService } from './return-sale.service';
 import { ReturnSaleModel } from './return-sale.model';
@@ -26,11 +29,13 @@ import { ValidationService } from '../../shared/validators/validations.service';
 })
 export class ReturnSaleComponent implements OnInit {
 
+  providers:any []=[];
   returnSale: ReturnSaleModel[] = [];
   filteredReturnSale: ReturnSaleModel[] = [];
 
   colums: { field: string, header: string }[] = [
-    { field: 'CodigoBarra', header: 'Código' },
+    { field: 'idDetalleVenta', header: '#Factura' },
+    { field: 'CodigoProducto', header: 'Código' },
     { field: 'NombreProducto', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
     { field: 'tipoReembolso', header: 'Tipo Reembolso' },
@@ -59,19 +64,23 @@ export class ReturnSaleComponent implements OnInit {
     private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService,
+    private providerService: ProvidersService
+
   ) {
     this.returnSaleForm = this.fb.group({
-      CodigoBarra: ['', validationService.getValidatorsForField('returnSale', 'CodigoBarra')],      
+      idDetalleVenta: ['', validationService.getValidatorsForField('returnProvider', 'idDetalleVenta')],
+      CodigoProducto: ['', validationService.getValidatorsForField('returnSale', 'CodigoProducto')],      
       cantidad: ['', validationService.getValidatorsForField('returnSale', 'cantidad')],
       fechaDeBaja: new Date(),
       motivoDevolucion: ['', validationService.getValidatorsForField('returnSale', 'motivoDevolucion')],
       tipoReembolso: ['', validationService.getValidatorsForField('returnSale', 'tipoReembolso')],
-    
+      idProveedor: ['', validationService.getValidatorsForField('returnProvider', 'idProveedor')],
     });
   }
 
   ngOnInit() {
     this.loadReturnSale();
+    this.loadProviders()
   }
 
   loadReturnSale() {
@@ -80,6 +89,12 @@ export class ReturnSaleComponent implements OnInit {
       this.filteredReturnSale = data;
     },
     );
+  }
+
+  loadProviders() {
+    this.providerService.getAllProviders().subscribe(data => {
+      this.providers = data;
+    });
   }
 
   openCreateModal() {
@@ -148,7 +163,7 @@ export class ReturnSaleComponent implements OnInit {
     // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
 
     this.filteredReturnSale = this.returnSale.filter(returSale =>
-      returSale.CodigoBarra.toFixed() ||
+      returSale.CodigoProducto.toFixed() ||
       returSale.tipoReembolso.toLowerCase().includes(lowerCaseQuery) ||
       // returSale.fechaDeBaja ||
       // returSale.cantidad ||
