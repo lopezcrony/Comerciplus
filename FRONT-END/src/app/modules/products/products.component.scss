@@ -7,7 +7,7 @@
   
   .image-container img {
     border-radius: 8px; // Bordes redondeados
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // Sombreado
+    box-shadow: 0 4px 8px #250bcf33; // Sombreado
     max-width: 200px; // Tamaño máximo de la imagen
     height: auto; // Mantiene la proporción
     object-fit: cover; // Ajusta la imagen para cubrir el contenedor sin distorsionar
@@ -17,4 +17,6 @@
     font-weight: bold; // Negrita para el texto
     margin-bottom: 0.5rem; // Espaciado inferior
   }
+
+  
   

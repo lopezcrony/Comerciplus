@@ -121,9 +121,10 @@ export class ProductsComponent implements OnInit {
   //funcion para traer las categorias y luego llenar el select de productos
   loadCategories() {
     this.productService.getAllCategories().subscribe(data => {
-      this.categories = data;
+      this.categories = data.filter(category => category.estadoCategoria === true);
     });
   }
+  
 
   //funcion inicializadora(todo lo de aqui se inicia de una)
   ngOnInit(){

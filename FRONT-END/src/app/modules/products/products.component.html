@@ -8,8 +8,8 @@
 
 <!-- FORMULARIOS -->
 
-<p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Producto' : 'Crear Producto'"
-    [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveProduct()" (cancel)="closeModal()">
+<p-dialog [(visible)]="showModal" [style]="{width: '450px','height':'511px'}" [header]="isEditing ? 'Editar Producto' : 'Crear Producto'"
+    [modal]="true" class="p-fluid m-2" appCrudModal [isEditing]="isEditing" (save)="saveProduct()" (cancel)="closeModal()">
     <ng-template pTemplate="content">
         <form [formGroup]="productForm">
 
@@ -27,8 +27,8 @@
                     <label for="categoria">Categoría</label>
                     <div class="p-inputgroup">
                         <p-dropdown [options]="categories" formControlName="idCategoria" optionLabel="nombreCategoria"
-                            optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="true"
-                            [virtualScrollItemSize]="38" styleClass="w-full">
+                            optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]= "false"
+                            [virtualScrollItemSize]="38" styleClass="w-full" >
                         </p-dropdown>
                         <button pButton pRipple type="button" icon="pi pi-plus"
                             class="p-button p-button-success p-button-icon-only p-button-sm ml-2"
@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            formulario para categoria en
+            <!-- formulario para categoria en -->
             <!-- Modal for Adding Category -->
             <p-dialog header="Agregar Categoría" [modal]="true" [(visible)]="categoryModalVisible"
                 [style]="{width: '500px', minWidth: '300px'}">
@@ -71,8 +71,8 @@
                 <ng-template pTemplate="footer">
                     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
                         (click)="categoryModalVisible = false"></button>
-                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-                        (click)="saveCategory()"></button>
+                        <button pButton pRipple label="Guardar" icon="pi pi-check"
+            class="p-button-text custom-save-btn" (click)="saveCategory()"></button>
                 </ng-template>
             </p-dialog>
 
@@ -89,7 +89,7 @@
 
                 <div class="field">
                     <label for="stock">Stock</label>
-                    <input type="number" pInputText id="stock" formControlName="stock" />
+                    <input type="number" pInputText id="stock" formControlName="stock"  />
                 </div>
             </div>
 
@@ -98,11 +98,9 @@
                 <div class="field">
                     <label for="precioVenta">Cargar imagen</label>
                     <p-fileUpload mode="basic" chooseLabel="Subir" chooseIcon="pi pi-upload" name="imagenProducto"
-                        (onSelect)="onFileSelect($event)" accept="image/*" maxFileSize="1000000">
+                        (onSelect)="onFileSelect($event)" accept="image/*" maxFileSize="1000000" [style]="{'margin-top':'5px'}">
                     </p-fileUpload>
-
                 </div>
-
             </div>
 
 
