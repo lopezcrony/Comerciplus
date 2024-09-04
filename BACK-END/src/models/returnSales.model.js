@@ -8,6 +8,14 @@ const returnSales = sequelize.define('returnSales', {
         autoIncrement: true,
         allowNull: false
     },
+    idProveedor: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'proveedores',
+            key: 'idProveedor'
+        }
+    },
     idDetalleVenta: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -24,6 +32,20 @@ const returnSales = sequelize.define('returnSales', {
             key: 'idCodigoBarra'
         }
     },
+    CodigoProducto: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 0
+        }
+    },
+    NombreProducto: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+        validate: {
+            is: /^[a-zA-Záéíóúñ0-9 ]+$/,
+        },
+    },
     cantidad: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -33,7 +55,8 @@ const returnSales = sequelize.define('returnSales', {
     },
     fechaDevolucion: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: DataTypes.NOW
     },
     motivoDevolucion: {
         type: DataTypes.STRING(100),
@@ -51,7 +74,7 @@ const returnSales = sequelize.define('returnSales', {
     },
     valorDevolucion: {
         type: DataTypes.FLOAT,
-        allowNull: false,
+        allowNull: true,
         validate: {
             min: 0
         }
@@ -73,6 +96,12 @@ returnSales.associate = (models) => {
         as: 'codigoBarras'
     });
 
+    returnSales.associate = (models) => {
+        detailVenta.belongsTo(models.Proveedor, {
+            foreignKey: 'idProveedor',
+            as: 'proveedores'
+        });
+    }
 };
 
 module.exports = returnSales;

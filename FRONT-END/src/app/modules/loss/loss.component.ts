@@ -29,8 +29,9 @@ export class LossComponent implements OnInit {
     { field: 'CodigoProducto', header: 'Código' },
     { field: 'NombreProducto', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
+    { field: 'motivo', header: 'Motivo' },
     { field: 'fechaDeBaja', header: 'Fecha' },
-    { field: 'motivo', header: 'Motivo' }
+
   ];
 
   LossForm: FormGroup;
@@ -46,10 +47,9 @@ export class LossComponent implements OnInit {
     private validationService: ValidationService,
   ) {
     this.LossForm = this.fb.group({
-      idDevolucionDeBaja: [null],
-      idCodigoBarra: ['', validationService.getValidatorsForField('loss', 'idCodigoBarra')],
+      CodigoProducto: ['', validationService.getValidatorsForField('loss', 'CodigoProducto')],      
       cantidad: ['', validationService.getValidatorsForField('loss', 'cantidad')],
-      fechaDeBaja: [new Date(), validationService.getValidatorsForField('loss', 'fechaDeBaja')],
+      fechaDeBaja: new Date(),
       motivo: ['', validationService.getValidatorsForField('loss', 'motivo')],
     });
   }
@@ -105,6 +105,7 @@ export class LossComponent implements OnInit {
     const request = this.isEditing ?
       this.lossService.createLoss(lossData) :
       this.lossService.createLoss(lossData);
+      console.log(lossData)
 
     request.subscribe({
       next: () => {
@@ -113,9 +114,9 @@ export class LossComponent implements OnInit {
         this.closeModal();
       },
       error: (error) => {
-        console.error('Error al agregar un registro revise el stock:', error);
+        console.error('Error al agregar un registro', error);
         if (error.status === 500) {
-          this.toastr.error('No se puede agregar una pérdida revise el stock', 'Error');
+          this.toastr.error('No se puede agregar', 'Error');
         } else {
           this.toastr.error('Ocurrió un error al agregar la pérdida revise el stock.', 'Error');
         }
@@ -131,7 +132,7 @@ export class LossComponent implements OnInit {
     // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
 
     this.filteredLoss = this.loss.filter(loss =>
-      loss.CodigoProducto.toLowerCase().includes(lowerCaseQuery) ||
+      loss.CodigoProducto.toFixed() ||
       loss.NombreProducto.toLowerCase().includes(lowerCaseQuery) ||
       // loss.fechaDeBaja ||
       // loss.cantidad ||

@@ -13,21 +13,19 @@
 @tailwind utilities;
 
 
-/* Estilos globales o de componente */
+/* Estilos globales*/
 html, body {
-  background-color: #f0f0f0; /* Cambia este color por el que desees */
+  background-color: #f0f0f0;
 }
-
 
 .field-group {
   display: flex;
   justify-content: space-between;
-  gap: 1rem; /* Ajusta el espacio entre campos */
+  gap: 1rem;
 }
 
 .field {
   flex: 1;
-  margin-right: 1rem;
   margin-top: 10px;
 }
 
@@ -36,20 +34,26 @@ html, body {
 }
 
 .p-inputtext {
-    /* Asegura que este estilo se aplique correctamente */
+  margin-top: 5px;
     border: 1px solid #ccc !important;
     padding: 8px !important;
   }
 
 /* ALERTAS */
+
 .toast-success {
-  background-color: #288504cb !important;
-  color: #fff !important; /* Color del texto */
+  background-color: #16a34ab6 !important;
+  color: #fff !important; 
 }
 
 .toast-error {
   background-color: #cf3e33f5 !important;
   color: #fff !important;
+}
+
+.toast-info {
+  background-color: #167ab4b7  !important;
+  color: #e0f7fa !important; 
 }
 
 .toast-title {
@@ -71,15 +75,29 @@ html, body {
   color: rgb(56, 194, 56); 
 }
 
-
-/* Estilo para el toggle activado */
-.ui-togglebutton.ui-button-active {
-  background-color: #4caf50; /* Verde */
-  color: white; /* Texto blanco */
+/* Botón de cambiar estado */
+.tipo-chip {
+  @apply text-sm rounded-full flex items-center justify-center !important; 
+  outline: none !important;
+  box-shadow: none !important;
 }
 
-/* Estilo para el toggle desactivado */
-.ui-togglebutton {
-  background-color: #f44336; /* Rojo */
-  color: white; /* Texto blanco */
+.true-chip {
+  @apply bg-green-100 text-green-800 w-24 h-10 border-green-200 !important;
 }
+
+.false-chip {
+  @apply bg-red-100 text-red-800 w-24 h-10 border-red-200 !important;
+
+}
+
+/* Tamaño del botón */
+.p-button.p-button-sm {
+  font-size: 0.1rem;
+  padding: 0.1rem;
+}
+/* Tamaño del icono del botón */
+.p-button.p-button-sm .p-button-icon {
+  font-size: 1rem;
+}
+

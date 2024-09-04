@@ -1,5 +1,9 @@
 const Installment = require('../models/installments.model');
 
+const findInstallmentById = async (id) => {
+    return await Installment.findByPk(id);
+};
+
 const registerInstallment = async (installmentData, options = {}) => {
     try {
         return await Installment.create(installmentData, options);
@@ -30,20 +34,14 @@ const updateInstallment = async (id, installmentData) => {
     }
 };
 
-const deleteOneInstallment = async (id) => {
-    try {
-        const result = await Installment.destroy({
-            where: { idAbono: id }
-        });
-        return result;
-    } catch (error) {
-        throw new Error('REPOSITORY: Error al eliminar abono: ' + error.message);
-    }
-};
+const cancelInstallment = async (id) => {
+    return Installment.update({ estadoAbono: false }, { where: { idAbono : id } });
+  };
 
 module.exports = {
+    findInstallmentById,
     registerInstallment,
     getInstallmentsByCredit,
     updateInstallment,
-    deleteOneInstallment
+    cancelInstallment
 };

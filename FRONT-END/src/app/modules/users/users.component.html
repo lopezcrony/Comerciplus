@@ -79,15 +79,15 @@
       </div>
 
       <div class="field-group">
-        <div class="field" [ngClass]="{'error': isFieldInvalid('contraseñaUsuario')}">
+        <div class="field" *ngIf="!isEditing" [ngClass]="{'error': isFieldInvalid('contraseñaUsuario')}">
           <label for="contraseñaUsuario">Contraseña</label>
           <input type="password" pInputText id="contraseñaUsuario" formControlName="contraseñaUsuario" required />
           <small class="p-error" *ngIf="isFieldInvalid('contraseñaUsuario')">
             {{ getErrorMessage('contraseñaUsuario') }}
           </small>
         </div>
-
-        <div class="field">
+      
+        <div class="field" *ngIf="!isEditing">
           <label for="contraseñaUsuario">Confirmar contraseña</label>
           <input type="password" pInputText id="confirmarClave" formControlName="contraseñaUsuario" required />
           <small class="p-error" *ngIf="isFieldInvalid('contraseñaUsuario')">
@@ -95,6 +95,7 @@
           </small>
         </div>
       </div>
+      
 
     </form>
   </ng-template>

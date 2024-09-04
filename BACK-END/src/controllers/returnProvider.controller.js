@@ -25,7 +25,7 @@ const CreateNewreturnProvider = async (req, res) => {
         res.status(201).json({ message: 'Venta creada exitosamente.', newSale });
 
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear la devolución por proveedor.', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

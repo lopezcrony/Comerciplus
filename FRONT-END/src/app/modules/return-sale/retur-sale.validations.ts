@@ -1,6 +1,6 @@
 import { FieldValidation } from '../../shared/validators/validations.interface';
 
-export const lossValidationConfig: FieldValidation[] = [
+export const returnSaleValidationConfig: FieldValidation[] = [
   {
     name: 'cantidad',
     rules: [
@@ -10,9 +10,16 @@ export const lossValidationConfig: FieldValidation[] = [
     ],
   },  
   {
-    name: 'motivo',
+    name: 'motivoDevolucion',
     rules: [
-      { type: 'required', message: 'Ingrese el motivo de la pérdida.' },
+      { type: 'required', message: 'Ingrese el motivo de la devolución.' },
+      { type: 'pattern', value: 'onlyLetters', message: 'El motivo solo debe contener letras.' },
+    ],
+  },
+  {
+    name: 'tipoReembolso',
+    rules: [
+      { type: 'required', message: 'Ingrese el tipo de la devolución.' },
       { type: 'pattern', value: 'onlyLetters', message: 'El motivo solo debe contener letras.' },
     ],
   },
@@ -24,5 +31,3 @@ export const lossValidationConfig: FieldValidation[] = [
     ],
   },
 ];
-
-

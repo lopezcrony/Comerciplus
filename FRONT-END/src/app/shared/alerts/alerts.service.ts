@@ -12,19 +12,27 @@ export class AlertsService {
   ) { }
 
 // ALERTA DE CONFIRMACIÓN
-  confirm(message: string, acceptCallback: () => void) {
-    this.primeNgConfirmationService.confirm({
-      message: message,
-      header: 'Confirmar',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        acceptCallback();
-      },
-      reject: () => {
-        this.toastr.info('Operación cancelada.');
+confirm(message: string, acceptCallback: () => void, rejectCallback?: () => void) {
+  this.primeNgConfirmationService.confirm({
+    message: message,
+    header: 'Confirmar',
+    icon: 'pi pi-info-circle',
+    acceptLabel: 'Sí',
+    rejectLabel: 'No',
+    acceptButtonStyleClass: 'p-button-success p-button-text',
+    rejectButtonStyleClass: 'p-button-text p-button-text',
+    accept: () => {
+      acceptCallback();
+    },
+    reject: () => {
+      if (rejectCallback) {
+        rejectCallback();
       }
-    });
-  }
+      this.toastr.info('Operación cancelada.');
+    }
+  });
+}
+
 
 
   menssageCancel(){

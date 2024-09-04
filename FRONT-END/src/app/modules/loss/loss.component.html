@@ -1,3 +1,5 @@
+<h2 class="title" style="text-align: center;">Pérdidas</h2>
+
 <!-- PLANTILLA CRUD -->
 <app-crud 
   [items]="filteredLoss" 
@@ -19,11 +21,11 @@
     <form [formGroup]="LossForm">
       
       <div class="field-group">
-        <div class="field" [ngClass]="{'error': isFieldInvalid('idCodigoBarra')}">
-          <label for="idCodigoBarra">Codigo Barra</label>
-          <input type="text" pInputText id="idCodigoBarra" formControlName="idCodigoBarra" required />
-          <small class="p-error" *ngIf="isFieldInvalid('idCodigoBarra')">
-            {{ getErrorMessage('idCodigoBarra') }}
+        <div class="field" [ngClass]="{'error': isFieldInvalid('CodigoProducto')}">
+          <label for="CodigoProducto">Codigo Barra</label>
+          <input type="text" pInputText id="CodigoProducto" formControlName="CodigoProducto" required />
+          <small class="p-error" *ngIf="isFieldInvalid('CodigoProducto')">
+            {{ getErrorMessage('CodigoProducto') }}
           </small> 
         </div>
 

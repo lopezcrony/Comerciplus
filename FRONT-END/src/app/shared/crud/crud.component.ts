@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { AlertsService } from '../alerts/alerts.service';
 
 @Component({
   selector: 'app-crud',
@@ -89,18 +90,23 @@ export class CRUDComponent {
     this.onSearch();
   }
 
-  getEstado(item: any): boolean {
+  getStatus(item: any): boolean {
     return item[this.statusField];
   }
 
-  getImageUrl(productId?: number): string {
-    if (productId === undefined) {
-      return ''; // Retorna una URL vacía o una imagen por defecto
-    }
-    return `http://localhost:3006/uploads/productos/${productId}`;
+  constructor(private alertsService: AlertsService) {}
+
+  confirmChangeStatus(item: any) {
+    this.alertsService.confirm(
+      `¿Estás seguro de cambiar el estado?`,
+      () => {
+        this.changeStatus(item);
+      }
+    );
   }
 
-  cambiarEstado(item: any) {
+
+  changeStatus(item: any) {
     const updatedItem = { ...item, [this.statusField]: !item[this.statusField] };
     this.statusChange.emit(updatedItem);
   }

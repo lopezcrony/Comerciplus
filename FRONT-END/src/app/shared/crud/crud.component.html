@@ -1,12 +1,12 @@
 <div class="card">
   <div class="flex justify-between mb-3 items-center">
     <div class="flex space-x-2">
-      <button *ngIf="canCreate" pButton pRipple label="Nuevo" icon="pi pi-plus" class="p-button-success"
-        (click)="onCreate()"></button>
+      <button *ngIf="canCreate" pButton pRipple label="Nuevo" icon="pi pi-plus"
+        class="p-button-success p-button-rounded p-button-outlined" (click)="onCreate()"></button>
     </div>
     <div class="relative ml-auto flex items-center space-x-2">
-      <button *ngIf="canExport" pButton pRipple label="Exportar" icon="pi pi-download" class="p-button-help"
-        (click)="onExport()"></button>
+      <button *ngIf="canExport" pButton pRipple label="Exportar" icon="pi pi-download"
+        class="p-button-help p-button-rounded p-button-outlined " (click)="onExport()"></button>
       <input pInputText type="text" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Buscar" class="pr-10" />
       <i *ngIf="searchQuery"
         class="pi pi-times absolute top-3 right-3 transform -translate-y-1/2 cursor-pointer text-gray-500"
@@ -14,53 +14,61 @@
     </div>
   </div>
 
-  <p-table [value]="items" [tableStyle]="{'min-width': '50rem'}" sortMode="multiple" [paginator]="true" [rows]="5"
-    [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} registros"
+  <p-table [value]="items" [tableStyle]="{'min-width': '50rem', 'margin': '0 auto', 'text-align': 'center'}"
+    sortMode="multiple" [paginator]="true" [rows]="5" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando de {first} a {last} de {totalRecords} registros"
     [rowsPerPageOptions]="[5, 10, 25]">
 
     <!-- Encabezado de la tabla -->
     <ng-template pTemplate="header">
       <tr>
-        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field" [style]="{'text-align': 'center'}">
           {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
         </th>
-        <th *ngIf="showStateColumn">Estado</th>
-        <th *ngIf="creditColumn">Abonar</th>
-        <th *ngIf="creditColumn">Historial</th>
-        <th *ngIf="actions">Acciones</th>
+        <th *ngIf="showStateColumn" [style]="{'text-align': 'center'}">Estado</th>
+        <th *ngIf="creditColumn" [style]="{'text-align': 'center'}">Abonar</th>
+        <th *ngIf="creditColumn" [style]="{'text-align': 'center'}">Historial</th>
+        <th *ngIf="actions" [style]="{'text-align': 'center'}">Acciones</th>
       </tr>
     </ng-template>
 
     <!-- Cuerpo de la tabla -->
     <ng-template pTemplate="body" let-item>
       <tr>
-        <td *ngFor="let col of columns">
+        <td *ngFor="let col of columns"
+          [style]="{'word-wrap': 'break-word', 'white-space': 'normal', 'text-align': 'center'}">
           {{item[col.field]}}
         </td>
 
-        <td *ngIf="canInstallment">
+        <td *ngIf="canInstallment" [style]="{'text-align': 'center'}">
           <button *ngIf="canInstallment" pButton pRipple icon="pi pi-money-bill"
-            class="p-button-rounded p-button-success mr-2" (click)="onInstallment(item)"></button>
+            class="p-button-rounded p-button-success p-button-outlined p-button-sm mr-2"
+            (click)="onInstallment(item)"></button>
         </td>
 
-        <td *ngIf="canChangeStatus">
-          <p-toggleButton [ngModel]="getEstado(item)" (onChange)="cambiarEstado(item)" onLabel="Activo"
-            offLabel="Inactivo">
-          </p-toggleButton>
+        <td *ngIf="canChangeStatus" [style]="{'text-align': 'center'}">
+          <div class="flex justify-center items-center">
+            <p-button [rounded]="true" [label]="getStatus(item) ? 'Activo' : 'Inactivo'"
+              [styleClass]="getStatus(item) ? 'true-chip tipo-chip' : 'false-chip tipo-chip'"
+              (onClick)="confirmChangeStatus(item)"></p-button>
+          </div>
         </td>
+        
 
-        <td>
-          <div class="flex">
-            <button *ngIf="canEdit" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-              (click)="onEdit(item)"></button>
-            <button *ngIf="canDelete" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning mr-2"
+        <td [style]="{'text-align': 'center'}">
+          <div class="flex justify-center">
+            <button *ngIf="canEdit" pButton pRipple icon="pi pi-pencil"
+              class="p-button-rounded p-button-info p-button-outlined p-button-sm mr-2" (click)="onEdit(item)"></button>
+            <button *ngIf="canDelete" pButton pRipple icon="pi pi-trash"
+              class="p-button-rounded p-button-danger p-button-outlined p-button-sm mr-2"
               (click)="onDelete(item)"></button>
-            <button *ngIf="canSeeDetail" pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info"
-              (click)="onDetail(item)"></button>
+            <button *ngIf="canSeeDetail" pButton pRipple icon="pi pi-eye"
+              class="p-button-rounded p-button-warning p-button-outlined p-button-sm" (click)="onDetail(item)"></button>
           </div>
         </td>
       </tr>
     </ng-template>
   </p-table>
+
 
 </div>

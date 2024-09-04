@@ -4,6 +4,6 @@ export interface Loss{
     cantidad: number, 
     fechaDeBaja: Date, 
     motivo:string,
-    CodigoProducto: string,
+    CodigoProducto: number,
     NombreProducto:String
 }

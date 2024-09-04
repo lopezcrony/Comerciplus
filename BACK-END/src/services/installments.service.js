@@ -47,15 +47,21 @@ const updateInstallment = async (id, installmentData) => {
     }
 };
 
-const deleteOneInstallment = async (id) => {
+const cancelInstallment = async (id) => {
     try {
-        const result = await installmentRepository.deleteOneInstallment(id);
-        if (result === 0) {
-            throw new Error('SERVICE: Abono no encontrado.');
-        }
-        return result;
+        const installment = await installmentRepository.findInstallmentById(id);
+      if (!installment) {
+        return res.status(404).json({ message: 'Abono no encontrado' });
+      }
+      
+      await installmentRepository.cancelInstallment(id);
+      
+      // Actualizar el saldo del crédito
+      const credit = await creditRepository.findCreditById(installment.idCredito);
+      await creditRepository.updateTotalCredit(installment.idCredito, credit.totalCredito + installment.montoAbonado);
+        
     } catch (error) {
-        throw error;
+        throw new Error('Error al anular el abono.' + error.message);
     }
 };
 
@@ -63,5 +69,5 @@ module.exports = {
     getInstallmentsByCredit,
     createInstallment,
     updateInstallment,
-    deleteOneInstallment
+    cancelInstallment
 };

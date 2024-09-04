@@ -25,6 +25,10 @@ const Abono = sequelize.define('Abono', {
     fechaAbono: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
+    },
+    estadoAbono: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     }
 }, {
     tableName: 'abonos',

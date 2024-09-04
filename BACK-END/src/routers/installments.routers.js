@@ -7,6 +7,6 @@ router
     .get('/:idCredito', installmentController.getInstallmentsByCredit)
     .post('/', installmentController.createInstallment)
     .put('/:id', installmentController.updateInstallment)
-    .delete('/:id', installmentController.deleteOneInstallment)
+    .put('/:id/cancel', installmentController.cancelInstallment)
 
 module.exports = router;
