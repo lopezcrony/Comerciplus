@@ -71,7 +71,7 @@ export class UsersComponent implements OnInit {
 
   loadRoles() {
     this.roleService.getAllRoles().subscribe(data => {
-      this.roles = data;
+      this.roles = data.filter(r => r.estadoRol === true);
     });
   }
 

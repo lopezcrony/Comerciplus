@@ -13,13 +13,13 @@
 
     <li class="item" routerLink="/credits"><a>Créditos</a></li>
 
-    <li>
+    <li >
       <a (click)="toggleSubmenu()">Devoluciones </a>
       <!-- Submenu que se despliega cuando isSubmenuOpen es true -->
       <ul *ngIf="isSubmenuOpen" class="submenu">
-        <li routerLink="/loss"><a>Pérdidas</a></li>
-        <li  routerLink="/returProvider"><a>Proveeedor</a></li>
-        <li routerLink="/returnSale"><a>Venta</a></li>
+        <li class="item" routerLink="/loss"><a>Pérdidas</a></li>
+        <li class="item" routerLink="/returProvider"><a>Proveeedor</a></li>
+        <li class="item" routerLink="/returnSale"><a>Venta</a></li>
       </ul>
     </li>
 

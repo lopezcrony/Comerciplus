@@ -34,7 +34,6 @@ export class ReturnSaleComponent implements OnInit {
   filteredReturnSale: ReturnSaleModel[] = [];
 
   colums: { field: string, header: string }[] = [
-    { field: 'idDetalleVenta', header: '#Factura' },
     { field: 'CodigoProducto', header: 'Código' },
     { field: 'NombreProducto', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
@@ -68,7 +67,6 @@ export class ReturnSaleComponent implements OnInit {
 
   ) {
     this.returnSaleForm = this.fb.group({
-      idDetalleVenta: ['', validationService.getValidatorsForField('returnProvider', 'idDetalleVenta')],
       CodigoProducto: ['', validationService.getValidatorsForField('returnSale', 'CodigoProducto')],      
       cantidad: ['', validationService.getValidatorsForField('returnSale', 'cantidad')],
       fechaDeBaja: new Date(),
@@ -93,7 +91,7 @@ export class ReturnSaleComponent implements OnInit {
 
   loadProviders() {
     this.providerService.getAllProviders().subscribe(data => {
-      this.providers = data;
+      this.providers = data.filter(p => p.estadoProveedor === true);
     });
   }
 

@@ -85,7 +85,7 @@ export class ReturnProviderComponent implements OnInit{
   //funcion para traer las categorias y luego llenar el select de productos
   loadProviders() {
     this.providerService.getAllProviders().subscribe(data => {
-      this.providers = data;
+      this.providers = data.filter(p => p.estadoProveedor === true);
     });
   }
 

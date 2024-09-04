@@ -19,13 +19,6 @@
     <form [formGroup]="returnSaleForm" style="overflow: visible;">
       
       <div class="field-group">
-        <div class="field" [ngClass]="{'error': isFieldInvalid('idDetalleVenta')}">
-          <label for="idDetalleVenta">#Factura</label>
-          <input type="text" pInputText id="idDetalleVenta" formControlName="idDetalleVenta" required />
-          <small class="p-error" *ngIf="isFieldInvalid('idDetalleVenta')">
-            {{ getErrorMessage('idDetalleVenta') }}
-          </small> 
-        </div>
         <div class="field" [ngClass]="{'error': isFieldInvalid('CodigoProducto')}">
           <label for="CodigoProducto">Código de Barras</label>
           <input type="text" pInputText id="CodigoProducto" formControlName="CodigoProducto" required />

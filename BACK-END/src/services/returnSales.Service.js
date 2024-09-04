@@ -91,12 +91,7 @@ const createReturnSales = async (ReturnSalesData) => {
             await productRepository.updateProductoStock(product.idProducto, newStock, { transaction });
         }
 
-        if (motivo === 'Equivocación' && tipo === 'Producto') {
-            const NewReturnSales = await returnSalesRepository.createreturnSales(ReturnSalesData, { transaction });
-            await transaction.commit();
-
-            return NewReturnSales;
-        }
+        
 
         const NewReturnSale = await returnSalesRepository.createreturnSales(ReturnSalesData, { transaction });
         await transaction.commit();

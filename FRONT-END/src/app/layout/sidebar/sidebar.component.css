@@ -4,11 +4,11 @@
   width: 250px; /* Ajusta el ancho según sea necesario */
   padding: 0.5rem 1.5rem;
   position: fixed;
-  height: calc(100vh - 7rem);
+  height: calc(100vh - 6rem);
   z-index: 999;
   overflow-y: auto;
   user-select: none;
-  top: 6rem;
+  top: 5rem;
   left: 1rem; /* Colocado inicialmente */
   transform: translateX(0); /* Siempre visible en pantallas grandes */
   opacity: 1; /* Siempre visible en pantallas grandes */
@@ -56,7 +56,7 @@
 }
 
 .sidebar li:hover {
-  background-color: rgba(0, 0, 255, 0.1); /* Color de fondo azul claro */
+  background-color: #ffffff;
   box-shadow: rgba(0, 0, 255, 0.2); /* Sombra azul */
 }
 
@@ -90,11 +90,13 @@
 }
 
 .sidebar .item:hover {
+  
   background-color: rgba(0, 0, 255, 0.1); /* Color de fondo azul claro en hover */
 }
 
 /* Define los colores de la variable para el texto activo */
 :root {
+  background-color: #ffffff;
   --text-color: #333;
   --active-text-color: #0056b3; /* Color de texto cuando el ítem está activo */
   --surface-overlay: #fff;
@@ -102,18 +104,22 @@
 
 
 .submenu {
+  background-color: #ffffff;
   list-style-type: none;
   padding-left: 15px;
 }
 
 .submenu li {
+
   margin: 5px 0;
 }
 
 .submenu a {
+
   color: #ddd;
 }
 
 .submenu a:hover {
+
   color: #fff;
 }

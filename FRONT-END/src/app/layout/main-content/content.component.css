@@ -1,9 +1,9 @@
 .main-container {
   position: fixed;
-  top: 6rem;
+  top: 5rem;
   left: 18rem; /* Espacio reservado para el sidebar */
   width: calc(100% - 19rem); /* Se ajusta al espacio restante */
-  height: calc(100vh - 7rem);
+  height: calc(100vh - 6rem);
   z-index: 999;
   overflow-y: auto;
   user-select: none;
