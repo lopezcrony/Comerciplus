@@ -139,12 +139,13 @@ export class ReturnProviderComponent implements OnInit{
         this.closeModal();
       },
       error: (error) => {
-        console.error('Error al agregar un registro', error);
-        if (error.status === 500) {
-          this.toastr.error('No se puede agregar la devolucion', 'Error');
-        } else {
-          this.toastr.error('Ocurrió un error al agregar la devolución de proveedor.', 'Error');
-        }
+        this.toastr.error(error.message, 'Error');
+        
+        // if (error.status === 500) {
+        //   this.toastr.error('No se puede agregar la devolucion', 'Error');
+        // } else {
+        //   this.toastr.error('Ocurrió un error al agregar la devolución de proveedor.', 'Error');
+        // }
       }
     });
 

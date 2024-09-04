@@ -9,6 +9,7 @@ import { usersValidationConfig } from '../../modules/users/users.validations';
 import { lossValidationConfig } from '../../modules/loss/loss.validations';
 import { creditsValidationConfig } from '../../modules/credits/credits.validations';
 import { returnProviderValidationConfig } from '../../modules/return-provider/return-provider.validations';
+import { returnSaleValidationConfig } from '../../modules/return-sale/retur-sale.validations';
 
 export const validationsConfig: ModuleValidationConfig = {
   roles: rolesValidationConfig,
@@ -22,6 +23,7 @@ export const validationsConfig: ModuleValidationConfig = {
 
   loss: lossValidationConfig,
   returnProvider: returnProviderValidationConfig,
+  returnSale: returnSaleValidationConfig,
 
   credits: creditsValidationConfig,
 };

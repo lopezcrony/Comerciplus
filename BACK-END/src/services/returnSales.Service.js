@@ -87,19 +87,8 @@ const createReturnSales = async (ReturnSalesData) => {
         }
 
         if (motivo === 'Equivocación' && tipo === 'Dinero') {
-            const mistake = {
-                idProveedor: ReturnSalesData.idProveedor,
-                NombreProveedor: NameProvider,
-                idCodigoBarra: IdCode,
-                CodigoProducto: Codigo,
-                cantidad: ReturnSalesData.cantidad,
-                fecha: ReturnSalesData.fechaDevolucion,
-                motivoDevolucion: ReturnSalesData.motivoDevolucion
-            };
             const newStock =parseInt(product.stock, 10) + parseInt(ReturnSalesData.cantidad, 10);
             await productRepository.updateProductoStock(product.idProducto, newStock, { transaction });
-
-            await returnProviderRepository.createReturnProvider(mistake, { transaction });
         }
 
         if (motivo === 'Equivocación' && tipo === 'Producto') {

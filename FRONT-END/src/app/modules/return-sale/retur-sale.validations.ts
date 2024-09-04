@@ -1,6 +1,6 @@
 import { FieldValidation } from '../../shared/validators/validations.interface';
 
-export const lossValidationConfig: FieldValidation[] = [
+export const returnSaleValidationConfig: FieldValidation[] = [
   {
     name: 'cantidad',
     rules: [

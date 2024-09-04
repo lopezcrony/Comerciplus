@@ -38,10 +38,18 @@ export class ReturnProviderService {
         catchError(this.handleError)
       );
     }
-   
-   private handleError(error: HttpErrorResponse) {
-    console.error('Ocurrió un error:', error);
-    return throwError('Algo salió mal; por favor, intente nuevamente más tarde.');
+
+  private handleError(error: HttpErrorResponse) {
+    // Puedes ajustar la lógica para diferentes tipos de errores aquí
+    let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = error.error?.message || errorMessage;
+    }
+    return throwError(() => new Error(errorMessage));
   }
    }
 

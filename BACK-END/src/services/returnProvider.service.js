@@ -57,6 +57,7 @@ const createReturnProvider = async (returnProviderData) => {
         //  Se valida que exista el producto utilizando el ID del producto del código de barras
         const product = await productRepository.findProductById(barCode.idProducto, { transaction });
         if (!product) throw new Error('SERVICE: Producto no encontrado.');
+        if(product.stock < returnProviderData.cantidad) throw new Error('Stock insuficiente');
         const newStock = product.stock - returnProviderData.cantidad;
         await productRepository.updateProductoStock(product.idProducto, newStock, { transaction });     
 
