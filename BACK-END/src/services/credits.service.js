@@ -35,11 +35,12 @@ const getCreditHistory = async (idCredit) => {
             plazoMaximo: d.plazoMaximo
         })),
         ...installments.map(a => ({
+            idAbono: a.idAbono,
             fecha: a.fechaAbono,
             tipo: 'Abono',
             monto: a.montoAbonado,
             estadoAbono: a.estadoAbono,
-        }))
+        })),
     ].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
     // Calcula el total acumulado
@@ -47,10 +48,10 @@ const getCreditHistory = async (idCredit) => {
     const historyWithTotal = historyItems.map(item => {
         if (item.tipo === 'Crédito') {
             totalAcumulado += item.monto;
-        } else if (item.tipo === 'Abono' && item.estado !== false) {
+        } else if (item.tipo === 'Abono' && item.estadoAbono !== false) {
             totalAcumulado -= item.monto;
-        } else if (item.tipo === 'Anulado') {
-            // No afecta el saldo, pero lo mostramos en el historial
+        } else if (item.estadoAbono === false) {
+            totalAcumulado == credit.totalCredito;
         }
         return {
             ...item,

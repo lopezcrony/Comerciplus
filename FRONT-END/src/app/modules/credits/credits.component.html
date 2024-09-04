@@ -27,30 +27,36 @@
 </app-crud>
 
 <!-- FORMULARIO PARA ABONAR -->
+
 <p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [modal]="true" class="p-fluid" appCrudModal
-  (save)="saveInstallment()" (cancel)="closeModal()">
+  (onHide)="closeModal()">
+  <ng-template pTemplate="header">
+    Registrar Abono
+  </ng-template>
   <ng-template pTemplate="content">
     <form [formGroup]="installmentForm">
       <div class="field">
         <label for="totalCredito">Deuda actual</label>
-        <input type="number" pInputText id="totalCredito" formControlName="totalCredito" />
+        <p-inputNumber id="totalCredito" formControlName="totalCredito" mode="currency" currency="USD" locale="en-US" [disabled]="true"></p-inputNumber>
       </div>
       <div class="field">
-        <label for="montoAbonado">Abono</label>
-        <input type="number" pInputText id="montoAbonado" formControlName="montoAbonado" />
+        <label for="montoAbonado">Monto a abonar</label>
+        <p-inputNumber id="montoAbonado" formControlName="montoAbonado" mode="decimal" currency="USD" locale="en-US" [min]="0" [max]="installmentForm.get('totalCredito')?.value"></p-inputNumber>
+        <small class="p-error" *ngIf="isFieldInvalid('montoAbonado')">
+          {{ getErrorMessage('montoAbonado') }}
+        </small>
       </div>
     </form>
   </ng-template>
   
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
-      (click)="closeModal()"></button>
-    <button pButton pRipple label="Guardar" icon="pi pi-check"
-      class="p-button-text custom-save-btn" (click)="saveInstallment()"></button>
+    <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn" (click)="cancelModalMessage()"></button>
+    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text custom-save-btn" (click)="saveInstallment()" [disabled]="installmentForm.invalid"></button>
   </ng-template>
 </p-dialog>
 
 <!-- MODAL PARA VER EL HISTORIAL DE CRÉDITO DEL USUARIO -->
+
 <p-dialog [(visible)]="showHistoryModal" [style]="{width: '80vw'}" [modal]="true" [resizable]="false" [draggable]="false">
   <ng-template pTemplate="header">
     Historial de Crédito
@@ -61,31 +67,42 @@
         <tr>
           <th>Fecha</th>
           <th>Tipo</th>
+          <th>Estado</th>
           <th>Monto</th>
           <th>Saldo</th>
-          <th>Estado</th>
-          <th>Cancelar</th>
+          <th>Acciones</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-item>
-        <tr>
+        <tr [ngClass]="{'anulado-row': item.tipo === 'Abono' && item.estadoAbono === false}">
           <td>{{item.fecha | date:'short'}}</td>
-          <td>{{item.tipo}}</td>
+          <td>
+            <span [ngClass]="{
+              'abono-chip': item.tipo === 'Abono', 
+              'cargo-chip': item.tipo === 'Abono' && item.estadoAbono === false,
+              'credito-chip': item.tipo === 'Crédito'
+            }" class="tipo-chip">
+              {{item.tipo}}
+            </span>
+          </td>
+          <td>
+            <ng-container *ngIf="item.tipo === 'Abono'">
+              {{item.estadoAbono ? 'Activo' : 'Anulado'}}
+            </ng-container>
+          </td>
           <td>{{item.monto | currency}}</td>
           <td>{{item.saldo | currency}}</td>
-          <td>{{item.estadoAbono}}</td>
           <td>
             <button *ngIf="item.tipo === 'Abono' && item.estadoAbono !== false" 
                     pButton pRipple icon="pi pi-times" 
-                    class="p-button-rounded p-button-danger" 
-                    (click)="confirmCancelInstallment(item)">
+                    class="p-button-rounded p-button-danger p-button-outlined p-button-sm" 
+                    (click)="confirmCancelInstallment(item)"
+                    pTooltip="Anular abono"
+                    tooltipPosition="left">
             </button>
           </td>
         </tr>
       </ng-template>
     </p-table>
-  </ng-template>
-  <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cerrar" icon="pi pi-times" (click)="closeHistoryModal()"></button>
   </ng-template>
 </p-dialog>
