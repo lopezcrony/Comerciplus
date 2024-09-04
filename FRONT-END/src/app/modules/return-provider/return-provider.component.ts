@@ -37,7 +37,7 @@ export class ReturnProviderComponent implements OnInit{
 
   colums: { field: string, header: string }[] = [
     { field: 'NombreProveedor', header: 'Proveedor' },
-    { field: 'CodigoProducto', header: 'Codigo Barras' },
+    { field: 'CodigoProducto', header: 'Código Barras' },
     { field: 'cantidad', header: 'Cantidad' },
     { field: 'motivoDevolucion', header: 'Motivo' },
     { field: 'fecha', header: 'fecha' },

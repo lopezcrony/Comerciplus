@@ -8,6 +8,7 @@ import { productsValidationConfig } from '../../modules/products/products.valida
 import { usersValidationConfig } from '../../modules/users/users.validations';
 import { lossValidationConfig } from '../../modules/loss/loss.validations';
 import { creditsValidationConfig } from '../../modules/credits/credits.validations';
+import { returnProviderValidationConfig } from '../../modules/return-provider/return-provider.validations';
 
 export const validationsConfig: ModuleValidationConfig = {
   roles: rolesValidationConfig,
@@ -20,6 +21,7 @@ export const validationsConfig: ModuleValidationConfig = {
   products: productsValidationConfig,
 
   loss: lossValidationConfig,
+  returnProvider: returnProviderValidationConfig,
 
   credits: creditsValidationConfig,
 };
