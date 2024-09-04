@@ -16,14 +16,6 @@
   (detail)="openHistoryModal($event)"
   (export)="exportCredits()" 
   (search)="searchCredits($event)">
-  
-  <!-- Agrega esta plantilla para los botones de acción -->
-  <ng-template pTemplate="body" let-credit>
-    <td>
-      <button pButton pRipple icon="pi pi-money-bill" class="p-button-rounded p-button-success mr-2" (click)="openModal(credit)"></button>
-      <button pButton pRipple icon="pi pi-history" class="p-button-rounded p-button-info" (click)="openHistoryModal(credit)"></button>
-    </td>
-  </ng-template>
 </app-crud>
 
 <!-- FORMULARIO PARA ABONAR -->

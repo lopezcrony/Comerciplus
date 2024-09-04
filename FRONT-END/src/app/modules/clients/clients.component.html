@@ -4,7 +4,7 @@
   [columns]="columns" 
   [canDelete]="false"
   [canExport]="true" 
-  [canSeeDetail]="true"
+  [canSeeDetail]="false"
   
   [canChangeStatus]="true"
   [showStateColumn]="true"
@@ -16,6 +16,7 @@
   (search)="searchClients($event)"
   (statusChange)="changeClientStatus($event)">
 </app-crud>
+
 <!-- FORMULARIOS -->
 
 <p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Cliente' : 'Crear Cliente'"

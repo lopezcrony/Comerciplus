@@ -7,10 +7,14 @@
 [canExport]="false" 
 [canEdit]="false"
 
-    [canSeeDetail]="false" 
-    [actions]="false" 
-    (create)="openCreateModal()" 
-    (search)="searchreturnProvider($event)">
+[canSeeDetail]="false"
+[canChangeStatus]="true"
+[showStateColumn]="true"
+[statusField]="'estado'"
+
+[actions]="false" 
+(create)="openCreateModal()" 
+(search)="searchreturnProvider($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->

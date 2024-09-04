@@ -40,12 +40,6 @@ export class CreditsService {
     );
   }
 
-  createAbono(installment: { idCredito: number; montoAbonado: number }): Observable<any> {
-    return this.http.post<Installment>(this.installmentUrl, installment).pipe(
-      catchError(this.handleError)
-    );
-  };
-
   cancelInstallment(idAbono: number): Observable<Installment> {
     return this.http.put<Installment>(`${this.installmentUrl}/${idAbono}/cancel`, {});
   };
