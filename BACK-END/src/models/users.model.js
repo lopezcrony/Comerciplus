@@ -18,6 +18,7 @@ const User = sequelize.define('User', {
   },
   cedulaUsuario: {
     type: DataTypes.STRING,
+    unique : true,
     allowNull: false,
   },
   nombreUsuario: {
@@ -52,14 +53,12 @@ const User = sequelize.define('User', {
       if (user.contraseñaUsuario) {
         console.log('Encriptando contraseña antes de crear:', user.contraseñaUsuario);
         user.contraseñaUsuario = await bcrypt.hash(user.contraseñaUsuario, 10);
-        console.log('Contraseña encriptada:', user.contraseñaUsuario);
       }
     },
     beforeUpdate: async (user) => {
       if (user.changed('contraseñaUsuario')) {
         console.log('Contraseña cambiada, encriptando...');
         user.contraseñaUsuario = await bcrypt.hash(user.contraseñaUsuario, 10);
-        console.log('Contraseña encriptada:', user.contraseñaUsuario);
       }
     }
   }

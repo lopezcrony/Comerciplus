@@ -16,14 +16,6 @@ const returnSales = sequelize.define('returnSales', {
             key: 'idProveedor'
         }
     },
-    idDetalleVenta: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'detalleVenta',
-            key: 'idDetalleVenta'
-        }
-    },
     idCodigoBarra: {
         type: DataTypes.INTEGER,        
         allowNull: false,
