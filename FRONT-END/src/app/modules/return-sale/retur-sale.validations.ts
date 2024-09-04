@@ -2,6 +2,13 @@ import { FieldValidation } from '../../shared/validators/validations.interface';
 
 export const returnSaleValidationConfig: FieldValidation[] = [
   {
+    name: 'idDetalleVenta',
+    rules: [
+      { type: 'required', message: 'Ingrese la factura.' },
+      { type: 'pattern', value: 'onlyNumbers', message: 'La cantidad solo debe contener números.' },
+    ],
+  }, 
+  {
     name: 'cantidad',
     rules: [
       { type: 'required', message: 'Ingrese la cantidad.' },
