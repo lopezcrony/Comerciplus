@@ -67,3 +67,18 @@
     border: 1px solid #ccc !important;
     padding: 8px !important;
   }
+
+  .image-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .image-cell img {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 100px;
+    height: auto;
+    object-fit: cover;
+  }
+  

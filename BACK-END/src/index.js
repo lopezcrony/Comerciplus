@@ -17,7 +17,6 @@ class Server{
     };
 
     middlewares(){
-        this.app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
         //CORS
         this.app.use(cors());
         //Parseo a json

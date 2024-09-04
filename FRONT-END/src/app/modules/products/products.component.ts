@@ -27,6 +27,7 @@ import { CategoriesService } from '../categories/categories.service';
     FileUploadModule
     ],
   templateUrl: './products.component.html',
+  styleUrls: ['./products.component.scss']
 })
 
 
@@ -50,6 +51,7 @@ export class ProductsComponent implements OnInit {
   categorieForm: FormGroup;
   selectedFile: File | null = null;
   showModal = false;
+  viewModal = false;
   isEditing = false;
   baseUrl = 'http://localhost:3006/uploads';
 
@@ -82,6 +84,8 @@ export class ProductsComponent implements OnInit {
   
   categoryModalVisible: boolean = false;
   newCategory = { name: '', description: '' };
+  selectedProduct: Product | undefined;
+
 
   showCategoryModal() {
       this.categoryModalVisible = true;
@@ -134,12 +138,21 @@ export class ProductsComponent implements OnInit {
     this.productForm.reset({ estadoProducto: true });
     this.showModal = true;
   }
+  
 
   //abre la monda de editar y ya
   openEditModal(product: Product) {
     this.isEditing = true;
     this.productForm.patchValue(product);
     this.showModal = true;
+  }
+
+  openShowModal(product: Product) {
+    // Asigna el producto seleccionado a una variable para usar en la vista
+    this.selectedProduct = product;
+
+    // Muestra la modal
+    this.viewModal = true;
   }
 
   //cierra la modal y ya sapo
@@ -271,9 +284,13 @@ export class ProductsComponent implements OnInit {
   // funciones para la carga de imagenes en productos
 
 
-  getImageUrl(productId: number): string {
+  getImageUrl(productId?: number): string {
+    if (productId === undefined) {
+      return ''; // Retorna una URL vacía o una imagen por defecto
+    }
     return `http://localhost:3006/uploads/productos/${productId}`;
   }
+  
 
 
   onFileSelect(event: any) {

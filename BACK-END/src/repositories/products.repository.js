@@ -3,9 +3,9 @@ const Products = require('../models/products.model');
 const findAllProducts = async () => {
     return await Products.findAll();
 };
-
-const findProductById = async (id, options = {}) => {
-    return await Products.findByPk(id, options);
+// ,options ={}
+const findProductById = async (id) => {
+    return await Products.findByPk(id);
 };
 
 const createProduct = async (productData) => {

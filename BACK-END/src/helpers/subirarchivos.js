@@ -2,9 +2,10 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
 
-const subirimagen = (files, extensionevalidas = ['jpg', 'jpeg', 'png', 'bmp', 'tif', 'tiff', 'svg', 'webp','jfif'], carpeta = '') => {
+const subirimagen = (files, extensionevalidas = ['jpg', 'jpeg', 'png', 'bmp', 'tif', 'tiff', 'svg', 'webp','jfif'], carpeta = 'productos') => {
 
     return new Promise((resolve, reject) => {
+        
 
         const { img } = files;
         const nombrecorto = img.name.split('.');

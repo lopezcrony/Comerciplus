@@ -35,7 +35,7 @@ const updateProduct = async (id, ProductData) => {
         }
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
-            throw new Error('El producto ya esta registrada.');
+            throw new Error('El producto ya esta registrado.');
         }
         throw error;
     }

@@ -3,7 +3,7 @@
 <app-crud [items]="filteredProducts" [columns]="columns" [canDelete]="true" [canSeeDetail]="true"
     [canChangeStatus]="true" [showStateColumn]="true" [statusField]="'estadoProducto'" (create)="openCreateModal()"
     (export)="exportProduct()" (edit)="openEditModal($event)" (delete)="confirmDelete($event)"
-    (search)="searchProduct($event)" (statusChange)="changeProductStatus($event)">
+    (detail)="openShowModal($event)" (search)="searchProduct($event)" (statusChange)="changeProductStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->
@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-
+            formulario para categoria en
             <!-- Modal for Adding Category -->
             <p-dialog header="Agregar Categoría" [modal]="true" [(visible)]="categoryModalVisible"
                 [style]="{width: '500px', minWidth: '300px'}">
@@ -116,3 +116,41 @@
     </ng-template>
 </p-dialog>
 
+<!-- modal para ver detalle producto inicio -->
+<p-dialog [(visible)]="viewModal" [style]="{width: '450px'}" [header]="'Detalle del Producto'" [modal]="true"
+    class="p-fluid">
+    <ng-template pTemplate="content">
+
+        <div class="field-group">
+            <div class="field">
+                <label for="nombreProducto">Nombre Producto:</label>
+            <p>{{ selectedProduct?.nombreProducto }}</p>
+            </div>
+            
+            <div class="field">
+                <label for="categoria">Categoría:</label>
+                <p>{{ selectedProduct?.idCategoria}}</p>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field">
+                <label for="precioVenta">Precio venta:</label>
+                <p>{{ selectedProduct?.precioVenta | currency }}</p>
+            </div>
+
+            <div class="field">
+                <label for="stock">Stock:</label>
+                <p>{{ selectedProduct?.stock }}</p>
+            </div>
+        </div>
+
+        <div class="field image-container">
+            <label for="imagenProducto">Imagen:</label>
+            <img *ngIf="selectedProduct?.idProducto" [src]="getImageUrl(selectedProduct?.idProducto)" alt="Imagen del Producto">
+          </div>  
+    </ng-template>
+</p-dialog>
+
+
+<!-- modal para ver detalle producto fin -->

@@ -31,6 +31,7 @@ export class CRUDComponent {
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean = true;
   @Input() canChangeStatus: boolean = false;
+  @Input() img: boolean = false;
   @Input() canInstallment: boolean = false;
   @Input() showStateColumn: boolean = false;
   @Input() creditColumn: boolean = false;
@@ -90,6 +91,13 @@ export class CRUDComponent {
 
   getEstado(item: any): boolean {
     return item[this.statusField];
+  }
+
+  getImageUrl(productId?: number): string {
+    if (productId === undefined) {
+      return ''; // Retorna una URL vacía o una imagen por defecto
+    }
+    return `http://localhost:3006/uploads/productos/${productId}`;
   }
 
   cambiarEstado(item: any) {
