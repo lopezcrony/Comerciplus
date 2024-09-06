@@ -1,15 +1,14 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
-import { CommonModule} from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { trigger, state, style, animate, transition } from '@angular/animations';
-// import {TopbarComponent} from '../topbar/topbar.component'
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css'], // Verifica que el nombre sea styleUrls, no styleUrl
+  styleUrls: ['./sidebar.component.css'], 
 
   animations: [
     trigger('sidebarAnimation', [
@@ -26,13 +25,27 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   ],
 })
 export class SidebarComponent {
-[x: string]: any;
   @Input() isSidebarVisible = false;
+  @Input() isSubmenuOpenConfig: boolean = false;
+  @Input() isSubmenuOpenUsers: boolean = false;
+  @Input() isSubmenuOpenShoppings: boolean = false;
+  @Input() isSubmenuOpenSales: boolean = false;
+  @Input() isSubmenuOpenReturns: boolean = false;
 
-  @Input() isSubmenuOpen: boolean = false;
-
-  // Método para cambiar el estado del submenu
-  toggleSubmenu() {
-    this.isSubmenuOpen = !this.isSubmenuOpen;
+  toggleSubmenuConfig() {
+    this.isSubmenuOpenConfig = !this.isSubmenuOpenConfig;
+  }
+  toggleSubmenuUsers() {
+    this.isSubmenuOpenUsers = !this.isSubmenuOpenUsers;
+  }
+  toggleSubmenuShoppings() {
+    this.isSubmenuOpenShoppings = !this.isSubmenuOpenShoppings;
+  }
+  toggleSubmenuSales() {
+    this.isSubmenuOpenSales = !this.isSubmenuOpenSales;
+  }
+  toggleSubmenuReturns() {
+    this.isSubmenuOpenReturns = !this.isSubmenuOpenReturns;
   }
 }
+  

@@ -1,32 +1,62 @@
 <nav class="sidebar">
   <div class="mt-5">
-  <ul>
-    <li class="item" routerLink="/dashboard"><a>Inicio</a></li>
+    <ul>
+      <li class="item" routerLink="/dashboard"><a>Inicio</a></li>
 
-    <li class="item" routerLink="/users"><a>Usuarios</a></li>
-    <li class="item" routerLink="/roles"><a>Roles</a></li>
+      <li>
+        <a (click)="toggleSubmenuConfig()"><i class="bi bi-gear mr-2" style="color:darkcyan;"></i>
+          Configuración</a>
+        <ul *ngIf="isSubmenuOpenConfig" class="submenu">
+          <li class="item" routerLink="/roles"><i class="bi bi-suitcase-lg mr-2" style="color: salmon;"></i><a>Roles</a>
+          </li>
+        </ul>
+      </li>
 
-    <li class="item" routerLink="/providers"><a>Proveedores</a></li>
-    <li class="item" routerLink="/clients"><a>Clientes</a></li>
+      <li>
+        <a (click)="toggleSubmenuUsers()"><i class="bi bi-people mr-2" style="color:firebrick;"></i>
+          Usuarios</a>
+        <ul *ngIf="isSubmenuOpenUsers" class="submenu">
+          <li class="item" routerLink="/users"><i class="bi bi-person-lines-fill mr-2"
+              style="color: salmon;"></i><a>Usuarios</a></li>
+        </ul>
+      </li>
 
-    <li class="item" routerLink="/sales"><a>Ventas</a></li>
+      <li>
+        <a (click)="toggleSubmenuShoppings()"><i class="pi pi-shop mr-2" style="color:blueviolet"></i>
+          Compras</a>
+        <ul *ngIf="isSubmenuOpenShoppings" class="submenu">
+          <li class="item" routerLink="/categories"><a><i class="bi bi-tag-fill mr-2"
+                style="color:salmon;"></i>Categorías</a></li>
+          <li class="item" routerLink="/products"><i class="bi bi-bag mr-2"
+              style="color:springgreen;"></i><a>Productos</a></li>
+          <li class="item" routerLink="/providers"><i class="pi pi-truck mr-2" style="color: yellowgreen"></i><a>Proveedores</a></li>
+        </ul>
+      </li>
 
-    <li class="item" routerLink="/credits"><a>Créditos</a></li>
+      <li>
+        <a (click)="toggleSubmenuSales()"><i class="bi bi-cart3 mr-3" style="color:saddlebrown;"></i>Ventas</a>
+        <ul *ngIf="isSubmenuOpenSales" class="submenu">
+          <li class="item" routerLink="/clients"><i class="bi bi-person-vcard mr-2"
+              style="color: salmon;"></i><a>Clientes</a></li>
+          <li class="item" routerLink="/sales"><i class="bi bi-cash-coin mr-2"
+              style="color: springgreen;"></i><a>Ventas</a></li>
+          <li class="item" routerLink="/credits"><i class="bi bi-credit-card  mr-2"
+              style="color: yellowgreen;"></i><a>Créditos</a></li>
 
-    <li >
-      <a (click)="toggleSubmenu()">Devoluciones </a>
-      <!-- Submenu que se despliega cuando isSubmenuOpen es true -->
-      <ul *ngIf="isSubmenuOpen" class="submenu">
-        <li class="item" routerLink="/loss"><a>Pérdidas</a></li>
-        <li class="item" routerLink="/returProvider"><a>Proveeedor</a></li>
-        <li class="item" routerLink="/returnSale"><a>Venta</a></li>
-      </ul>
-    </li>
+          <li>
+            <a (click)="toggleSubmenuReturns()"><i class="pi pi-sync mr-2" style="color: mediumpurple;"></i>Devoluciones</a>
+            <!-- Submenu que se despliega cuando isSubmenuOpen es true -->
+            <ul *ngIf="isSubmenuOpenReturns" class="submenu">
+              <li class="item" routerLink="/loss"><i class="pi pi-exclamation-circle mr-2"
+                style="color: salmon;"></i><a>Pérdidas</a></li>
+              <li class="item" routerLink="/returProvider"><i class="bi bi-bandaid mr-2" style="color: springgreen;"></i><a>Proveeedor</a></li>
+              <li class="item" routerLink="/returnSale"><i class="bi bi-piggy-bank mr-2" style="color: yellowgreen;"></i><a>Venta</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
 
 
-    <li class="item" routerLink="/categories"><a>Categorías productos</a></li>
-    <li class="item" routerLink="/products"><a>Productos</a></li>
-  
-  </ul>
-</div>
+    </ul>
+  </div>
 </nav>
