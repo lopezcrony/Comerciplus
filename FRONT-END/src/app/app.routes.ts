@@ -11,6 +11,7 @@ import {SalesComponent} from './modules/sales/sales.component'
 import {ReturnProviderComponent} from './modules/return-provider/return-provider.component'
 import { ReturnSaleComponent } from './modules/return-sale/return-sale.component';
 import { CreditsComponent } from './modules/credits/credits.component';
+import { ShoppingsComponent} from './modules/shoppings/shoppings.component';
 
 
 export const routes: Routes = [
@@ -27,13 +28,9 @@ export const routes: Routes = [
       { path: 'returProvider', component: ReturnProviderComponent},
       {path: 'returnSale', component: ReturnSaleComponent},
       { path: 'credits', component: CreditsComponent},
-
-
-
-
-
       { path: 'categories', component: CategoriesComponent},
       { path: 'products', component: ProductsComponent},
+      { path: 'shoppings', component: ShoppingsComponent},
       { path: '', redirectTo: 'crud', pathMatch: 'full' },
     ]
   }

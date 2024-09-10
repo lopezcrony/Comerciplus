@@ -1,25 +1,7 @@
 <nav class="sidebar">
   <div class="mt-5">
     <ul>
-      <li class="item" routerLink="/dashboard"><i class="bi bi-house mr-2" style="color:darkred;"></i><a>Inicio</a></li>
-
-      <li>
-        <a (click)="toggleSubmenuConfig()"><i class="bi bi-gear mr-2" style="color:darkcyan;"></i>
-          Configuración</a>
-        <ul *ngIf="isSubmenuOpenConfig" class="submenu">
-          <li class="item" routerLink="/roles"><i class="bi bi-suitcase-lg mr-2" style="color: salmon;"></i><a>Roles</a>
-          </li>
-        </ul>
-      </li>
-
-      <li>
-        <a (click)="toggleSubmenuUsers()"><i class="bi bi-people mr-2" style="color:firebrick;"></i>
-          Usuarios</a>
-        <ul *ngIf="isSubmenuOpenUsers" class="submenu">
-          <li class="item" routerLink="/users"><i class="bi bi-person-lines-fill mr-2"
-              style="color: salmon;"></i><a>Usuarios</a></li>
-        </ul>
-      </li>
+      <li class="item" routerLink="/dashboard"><i class="bi bi-house mr-2" style="color:darkred;"></i><a>Dashboard</a></li>
 
       <li>
         <a (click)="toggleSubmenuShoppings()"><i class="pi pi-shop mr-2" style="color:blueviolet"></i>
@@ -30,6 +12,7 @@
           <li class="item" routerLink="/products"><i class="bi bi-bag mr-2"
               style="color:springgreen;"></i><a>Productos</a></li>
           <li class="item" routerLink="/providers"><i class="pi pi-truck mr-2" style="color: yellowgreen"></i><a>Proveedores</a></li>
+          <li class="item" routerLink="/shoppings"><i class="bi bi-basket2 mr-2" style="color:hotpink"></i><a>Compras</a></li>
         </ul>
       </li>
 
@@ -44,7 +27,7 @@
               style="color: yellowgreen;"></i><a>Créditos</a></li>
 
           <li>
-            <a (click)="toggleSubmenuReturns()"><i class="pi pi-sync mr-2" style="color: mediumpurple;"></i>Devoluciones</a>
+            <a (click)="toggleSubmenuReturns()"><i class="pi pi-sync mr-1" style="color: mediumpurple;"></i>Devoluciones</a>
             <!-- Submenu que se despliega cuando isSubmenuOpen es true -->
             <ul *ngIf="isSubmenuOpenReturns" class="submenu">
               <li class="item" routerLink="/loss"><i class="pi pi-exclamation-circle mr-2"
@@ -56,6 +39,16 @@
         </ul>
       </li>
 
+      <li>
+        <a (click)="toggleSubmenuConfig()"><i class="bi bi-gear mr-2" style="color:darkcyan;"></i>
+          Configuración</a>
+        <ul *ngIf="isSubmenuOpenConfig" class="submenu">
+          <li class="item" routerLink="/roles"><i class="bi bi-suitcase-lg mr-2" style="color: salmon;"></i><a>Roles</a>
+          </li>
+          <li class="item" routerLink="/users"><i class="bi bi-person-lines-fill mr-2"
+            style="color: springgreen;"></i><a>Usuarios</a></li>
+        </ul>
+      </li>
 
     </ul>
   </div>

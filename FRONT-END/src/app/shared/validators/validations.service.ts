@@ -20,6 +20,17 @@ export class ValidationService {
 
   constructor() { }
 
+
+  // funcion para validar fechas
+    dateValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const value = control.value;
+      const isValidDate = !isNaN(Date.parse(value));
+      return isValidDate ? null : { invalidDate: { value: control.value } };
+    };
+  }
+  // fin funcion para validar fechas
+
   getValidatorsForField(module: string, fieldName: string): ValidatorFn[] {
     const fieldConfig = this.getFieldConfig(module, fieldName);
     if (!fieldConfig) return [];

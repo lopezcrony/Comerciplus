@@ -8,8 +8,8 @@ import { CrudModalDirective } from '../../shared/directives/crud-modal.directive
 import { FileUploadModule } from 'primeng/fileupload';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
-import { Product} from "../products/products.model";
-import { ProductsService} from "../products/products.service";
+import { Product } from "../products/products.model";
+import { ProductsService } from "../products/products.service";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DropdownModule } from 'primeng/dropdown';
 import { ValidationService } from '../../shared/validators/validations.service';
@@ -25,7 +25,7 @@ import { CategoriesService } from '../categories/categories.service';
     AutoCompleteModule,
     DropdownModule,
     FileUploadModule
-    ],
+  ],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss']
 })
@@ -34,12 +34,12 @@ import { CategoriesService } from '../categories/categories.service';
 export class ProductsComponent implements OnInit {
 
 
-  products:Product[]=[];
-  
-  filteredProducts:Product[]=[];
-  categories: any[] = []; 
+  products: Product[] = [];
 
-  columns:{ field: string, header: string }[] = [
+  filteredProducts: Product[] = [];
+  categories: any[] = [];
+
+  columns: { field: string, header: string }[] = [
     { field: 'nombreProducto', header: 'Producto' },
     { field: 'imagenProducto', header: 'Imágen' },
     { field: 'idCategoria', header: 'Categoría' },
@@ -81,14 +81,14 @@ export class ProductsComponent implements OnInit {
       estadoCategoria: [true]
     });
   }
-  
+
   categoryModalVisible: boolean = false;
   newCategory = { name: '', description: '' };
   selectedProduct: Product | undefined;
 
 
   showCategoryModal() {
-      this.categoryModalVisible = true;
+    this.categoryModalVisible = true;
   }
 
   saveCategory() {
@@ -105,12 +105,13 @@ export class ProductsComponent implements OnInit {
         this.categoryModalVisible = false;
         this.loadCategories();
       },
-      error: (error) => { 
-        this.toastr.error(error.message, 'Error');}
+      error: (error) => {
+        this.toastr.error(error.message, 'Error');
+      }
     });
 
   }
-  
+
   loadProducts() {
     this.productService.getAllProducts().subscribe(data => {
       this.products = data;
@@ -124,22 +125,22 @@ export class ProductsComponent implements OnInit {
       this.categories = data.filter(category => category.estadoCategoria === true);
     });
   }
-  
+
 
   //funcion inicializadora(todo lo de aqui se inicia de una)
-  ngOnInit(){
+  ngOnInit() {
     this.loadProducts();
-    this.loadCategories(); 
+    this.loadCategories();
   }
 
 
-//esta abre la modal de crear  y diferencia si se esta creando o editando
+  //esta abre la modal de crear  y diferencia si se esta creando o editando
   openCreateModal() {
     this.isEditing = false;
     this.productForm.reset({ estadoProducto: true });
     this.showModal = true;
   }
-  
+
 
   //abre la monda de editar y ya
   openEditModal(product: Product) {
@@ -162,14 +163,14 @@ export class ProductsComponent implements OnInit {
     this.productForm.reset();
   }
 
-  cancelModalMessage(){
+  cancelModalMessage() {
     this.alertsService.menssageCancel()
   }
 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.productForm.get(fieldName);
     return !!(field?.invalid && (field.touched || field.dirty));
-  }  
+  }
 
   getErrorMessage(fieldName: string): string {
     const control = this.productForm.get(fieldName);
@@ -186,33 +187,48 @@ export class ProductsComponent implements OnInit {
 
   //funcion para guardar o actualizar una categoria
   saveProduct() {
-
+    // Si es edición, deshabilita los campos que no deben ser modificados.
+    if (this.isEditing) {
+      this.productForm.get('stock')?.disable();         // Deshabilita 'stock'
+      this.productForm.get('idCategoria')?.disable();   // Deshabilita 'idCategoria'
+      this.productForm.get('nombreCategoria')?.disable(); // Deshabilita 'nombreCategoria'
+    } else {
+      // Si es creación, establece el valor por defecto de 'stock' a 0
+      this.productForm.patchValue({
+        stock: 0
+      });
+    }
+  
     // Válida el formulario antes de enviarlo
     if (this.productForm.invalid) {
       this.markFormFieldsAsTouched();
       return;
     }
-
-      //categoriadata guarda todo lo del form(informacion)
-      const productData = this.productForm.value;
-      //si es editing edita y se llama esa funcion si no entonces es crear y llama crear :)
-      const request = this.isEditing ?
-        this.productService.updateProduct(productData) :
-        this.productService.createProduct(productData);
-        
-      request.subscribe({
-        next: () => {
-          this.loadProducts();
-          this.isEditing
+  
+    // Obtener los valores del formulario, incluyendo los deshabilitados
+    const productData = this.productForm.getRawValue();
+  
+    // Ejecuta la acción correspondiente (crear o actualizar)
+    const request = this.isEditing
+      ? this.productService.updateProduct(productData)
+      : this.productService.createProduct(productData);
+  
+    // Manejo de la respuesta
+    request.subscribe({
+      next: () => {
+        this.loadProducts();
+        this.isEditing
           ? this.toastr.success('Producto actualizado exitosamente.', 'Éxito')
           : this.toastr.success('Producto creado exitosamente.', 'Éxito');
-          this.closeModal();
-        },
-        error: (error) => { 
-          this.toastr.error(error.message, 'Error');
-          console.error('Error al guardar el producto:', error);}
-      });
+        this.closeModal();
+      },
+      error: (error) => {
+        this.toastr.error(error.message, 'Error');
+        console.error('Error al guardar el producto:', error);
+      }
+    });
   }
+  
 
   deleteProduct(id: number) {
     //el suscribe es un tipo de try catch
@@ -236,27 +252,27 @@ export class ProductsComponent implements OnInit {
   }
 
 
-  confirmDelete(product:Product) {
+  confirmDelete(product: Product) {
     this.alertsService.confirm(
       `¿Quieres eliminar el producto: ${product.nombreProducto}?`,
       () => this.deleteProduct(product.idProducto)
     );
   }
-  
+
   exportProduct() { }
 
   searchProduct(query: string) {
     let lowerCaseQuery = query.toLowerCase();
-    
+
     // Intenta convertir la consulta a un número
     let numericQuery = parseFloat(query);
-  
+
     this.filteredProducts = this.products.filter(product => {
       let nombreProductoMatch = product.nombreProducto?.toLowerCase().includes(lowerCaseQuery);
-  
+
       // Comparación numérica para el stock
       let stockMatch = !isNaN(numericQuery) && product.stock != null && Number(product.stock) === numericQuery;
-  
+
       // Retorna verdadero si hay coincidencia en nombreProducto o stock
       return nombreProductoMatch || stockMatch;
     });
@@ -264,7 +280,7 @@ export class ProductsComponent implements OnInit {
 
   changeProductStatus(updatedProduct: Product) {
     const estadoProducto = updatedProduct.estadoProducto ?? false;
-  
+
     this.productService.updateStatusProduct(updatedProduct.idProducto, estadoProducto).subscribe({
       next: () => {
         [this.products, this.filteredProducts].forEach(list => {
@@ -279,7 +295,7 @@ export class ProductsComponent implements OnInit {
         this.toastr.error('Error al actualizar el estado', 'Error');
       }
     });
-  } 
+  }
 
 
   // funciones para la carga de imagenes en productos
@@ -291,7 +307,7 @@ export class ProductsComponent implements OnInit {
     }
     return `http://localhost:3006/uploads/productos/${productId}`;
   }
-  
+
 
 
   onFileSelect(event: any) {
@@ -301,7 +317,7 @@ export class ProductsComponent implements OnInit {
       this.uploadImage();
     }
   }
-  
+
   uploadImage() {
     if (this.selectedFile) {
       this.productService.uploadImage(this.selectedFile).subscribe({
