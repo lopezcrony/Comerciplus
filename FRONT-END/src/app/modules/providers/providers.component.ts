@@ -2,8 +2,6 @@ import { ProvidersService } from './providers.service';
 import { Proveedor } from './providers.model';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
-import { CRUDComponent } from '../../shared/crud/crud.component';
-import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 import { ValidationService } from '../../shared/validators/validations.service';
 
@@ -16,8 +14,6 @@ import { ToastrService } from 'ngx-toastr';
   standalone: true,
   imports: [
     ...SHARED_IMPORTS,
-    CRUDComponent,
-    CrudModalDirective
     ],
   templateUrl: './providers.component.html',
 })

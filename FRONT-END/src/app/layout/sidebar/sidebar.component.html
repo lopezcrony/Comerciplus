@@ -1,6 +1,8 @@
-<nav class="sidebar">
+
+<nav class="sidebar" [ngClass]="{'open': isSidebarVisible, 'collapsed': !isSidebarVisible}">
   <div class="mt-5">
     <ul>
+<<<<<<< HEAD
       <li class="item" routerLink="/dashboard"><i class="bi bi-house mr-2" style="color:darkred;"></i><a>Dashboard</a></li>
 
       <li>
@@ -13,10 +15,51 @@
               style="color:springgreen;"></i><a>Productos</a></li>
           <li class="item" routerLink="/providers"><i class="pi pi-truck mr-2" style="color: yellowgreen"></i><a>Proveedores</a></li>
           <li class="item" routerLink="/shoppings"><i class="bi bi-basket2 mr-2" style="color:hotpink"></i><a>Compras</a></li>
+=======
+      <li class="item" routerLink="/dashboard" routerLinkActive="active">
+        <i class="bi bi-house mr-2" style="color:#C62828;"></i><a>Inicio</a>
+      </li>
+
+      <li>
+        <a (click)="toggleSubmenu('Shoppings')" class="menu-link">
+          <i class="pi pi-shop mr-2" style="color:#3F51B5;"></i>Compras
+          <i class="bi" [ngClass]="{'bi-chevron-right': !isSubmenuOpen('Shoppings'), 'bi-chevron-down': isSubmenuOpen('Shoppings')}" style="float:right;"></i>
+        </a>
+        <ul [@submenuAnimation]="getSubmenuState('Shoppings')" class="submenu">
+          <li class="item" routerLink="/categories" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="bi bi-tag-fill mr-2" style="color:salmon;"></i><a>Categorías</a>
+          </li>
+          <li class="item" routerLink="/products" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="bi bi-bag mr-2" style="color:springgreen;"></i><a>Productos</a>
+          </li>
+          <li class="item" routerLink="/providers" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="pi pi-truck mr-2" style="color:yellowgreen;"></i><a>Proveedores</a>
+          </li>
+        </ul>
+        
+      </li>
+
+      <li>
+        <a (click)="toggleSubmenu('Sales')" class="menu-link">
+          <i class="bi bi-coin mr-3" style="color:#29af2f;"></i>Ventas
+          <i class="bi" [ngClass]="{'bi-chevron-right': !isSubmenuOpen('Sales'), 'bi-chevron-down': isSubmenuOpen('Sales')}" style="float:right;"></i>
+        </a>
+        <ul [@submenuAnimation]="getSubmenuState('Sales')" class="submenu">
+          <li class="item" routerLink="/clients" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="bi bi-person-vcard mr-2" style="color:salmon;"></i><a>Clientes</a>
+          </li>
+          <li class="item" routerLink="/sales" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="bi bi-cash-coin mr-2" style="color:springgreen;"></i><a>Ventas</a>
+          </li>
+          <li class="item" routerLink="/credits" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="bi bi-credit-card mr-2" style="color:yellowgreen;"></i><a>Créditos</a>
+          </li>
+>>>>>>> ee7400ad81c307c0bfe8a79162304639d8d20b8b
         </ul>
       </li>
 
       <li>
+<<<<<<< HEAD
         <a (click)="toggleSubmenuSales()"><i class="bi bi-cart3 mr-3" style="color:saddlebrown;"></i>Ventas</a>
         <ul *ngIf="isSubmenuOpenSales" class="submenu">
           <li class="item" routerLink="/clients"><i class="bi bi-person-vcard mr-2"
@@ -35,11 +78,27 @@
               <li class="item" routerLink="/returProvider"><i class="bi bi-bandaid mr-2" style="color: springgreen;"></i><a>Proveeedor</a></li>
               <li class="item" routerLink="/returnSale"><i class="bi bi-piggy-bank mr-2" style="color: yellowgreen;"></i><a>Venta</a></li>
             </ul>
+=======
+        <a (click)="toggleSubmenu('Returns')" class="menu-link">
+          <i class="pi pi-sync mr-2" style="color:#7B1FA2;"></i>Devoluciones
+          <i class="bi" [ngClass]="{'bi-chevron-right': !isSubmenuOpen('Returns'), 'bi-chevron-down': isSubmenuOpen('Returns')}" style="float:right;"></i>
+        </a>
+        <ul [@submenuAnimation]="getSubmenuState('Returns')" class="submenu">
+          <li class="item" routerLink="/loss" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="pi pi-exclamation-circle mr-2" style="color:salmon;"></i><a>Pérdidas</a>
+          </li>
+          <li class="item" routerLink="/returProvider" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="bi bi-bandaid mr-2" style="color:springgreen;"></i><a>Proveedor</a>
+          </li>
+          <li class="item" routerLink="/returnSale" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="bi bi-piggy-bank mr-2" style="color:yellowgreen;"></i><a>Venta</a>
+>>>>>>> ee7400ad81c307c0bfe8a79162304639d8d20b8b
           </li>
         </ul>
       </li>
 
       <li>
+<<<<<<< HEAD
         <a (click)="toggleSubmenuConfig()"><i class="bi bi-gear mr-2" style="color:darkcyan;"></i>
           Configuración</a>
         <ul *ngIf="isSubmenuOpenConfig" class="submenu">
@@ -50,6 +109,22 @@
         </ul>
       </li>
 
+=======
+        <a (click)="toggleSubmenu('config')" class="menu-link">
+          <i class="bi bi-gear mr-2" style="color:darkcyan;"></i>Configuración
+          <i class="bi" [ngClass]="{'bi-chevron-right': !isSubmenuOpen('config'), 'bi-chevron-down': isSubmenuOpen('config')}" style="float:right;"></i>
+        </a>
+        <ul [@submenuAnimation]="getSubmenuState('config')" class="submenu">
+          <li class="item" routerLink="/roles" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="bi bi-suitcase-lg mr-2" style="color:salmon;"></i><a>Roles</a>
+          </li>
+          <li class="item" routerLink="/users" routerLinkActive="active" (click)="closeSidebar()">
+            <i class="bi bi-person-lines-fill mr-2" style="color:salmon;"></i><a>Usuarios</a>
+          </li>
+        </ul>
+      </li>
+      
+>>>>>>> ee7400ad81c307c0bfe8a79162304639d8d20b8b
     </ul>
   </div>
 </nav>

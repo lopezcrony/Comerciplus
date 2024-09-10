@@ -3,23 +3,17 @@ import { Client } from './client.model';
 
 import { ValidationService } from '../../shared/validators/validations.service';
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
-import { CRUDComponent } from '../../shared/crud/crud.component';
-import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { FloatLabelModule } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-clients',
   standalone: true,
   imports: [
     ...SHARED_IMPORTS,
-    CRUDComponent,
-    CrudModalDirective,
-    FloatLabelModule
   ],
   templateUrl: './clients.component.html'
 })

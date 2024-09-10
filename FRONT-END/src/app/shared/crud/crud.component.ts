@@ -105,9 +105,12 @@ export class CRUDComponent {
     );
   }
 
-
   changeStatus(item: any) {
     const updatedItem = { ...item, [this.statusField]: !item[this.statusField] };
     this.statusChange.emit(updatedItem);
+  }
+
+  getImageUrl(productId: any): string {
+    return `http://localhost:3006/uploads/productos/${productId}`;
   }
 }

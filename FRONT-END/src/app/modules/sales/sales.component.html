@@ -1,1 +1,69 @@
-<p>sales works!</p>
+<div class="card">
+  <div class="venta-productos-container">
+    <div class="carrito-venta">
+      <div class="busqueda-producto">
+        <p-inputGroup>
+          <input type="text" pInputText placeholder="Buscar producto por código o nombre"
+            [(ngModel)]="busquedaProducto">
+          <button type="button" pButton icon="pi pi-search" (click)="searchProduct()"></button>
+        </p-inputGroup>
+      </div>
+
+      <p-table [value]="productos" [scrollable]="true" scrollHeight="calc(100vh - 200px)">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-producto>
+          <tr>
+            <td>
+              <div class="producto-info">
+                <span>{{producto.nombre}}</span>
+              </div>
+            </td>
+            <td>{{producto.precio | currency:'USD':'symbol':'1.2-2'}}</td>
+            <td>
+              <p-inputNumber [(ngModel)]="producto.cantidad" [showButtons]="true" buttonLayout="horizontal"
+                spinnerMode="horizontal" [min]="1" [max]="100" decrementButtonClass="p-button-danger"
+                incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus" class="input-number-compact">
+              </p-inputNumber>
+            </td>
+
+            <td>{{producto.precio * producto.cantidad | currency:'USD':'symbol':'1.2-2'}}</td>
+            <td>
+              <button pButton icon="pi pi-trash" class="p-button-danger p-button-rounded"
+                (click)="eliminarProducto(producto)"></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <div class="detalle-venta">
+      <h2>Detalles de Venta</h2>
+      <div class="cliente-info">
+        <p-dropdown [options]="clientes" [(ngModel)]="clienteSeleccionado" optionLabel="nombre"
+          placeholder="Seleccionar Cliente"></p-dropdown>
+      </div>
+      <div class="credito">
+        <label for="credito">Crédito a asignar</label>
+        <p-inputNumber id="credito" [(ngModel)]="creditoAsignado" mode="currency" currency="USD"
+          locale="en-US"></p-inputNumber>
+      </div>
+      <div class="recibo">
+        <p-checkbox [(ngModel)]="imprimirRecibo" [binary]="true" label="Imprimir Recibo"></p-checkbox>
+      </div>
+      <div class="total-venta">
+        <h3>Total: {{calcularTotal() | currency:'USD':'symbol':'1.2-2'}}</h3>
+      </div>
+      <button pButton label="Finalizar Venta" icon="pi pi-check" (click)="finalizarVenta()"
+        class="p-button-success"></button>
+    </div>
+  </div>
+</div>
