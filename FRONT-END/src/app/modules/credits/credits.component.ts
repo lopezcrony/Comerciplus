@@ -3,33 +3,22 @@ import { Credit } from './credit.model';
 import { Client } from '../clients/client.model';
 import { CreditsService } from './credits.service';
 import { ClientService } from '../clients/clients.service';
+import { Installment } from '../installments/installment.model';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
-import { CRUDComponent } from '../../shared/crud/crud.component';
-import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 import { ValidationService } from '../../shared/validators/validations.service';
 
-import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { forkJoin } from 'rxjs';
-import { Installment } from '../installments/installment.model';
 import { ToastrService } from 'ngx-toastr';
-import { TableModule } from 'primeng/table';
-import { TooltipModule } from 'primeng/tooltip';
-import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-credits',
   standalone: true,
   imports: [
     ...SHARED_IMPORTS,
-    CRUDComponent,
-    CrudModalDirective,
-    FloatLabelModule,
-    TableModule,
-    TooltipModule,
-    InputNumberModule,
+
   ],
   templateUrl: './credits.component.html',
   styleUrl: './credits.component.css',
@@ -79,8 +68,10 @@ export class CreditsComponent implements OnInit {
     }).subscribe(({ clients, credits }) => {
       this.clients = clients;
       this.credits = credits.map(credit => {
-        const client = this.clients.find(c => c.idCliente === credit.idCliente)!;
-        return { ...credit, nombreCliente: client.nombreCliente + ' ' + client.apellidoCliente };
+        const client = this.clients.find(c => c.idCliente === credit.idCliente);
+        return {
+          ...credit, nombreCliente: client ? client.nombreCliente + ' ' + client.apellidoCliente : ''
+        };
       });
       this.filteredCredits = this.credits;
     });
@@ -151,15 +142,19 @@ export class CreditsComponent implements OnInit {
   }
 
   searchCredits(query: string) {
-    this.filteredCredits = this.credits.filter(credit =>
-      credit.totalCredito.toString().includes(query)
-    );
-    this.clients = this.clients.filter(client => 
-      client.nombreCliente.toLowerCase().includes(query.toLowerCase()) ||
-      client.apellidoCliente.toLowerCase().includes(query.toLowerCase())
-    );
+    const lowerQuery = query.toLowerCase();
+  
+    this.filteredCredits = this.credits.filter(credit => {
+      // Asegúrate de que 'credit' tiene 'nombreCliente'
+      const creditWithClientName = credit as Credit & { nombreCliente?: string };
+  
+      const matchesTotalCredito = credit.totalCredito.toString().includes(query);
+      const matchesClientName = (creditWithClientName.nombreCliente || '').toLowerCase().includes(lowerQuery);
+  
+      return matchesTotalCredito || matchesClientName;
+    });
   }
-
+  
   loadCreditHistory(idCredit: number) {
     this.creditService.getCreditHistory(idCredit).subscribe({
       next: (history) => {

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { trigger, state, style, animate, transition } from '@angular/animations';
@@ -8,8 +8,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.css'], 
-
+  styleUrls: ['./sidebar.component.css'],
   animations: [
     trigger('sidebarAnimation', [
       state('collapsed', style({
@@ -22,30 +21,43 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
       })),
       transition('collapsed <=> expanded', animate('300ms ease-in-out')),
     ]),
+    trigger('submenuAnimation', [
+      state('closed', style({
+        height: '0',
+        opacity: '0',
+        overflow: 'hidden'
+      })),
+      state('open', style({
+        height: '*',
+        opacity: '1'
+      })),
+      transition('closed <=> open', animate('300ms ease-in-out')),
+    ])
   ],
 })
 export class SidebarComponent {
-  @Input() isSidebarVisible = false;
-  @Input() isSubmenuOpenConfig: boolean = false;
-  @Input() isSubmenuOpenUsers: boolean = false;
-  @Input() isSubmenuOpenShoppings: boolean = false;
-  @Input() isSubmenuOpenSales: boolean = false;
-  @Input() isSubmenuOpenReturns: boolean = false;
+  @Input() isSidebarVisible: boolean = true;
+  @Output() sidebarClosed = new EventEmitter<void>();
 
-  toggleSubmenuConfig() {
-    this.isSubmenuOpenConfig = !this.isSubmenuOpenConfig;
+  private activeSubmenu: string | null = null;
+
+  isSubmenuOpen(submenu: string): boolean {
+    return this.activeSubmenu === submenu;
   }
-  toggleSubmenuUsers() {
-    this.isSubmenuOpenUsers = !this.isSubmenuOpenUsers;
+
+  toggleSubmenu(submenu: string) {
+    if (this.activeSubmenu === submenu) {
+      this.activeSubmenu = null;
+    } else {
+      this.activeSubmenu = submenu;
+    }
   }
-  toggleSubmenuShoppings() {
-    this.isSubmenuOpenShoppings = !this.isSubmenuOpenShoppings;
+
+  getSubmenuState(submenu: string): string {
+    return this.isSubmenuOpen(submenu) ? 'open' : 'closed';
   }
-  toggleSubmenuSales() {
-    this.isSubmenuOpenSales = !this.isSubmenuOpenSales;
-  }
-  toggleSubmenuReturns() {
-    this.isSubmenuOpenReturns = !this.isSubmenuOpenReturns;
+
+  closeSidebar() {
+    this.sidebarClosed.emit(); // Emite el evento para cerrar el sidebar
   }
 }
-  
