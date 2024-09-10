@@ -1,1 +1,34 @@
-<p>sales works!</p>
+<div class="venta-productos-container">
+    <div class="venta-productos">
+      <h2>Venta de Productos</h2>
+
+      
+    
+      <div *ngFor="let producto of productos; let i = index" class="producto">
+        <img src="assets/imagen-producto.jpg" alt="{{producto.nombre}}">
+        <div class="producto-info">
+          <p>{{producto.nombre}}</p>
+          <p>\${{producto.precio}} × {{producto.cantidad}}</p>
+        </div>
+        <div class="producto-controles">
+          <button (click)="decrementarCantidad(producto)">-</button>
+          <button (click)="incrementarCantidad(producto)">+</button>
+          <button (click)="eliminarProducto(i)">x</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="opciones">
+      <h2>Opciones</h2>
+      <div class="credito">
+        <label for="credito">Crédito a asignar</label>
+        <input type="number" id="credito"  />
+      </div>
+      <div class="recibo">
+        <input type="checkbox" id="recibo"/>
+        <label for="recibo">Imprimir Recibo</label>
+      </div>
+      <button class="finalizar-btn" (click)="finalizarVenta()">Finalizar Venta</button>
+    </div>
+  </div>
+  

@@ -1,0 +1,82 @@
+.venta-productos-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .venta-productos {
+    width: 65%;
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  h2 {
+    margin-bottom: 15px;
+  }
+  
+  .producto {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .producto img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    margin-right: 15px;
+  }
+  
+  .producto-info {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .producto-controles button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  
+  .opciones {
+    width: 30%;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .opciones h2 {
+    margin-bottom: 20px;
+  }
+  
+  .credito {
+    margin-bottom: 20px;
+  }
+  
+  .credito input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+  }
+  
+  .finalizar-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
