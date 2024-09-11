@@ -20,8 +20,8 @@ import { ToastrService } from 'ngx-toastr';
   imports: [
     ...SHARED_IMPORTS,
     CRUDComponent,
-    CrudModalDirective
-  ]
+    CrudModalDirective,
+  ],
 })
 export class RolesComponent implements OnInit {
 

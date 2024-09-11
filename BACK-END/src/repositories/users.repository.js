@@ -10,14 +10,14 @@ const User = require('../models/users.model');
 
 const getAllUsers = async () => {
   return await User.findAll({
-    attributes: { exclude: ['contraseñaUsuario'] }
+    attributes: { exclude: ['claveUsuario'] }
   });
 };
 
 
 const getOneUser = async (id) => {
   return await User.findByPk(id, {
-    attributes: { exclude: ['contraseñaUsuario'] }
+    attributes: { exclude: ['claveUsuario'] }
   });
 };
 

@@ -18,7 +18,8 @@ import { ValidationService } from '../../shared/validators/validations.service';
   imports: [
     ...SHARED_IMPORTS,
     CRUDComponent,
-    CrudModalDirective],
+    CrudModalDirective,
+  ],
   templateUrl: './loss.component.html',
 })
 export class LossComponent implements OnInit {
@@ -122,22 +123,22 @@ export class LossComponent implements OnInit {
         }
       }
     });
-
   }
-
 
   searchLoss(query: string) {
-    const lowerCaseQuery = query.toLowerCase();
-
-    // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
-
+    if (!query) {
+      this.filteredLoss = [...this.loss]; // Si no hay query, mostrar todos los resultados
+      return;
+    }
+    
     this.filteredLoss = this.loss.filter(loss =>
-      loss.CodigoProducto.toFixed() ||
-      loss.NombreProducto.toLowerCase().includes(lowerCaseQuery) ||
-      // loss.fechaDeBaja ||
-      // loss.cantidad ||
-      loss.motivo.toLowerCase().includes(lowerCaseQuery)
+      loss.CodigoProducto.toString().includes(query.toLowerCase()) ||
+      loss.NombreProducto.toLowerCase().includes(query.toLowerCase()) ||
+      loss.motivo.toLowerCase().includes(query.toLowerCase()) ||
+      loss.cantidad.toString().includes(query) ||
+      loss.fechaDeBaja && new Date(loss.fechaDeBaja).toLocaleDateString().includes(query) // Para la fecha
     );
   }
+  
 
 }

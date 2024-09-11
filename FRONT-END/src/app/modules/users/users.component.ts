@@ -59,7 +59,7 @@ export class UsersComponent implements OnInit {
       apellidoUsuario: ['', validationService.getValidatorsForField('users', 'apellidoUsuario')],
       telefonoUsuario: ['', validationService.getValidatorsForField('users', 'telefonoUsuario')],
       correoUsuario: ['', validationService.getValidatorsForField('users', 'correoUsuario')],
-      contraseñaUsuario: ['', validationService.getValidatorsForField('users', 'contraseñaUsuario')],
+      claveUsuario: ['', validationService.getValidatorsForField('users', 'claveUsuario')],
       estadoUsuario: [true]
     });
   }
@@ -129,22 +129,22 @@ export class UsersComponent implements OnInit {
       this.markFormFieldsAsTouched();
       return;
     }
-    const user: User = this.userForm.value;
-    if (this.isEditing) {
-      this.userService.updateUser(user).subscribe(() => {
-        this.toastr.success('Usuario actualizado exitosamente', 'Éxito');
-        this.loadUsers();
-        this.closeModal();
-      });
-    } else {
-      this.userService.createUser(user).subscribe(() => {
-        this.toastr.success('Usuario creado exitosamente', 'Éxito');
-        this.loadUsers();
-        this.closeModal();
-      });
-    }
 
-  }
+    const user = this.userForm.value
+
+    const request = this.isEditing 
+    ? this.userService.updateUser(user) 
+    : this.userService.createUser(user);
+
+    request.subscribe({
+      next: () => {
+        this.toastr.success('¡Usuario guardado con éxito!', 'Éxito');
+        this.loadUsers();
+        this.closeModal();
+      },
+      error: () => this.toastr.error('Error al guardar el usuario', 'Error')
+    });
+};
 
   confirmDelete(user: User) {
     this.alertsService.confirm(

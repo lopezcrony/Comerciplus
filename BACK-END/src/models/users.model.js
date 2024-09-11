@@ -37,7 +37,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  contraseñaUsuario: {
+  claveUsuario: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -50,22 +50,22 @@ const User = sequelize.define('User', {
   timestamps: false,
   hooks: {
     beforeCreate: async (user) => {
-      if (user.contraseñaUsuario) {
-        console.log('Encriptando contraseña antes de crear:', user.contraseñaUsuario);
-        user.contraseñaUsuario = await bcrypt.hash(user.contraseñaUsuario, 10);
+      if (user.claveUsuario) {
+        console.log('Encriptando contraseña antes de crear:', user.claveUsuario);
+        user.claveUsuario = await bcrypt.hash(user.claveUsuario, 10);
       }
     },
     beforeUpdate: async (user) => {
-      if (user.changed('contraseñaUsuario')) {
+      if (user.changed('claveUsuario')) {
         console.log('Contraseña cambiada, encriptando...');
-        user.contraseñaUsuario = await bcrypt.hash(user.contraseñaUsuario, 10);
+        user.claveUsuario = await bcrypt.hash(user.claveUsuario, 10);
       }
     }
   }
 });
 
 User.prototype.validPassword = async function(password) {
-  return await bcrypt.compare(password, this.contraseñaUsuario);
+  return await bcrypt.compare(password, this.claveUsuario);
 };
 
 User.associate = (models) => {
