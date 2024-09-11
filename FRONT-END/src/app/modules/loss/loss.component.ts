@@ -18,7 +18,8 @@ import { ValidationService } from '../../shared/validators/validations.service';
   imports: [
     ...SHARED_IMPORTS,
     CRUDComponent,
-    CrudModalDirective],
+    CrudModalDirective,
+  ],
   templateUrl: './loss.component.html',
 })
 export class LossComponent implements OnInit {

@@ -3,6 +3,8 @@ import { Client } from './client.model';
 
 import { ValidationService } from '../../shared/validators/validations.service';
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
+import { CRUDComponent } from '../../shared/crud/crud.component';
+import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { Component, OnInit } from '@angular/core';
@@ -14,6 +16,8 @@ import { ToastrService } from 'ngx-toastr';
   standalone: true,
   imports: [
     ...SHARED_IMPORTS,
+    CRUDComponent,
+    CrudModalDirective,
   ],
   templateUrl: './clients.component.html'
 })

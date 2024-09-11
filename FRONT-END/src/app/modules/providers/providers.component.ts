@@ -2,6 +2,8 @@ import { ProvidersService } from './providers.service';
 import { Proveedor } from './providers.model';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
+import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
+import { CRUDComponent } from '../../shared/crud/crud.component';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 import { ValidationService } from '../../shared/validators/validations.service';
 
@@ -14,7 +16,9 @@ import { ToastrService } from 'ngx-toastr';
   standalone: true,
   imports: [
     ...SHARED_IMPORTS,
-    ],
+    CRUDComponent,
+    CrudModalDirective,
+  ],
   templateUrl: './providers.component.html',
 })
 
@@ -51,7 +55,7 @@ export class ProvidersComponent implements OnInit {
       estadoProveedor: [true]
     });
   }
-  
+
   // Cargar la lista de proveedores
   loadProviders() {
     this.providersService.getAllProviders().subscribe(data => {
@@ -60,7 +64,7 @@ export class ProvidersComponent implements OnInit {
     });
   }
 
-  
+
 
   ngOnInit() {
     this.loadProviders();
@@ -71,7 +75,7 @@ export class ProvidersComponent implements OnInit {
     this.providerForm.reset({ estadoProveedor: true });
     this.showModal = true;
   }
-  cancelModalMessage(){
+  cancelModalMessage() {
     this.alertsService.menssageCancel()
   }
   openEditModal(provider: Proveedor) {
@@ -88,7 +92,7 @@ export class ProvidersComponent implements OnInit {
   isFieldInvalid(fieldName: string): boolean {
     const field = this.providerForm.get(fieldName);
     return !!(field?.invalid && (field.touched || field.dirty));
-  } 
+  }
 
   getErrorMessage(fieldName: string): string {
     const control = this.providerForm.get(fieldName);
@@ -110,22 +114,22 @@ export class ProvidersComponent implements OnInit {
       this.markFormFieldsAsTouched();
       return;
     }
-      const providerData = this.providerForm.value
-      const request = this.isEditing 
-      ? this.providersService.updateProvider(providerData) 
+    const providerData = this.providerForm.value
+    const request = this.isEditing
+      ? this.providersService.updateProvider(providerData)
       : this.providersService.createProvider(providerData);
-  
-      request.subscribe({
-        next: () => {
-          this.toastr.success('¡Proveedor guardado con éxito!', 'Éxito');
-          this.loadProviders();
-          this.closeModal();
-        },
-        error: (error) => {
-          console.error('Error al guardar proveedor:', error);
-          this.toastr.error('Error al guardar proveedor. Inténtalo de nuevo.', 'Error');
-        }
-      });
+
+    request.subscribe({
+      next: () => {
+        this.toastr.success('¡Proveedor guardado con éxito!', 'Éxito');
+        this.loadProviders();
+        this.closeModal();
+      },
+      error: (error) => {
+        console.error('Error al guardar proveedor:', error);
+        this.toastr.error('Error al guardar proveedor. Inténtalo de nuevo.', 'Error');
+      }
+    });
   }
 
   searchProviders(query: string) {
@@ -139,7 +143,7 @@ export class ProvidersComponent implements OnInit {
 
   changeProviderStatus(updatedProvider: Proveedor) {
     const estadoCliente = updatedProvider.estadoProveedor ?? false;
-  
+
     this.providersService.updateStatusProvider(updatedProvider.idProveedor, estadoCliente).subscribe({
       next: () => {
         [this.providers, this.filteredProviders].forEach(list => {
@@ -154,7 +158,7 @@ export class ProvidersComponent implements OnInit {
         this.toastr.error('Error al actualizar el estado del proveedor', 'Error');
       }
     });
-  } 
+  }
 
   exportProviders() { }
 }

@@ -6,6 +6,8 @@ import { ClientService } from '../clients/clients.service';
 import { Installment } from '../installments/installment.model';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
+import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
+import { CRUDComponent } from '../../shared/crud/crud.component';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 import { ValidationService } from '../../shared/validators/validations.service';
 
@@ -13,12 +15,14 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
+
 @Component({
   selector: 'app-credits',
   standalone: true,
   imports: [
     ...SHARED_IMPORTS,
-
+    CRUDComponent,
+    CrudModalDirective
   ],
   templateUrl: './credits.component.html',
   styleUrl: './credits.component.css',
