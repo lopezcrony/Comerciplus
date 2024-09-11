@@ -19,6 +19,9 @@ import { ProductsService } from '../products/products.service';
 import { CreditsService } from '../credits/credits.service';
 import { ClientService } from '../clients/clients.service';
 import { SalesService } from './sales.service';
+import { Sale } from './sales.model';
+import { DetailSalesService } from '../detailSale/detail.Sale.service';
+
 
 
 @Component({
@@ -58,6 +61,8 @@ export class SalesComponent implements OnInit {
     private productService: ProductsService,
     private creditService: CreditsService,
     private clientService: ClientService,
+    private detailSalesService: DetailSalesService,
+
 
   ) {
     this.busquedaForm = this.fb.group({
@@ -150,7 +155,67 @@ export class SalesComponent implements OnInit {
     }
 
     // Aquí iría la lógica para crear la venta
+
+    const totalVenta = this.total; 
+
+  // Crear el objeto de la venta
+  const nuevaVenta: Sale = {
+    idVenta: 0, // Lo generará la base de datos
+    fechaVenta: new Date(),
+    totalVenta: totalVenta,
+  };
+
+  // Llamar al servicio para guardar la venta en la base de datos
+  this.salesService.createSale(nuevaVenta).subscribe(
+    async response => {
+      const generatedSaleId =await response.idVenta; // Obtener el idVenta generado por la base de datos
+
+      // Ahora que tenemos el idVenta, guardar los detalles de los productos
+      this.saveSaleDetails(generatedSaleId);
+      console.log(nuevaVenta)
+      this.messageService.add({ severity: 'success', summary: 'Venta Registrada', detail: 'La venta se registró correctamente' });
+      // Limpiar los datos después de la venta
+      
+    },
+    error => {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo registrar la venta' });
+    }
+  );
   }
+
+  saveSaleDetails(idVenta: number) {
+    const saleDetails: DetailSale[] = this.detailSale.map(item => ({
+      idVenta: idVenta,
+      idCodigoBarra: item.idCodigoBarra,
+      cantidadProducto: item.cantidadProducto,
+      subtotal: item.subtotal
+    }));
+    console.log(saleDetails)
+
+  
+    // Llamar al servicio para guardar todos los detalles de la venta
+    this.detailSalesService.createDetailSale(saleDetails).subscribe(
+      response => {
+        console.log(saleDetails)
+        this.clearSale()
+
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Venta registrada correctamente' });
+      },
+      error => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo registrar el detalle de la venta' });
+      }
+    );
+  }
+  
+  
+
+  clearSale() {
+    this.detailSale = []; // Limpia la lista de productos en la venta
+    this.total = 0; // Reinicia el total de la venta
+    this.clienteSeleccionado = null; // Limpia la selección del cliente si hay
+    this.esVentaCredito = false; // Reinicia la selección de venta a crédito si corresponde
+  }
+  
 
   actualizarTotal() {
     this.total = this.detailSale.reduce((sum, item) => sum + item.subtotal, 0);
