@@ -59,7 +59,7 @@ export class UsersComponent implements OnInit {
       apellidoUsuario: ['', validationService.getValidatorsForField('users', 'apellidoUsuario')],
       telefonoUsuario: ['', validationService.getValidatorsForField('users', 'telefonoUsuario')],
       correoUsuario: ['', validationService.getValidatorsForField('users', 'correoUsuario')],
-      contraseñaUsuario: ['', validationService.getValidatorsForField('users', 'contraseñaUsuario')],
+      claveUsuario: ['', validationService.getValidatorsForField('users', 'claveUsuario')],
       estadoUsuario: [true]
     });
   }

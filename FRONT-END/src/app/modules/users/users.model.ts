@@ -6,7 +6,7 @@ export interface User {
     apellidoUsuario: string;
     telefonoUsuario: string;
     correoUsuario: string;
-    contraseñaUsuario: string;
+    claveUsuario: string;
     estadoUsuario?: boolean;
   }
   

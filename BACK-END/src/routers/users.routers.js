@@ -10,7 +10,6 @@ router
     .post('/', validateUsers, userController.createNewUser)
     .put('/:id', validateUsers, userController.updateOneUser)
     .patch('/:id', userController.updateUserStatus)
-    .delete('/:id', userController.deleteOneUser)
-
+    .delete('/:id', userController.deleteOneUser); // Para protejer el metodo agrego lo siguiente: authenticateJWT
 
 module.exports = router;

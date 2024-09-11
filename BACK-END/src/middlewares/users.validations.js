@@ -23,7 +23,7 @@ const validateUsers = [
         .notEmpty().withMessage('El correo del usuario es obligatorio')
         .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).withMessage('El correo electrónico debe tener un formato válido'),
     
-    body('contraseñaUsuario')
+    body('claveUsuario')
     .notEmpty().withMessage('La contraseña del usuario es obligatoria')
     .isLength({ min: 8, max: 16 }).withMessage('La contraseña debe tener entre 8 y 16 caracteres')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('La contraseña debe contener al menos una letra mayúscula, una minúscula y un número'),

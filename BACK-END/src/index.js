@@ -2,8 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const path = require('path');
+const dotenv = require('dotenv'); // Para cargar variables de entorno
 
-
+// Cargar archivo .env
+dotenv.config(); 
 
 class Server{
 
@@ -50,7 +52,9 @@ class Server{
         this.app.use('/compras', require('./routers/shopping.routers.js'));
         this.app.use('/detallecompras', require('./routers/shoppingdetails.routers.js'));
         this.app.use('/uploads', require('./routers/uploads.js'));
-        
+
+        // Ruta para login (autenticación con JWT)
+        this.app.use('/login', require('./routers/authRoutes.js'));
         
     };
 

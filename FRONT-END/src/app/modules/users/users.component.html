@@ -79,19 +79,19 @@
       </div>
 
       <div class="field-group">
-        <div class="field" *ngIf="!isEditing" [ngClass]="{'error': isFieldInvalid('contraseñaUsuario')}">
-          <label for="contraseñaUsuario">Contraseña</label>
-          <input type="password" pInputText id="contraseñaUsuario" formControlName="contraseñaUsuario" required />
-          <small class="p-error" *ngIf="isFieldInvalid('contraseñaUsuario')">
-            {{ getErrorMessage('contraseñaUsuario') }}
+        <div class="field" *ngIf="!isEditing" [ngClass]="{'error': isFieldInvalid('claveUsuario')}">
+          <label for="claveUsuario">Contraseña</label>
+          <input type="password" pInputText id="claveUsuario" formControlName="claveUsuario" required />
+          <small class="p-error" *ngIf="isFieldInvalid('claveUsuario')">
+            {{ getErrorMessage('claveUsuario') }}
           </small>
         </div>
       
         <div class="field" *ngIf="!isEditing">
-          <label for="contraseñaUsuario">Confirmar contraseña</label>
-          <input type="password" pInputText id="confirmarClave" formControlName="contraseñaUsuario" required />
-          <small class="p-error" *ngIf="isFieldInvalid('contraseñaUsuario')">
-            {{ getErrorMessage('contraseñaUsuario') }}
+          <label for="claveUsuario">Confirmar contraseña</label>
+          <input type="password" pInputText id="confirmarClave" formControlName="claveUsuario" required />
+          <small class="p-error" *ngIf="isFieldInvalid('claveUsuario')">
+            {{ getErrorMessage('claveUsuario') }}
           </small>
         </div>
       </div>

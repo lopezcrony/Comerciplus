@@ -44,7 +44,7 @@ export const usersValidationConfig: FieldValidation[] = [
 
   },
   {
-    name: 'contraseñaUsuario',
+    name: 'claveUsuario',
     rules: [
       { type: 'required', message: 'La contraseña es obligatoria.' },
     ],

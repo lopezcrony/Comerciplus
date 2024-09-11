@@ -11,13 +11,16 @@ import {SalesComponent} from './modules/sales/sales.component'
 import {ReturnProviderComponent} from './modules/return-provider/return-provider.component'
 import { ReturnSaleComponent } from './modules/return-sale/return-sale.component';
 import { CreditsComponent } from './modules/credits/credits.component';
+import { LoginComponent } from './login/login.component';
 
 
 export const routes: Routes = [
+  { path: '', component: LoginComponent },  // Ruta para el login
   {
     path: '',
     component: LayoutComponent,
     children: [
+      
       { path: 'users', component: UsersComponent },
       { path: 'roles', component: RolesComponent },
       { path: 'providers', component: ProvidersComponent },
@@ -25,16 +28,12 @@ export const routes: Routes = [
       { path: 'loss', component: LossComponent},
       { path: 'sales', component: SalesComponent},
       { path: 'returProvider', component: ReturnProviderComponent},
-      {path: 'returnSale', component: ReturnSaleComponent},
+      { path: 'returnSale', component: ReturnSaleComponent},
       { path: 'credits', component: CreditsComponent},
-
-
-
-
-
       { path: 'categories', component: CategoriesComponent},
       { path: 'products', component: ProductsComponent},
       { path: '', redirectTo: 'crud', pathMatch: 'full' },
+      // { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirigir a login si no hay ninguna ruta
     ]
   }
 ];
