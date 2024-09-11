@@ -1,9 +1,76 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+
+import { environment } from '../../../environments/environment'; 
+import { Shopping } from "../shoppings/shopping.model";
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class ShoppingsService {
 
-  constructor() { }
+  private apiUrl=`${environment.apiUrl}/compras`;
+
+
+  constructor(private http:HttpClient) { }
+
+
+  getAllShoppings(): Observable<Shopping[]> {
+    return this.http.get<Shopping[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getOneShopping(id: number): Observable<Shopping> {
+    return this.http.get<Shopping>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  createShopping(Shopping: Shopping): Observable<Shopping> {
+    return this.http.post<Shopping>(this.apiUrl, Shopping).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateStatusShopping(id: number, status: boolean): Observable<Shopping> {
+    const body = { estadoCompra: status };
+    
+    return this.http.patch<Shopping>(`${this.apiUrl}/${id}`, body).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+
+  getAllProviders(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/proveedores`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  checkShoppingExists(numeroFactura: string): Observable<boolean> {
+    return this.http.get<boolean>(`/api/shoppings/exists/${encodeURIComponent(numeroFactura)}`);
+  }
+
+
+
+
+
+
+  private handleError(error: HttpErrorResponse) {
+    // Puedes ajustar la lógica para diferentes tipos de errores aquí
+    let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = error.error?.message || errorMessage;
+    }
+    return throwError(() => new Error(errorMessage));
+  }
 }

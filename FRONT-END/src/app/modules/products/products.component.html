@@ -1,9 +1,23 @@
+<h2 class="title" style="text-align: center;">Productos</h2>
+
+
 <!-- PLANTILLA CRUD -->
 <!-- aqui se llaman  las funciones definidas en el component.ts -->
-<app-crud [items]="filteredProducts" [columns]="columns" [canDelete]="true" [canSeeDetail]="true"
-    [canChangeStatus]="true" [showStateColumn]="true" [statusField]="'estadoProducto'" (create)="openCreateModal()"
-    (export)="exportProduct()" (edit)="openEditModal($event)" (delete)="confirmDelete($event)"
-    (detail)="openShowModal($event)" (search)="searchProduct($event)" (statusChange)="changeProductStatus($event)">
+<app-crud [items]="filteredProducts" 
+[columns]="columns" 
+[canDelete]="true" 
+[canSeeDetail]="true"
+[canChangeStatus]="true" 
+[showStateColumn]="true" 
+[statusField]="'estadoProducto'" 
+
+(create)="openCreateModal()"
+(export)="exportProduct()" 
+(edit)="openEditModal($event)" 
+(delete)="confirmDelete($event)"
+(detail)="openShowModal($event)" 
+(search)="searchProduct($event)" 
+(statusChange)="changeProductStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->

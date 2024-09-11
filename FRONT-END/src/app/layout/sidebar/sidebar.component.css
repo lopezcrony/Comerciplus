@@ -1,20 +1,30 @@
-/* SIDEBAR GENERAL */
 .sidebar {
   background-color: #ffffff;
-  width: 250px; /* Ajusta el ancho según sea necesario */
-  padding: 0.5rem 1.5rem;
+  width: 230px;
+  padding: 1rem;
   position: fixed;
-  height: calc(100vh - 6rem);
+  height: calc(100vh - 5rem);
   z-index: 999;
   overflow-y: auto;
   user-select: none;
-  top: 5rem;
-  left: 1rem; /* Colocado inicialmente */
-  transform: translateX(0); /* Siempre visible en pantallas grandes */
-  opacity: 1; /* Siempre visible en pantallas grandes */
-  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+  top: 4.5rem;
+  transform: translateX(0);
+  opacity: 1;
   border-radius: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+  scroll-behavior: smooth;
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
 }
 
 .sidebar.collapsed {
@@ -22,28 +32,34 @@
   opacity: 0;
 }
 
+/* Estilos para dispositivos móviles */
 @media (max-width: 768px) {
   .sidebar {
-    position: fixed; /* Asegura que el sidebar esté en la posición correcta */
+    position: fixed;
     left: 0;
-    top: 0; /* Empieza desde el borde superior */
-    width: 100%; /* Ocupa todo el ancho de la pantalla */
-    height: 100vh; /* Ocupa toda la altura de la pantalla */
-    transform: translateX(-100%); /* Inicialmente oculto */
+    top: 0;
+    width: 50%;
+    height: 100vh;
+    transform: translateX(-100%);
     opacity: 0;
-    z-index: 2000; /* Asegura que esté encima del contenido */
-    border-radius: 0; /* Elimina los bordes redondeados */
-    box-shadow: none; /* Elimina las sombras si no son necesarias */
+    z-index: 2510;
+    border-radius: 0;
+    box-shadow: none;
+    transition: transform 0.3s ease, opacity 0.3s ease;
   }
 
-  .sidebar.expanded {
-    transform: translateX(0); /* Muestra el sidebar */
+  .sidebar.open {
+    transform: translateX(0);
     opacity: 1;
   }
 }
 
-
 /* MENÚ */
+.menu-link {
+  margin-top: 7px;
+  transition: background-color 0.2s ease;
+}
+
 .sidebar ul {
   list-style: none;
   padding: 0;
@@ -51,17 +67,17 @@
 }
 
 .sidebar li {
-  padding: 1rem;
+  padding: 0.7rem;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .sidebar li.active {
-  background-color: rgba(0, 0, 255, 0.2); /* Color de fondo azul claro para el ítem activo */
-  color: var(--active-text-color); /* Color de texto para el ítem activo */
+  background-color: rgba(226, 226, 236, 0.24); 
+  color: var(--active-text-color); 
 }
 
 .sidebar li.active a {
-  color: var(--active-text-color); /* Color de texto del enlace activo */
+  color: var(--active-text-color); 
 }
 
 .sidebar li a {
@@ -79,43 +95,41 @@
   outline: 0 none;
   color: var(--text-color);
   cursor: pointer;
-  padding: 0.75rem 1rem;
   border-radius: 12px;
-  transition: background-color 0.2s, box-shadow 0.2s;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.sidebar .item:hover {
-  
-  background-color: rgba(0, 0, 255, 0.1); /* Color de fondo azul claro en hover */
+.sidebar .item:hover,
+.sidebar li.item:hover {
+  background-color: rgba(229, 229, 238, 0.342);
 }
 
-/* Define los colores de la variable para el texto activo */
 :root {
   background-color: #ffffff;
-  --text-color: #333;
-  --active-text-color: #0056b3; /* Color de texto cuando el ítem está activo */
   --surface-overlay: #fff;
 }
-
 
 .submenu {
   background-color: #ffffff;
   list-style-type: none;
   padding-left: 15px;
+  overflow: hidden;
+}
+
+.submenu.show {
+  max-height: 500px; /* Ajusta este valor según la altura máxima esperada de tu submenú */
 }
 
 .submenu li {
-
-  margin: 5px 0;
-  
+  margin-top: 15px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.submenu a {
-
-  color: #ddd;
+.submenu.show li {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.submenu a:hover {
-
-  color: #fff;
-}
+.submenu.show li:nth-child(1) { transition-delay: 50ms; }
+.submenu.show li:nth-child(2) { transition-delay: 100ms; }
+.submenu.show li:nth-child(3) { transition-delay: 150ms; }

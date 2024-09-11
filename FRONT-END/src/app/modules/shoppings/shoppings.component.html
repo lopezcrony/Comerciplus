@@ -1,1 +1,103 @@
-<p>shoppings works!</p>
+<h2 class="title" style="text-align: center;">Compras</h2>
+
+
+<div class="grid" style="display: flex; flex-wrap: wrap;">
+    <!-- Primer div -->
+    <div class="col-12 md:col-6 lg:col-3 custom-width">
+        <div class="surface-card shadow-2 p-3 border-round">
+            <div class="flex justify-content-between mb-3">
+                <div>
+                    <span class="block text-500 font-medium mb-3">Orders</span>
+                    <div class="text-900 font-medium text-xl">152</div>
+                </div>
+                <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
+                    style="width:2.5rem;height:2.5rem">
+                    <i class="pi pi-shopping-cart text-blue-500 text-xl"></i>
+                </div>
+            </div>
+            <span class="text-green-500 font-medium">24 new </span>
+            <span class="text-500">since last visit</span>
+        </div>
+    </div>
+
+    <!-- Segundo div -->
+    <div class="col-12 md:col-6 lg:col-3 tabla">
+        <div class="shadow-2 p-3 border-round">
+            <div class="card mt-4">
+                <table class="p-datatable p-component">
+                    <thead>
+                        <tr>
+                            <th class="p-sortable-column">Column 1</th>
+                            <th class="p-sortable-column">Column 2</th>
+                            <th class="p-sortable-column">Column 3</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Data 1</td>
+                            <td>Data 2</td>
+                            <td>Data 3</td>
+                            <td>
+                                <p-button label="Activo" class="p-button-rounded p-button-success"></p-button>
+                            </td>
+                            <td>
+                                <button pButton icon="pi pi-eye" class="p-button-rounded p-button-warning"></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Tercer div -->
+
+    <div class="col-12 md:col-6 lg:col-3 custom-width">
+        <div class="surface-card shadow-2 p-3 border-round">
+            <form [formGroup]="shoppingForm" class="p-fluid">
+                <div class="field-group">
+                    <!-- Nombre Categoría -->
+                    <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
+                        <label for="nombreCategoria" class="small-label">Proveedor</label>
+                        <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria" class="small-input" required />
+                        <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
+                            {{ getErrorMessage('nombreCategoria') }}
+                        </small>
+                    </div>
+    
+                    <!-- Descripción -->
+                    <div class="field" [ngClass]="{'error': isFieldInvalid('descripcionCategoria')}">
+                        <label for="descripcionCategoria" class="small-label">fecha compra</label>
+                        <input type="date" pInputText id="descripcionCategoria" formControlName="descripcionCategoria" class="small-input" />
+                        <small class="p-error" *ngIf="isFieldInvalid('descripcionCategoria')">
+                            {{ getErrorMessage('descripcionCategoria') }}
+                        </small>
+                    </div>
+    
+                    <!-- numero factura -->
+                    <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
+                        <label for="nombreCategoria" class="small-label">numero factura</label>
+                        <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria" class="small-input" required />
+                        <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
+                            {{ getErrorMessage('nombreCategoria') }}
+                        </small>
+                    </div>
+
+                    <button type="button" class="btn btn-primary">sub</button>
+                    <button type="button" class="btn btn-primary">c</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    
+
+
+
+
+</div>
+
+

@@ -11,15 +11,6 @@ const validateShopping = [
             return true;
         }),
 
-    body('fechaRegistro')
-        .notEmpty().withMessage('La fecha de registro es obligatoria')
-        .custom(value => {
-            if (!moment(value, moment.ISO_8601, true).isValid()) {
-                throw new Error('La fecha de registro debe ser una marca de tiempo válida');
-            }
-            return true;
-        }),
-
     body('numeroFactura')
         .notEmpty().withMessage('El número de factura es obligatorio')
         .isString().withMessage('El número de factura debe ser una cadena de caracteres')

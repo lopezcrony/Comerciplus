@@ -35,7 +35,7 @@ const Compra = sequelize.define('Compra', {
     },
     valorCompra: {
         type: DataTypes.FLOAT,
-        allowNull: false,
+        defaultValue: 0,
     },
     estadoCompra: {
         type: DataTypes.BOOLEAN,

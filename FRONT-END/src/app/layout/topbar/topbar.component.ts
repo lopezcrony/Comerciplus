@@ -7,12 +7,11 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule, CommonModule],
   templateUrl: './topbar.component.html',
-  styleUrl: './topbar.component.css'
+  styleUrls: ['./topbar.component.css']
 })
 export class TopbarComponent {
   @Output() toggleSidebar = new EventEmitter<void>();
 
-  // Cambia el nombre del método a toggleSidebarVisibility
   toggleSidebarVisibility() {
     this.toggleSidebar.emit();
   }
