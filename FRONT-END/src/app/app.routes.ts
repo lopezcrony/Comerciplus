@@ -11,6 +11,8 @@ import {SalesComponent} from './modules/sales/sales.component'
 import {ReturnProviderComponent} from './modules/return-provider/return-provider.component'
 import { ReturnSaleComponent } from './modules/return-sale/return-sale.component';
 import { CreditsComponent } from './modules/credits/credits.component';
+import { ShoppingsComponent } from './modules/shoppings/shoppings.component';
+import { LoginComponent } from './login/login.component';
 
 
 export const routes: Routes = [
