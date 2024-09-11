@@ -18,7 +18,7 @@ const detalleVenta = sequelize.define('detalleVenta', {
     },
     idCodigoBarra: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: 'codigoBarras',
             key: 'idCodigoBarra'

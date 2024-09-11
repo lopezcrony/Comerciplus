@@ -25,8 +25,8 @@ const createdetailSales = async (detailSalesData) => {
     try {
         // Se valida que exista la venta
         const sale = await salesRepository.findSalesById(detailSalesData.idVenta, { transaction });
-        if(!sale) throw new Error('SERVICE: No se encontró la venta.');
-       
+        if (!sale) throw new Error('SERVICE: No se encontró la venta.');
+
         // Se valida que exista el codigo de barras
         const barCode = await barCodeRepository.findBarcodeById(detailSalesData.idCodigoBarra, { transaction });
         if (!barCode) throw new Error('SERVICE: No se encontró el código de barras.');
@@ -35,26 +35,27 @@ const createdetailSales = async (detailSalesData) => {
         const product = await productRepository.findProductById(barCode.idProducto, { transaction });
         if (!product) throw new Error('SERVICE: Producto no encontrado.');
 
+        // Validamos si el stock es suficiente
         if (product.stock < detailSalesData.cantidadProducto) {
-            throw Error(`Existencias de producto insuficientes. Actualmente hay ${product.stock} de ${product.nombreProducto}`);
+            throw new Error(`Existencias de producto insuficientes. Actualmente hay ${product.stock} de ${product.nombreProducto}`);
         }
 
-        const subtotal = product.precioVenta * detailSalesData.cantidadProducto;
+        // Eliminamos el cálculo del subtotal ya que viene del frontend
+        // const subtotal = product.precioVenta * detailSalesData.cantidadProducto;
+        // detailSalesData.subtotal = subtotal;
 
-        // Se asigna el resultado del subtotal al campo 'subtotal'
-        detailSalesData.subtotal = subtotal;
-
-        // Se crea el detalle de venta
+        // Creamos el detalle de venta con los datos proporcionados por el frontend
         const newDetailSale = await detailSalesRepository.createdetailSale(detailSalesData, { transaction });
 
         // Se actualiza / incrementa el valor total de la venta
-        sale.totalVenta += subtotal;
-        await sale.save({ transaction })
-        
+        sale.totalVenta += detailSalesData.subtotal;
+        await sale.save({ transaction });
+
         // Se actualiza el stock del producto
         const newStock = product.stock - detailSalesData.cantidadProducto;
         await productRepository.updateProductoStock(product.idProducto, newStock, { transaction });
 
+        // Confirmamos la transacción
         await transaction.commit();
         return newDetailSale;
     } catch (error) {
@@ -62,6 +63,7 @@ const createdetailSales = async (detailSalesData) => {
         throw error;
     }
 };
+
 
 module.exports = {
     getAlldetailSales,
