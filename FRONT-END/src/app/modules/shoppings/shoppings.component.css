@@ -1,113 +1,57 @@
-
-.grid-layout {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 20px;
+.shopping-form {
+    max-width: 900px;
+    margin: 0 auto;
 }
 
-.left-panel {
-    border: 2px solid blue;
-    /* Otras propiedades para el panel izquierdo */
-}
-
-.right-panel {
-    border: 2px solid red;
-    /* Aquí se ubica el código dentro del recuadro rojo */
-    padding: 20px;
-}
-
-.shadow-box {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    border-radius: 8px; /* Bordes redondeados */
-    padding: 20px;
-    background-color: #fff;
-}
-
-.grid-layout {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 20px;
-}
-
-.left-panel {
-    /* No es necesario modificar esta sección */
-}
-
-.right-panel {
-    padding: 20px;
-}
-
-/* estilos para las tarjetas */
-.custom-width {
-    width: 35%;          /* Ajusta el ancho del div */
-    height: 400px;       /* Ajusta la altura del div */
-    overflow: auto;      /* Permite el desplazamiento si el contenido excede el tamaño del div */
-    box-sizing: border-box; /* Incluye padding y borde en el cálculo del tamaño */
-}
-
-/* Asegúrate de que los elementos internos no tengan restricciones de altura */
-.surface-card {
-    height: 100%; /* Asegura que el contenido interno ocupe el 100% de la altura del div padre */
-}
-
-
-
-.tabla {
-    width: 65%;     
-
-}
-/* fin estilo de tarjetas */
-
-/* estilos para el form en el div */
-.surface-card form {
-    width: 100%; /* Ocupa todo el ancho del contenedor */
-}
-
-.field-group {
-    margin: 0;
-    padding: 0;
-}
-
-.field {
+.form-group {
     margin-bottom: 1rem;
 }
-form.p-fluid .field-group {
-    display: flex;
-    flex-direction: column; /* Alinea los campos en una columna */
+
+.details-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
 }
 
-form.p-fluid .field {
-    margin-bottom: 1rem; /* Espacio entre los campos */
+.details-row {
+    display: contents;
 }
 
-form.p-fluid .field label {
-    display: block;      /* Asegura que la etiqueta ocupe el ancho completo */
-    margin-bottom: 0.5rem; /* Espacio entre la etiqueta y el input */
+.details-row .form-group {
+    margin-bottom: 0;
 }
 
-form.p-fluid .field input {
-    width: 100%;         /* Hace que el input ocupe todo el ancho disponible */
-    box-sizing: border-box; /* Incluye padding y borde en el cálculo del tamaño */
+button.p-button {
+    margin-top: 10px;
 }
 
-/* fin estilos para el form en el div */
-/* crud styles */
-/* CSS */
-.tabla {
-    width: 65%;
-    padding: 16px;
-}
-
-.card {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.p-datatable {
+p-dropdown {
     width: 100%;
-    border-collapse: collapse;
 }
 
-.p-datatable th, .p-datatable td {
-    padding: 8px;
-    text-align: center;
+input[pInputText], p-calendar {
+    width: 100%;
 }
+
+.p-button-danger {
+    background-color: #f44336;
+    border: none;
+}
+
+.p-button-secondary {
+    background-color: #007bff;
+    border: none;
+}
+
+.p-button-success {
+    background-color: #4caf50;
+    border: none;
+}
+.divider {
+    height: 4px; /* Más grosor */
+    background-color: #ccc; /* Color de la línea */
+    margin: 40px 0; /* Más espacio arriba y abajo */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombreado suave */
+    border-radius: 2px; /* Esquinas redondeadas para suavizar la línea */
+  }
+  
