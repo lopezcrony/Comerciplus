@@ -20,7 +20,7 @@ const createSales = async (salesData) => {
     try {
         return await salesRepository.createSales(salesData);
     } catch (error) {
-       throw error;
+        throw error;
     }
 };
 
@@ -39,20 +39,28 @@ const updateSalesStatus = async (id, status) => {
 
 const updateTotalSale = async (id, newTotalSale) => {
     try {
-        const result = salesRepository.updateTotalSale(id,newTotalSale);
-        if(!result){
-            throw new Error ('SERVICE: No se pudo actualizar el total de la venta.')
+        const result = salesRepository.updateTotalSale(id, newTotalSale);
+        if (!result) {
+            throw new Error('SERVICE: No se pudo actualizar el total de la venta.')
         }
         return result;
     } catch (error) {
-        
+
+    }
+};
+
+const deleteSale = async (id) => {
+    try {
+        await salesRepository.deleteSale(id);
+    } catch (error) {
+        throw error;
     }
 };
 
 module.exports = {
     getAllSales,
     getOneSales,
-    createSales,    
+    createSales,
     updateTotalSale,
     updateSalesStatus,
 };

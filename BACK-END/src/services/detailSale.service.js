@@ -26,13 +26,9 @@ const createdetailSales = async (detailSalesData) => {
         // Se valida que exista la venta
         const sale = await salesRepository.findSalesById(detailSalesData.idVenta, { transaction });
         if(!sale) throw new Error('SERVICE: No se encontró la venta.');
-       
-        // Se valida que exista el codigo de barras
-        const barCode = await barCodeRepository.findBarcodeById(detailSalesData.idCodigoBarra, { transaction });
-        if (!barCode) throw new Error('SERVICE: No se encontró el código de barras.');
 
-        //  Se valida que exista el producto utilizando el ID del producto del código de barras
-        const product = await productRepository.findProductById(barCode.idProducto, { transaction });
+        //  Se valida que exista el producto
+        const product = await productRepository.findProductById(detailSalesData.idProducto, { transaction });
         if (!product) throw new Error('SERVICE: Producto no encontrado.');
 
         if (product.stock < detailSalesData.cantidadProducto) {

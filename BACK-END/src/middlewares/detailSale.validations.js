@@ -6,9 +6,8 @@ const validateDetalleVenta = [
         .notEmpty().withMessage('El id de la venta es obligatorio')
         .isInt({ min: 1 }).withMessage('El id de la venta debe ser un número entero positivo'),
 
-    body('idCodigoBarra')
-        .notEmpty().withMessage('El id del código de barra es obligatorio')
-        .isInt({ min: 1 }).withMessage('El id del código de barra debe ser un número entero positivo'),
+    body('idProducto')
+        .notEmpty().withMessage('El producto es obligatorio'),
 
     body('cantidadProducto')
         .notEmpty().withMessage('La cantidad de producto es obligatoria')

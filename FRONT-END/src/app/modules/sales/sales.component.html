@@ -1,3 +1,7 @@
+
+
+
+<!-- components/sale/sale.component.html -->
 <div class="card">
   <div class="venta-productos-container">
     <div class="carrito-venta">
@@ -5,11 +9,10 @@
 
       <form [formGroup]="busquedaForm" class="mb-3">
         <p-autoComplete formControlName="busqueda" [suggestions]="filteredProducts"
-          (completeMethod)="searchProduct($event)" (onSelect)="addProductSale($event)" [dropdown]="true" field="nombre"
+          (completeMethod)="searchProduct($event)" (onSelect)="addProductSale($event)" [dropdown]="true" field="nombreProducto"
           [forceSelection]="true" placeholder="Buscar producto por nombre o código" [style]="{'width':'100%'}">
           <ng-template let-product pTemplate="item">
             <div class="product-item">
-              <img [src]="product.imagenProducto" [alt]="product.nombreProducto" width="24" />
               <div>{{product.nombreProducto}}</div>
               <div class="font-bold">{{product.precioVenta | currency}}</div>
             </div>
@@ -29,11 +32,11 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
           <tr>
-            <td>{{ getProductName(item.idCodigoBarra) }}</td>
-            <td>{{ getProductPrice(item.idCodigoBarra) | currency }}</td>
+            <td>{{ getProductName(item.idProducto) }}</td>
+            <td>{{ getProductPrice(item.precioVenta) | currency }}</td>
             <td>
               <p-inputNumber [(ngModel)]="item.cantidadProducto" [showButtons]="true" buttonLayout="horizontal"
-                spinnerMode="horizontal" [min]="1" (onInput)="actualizarSubtotal(item)" [size]="3">
+                spinnerMode="horizontal" [min]="1" (onInput)="updateSubtotal(item)" [size]="3">
               </p-inputNumber>
             </td>
             <td>{{ item.subtotal | currency }}</td>
@@ -61,45 +64,32 @@
       <button pButton label="Asignar Crédito" icon="pi pi-credit-card" (click)="mostrarModalCredito()"
         class="p-button-secondary p-button-sm w-full mb-2 boton-pequeno"></button>
 
-      <button pButton label="Finalizar Venta" icon="pi pi-check" (click)="createSale()"
+        <button pButton label="Finalizar Venta" icon="pi pi-check" (click)="createSale()"
         class="p-button-success p-button-sm w-full boton-pequeno"></button>
     </div>
   </div>
 </div>
 
-<p-dialog header="Asignar Crédito" [(visible)]="mostrarModalAsignarCredito" [style]="{width: '50vw'}" [modal]="true"
-  styleClass="texto-pequeno">
-  <div class="p-fluid">
-    <div class="p-field mb-2">
-      <label for="cliente" class="block mb-1 texto-pequeno">Cliente</label>
-      <p-autoComplete id="cliente" [(ngModel)]="clienteSeleccionado" [suggestions]="filteredCredits"
-        (completeMethod)="searchCreditClient($event)" field="nombreCliente" [dropdown]="true"
-        placeholder="Buscar cliente" [style]="{'width':'100%'}" styleClass="texto-pequeno">
-        <ng-template let-cliente pTemplate="item">
-          <div class="texto-pequeno">{{cliente.nombreCliente}} - {{cliente.cedulaCliente}}</div>
-        </ng-template>
-      </p-autoComplete>
-    </div>
+<p-dialog header="Asignar Crédito" [(visible)]="mostrarModalAsignarCredito" [modal]="true" [style]="{width: '50vw'}">
+  <div class="contenido-modal">
+    <div class="p-fluid p-formgrid p-grid">
+      <div class="p-field p-col-12">
+        <label for="cliente" class="texto-pequeno">Cliente</label>
+        <p-autoComplete [(ngModel)]="clienteSeleccionado" [suggestions]="filteredCredits"
+          (completeMethod)="searchCreditClient($event)" field="nombreCliente" [dropdown]="true" [size]="30"></p-autoComplete>
+      </div>
 
-    <div class="p-field mb-2">
-      <label for="totalVenta" class="block mb-1 texto-pequeno">Total de la Venta</label>
-      <p-inputNumber id="totalVenta" [ngModel]="total" [readonly]="true" mode="currency" currency="USD" locale="en-US"
-        [style]="{'width':'100%'}" styleClass="texto-pequeno">
-      </p-inputNumber>
-    </div>
-
-    <div class="p-field mb-2">
-      <label for="montoCredito" class="block mb-1 texto-pequeno">Monto a Acreditar</label>
-      <p-inputNumber id="montoCredito" [(ngModel)]="montoCredito" mode="currency" currency="USD" locale="en-US"
-        placeholder="Monto a acreditar" [max]="total" [style]="{'width':'100%'}" styleClass="texto-pequeno">
-      </p-inputNumber>
+      <div class="p-field p-col-12">
+        <label for="montoCredito" class="texto-pequeno">Monto del Crédito</label>
+        <p-inputNumber [(ngModel)]="montoCredito" [min]="0" [max]="total" [step]="0.01" [size]="30"></p-inputNumber>
+      </div>
     </div>
   </div>
 
-  <ng-template pTemplate="footer">
+  <p-footer>
     <button pButton label="Cancelar" icon="pi pi-times" (click)="cancelarAsignacionCredito()"
-      class="p-button-text p-button-sm boton-pequeno"></button>
+      class="p-button-text boton-pequeno"></button>
     <button pButton label="Confirmar" icon="pi pi-check" (click)="confirmarAsignacionCredito()"
-      class="p-button-text p-button-sm boton-pequeno"></button>
-  </ng-template>
+      class="p-button-text boton-pequeno"></button>
+  </p-footer>
 </p-dialog>

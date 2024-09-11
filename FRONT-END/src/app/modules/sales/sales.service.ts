@@ -8,13 +8,13 @@ import { Sale } from './sales.model';
 @Injectable({
   providedIn: 'root'
 })
-export class SalesService {
+export class SaleService {
   private apiUrl = `${environment.apiUrl}/ventas`;
 
 
   constructor(private http: HttpClient) {}
 
-  createSale(saleData: Sale): Observable<Sale> {
+  createSale(saleData: any): Observable<Sale> {
     return this.http.post<Sale>(this.apiUrl, saleData).pipe(
       catchError(this.handleError)
     );

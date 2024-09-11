@@ -57,7 +57,11 @@ Producto.associate = (models) => {
         foreignKey: 'idCategoria',
         as: 'categoriaProducto'
     });
+
+    Producto.hasMany(models.detalleVenta, {
+      foreignKey: 'idDetalleVenta',
+      as: 'detalleVenta'
+    });
 };
 
-// Exportar el modelo
 module.exports = Producto;

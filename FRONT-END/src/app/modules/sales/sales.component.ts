@@ -6,7 +6,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { CheckboxModule } from 'primeng/checkbox';
 import { AutoCompleteCompleteEvent, AutoCompleteSelectEvent } from 'primeng/autocomplete';
 import { OrderListModule } from 'primeng/orderlist';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, throwError } from 'rxjs';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 
@@ -18,11 +18,10 @@ import { Client } from '../clients/client.model';
 import { ProductsService } from '../products/products.service';
 import { CreditsService } from '../credits/credits.service';
 import { ClientService } from '../clients/clients.service';
-import { SalesService } from './sales.service';
+import { SaleService } from './sales.service';
 import { Sale } from './sales.model';
 import { DetailSalesService } from '../detailSale/detail.Sale.service';
-
-
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-sales',
@@ -43,27 +42,26 @@ export class SalesComponent implements OnInit {
   esVentaCredito: boolean = false;
   montoCredito: number = 0;
   clienteSeleccionado: any = null;
+  imprimirRecibo: boolean = false;
 
-  products: any[] = [];
+  products: Product[] = [];
   clients: Client[] = [];
   credits: Credit[] = [];
-  detailSale: DetailSale[] = [];
+  detailSale: any[] = [];
 
   filteredProducts: Product[] = [];
   filteredClients: Client[] = [];
   filteredCredits: Credit[] = [];
-
+  filteredBarcodes: any[] = [];
 
   constructor(
     private fb: FormBuilder,
-    private messageService: MessageService,
-    private salesService: SalesService,
+    private saleService: SaleService,
     private productService: ProductsService,
     private creditService: CreditsService,
     private clientService: ClientService,
     private detailSalesService: DetailSalesService,
-
-
+    private toastr: ToastrService
   ) {
     this.busquedaForm = this.fb.group({
       busqueda: ['']
@@ -81,41 +79,57 @@ export class SalesComponent implements OnInit {
     });
   }
 
-  searchProduct(event: AutoCompleteCompleteEvent) {
+  searchProduct(event: any): void {
     const query = event.query.toLowerCase();
+
     this.filteredProducts = this.products.filter(p =>
       p.nombreProducto.toLowerCase().includes(query)
     );
+    // AQUÍ se implementará la función para buscar un producto por código de barras
+    // this.barcodeService.searchProductByBarcode(event.query).subscribe(barcodes => {
+    //   this.filteredBarcodes = barcodes;
+    // });
+  };
+
+  addProductSale(event: any): void {
+    const product = event.value ? event.value : event; // Extraer el producto de event.value si está presente
+    const existingProduct = this.detailSale.find(item => item.idProducto === product.idProducto);
+    
+    console.log('Producto:', product);
+
+    if (existingProduct) {
+        existingProduct.cantidadProducto++;
+        this.updateSubtotal(existingProduct);
+    } else {
+        const newDetail = {
+            idProducto: product.idProducto,
+            nombreProducto: product.nombreProducto,
+            precioVenta: product.precioVenta,
+            cantidadProducto: 1,
+            subtotal: product.precioVenta
+        };
+        this.detailSale.push(newDetail);
+        console.log(newDetail);
+    }
+  
+    this.updateTotal();
+}
+
+  
+  updateSubtotal(item: any): void {
+    item.subtotal = item.cantidadProducto * item.precioVenta;
+    this.updateTotal();
   }
 
-  addProductSale(event: AutoCompleteSelectEvent) {
-    const product = event.value as Product;
-    const existingItem = this.detailSale.find(item => item.idCodigoBarra === product.idProducto);
-  
-    if (existingItem) {
-      existingItem.cantidadProducto++;
-      existingItem.subtotal = existingItem.cantidadProducto * product.precioVenta;
-    } else {
-      const nuevoItem: DetailSale = {
-        idVenta: this.getCurrentSaleId(), // Implementar este método
-        idCodigoBarra: product.idProducto,
-        cantidadProducto: 1,
-        subtotal: product.precioVenta
-      };
-      this.detailSale.push(nuevoItem);
-    }
-  
-    this.actualizarTotal();
-    this.busquedaForm.reset();
+  removeProductFromSale(item: DetailSale) {
+    this.detailSale = this.detailSale.filter(i => i !== item);
+    this.updateTotal();
   }
-  
-  actualizarSubtotal(item: DetailSale) {
-    const product = this.products.find(p => p.idProducto === item.idCodigoBarra);
-    if (product) {
-      item.subtotal = item.cantidadProducto * product.precioVenta;
-      this.actualizarTotal();
-    }
-  }  
+
+  updateTotal(): void {
+    this.total = this.detailSale.reduce((sum, item) => sum + item.subtotal, 0);
+  }
+
 
   loadCreditsClients() {
     forkJoin({
@@ -133,7 +147,7 @@ export class SalesComponent implements OnInit {
       });
       this.filteredCredits = this.credits;
     });
-  };
+  }
 
   searchCreditClient(event: AutoCompleteCompleteEvent) {
     const query = event.query.toLowerCase();
@@ -141,85 +155,67 @@ export class SalesComponent implements OnInit {
       const creditWithClientName = credit as Credit & { nombreCliente?: string };
       return (creditWithClientName.nombreCliente || '').toLowerCase().includes(query);
     });
-  };
+  }
 
   createSale() {
-    if (this.detailSale.length === 0) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No hay productos en la venta' });
-      return;
-    }
 
-    if (this.esVentaCredito && !this.clienteSeleccionado) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Debe seleccionar un cliente para venta a crédito' });
-      return;
-    }
+    if (this.detailSale.length === 0) this.toastr.error('No hay productos en la venta', 'Error');
 
-    // Aquí iría la lógica para crear la venta
+    if (this.esVentaCredito && !this.clienteSeleccionado) this.toastr.error('Debe seleccionar un cliente para venta a crédito', 'Error');
 
-    const totalVenta = this.total; 
+    const saleData = {
+        fechaVenta: new Date()
+    };
 
-  // Crear el objeto de la venta
-  const nuevaVenta: Sale = {
-    idVenta: 0, // Lo generará la base de datos
-    fechaVenta: new Date(),
-    totalVenta: totalVenta,
-  };
+    this.saleService.createSale(saleData).subscribe({
+        next: (response) => {
+            const idSale = response.idVenta;
+            
+            const detailRequests = this.detailSale.map(detail => {
+                const detailData = {
+                    idVenta: idSale,
+                    idProducto: detail.idProducto,
+                    cantidadProducto: detail.cantidadProducto,
+                    subtotal: detail.subtotal
+                };
+                
+                return this.detailSalesService.createDetailSale(detailData).pipe(
+                    catchError(error => {
+                        this.toastr.error(`No se pudo registrar el detalle de la venta: ${error.message}`, 'Error');
+                        return throwError(() => new Error(error.message));
+                    })
+                );
+            });
 
-  // Llamar al servicio para guardar la venta en la base de datos
-  this.salesService.createSale(nuevaVenta).subscribe(
-    async response => {
-      const generatedSaleId =await response.idVenta; // Obtener el idVenta generado por la base de datos
+            forkJoin(detailRequests).subscribe({
+                next: () => {
+                    this.toastr.success('Venta registrada correctamente', 'Éxito');
+                    this.resetForm();
+                },
+                error: (error) => {
+                    this.toastr.error(`${error.message}`, 'Error');
+                }
+            });
+        },
+        error: () => {
+            this.toastr.error('No se pudo registrar la venta', 'Error');
+        }
+    });
+}
 
-      // Ahora que tenemos el idVenta, guardar los detalles de los productos
-      this.saveSaleDetails(generatedSaleId);
-      console.log(nuevaVenta)
-      this.messageService.add({ severity: 'success', summary: 'Venta Registrada', detail: 'La venta se registró correctamente' });
-      // Limpiar los datos después de la venta
-      
-    },
-    error => {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo registrar la venta' });
-    }
-  );
+
+  resetForm(): void {
+    this.busquedaForm.reset();
+    this.detailSale = [];
+    this.total = 0;
+    this.esVentaCredito = false;
+    this.clienteSeleccionado = null;
+    this.montoCredito = 0;
+    this.imprimirRecibo = false;
   }
 
-  saveSaleDetails(idVenta: number) {
-    const saleDetails: DetailSale[] = this.detailSale.map(item => ({
-      idVenta: idVenta,
-      idCodigoBarra: item.idCodigoBarra,
-      cantidadProducto: item.cantidadProducto,
-      subtotal: item.subtotal
-    }));
-    console.log(saleDetails)
 
   
-    // Llamar al servicio para guardar todos los detalles de la venta
-    this.detailSalesService.createDetailSale(saleDetails).subscribe(
-      response => {
-        console.log(saleDetails)
-        this.clearSale()
-
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Venta registrada correctamente' });
-      },
-      error => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo registrar el detalle de la venta' });
-      }
-    );
-  }
-  
-  
-
-  clearSale() {
-    this.detailSale = []; // Limpia la lista de productos en la venta
-    this.total = 0; // Reinicia el total de la venta
-    this.clienteSeleccionado = null; // Limpia la selección del cliente si hay
-    this.esVentaCredito = false; // Reinicia la selección de venta a crédito si corresponde
-  }
-  
-
-  actualizarTotal() {
-    this.total = this.detailSale.reduce((sum, item) => sum + item.subtotal, 0);
-  }
 
   toggleVentaCredito() {
     this.esVentaCredito = !this.esVentaCredito;
@@ -227,20 +223,6 @@ export class SalesComponent implements OnInit {
       this.montoCredito = 0;
       this.clienteSeleccionado = null;
     }
-  }
-
-  getCurrentSaleId(): number {
-    // Implementar para obtener el ID de la venta actual
-    return 1; // Valor de ejemplo
-  }
-
-  limpiarVenta() {
-    this.detailSale = [];
-    this.total = 0;
-    this.esVentaCredito = false;
-    this.clienteSeleccionado = null;
-    this.montoCredito = 0;
-    this.busquedaForm.reset();
   }
 
   mostrarModalAsignarCredito: boolean = false;
@@ -258,26 +240,31 @@ export class SalesComponent implements OnInit {
   }
 
   cambiarCantidad(item: DetailSale, incremento: number) {
-
+    const product = this.products.find(p => p.idProducto === item.idProducto);
+    if (product) {
+      item.cantidadProducto += incremento;
+      if (item.cantidadProducto <= 0) {
+        this.removeProductFromSale(item);
+      } else {
+        item.subtotal = item.cantidadProducto * product.precioVenta;
+        this.updateTotal();
+      }
+    }
   }
 
-  imprimirRecibo(){}
+  // imprimirRecibo() {
+  //   // Implementar lógica para imprimir recibo
+  // }
 
-  // Agregar métodos para obtener nombre y precio del producto
-getProductName(idCodigoBarra: number): string {
-  const product = this.products.find(p => p.idProducto === idCodigoBarra);
-  return product ? product.nombreProducto : 'Desconocido';
-}
+  getProductName(idProducto: number): string {
+    const product = this.products.find(p => p.idProducto === idProducto);
+    return product ? product.nombreProducto : 'Desconocido';
+  }
 
-getProductPrice(idCodigoBarra: number): number {
-  const product = this.products.find(p => p.idProducto === idCodigoBarra);
-  return product ? product.precioVenta : 0;
-}
+  getProductPrice(idProducto: number): number {
+    const product = this.products.find(p => p.idProducto === idProducto);
+    return product ? product.precioVenta : 0;
+  }
 
-// Agregar el método para eliminar un producto de la venta
-removeProductFromSale(item: DetailSale) {
-  this.detailSale = this.detailSale.filter(i => i !== item);
-  this.actualizarTotal();
-}
 
 }
