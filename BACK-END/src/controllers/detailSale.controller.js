@@ -20,6 +20,8 @@ const GetOneDetailSales = async (req, res) => {
 };
 
 const CreateNewDetailSale = async (req, res) => {
+    console.log(req.body);
+
     try {
         const newSale = await detailSaleService.createdetailSales(req.body);
         res.status(201).json({ message: 'Detalle de venta creado exitosamente.', newSale });

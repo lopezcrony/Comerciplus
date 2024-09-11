@@ -18,7 +18,7 @@ const detalleVenta = sequelize.define('detalleVenta', {
     },
     idProducto: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: 'productos',
             key: 'idProducto'

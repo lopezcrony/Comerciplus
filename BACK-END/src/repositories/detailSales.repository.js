@@ -9,6 +9,7 @@ const finddetailSalesById = async (id) => {
 };
 
 const createdetailSale = async (salesData) => {
+    console.log("Entré repository")
     return await detailSale.create(salesData);
 };
 
