@@ -5,54 +5,35 @@
 
 .venta-productos-container {
   display: flex;
-  gap: 20px; /* Espacio entre columnas, ajusta según necesites */
+  gap: 15px; 
   width: 100%;
 }
 
 .carrito-venta {
-  flex: 3; /* Ocupa más espacio */
-  border-right: 1px solid #ddd; /* Línea divisoria entre columnas */
-  overflow: auto; /* Permite el desplazamiento si es necesario */
+  flex: 3; 
+  overflow: auto;
 }
 
 .detalle-venta {
-  flex: 1; /* Ocupa menos espacio */
-  padding: 20px;
+  flex: 1;
+  padding: 15px;
   background-color: white;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
   display: flex;
   flex-direction: column;
-  min-width: 250px; /* Ancho mínimo para la columna de detalles */
-}
-
-.busqueda-producto {
-  margin-bottom: 20px;
-}
-
-.producto-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-
-.cliente-info,
-.credito,
-.recibo {
-  margin-bottom: 20px;
+  min-width: 250px;
 }
 
 .total-venta {
-  font-size: 1.2em;
+  font-size: 1.1em;
   font-weight: bold;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .finalizar-btn {
   margin-top: auto;
 }
 
-/* Ajustes para hacer el diseño más compacto en la columna de detalles */
 .detalle-venta .p-dropdown,
 .detalle-venta .p-inputnumber,
 .detalle-venta .p-checkbox {
@@ -61,32 +42,38 @@
 
 .detalle-venta label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
-/* Ajustar el tamaño de los botones en la tabla para que sean más compactos */
 .carrito-venta .p-button.p-button-rounded {
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
-/* Hacer que los inputs de número sean más compactos */
 .carrito-venta .p-inputnumber-button {
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
-/* Responsive design para pantallas más pequeñas */
+.texto-pequeno {
+  font-size: 1.2rem;
+}
+
+.boton-pequeno {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+}
+
 @media (max-width: 768px) {
   .venta-productos-container {
     flex-direction: column;
-    gap: 10px; /* Espacio entre columnas en vista móvil */
+    gap: 10px;
   }
 
   .carrito-venta,
   .detalle-venta {
     width: 100%;
-    flex: none; /* Evita expansión en vista móvil */
+    flex: none;
   }
 
   .carrito-venta {
@@ -97,17 +84,4 @@
     order: 2;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   }
-}
-
-/* Clase personalizada para hacer el p-inputNumber más compacto */
-.input-number-compact {
-  width: 300px; /* Ajusta el ancho del input */
-  font-size: 0.9rem; /* Ajusta el tamaño de la fuente del input */
-}
-
-/* Ajusta el tamaño de los botones dentro del p-inputNumber */
-.input-number-compact .p-inputnumber-button {
-  width: 0.1rem; /* Ajusta el ancho de los botones */
-  height: 0.1rem; /* Ajusta la altura de los botones */
-  font-size: 0.8rem; /* Ajusta el tamaño de la fuente de los botones */
 }
