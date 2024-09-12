@@ -10,7 +10,7 @@ const getAllDetailCredit = async (idCredit) => {
     }
 };
 
-const addVentaToCredito = async (creditDetailData, options = {}) => {
+const addSaleToCredit = async (creditDetailData, options = {}) => {
     try {
         return await detailCredit.create(creditDetailData, options);
     } catch (error) {
@@ -27,6 +27,6 @@ const deleteOneDetailCredit = async (id) => {
 
 module.exports = {
     getAllDetailCredit,
-    addVentaToCredito,
+    addSaleToCredit,
     deleteOneDetailCredit
 };
