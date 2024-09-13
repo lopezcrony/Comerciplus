@@ -8,6 +8,12 @@ const findCreditById = async (id) => {
     return await Credit.findByPk(id);
 };
 
+const findCreditByClient = async (id) => {
+    return await Credit.findOne({
+        where: { idCliente: id }
+    });
+};
+
 const createCredit = async (creditData) => {
     return await Credit.create(creditData);
 };
@@ -31,8 +37,10 @@ const deleteOneCredit = async (id) => {
 module.exports = {
     findAllCredits,
     findCreditById,
+    findCreditByClient,
     createCredit,
     updateTotalCredit,
-    deleteOneCredit
+    deleteOneCredit,
+
 };
 

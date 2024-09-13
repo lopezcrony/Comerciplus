@@ -18,13 +18,13 @@ const getOneCredit = async (req, res) => {
     }
 };
 
-const getCreditHistory = async (req, res) => {
+const getCreditHistoryByClient = async (req, res) => {
     try {
-        const idCredito = req.params.id;
-        const history = await creditService.getCreditHistory(idCredito);
+        const idClient = req.params.id;
+        const history = await creditService.getCreditHistoryByClient(idClient);
         res.status(200).json(history);
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener el historial del crédito', error: error.message });
+        res.status(500).json({ message: 'Error al obtener el historial de crédito del cliente', error: error.message });
     }
 };
 
@@ -61,7 +61,7 @@ const deleteOneCredit = async (req, res) => {
 module.exports = {
     getAllCredits,
     getOneCredit,
-    getCreditHistory,
+    getCreditHistoryByClient,
     createCredit,
     updateTotalCredit,
     deleteOneCredit

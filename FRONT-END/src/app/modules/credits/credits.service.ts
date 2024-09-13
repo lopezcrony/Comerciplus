@@ -24,9 +24,9 @@ export class CreditsService {
     );
   };
 
-  getCreditHistory(creditId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.creditsUrl}/${creditId}/historial`);
-  }
+  getCreditHistoryByClient(idClient: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.creditsUrl}/historialcliente/${idClient}`);
+  };
 
   getOneCredit(): Observable<Credit> {
     return this.http.get<Credit>(this.creditsUrl).pipe(

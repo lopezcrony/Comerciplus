@@ -79,7 +79,7 @@
           (completeMethod)="searchCreditClient($event)" (onSelect)="onClientSelect($event)" field="nombreCliente"
           [dropdown]="true" placeholder="Buscar cliente" [style]="{'width':'100%'}" styleClass="texto-pequeno">
           <ng-template let-cliente pTemplate="item">
-            <div class="texto-pequeno">{{cliente.nombreCliente}} - {{cliente.cedulaCliente}}</div>
+            <div class="texto-pequeno">{{cliente.nombreCliente}} - CC {{cliente.cedulaCliente}}</div>
           </ng-template>
         </p-autoComplete>
         </div>

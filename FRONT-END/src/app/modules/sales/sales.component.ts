@@ -139,8 +139,11 @@ export class SalesComponent implements OnInit {
       clients: this.clientService.getAllClients(),
       credits: this.creditService.getAllCredits()
     }).subscribe(({ clients, credits }) => {
-      this.clients = clients;
-      this.credits = credits.map(credit => {
+      this.clients = clients.filter(c => c.estadoCliente === true);
+      this.credits = credits
+      // Doble filtro para asegurarnos de que no aparezcan clientes inactivos
+      .filter(credit => this.clients.some(c => c.idCliente === credit.idCliente))
+      .map(credit => {
         const client = this.clients.find(c => c.idCliente === credit.idCliente);
         return {
           ...credit,
@@ -148,7 +151,7 @@ export class SalesComponent implements OnInit {
           cedulaCliente: client ? client.cedulaCliente : ''
         };
       });
-      this.filteredCredits = this.credits;
+      this.filteredCredits = this.credits
     });
   }
 
