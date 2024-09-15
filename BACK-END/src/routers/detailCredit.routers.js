@@ -5,7 +5,7 @@ const router = Router();
 
 router
     .get('/:idCredito', detailCreditController.getAllDetailCredit)
-    .post('/', detailCreditController.addVentaToCredito)
+    .post('/', detailCreditController.addSaleToCredit)
     .delete('/:id', detailCreditController.deleteDetailCredit)
 
 module.exports = router;

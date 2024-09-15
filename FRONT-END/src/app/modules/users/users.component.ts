@@ -160,13 +160,20 @@ export class UsersComponent implements OnInit {
 
   searchUser(query: string) {
     this.filteredUsers = this.users.filter(user =>
-      user.cedulaUsuario.includes(query) ||
-      user.nombreUsuario.toLowerCase().includes(query.toLowerCase()) ||
-      user.apellidoUsuario.toLowerCase().includes(query.toLowerCase())
-    );
-  }
+    {
+      // Para buscar por el nombre del rol
+      const roleUser = user as User & { nombreRol?: string };
 
-  exportUsers() { }
+      const role = (roleUser.nombreRol || '').toLowerCase().includes(query);
+      const cedula = user.cedulaUsuario.includes(query);
+      const nombre = user.nombreUsuario.toLowerCase().includes(query.toLowerCase());
+      const apellido = user.apellidoUsuario.toLowerCase().includes(query.toLowerCase());
+      const correo = user.correoUsuario.toLocaleLowerCase().includes(query);
+
+      return role || cedula || nombre || apellido || correo;
+    }
+    );
+  };
 
   changeUserStatus(updatedUser: User) {
     const estadoUsuario = updatedUser.estadoUsuario ?? false;
@@ -185,6 +192,8 @@ export class UsersComponent implements OnInit {
         this.toastr.error('Error al actualizar el estado del usuario', 'Error');
       }
     });
-  }  
+  };
+
+  exportUsers() { };
   
 }

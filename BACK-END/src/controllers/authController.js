@@ -38,6 +38,15 @@ const loginUser = async (req, res) => {
     }
 };
 
+// Nuevo controlador para el logout
+const logoutUser = (req, res) => {
+    // En el backend, realmente no "invalidamos" el token JWT
+    // Simplemente enviamos una respuesta exitosa
+    res.status(200).json({ message: 'Sesión cerrada exitosamente' });
+    // Nota: La verdadera "invalidación" se maneja en el frontend
+};
+
 module.exports = {
-    loginUser
+    loginUser,
+    logoutUser
 };

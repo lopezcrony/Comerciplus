@@ -12,7 +12,7 @@ const getAllDetailCredit = async (idCredit) => {
     }
 };
 
-const addVentaToCredito = async (creditDetailData) => {
+const addSaleToCredit = async (creditDetailData) => {
     const transaction = await sequelize.transaction();
     try {
         // Busca la venta 
@@ -26,7 +26,7 @@ const addVentaToCredito = async (creditDetailData) => {
         if (creditDetailData.montoAcreditado > venta.totalVenta) {
             throw new Error('El monto acreditado no puede ser superior al total de la venta');
         }
-        const newDetailCredit = await detailCreditRepository.addVentaToCredito(creditDetailData, { transaction });
+        const newDetailCredit = await detailCreditRepository.addSaleToCredit(creditDetailData, { transaction });
 
         const credit = await creditRepository.findCreditById(creditDetailData.idCredito, { transaction });
 
@@ -53,6 +53,6 @@ const deleteDetailCredit = async (id) => {
     
 module.exports = {
     getAllDetailCredit,
-    addVentaToCredito,
+    addSaleToCredit,
     deleteDetailCredit
 };

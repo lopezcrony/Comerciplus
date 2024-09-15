@@ -22,12 +22,13 @@ const GetOneSale = async (req, res) => {
 const CreateNewSale = async (req, res) => {
     try {
         const newSale = await saleService.createSales(req.body);
-        res.status(201).json({ message: 'Venta creada exitosamente.', newSale });
+        res.status(201).json({ idVenta: newSale.idVenta, message: 'Venta creada exitosamente.' });
 
     } catch (error) {
         res.status(500).json({ message: 'Error al crear la venta.', error: error.message });
     }
 };
+
 const updateSaleStatus  = async (req, res) => {
     try {
         let { estadoVenta } = req.body;

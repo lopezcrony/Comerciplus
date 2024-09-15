@@ -10,6 +10,7 @@ import { AlertsService } from '../../shared/alerts/alerts.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { CreditsService } from '../credits/credits.service';
 
 @Component({
   selector: 'app-clients',
@@ -19,13 +20,15 @@ import { ToastrService } from 'ngx-toastr';
     CRUDComponent,
     CrudModalDirective,
   ],
-  templateUrl: './clients.component.html'
+  templateUrl: './clients.component.html',
+  styleUrl: '../credits/credits.component.css'
 })
 
 export class ClientsComponent implements OnInit {
 
   clients: Client[] = [];
   filteredClients: Client[] = [];
+  historyItems: any[] = [];
 
   columns: { field: string, header: string }[] = [
     { field: 'cedulaCliente', header: 'Cédula' },
@@ -35,11 +38,14 @@ export class ClientsComponent implements OnInit {
   ];
 
   clientForm: FormGroup;
-  showModal = false;
-  isEditing = false;
+  showModal: boolean = false;
+  showHistoryModal: boolean = false;
+  isEditing: boolean = false;
+  selectedClient: Client | undefined;
 
   constructor(
     private clientService: ClientService,
+    private creditService: CreditsService,
     private fb: FormBuilder,
     private alertsService: AlertsService,
     private toastr: ToastrService,
@@ -79,6 +85,12 @@ export class ClientsComponent implements OnInit {
     this.clientForm.patchValue(client);
     this.showModal = true;
   }
+
+  openHistoryModal(client: Client) {
+    this.selectedClient = client;
+    this.loadCreditHistory(client.idCliente);
+    this.showHistoryModal = true;
+  }
   
   cancelModalMessage(){
     this.alertsService.menssageCancel()
@@ -108,10 +120,7 @@ export class ClientsComponent implements OnInit {
   }
 
   saveClient() {
-    if (this.clientForm.invalid) {
-      this.markFormFieldsAsTouched();
-      return;
-    }
+    if (this.clientForm.invalid) return this.markFormFieldsAsTouched(); 
 
     const clientData = this.clientForm.value;
     const request = this.isEditing 
@@ -125,6 +134,17 @@ export class ClientsComponent implements OnInit {
         this.closeModal();
       },
       error: () => this.toastr.error('Error al guardar cliente', 'Error')
+    });
+  };
+
+  loadCreditHistory(idClient: number) {
+    this.creditService.getCreditHistoryByClient(idClient).subscribe({
+      next: (history) => {
+        this.historyItems = history.filter(a => a.estadoAbono === true || a.tipo === 'Crédito');
+      },
+      error: () => {
+        this.toastr.error('Error al cargar el historial de crédito', 'Error');
+      }
     });
   }
 

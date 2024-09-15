@@ -18,13 +18,14 @@ const getOneCredit = async (id) => {
     }
 };
 
-const getCreditHistory = async (idCredit) => {
-    const credit = await creditRepository.findCreditById(idCredit);
+const getCreditHistoryByClient = async (idClient) => {
+    const credit = await creditRepository.findCreditByClient(idClient);
+
     if (!credit) {
-        throw new Error('Crédito no encontrado');
+        throw new Error('Crédito no encontrado para ese cliente');
     }
-    const creditDetail = await creditDeatilRepository.getAllDetailCredit(idCredit);
-    const installments = await installmentRepository.getInstallmentsByCredit(idCredit);
+    const creditDetail = await creditDeatilRepository.getAllDetailCredit(credit.idCredito);
+    const installments = await installmentRepository.getInstallmentsByCredit(credit.idCredito);
 
     // Se combinan las tablas de abonos y detalle de crédito y se ordenan por fecha
     const historyItems = [
@@ -100,8 +101,8 @@ const deleteOneCredit = async (id) => {
 module.exports = {
     getAllCredits,
     getOneCredit,
-    getCreditHistory,
+    getCreditHistoryByClient,
     createCredit,
     updateTotalCredit,
-    deleteOneCredit
+    deleteOneCredit,
 };

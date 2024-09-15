@@ -36,6 +36,7 @@ export class CreditsComponent implements OnInit {
   selectedCredit: Credit | null = null;
   
   columns: { field: string, header: string }[] = [
+    { field: 'cedulaCliente', header: 'Identificación' },
     { field: 'nombreCliente', header: 'Cliente' },
     { field: 'totalCredito', header: 'Deuda Actual' },
   ];
@@ -74,7 +75,8 @@ export class CreditsComponent implements OnInit {
       this.credits = credits.map(credit => {
         const client = this.clients.find(c => c.idCliente === credit.idCliente);
         return {
-          ...credit, nombreCliente: client ? client.nombreCliente + ' ' + client.apellidoCliente : ''
+          ...credit, nombreCliente: client ? client.nombreCliente + ' ' + client.apellidoCliente : '',
+          cedulaCliente: client ? client.cedulaCliente : ''
         };
       });
       this.filteredCredits = this.credits;
@@ -151,16 +153,19 @@ export class CreditsComponent implements OnInit {
     this.filteredCredits = this.credits.filter(credit => {
       // Asegúrate de que 'credit' tiene 'nombreCliente'
       const creditWithClientName = credit as Credit & { nombreCliente?: string };
+      const creditWithClientId = credit as Credit & { cedulaCliente?: string };
   
       const matchesTotalCredito = credit.totalCredito.toString().includes(query);
       const matchesClientName = (creditWithClientName.nombreCliente || '').toLowerCase().includes(lowerQuery);
+      const matchesClientId = (creditWithClientId.cedulaCliente || '').toLowerCase().includes(lowerQuery);
+
   
-      return matchesTotalCredito || matchesClientName;
+      return matchesTotalCredito || matchesClientName || matchesClientId;
     });
   }
   
-  loadCreditHistory(idCredit: number) {
-    this.creditService.getCreditHistory(idCredit).subscribe({
+  loadCreditHistory(idClient: number) {
+    this.creditService.getCreditHistoryByClient(idClient).subscribe({
       next: (history) => {
         this.historyItems = history;
         this.showHistoryModal = true;
@@ -171,7 +176,7 @@ export class CreditsComponent implements OnInit {
 
   openHistoryModal(credit: Credit) {
     this.selectedCredit = credit;
-    this.loadCreditHistory(credit.idCredito);
+    this.loadCreditHistory(credit.idCliente);
   }
 
   closeHistoryModal() {

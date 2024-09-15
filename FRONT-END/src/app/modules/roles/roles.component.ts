@@ -132,12 +132,10 @@ export class RolesComponent implements OnInit {
   }
 
   searchRoles(query: string) {
-    this.roles = this.roles.filter(roles =>
+    this.filteredRoles = this.roles.filter(roles =>
       roles.nombreRol.toLowerCase().includes(query.toLowerCase())
     );
-  }
-
-  exportRoles() { }
+  };
 
   changeRoleStatus(updatedRole: Role) {
     const estadoRol = updatedRole.estadoRol ?? false;
@@ -156,7 +154,9 @@ export class RolesComponent implements OnInit {
         this.toastr.error('Error al actualizar el estado del rol', 'Error');
       }
     });
-  }  
+  };
+  
+  exportRoles() { };
   
 }
 

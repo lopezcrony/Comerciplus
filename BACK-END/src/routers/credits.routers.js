@@ -6,7 +6,7 @@ const router = Router();
 router
     .get('/', creditController.getAllCredits)
     .get('/:id', creditController.getOneCredit)
-    .get('/:id/historial', creditController.getCreditHistory)
+    .get('/historialcliente/:id', creditController.getCreditHistoryByClient)
     .post('/', creditController.createCredit)
     .patch('/:id', creditController.updateTotalCredit)
     .delete('/:id', creditController.deleteOneCredit)
