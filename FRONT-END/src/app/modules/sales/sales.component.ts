@@ -86,6 +86,10 @@ export class SalesComponent implements OnInit {
     });
   }
 
+  getImageUrl(productId: any): string {
+    return this.productService.getImageUrl(productId);
+  }
+
   searchProduct(event: any): void {
     const query = event.query.toLowerCase();
 
@@ -101,7 +105,11 @@ export class SalesComponent implements OnInit {
 
   addProductSale(event: any): void {
     const product = event.value ? event.value : event; // Extraer el producto de event.value si está presente
-    const existingProduct = this.detailSale.find(item => item.idProducto === product.idProducto);
+    if (product.stock <= 0) {
+      this.toastr.error('Stock insuficiente','Error')
+    }
+    else {
+      const existingProduct = this.detailSale.find(item => item.idProducto === product.idProducto);
 
     if (existingProduct) {
       existingProduct.cantidadProducto++;
@@ -117,6 +125,7 @@ export class SalesComponent implements OnInit {
       this.detailSale.push(newDetail);
     }
     this.updateTotal();
+    }
   }
 
   updateSubtotal(item: any): void {
