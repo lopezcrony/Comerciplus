@@ -5,6 +5,7 @@ import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { ShoppingsService } from './shoppings.service';
+// import {ShoppingdetailsService } from '../shoppingdetails/shoppingdetails.service';
 import { ProvidersService } from '../providers/providers.service';
 import { ProductsService } from '../products/products.service';
 import { MessageService } from 'primeng/api';
@@ -13,6 +14,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { ValidationService } from '../../shared/validators/validations.service';
 import { Shopping } from './shopping.model';
+import { Shoppingdetails } from '../shoppingdetails/model';
 
 @Component({
   selector: 'app-shopping',
@@ -31,7 +33,9 @@ import { Shopping } from './shopping.model';
 export class ShoppingsComponent implements OnInit {
 
   shoppingForm: FormGroup;
+  shoppingDetailsForm: FormGroup;
   shoppings:Shopping[]=[];
+  shoppingsDetails:Shoppingdetails[]=[];
   providers: any[] = [];
   products: any[] = [];
   filteredProducts: any[] = [];
@@ -54,6 +58,14 @@ export class ShoppingsComponent implements OnInit {
       numeroFactura: ['', Validators.required],
       valorCompra: [{ value: 0, disabled: false }],
       detalles: this.fb.array([]) // FormArray para los detalles
+    });
+    this.shoppingDetailsForm = this.fb.group({
+      idDetalleCompra: ['', Validators.required],
+      idCompra: ['', Validators.required],
+      idProducto: ['', Validators.required],
+      codigoBarra: ['', Validators.required],
+      cantidadProducto: ['', Validators.required],
+      precioCompraUnidad: ['', Validators.required],
     });
   }
 
