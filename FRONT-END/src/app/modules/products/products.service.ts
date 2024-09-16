@@ -26,6 +26,10 @@ export class ProductsService {
 
     return this.http.post<{ nombre: string }>(`${this.baseUrl}`, formData);
   }
+
+  getImageUrl(productId: any): string {
+    return `${this.baseUrl}/productos/${productId}`;
+  }
   
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl).pipe(

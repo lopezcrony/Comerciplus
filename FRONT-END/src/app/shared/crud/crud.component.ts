@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { AlertsService } from '../alerts/alerts.service';
+import { ProductsService } from '../../modules/products/products.service';
 
 @Component({
   selector: 'app-crud',
@@ -57,6 +58,10 @@ export class CRUDComponent {
   // Parámetro de búsqueda
   searchQuery = '';
 
+  constructor(
+    private alertsService: AlertsService, 
+    private productService: ProductsService) {}
+
   onCreate() {
     this.create.emit();
   }
@@ -94,8 +99,6 @@ export class CRUDComponent {
     return item[this.statusField];
   }
 
-  constructor(private alertsService: AlertsService) {}
-
   confirmChangeStatus(item: any) {
     this.alertsService.confirm(
       `¿Estás seguro de cambiar el estado?`,
@@ -110,7 +113,8 @@ export class CRUDComponent {
     this.statusChange.emit(updatedItem);
   }
 
+  
   getImageUrl(productId: any): string {
-    return `http://localhost:3006/uploads/productos/${productId}`;
+    return this.productService.getImageUrl(productId);
   }
 }
