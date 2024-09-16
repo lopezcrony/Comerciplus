@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
+import { CRUDComponent } from '../../shared/crud/crud.component';
+import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { ShoppingsService } from './shoppings.service';
 import { ProvidersService } from '../providers/providers.service';
 import { ProductsService } from '../products/products.service';
@@ -10,6 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { ValidationService } from '../../shared/validators/validations.service';
+import { Shopping } from './shopping.model';
 
 @Component({
   selector: 'app-shopping',
@@ -17,18 +20,24 @@ import { ValidationService } from '../../shared/validators/validations.service';
   imports: [
     ...SHARED_IMPORTS,
     DropdownModule,
-    AutoCompleteModule
+    AutoCompleteModule,
+    CRUDComponent,
+    CrudModalDirective
   ],
-  templateUrl: './shoppings.component.html',
+  templateUrl: './shoppingscreate.component.html',
   styleUrls: ['./shoppings.component.scss'],
   providers: [MessageService]
 })
 export class ShoppingsComponent implements OnInit {
 
   shoppingForm: FormGroup;
+  shoppings:Shopping[]=[];
   providers: any[] = [];
   products: any[] = [];
   filteredProducts: any[] = [];
+  filteredShoppings: any[] = [];
+
+
 
   constructor(
     private fb: FormBuilder,
@@ -48,10 +57,12 @@ export class ShoppingsComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.loadProviders();
-    this.loadProducts();
-    this.addShoppingDetail(); // Añadimos un detalle inicial
+
+  loadShoppings() {
+    this.shoppingService.getAllShoppings().subscribe(data => {
+      this.shoppings = data;
+      this.filteredShoppings = data;
+    });
   }
 
   // Métodos para cargar proveedores y productos
@@ -66,6 +77,13 @@ export class ShoppingsComponent implements OnInit {
       this.products = data.filter(pr => pr.estadoProducto === true);
       this.filteredProducts = this.products; // Inicializa con todos los productos
     });
+  }
+
+  ngOnInit() {
+    this.loadShoppings();
+    this.loadProviders();
+    this.loadProducts();
+    this.addShoppingDetail(); // Añadimos un detalle inicial
   }
 
   searchProduct(event: any) {
@@ -130,6 +148,42 @@ export class ShoppingsComponent implements OnInit {
       error: (error) => {
         this.toastr.error(error.message, 'Error');
       }
+    });
+  }
+
+  changeShoppingStatus(updatedShopping: Shopping) {
+    const estadoShopping = updatedShopping.estadoCompra ?? false;
+
+    this.shoppingService.updateStatusShopping(updatedShopping.idCompra, estadoShopping).subscribe({
+      next: () => {
+        [this.shoppings, this.filteredShoppings].forEach(list => {
+          const index = list.findIndex(c => c.idCompra === updatedShopping.idCompra);
+          if (index !== -1) {
+            list[index] = { ...list[index], ...updatedShopping };
+          }
+        });
+        this.toastr.success('Estado actualizado con éxito', 'Éxito');
+      },
+      error: () => {
+        this.toastr.error('Error al actualizar el estado', 'Error');
+      }
+    });
+  }
+
+  searchShopping(query: string) {
+    let lowerCaseQuery = query.toLowerCase();
+
+    // Intenta convertir la consulta a un número
+    let numericQuery = parseFloat(query);
+
+    this.filteredShoppings = this.shoppings.filter(shopping => {
+
+      let idProveedor = !isNaN(numericQuery) && shopping.idProveedor != null && Number(shopping.idProveedor) === numericQuery;
+      // Comparación numérica para el stock
+      let numeroFactura = !isNaN(numericQuery) && shopping.numeroFactura != null && Number(shopping.numeroFactura) === numericQuery;
+
+      // Retorna verdadero si hay coincidencia en nombreProducto o stock
+      return idProveedor || numeroFactura;
     });
   }
 

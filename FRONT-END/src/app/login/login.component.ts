@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -16,35 +17,62 @@ export class LoginComponent {
   claveUsuario: string = '';
   showPassword: boolean = false;
   errorMessage: string = '';
+  
+  emailPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  passwordPattern: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,16}$/;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
   toggleShowPassword() {
     this.showPassword = !this.showPassword;
   }
 
+  validateEmail(): boolean {
+    if (!this.emailPattern.test(this.correoUsuario)) {
+      this.toastr.error('El correo electrónico debe tener un formato válido');
+      return false;
+    }
+    return true;
+  }
+
+  validatePassword(): boolean {
+    if (!this.passwordPattern.test(this.claveUsuario)) {
+      this.toastr.error('La contraseña debe tener entre 8 y 16 caracteres, incluir al menos una mayúscula, una minúscula y un número');
+      return false;
+    }
+    return true;
+  }
+
   onSubmit() {
-    this.errorMessage = ''; // Limpiar mensaje de error previo
+    if (!this.validateEmail() || !this.validatePassword()) {
+      return;
+    }
+
     const loginData = {
       correoUsuario: this.correoUsuario,
       claveUsuario: this.claveUsuario
     };
 
-    // Realiza la solicitud POST al backend
     this.http.post('http://localhost:3006/login', loginData).subscribe({
       next: (response: any) => {
         localStorage.setItem('token', response.token);
-        console.log('Inicio de sesión exitoso');
+        this.toastr.success('Inicio de sesión exitoso');
         this.router.navigate(['/users']);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al iniciar sesión:', error);
         if (error.status === 401) {
-          this.errorMessage = 'Credenciales incorrectas';
+          this.toastr.error('Credenciales incorrectas');
+        } else if (error.status === 404) {
+          this.toastr.error('Usuario no encontrado');
         } else if (error.status === 0) {
-          this.errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión o que el servidor esté en funcionamiento.';
+          this.toastr.error('No se pudo conectar con el servidor. Verifica tu conexión o que el servidor esté en funcionamiento.');
         } else {
-          this.errorMessage = 'Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.';
+          this.toastr.error('Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.');
         }
       }
     });

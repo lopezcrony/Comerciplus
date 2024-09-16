@@ -13,6 +13,7 @@ import { ReturnSaleComponent } from './modules/return-sale/return-sale.component
 import { CreditsComponent } from './modules/credits/credits.component';
 import { ShoppingsComponent } from './modules/shoppings/shoppings.component';
 import { LoginComponent } from './login/login.component';
+import { ShoppinviewComponent } from './modules/shoppinview/shoppinview.component';
 
 
 export const routes: Routes = [
@@ -34,6 +35,7 @@ export const routes: Routes = [
       { path: 'categories', component: CategoriesComponent},
       { path: 'products', component: ProductsComponent},
       { path: 'shoppings', component: ShoppingsComponent},
+      { path: 'shoppingview', component: ShoppinviewComponent},
       { path: '', redirectTo: 'crud', pathMatch: 'full' },
       // { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirigir a login si no hay ninguna ruta
     ]

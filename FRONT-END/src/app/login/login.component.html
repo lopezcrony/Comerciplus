@@ -1,58 +1,69 @@
 <div class="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 flex items-center justify-center p-4">
-    <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-2xl p-8 max-w-md w-full space-y-8">
-      <div class="text-center">
-        <div class="bg-green-500 rounded-full p-3 inline-block">
-            <i class="fas fa-shopping-basket text-white icono-cesta"></i> <!-- Aplicamos la clase personalizada -->
-        </div>
-        <h2 class="mt-6 text-3xl font-extrabold text-gray-900">Tienda Santa Clara</h2>
-        <p class="mt-2 text-sm text-gray-600">Inicia sesión en tu cuenta</p>
+  <div class="bg-white bg-opacity-90 backdrop-blur-md rounded-lg shadow-2xl p-8 max-w-md w-full space-y-8">
+    <div class="text-center">
+      <div class="bg-green-500 rounded-full p-3 inline-block">
+        <i class="fas fa-shopping-basket text-white icono-cesta"></i>
       </div>
-  
-      <form (ngSubmit)="onSubmit()" #form="ngForm" class="mt-8 space-y-6">
-        <div class="space-y-6">
-          <!-- Campo de correo -->
-          <div class="relative">
-            <label for="correoUsuario" class="text-sm font-medium text-gray-700">Correo</label>
-            <div class="flex items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-green-600">
-              <div class="pl-3">
-                <i class="fas fa-user text-gray-400"></i> <!-- Icono de usuario -->
-              </div>
-              <input [(ngModel)]="correoUsuario" name="correoUsuario" type="email" required
-                class="pl-3 w-full py-2 focus:outline-none focus:border-transparent"
-                placeholder="Ingresa tu correo" />
-            </div>
-          </div>
-  
-          <!-- Campo de contraseña -->
-          <div class="relative">
-            <label for="claveUsuario" class="text-sm font-medium text-gray-700">Contraseña</label>
-            <div class="flex items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-green-600">
-              <div class="pl-3">
-                <i class="fas fa-lock text-gray-400"></i> <!-- Icono de candado -->
-              </div>
-              <input [(ngModel)]="claveUsuario" name="claveUsuario" [type]="showPassword ? 'text' : 'password'" required
-                class="pl-3 w-full py-2 focus:outline-none focus:border-transparent"
-                placeholder="Ingresa tu contraseña" />
-              <div class="pr-3">
-                <i (click)="toggleShowPassword()" class="fas" [class.fa-eye]="showPassword" [class.fa-eye-slash] ="!showPassword" 
-                  style="cursor: pointer; color: #6b7280;"></i>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Link "¿Olvidaste tu contraseña?" -->
-          <div class="text-right">
-            <a href="#" class="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
-          </div>
-        </div>
-  
-        <!-- Botón de inicio de sesión -->
-        <div>
-          <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105">
-            Iniciar Sesión
-          </button>
-        </div>
-      </form>
+      <h2 class="mt-6 text-3xl font-extrabold text-gray-900">Tienda Santa Clara</h2>
+      <p class="mt-2 text-sm text-gray-600">Inicia sesión en tu cuenta</p>
     </div>
+    
+    <form (ngSubmit)="onSubmit()" #form="ngForm" class="mt-8 space-y-6">
+      <div class="space-y-6">
+        <!-- Campo de correo -->
+        <div class="relative">
+          <label for="correoUsuario" class="text-sm font-medium text-gray-700">Correo</label>
+          <div class="flex items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-green-600"
+               [ngClass]="{'border-red-500': correoUsuario && !emailPattern.test(correoUsuario)}">
+            <div class="pl-3">
+              <i class="fas fa-user text-gray-400"></i>
+            </div>
+            <input [(ngModel)]="correoUsuario" name="correoUsuario" type="email" required
+                   (blur)="validateEmail()"
+                   class="pl-3 w-full py-2 focus:outline-none focus:border-transparent"
+                   placeholder="Ingresa tu correo" />
+          </div>
+          <p *ngIf="correoUsuario && !emailPattern.test(correoUsuario)" class="text-red-500 text-xs mt-1">
+            El correo electrónico debe tener un formato válido
+          </p>
+        </div>
+        
+        <!-- Campo de contraseña -->
+        <div class="relative">
+          <label for="claveUsuario" class="text-sm font-medium text-gray-700">Contraseña</label>
+          <div class="flex items-center border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-green-600"
+               [ngClass]="{'border-red-500': claveUsuario && !passwordPattern.test(claveUsuario)}">
+            <div class="pl-3">
+              <i class="fas fa-lock text-gray-400"></i>
+            </div>
+            <input [(ngModel)]="claveUsuario" name="claveUsuario" [type]="showPassword ? 'text' : 'password'" required
+                   (blur)="validatePassword()"
+                   class="pl-3 w-full py-2 focus:outline-none focus:border-transparent"
+                   placeholder="Ingresa tu contraseña" />
+            <div class="pr-3">
+              <i (click)="toggleShowPassword()" class="fas" [class.fa-eye]="showPassword" [class.fa-eye-slash]="!showPassword"
+                 style="cursor: pointer; color: #6b7280;"></i>
+            </div>
+          </div>
+          <p *ngIf="claveUsuario && !passwordPattern.test(claveUsuario)" class="text-red-500 text-xs mt-1">
+            La contraseña debe tener entre 8 y 16 caracteres, incluir al menos una mayúscula, una minúscula y un número
+          </p>
+        </div>
+        
+        <!-- Link "¿Olvidaste tu contraseña?" -->
+        <div class="text-right">
+          <a href="#" class="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
+        </div>
+      </div>
+      
+      <!-- Botón de inicio de sesión -->
+      <div>
+        <button type="submit" [disabled]="!form.form.valid" 
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+                [ngClass]="{'opacity-50 cursor-not-allowed': !form.form.valid}">
+          Iniciar Sesión
+        </button>
+      </div>
+    </form>
   </div>
-  
+</div>
