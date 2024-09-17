@@ -150,9 +150,6 @@ export class ShoppingsComponent implements OnInit {
       return;
     }
 
-    console.log('Compras', shoppingData);
-    console.log('Detalle', shoppingDetails);
-
     this.shoppingService.createShopping(shoppingData, shoppingDetails).subscribe({
       next: (response) => {
         console.log('Respuesta exitosa:', response);

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Sale } from './sales.model';
+import { DetailSale } from '../detailSale/detailSale.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +15,14 @@ export class SaleService {
 
   constructor(private http: HttpClient) {}
 
-  createSale(saleData: any): Observable<Sale> {
-    return this.http.post<Sale>(this.apiUrl, saleData).pipe(
+  createSale(sale: any, saleDetail: DetailSale[]): Observable<any> {
+    const payload = { sale, saleDetail}
+    return this.http.post<Sale>(this.apiUrl, payload).pipe(
+      tap(response => console.log('Response from backend:', response)),
       catchError(this.handleError)
     );
   }
+
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';

@@ -8,6 +8,6 @@ const router = Router();
 router
     .get('/', detailSalesController.GetAllDetailSales)
     .get('/:id', detailSalesController.GetOneDetailSales)
-    .post('/', validateDetalleVenta, detailSalesController.CreateNewDetailSale)
+    .get('/venta/:idVenta', detailSalesController.GetAllDetailsBySale)
 
 module.exports = router;

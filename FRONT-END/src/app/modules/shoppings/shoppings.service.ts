@@ -55,7 +55,6 @@ export class ShoppingsService {
     );
   }
 
-
   getAllProviders(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiUrl}/proveedores`).pipe(
       catchError(this.handleError)
@@ -65,11 +64,6 @@ export class ShoppingsService {
   checkShoppingExists(numeroFactura: string): Observable<boolean> {
     return this.http.get<boolean>(`/api/shoppings/exists/${encodeURIComponent(numeroFactura)}`);
   }
-
-
-
-
-
 
   private handleError(error: HttpErrorResponse) {
     // Puedes ajustar la lógica para diferentes tipos de errores aquí
