@@ -18,8 +18,8 @@ const findShoppingDetailById = async (id) => {
     return await shoppingDetails.findByPk(id);
 };
 
-const createShoppingDetail = async (shoppingdetailData) => {
-    return await shoppingDetails.create(shoppingdetailData);
+const createShoppingDetail = async (shoppingdetailData, options) => {
+    return await shoppingDetails.create(shoppingdetailData, options);
 };
 
 const updateShoppingDetail = async (id, shoppingdetailData) => {
@@ -36,7 +36,8 @@ const findShoppingDetailByCompraAndProducto = async (idCompra, idProducto, codig
             idCompra,
             idProducto,
             codigoBarra
-        }
+        },
+        ...options
     });
 };
 

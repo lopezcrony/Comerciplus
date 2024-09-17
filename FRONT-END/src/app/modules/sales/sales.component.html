@@ -11,7 +11,7 @@
           [style]="{'width':'100%'}">
           <ng-template let-product pTemplate="item">
             <div class="product-item">
-              <img [src]="getImageUrl(product.idProducto)" [alt]="product.nombreProducto" width="24" />
+              <!-- <img [src]="getImageUrl(product.idProducto)" [alt]="product.nombreProducto" width="24" /> -->
               <div>{{product.nombreProducto}}</div>
               <div>Cantidad: {{product.stock}}</div>
               <div class="font-bold">{{product.precioVenta | currency}}</div>

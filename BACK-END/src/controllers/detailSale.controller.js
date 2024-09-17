@@ -6,7 +6,7 @@ const GetAllDetailSales = async (request, response) => {
         const detailSales = await detailSaleService.getAlldetailSales();
         response.json(detailSales);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener el detalle de la venta', error: error.message });
+        response.status(500).json({ message: 'Error al obtener los detalles', error: error.message });
     }
 };
 
@@ -19,21 +19,22 @@ const GetOneDetailSales = async (req, res) => {
     }
 };
 
-const CreateNewDetailSale = async (req, res) => {
-    console.log(req.body);
-
+// Busca los detalles de venta asociados a una venta en particular
+const GetAllDetailsBySale = async (req, res) => {
     try {
-        const newSale = await detailSaleService.createdetailSales(req.body);
-        res.status(201).json({ message: 'Detalle de venta creado exitosamente.', newSale });
-
+        const { idVenta } = req.params;
+        const saleDetails = await detailSaleService.getAllDetailsBySale(idVenta);
+        if (saleDetails.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron productos asociadas a esta venta.' });
+        }
+        return res.status(200).json(saleDetails);
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear el detalle de venta.', error: error.message });
+        res.status(500).json({ message: 'Error al obtener el detalle de la venta', error: error.message });
     }
 };
-
 
 module.exports = {
     GetAllDetailSales,
     GetOneDetailSales,
-    CreateNewDetailSale,
+    GetAllDetailsBySale,
 }

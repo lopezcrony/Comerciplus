@@ -180,39 +180,17 @@ export class SalesComponent implements OnInit {
       fechaVenta: new Date()
     };
 
-    this.saleService.createSale(saleData).subscribe({
+    const saleDetail = this.detailSale;
+
+    this.saleService.createSale(saleData, saleDetail).subscribe({
       next: (response) => {
-        this.idSale = response.idVenta;
-
-        const detailRequests = this.detailSale.map(detail => {
-          const detailData = {
-            idVenta: this.idSale,
-            idProducto: detail.idProducto,
-            cantidadProducto: detail.cantidadProducto,
-            subtotal: detail.subtotal
-          };
-
-          return this.detailSalesService.createDetailSale(detailData).pipe(
-            catchError(error => {
-              this.toastr.error(`No se pudo registrar el detalle de la venta: ${error.message}`, 'Error');
-              return throwError(() => new Error(error.message));
-            })
-          );
-        });
-
-        forkJoin(detailRequests).subscribe({
-          next: () => {
-            console.log('Venta registrada correctamente', 'Éxito');
-            this.saleCompleted = true;
-            this.updateCreditForm();
-          },
-          error: (error) => {
-            this.toastr.error(`${error.message}`, 'Error');
-          }
-        });
+        this.idSale = response.newSale.idVenta;
       },
-      error: () => {
+      error: (error) => {
         this.toastr.error('No se pudo registrar la venta', 'Error');
+        console.error('Error al guardar la venta:', error);
+        console.log(saleData, saleDetail)
+
       }
     });
   };
@@ -235,6 +213,8 @@ export class SalesComponent implements OnInit {
       montoAcreditado: this.creditForm.value.montoCredito,
       plazoMaximo: this.creditForm.value.plazoMaximo
     };
+
+    console.log(this.idSale)
 
     this.creditDetailService.addSaleToCredit(creditDetail).subscribe({
       next: () => {

@@ -1,20 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
+import { ValidationService } from '../../shared/validators/validations.service';
+
 import { ShoppingsService } from './shoppings.service';
-// import {ShoppingdetailsService } from '../shoppingdetails/shoppingdetails.service';
 import { ProvidersService } from '../providers/providers.service';
 import { ProductsService } from '../products/products.service';
-import { MessageService } from 'primeng/api';
-import { DropdownModule } from 'primeng/dropdown';
-import { AutoCompleteModule } from 'primeng/autocomplete';
 
-import { ValidationService } from '../../shared/validators/validations.service';
 import { Shopping } from './shopping.model';
 import { Shoppingdetails } from '../shoppingdetails/model';
+
+import { DropdownModule } from 'primeng/dropdown';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 @Component({
   selector: 'app-shopping',
@@ -27,21 +28,15 @@ import { Shoppingdetails } from '../shoppingdetails/model';
     CrudModalDirective
   ],
   templateUrl: './shoppingscreate.component.html',
-  styleUrls: ['./shoppings.component.scss'],
-  providers: [MessageService]
+  styleUrls: ['./shoppings.component.css'],
 })
 export class ShoppingsComponent implements OnInit {
-
   shoppingForm: FormGroup;
-  shoppingDetailsForm: FormGroup;
-  shoppings:Shopping[]=[];
-  shoppingsDetails:Shoppingdetails[]=[];
+  shoppings: Shopping[] = [];
   providers: any[] = [];
   products: any[] = [];
   filteredProducts: any[] = [];
   filteredShoppings: any[] = [];
-
-
 
   constructor(
     private fb: FormBuilder,
@@ -49,26 +44,29 @@ export class ShoppingsComponent implements OnInit {
     private providerService: ProvidersService,
     private productService: ProductsService,
     private toastr: ToastrService,
-    private messageService: MessageService,
-    private ValidationService: ValidationService
+    private validationService: ValidationService
   ) {
     this.shoppingForm = this.fb.group({
-      idProveedor: ['', Validators.required],
-      fechaCompra: ['', Validators.required],
-      numeroFactura: ['', Validators.required],
-      valorCompra: [{ value: 0, disabled: false }],
-      detalles: this.fb.array([]) // FormArray para los detalles
-    });
-    this.shoppingDetailsForm = this.fb.group({
-      idDetalleCompra: ['', Validators.required],
-      idCompra: ['', Validators.required],
-      idProducto: ['', Validators.required],
-      codigoBarra: ['', Validators.required],
-      cantidadProducto: ['', Validators.required],
-      precioCompraUnidad: ['', Validators.required],
+      shopping: this.fb.group({
+        idProveedor: ['', Validators.required],
+        fechaCompra: ['', Validators.required],
+        numeroFactura: ['', Validators.required],
+        valorCompra: [{ value: 0, disabled: true }],
+      }),
+      shoppingDetail: this.fb.array([])
     });
   }
 
+  ngOnInit() {
+    this.loadShoppings();
+    this.loadProviders();
+    this.loadProducts();
+    this.addShoppingDetail();
+  }
+
+  get shoppingDetailArray() {
+    return this.shoppingForm.get('shoppingDetail') as FormArray;
+  }
 
   loadShoppings() {
     this.shoppingService.getAllShoppings().subscribe(data => {
@@ -77,40 +75,26 @@ export class ShoppingsComponent implements OnInit {
     });
   }
 
-  // Métodos para cargar proveedores y productos
   loadProviders() {
     this.providerService.getAllProviders().subscribe(data => {
-      this.providers = data.filter(p=>p.estadoProveedor === true);
+      this.providers = data.filter(p => p.estadoProveedor === true);
     });
   }
 
   loadProducts() {
     this.productService.getAllProducts().subscribe(data => {
       this.products = data.filter(pr => pr.estadoProducto === true);
-      this.filteredProducts = this.products; // Inicializa con todos los productos
+      this.filteredProducts = this.products;
     });
   }
 
-  ngOnInit() {
-    this.loadShoppings();
-    this.loadProviders();
-    this.loadProducts();
-    this.addShoppingDetail(); // Añadimos un detalle inicial
-  }
-
   searchProduct(event: any) {
-    const query = event.query.toLowerCase(); // Obtener la búsqueda en minúsculas
-    this.filteredProducts = this.products.filter(product => 
+    const query = event.query.toLowerCase();
+    this.filteredProducts = this.products.filter(product =>
       product.nombreProducto.toLowerCase().includes(query)
     );
   }
 
-  // Getter para acceder al FormArray de detalles
-  get detalles(): FormArray {
-    return this.shoppingForm.get('detalles') as FormArray;
-  }
-
-  // Método para crear un FormGroup de detalle
   createShoppingDetail(): FormGroup {
     return this.fb.group({
       idProducto: ['', Validators.required],
@@ -121,46 +105,68 @@ export class ShoppingsComponent implements OnInit {
     });
   }
 
-  // Añadir un nuevo detalle
   addShoppingDetail() {
-    this.detalles.push(this.createShoppingDetail());
+    this.shoppingDetailArray.push(this.createShoppingDetail());
   }
 
-  // Eliminar un detalle específico
   removeShoppingDetail(index: number) {
-    this.detalles.removeAt(index);
+    this.shoppingDetailArray.removeAt(index);
+    this.calculateTotalValue();
   }
 
-  // Método para calcular el subtotal de un detalle
   calculateSubtotal(index: number) {
-    const detailGroup = this.detalles.at(index);
+    const detailGroup = this.shoppingDetailArray.at(index);
     const cantidad = detailGroup.get('cantidadProducto')?.value || 0;
     const precio = detailGroup.get('precioCompraUnidad')?.value || 0;
     const subtotal = cantidad * precio;
 
     detailGroup.patchValue({ subtotal });
+    this.calculateTotalValue();
   }
 
-  // Método para guardar la compra y detalles
+  calculateTotalValue(): number {
+    return this.shoppingDetailArray.controls.reduce((total, control) => {
+      return total + (control.get('subtotal')?.value || 0);
+    }, 0);
+  }
+
   saveShopping() {
     if (this.shoppingForm.invalid) {
       this.markFormFieldsAsTouched(this.shoppingForm);
       return;
     }
 
-    const shoppingData = this.shoppingForm.getRawValue();
+    const formValue = this.shoppingForm.getRawValue();
+    
+    const shoppingData = formValue.shopping;
 
-    this.shoppingService.createShopping(shoppingData).subscribe({
-      next: () => {
+    const shoppingDetails = formValue.shoppingDetail.map((detail: { idProducto: { idProducto: any; }; }) => ({
+      ...detail,
+      idProducto: detail.idProducto.idProducto
+    }));
+
+    if (shoppingDetails.length === 0) {
+      this.toastr.error('Debe agregar al menos un detalle de compra.', 'Error');
+      return;
+    }
+
+    this.shoppingService.createShopping(shoppingData, shoppingDetails).subscribe({
+      next: (response) => {
+        console.log('Respuesta exitosa:', response);
         this.toastr.success('Compra y detalles guardados exitosamente.', 'Éxito');
-        this.shoppingForm.reset();
-        this.detalles.clear();
-        this.addShoppingDetail(); // Añadimos un detalle vacío después de guardar
+        this.resetForm();
       },
       error: (error) => {
-        this.toastr.error(error.message, 'Error');
+        console.error('Error al guardar la compra:', error);
+        this.toastr.error(`Error al guardar la compra: ${error.message}`, 'Error');
       }
     });
+  }
+
+  resetForm() {
+    this.shoppingForm.reset();
+    this.shoppingDetailArray.clear();
+    this.addShoppingDetail();
   }
 
   changeShoppingStatus(updatedShopping: Shopping) {
@@ -183,45 +189,38 @@ export class ShoppingsComponent implements OnInit {
   }
 
   searchShopping(query: string) {
-    let lowerCaseQuery = query.toLowerCase();
-
-    // Intenta convertir la consulta a un número
-    let numericQuery = parseFloat(query);
+    const lowerCaseQuery = query.toLowerCase();
+    const numericQuery = parseFloat(query);
 
     this.filteredShoppings = this.shoppings.filter(shopping => {
+      const idProveedor = !isNaN(numericQuery) && shopping.idProveedor != null && Number(shopping.idProveedor) === numericQuery;
+      const numeroFactura = !isNaN(numericQuery) && shopping.numeroFactura != null && Number(shopping.numeroFactura) === numericQuery;
 
-      let idProveedor = !isNaN(numericQuery) && shopping.idProveedor != null && Number(shopping.idProveedor) === numericQuery;
-      // Comparación numérica para el stock
-      let numeroFactura = !isNaN(numericQuery) && shopping.numeroFactura != null && Number(shopping.numeroFactura) === numericQuery;
-
-      // Retorna verdadero si hay coincidencia en nombreProducto o stock
       return idProveedor || numeroFactura;
     });
   }
 
-  // Método para marcar los campos como tocados y mostrar los errores
-  markFormFieldsAsTouched(form: FormGroup | FormArray) {
-    Object.values(form.controls).forEach(control => {
+  markFormFieldsAsTouched(formGroup: FormGroup | FormArray) {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
       if (control instanceof FormGroup || control instanceof FormArray) {
         this.markFormFieldsAsTouched(control);
       } else {
-        control.markAsTouched();
+        control?.markAsTouched({ onlySelf: true });
       }
     });
   }
 
-  // Método para verificar si un campo es inválido
- isFieldInvalid(fieldName: string): boolean {
-    const field = this.shoppingForm.get(fieldName);
+  isFieldInvalid(formGroup: string, fieldName: string): boolean {
+    const field = this.shoppingForm.get(`${formGroup}.${fieldName}`);
     return !!(field?.invalid && (field.touched || field.dirty));
   }
 
-  // Obtener mensaje de error
-  getErrorMessage(fieldName: string): string {
-    const control = this.shoppingForm.get(fieldName);
+  getErrorMessage(formGroup: string, fieldName: string): string {
+    const control = this.shoppingForm.get(`${formGroup}.${fieldName}`);
     if (control?.errors) {
       const errorKey = Object.keys(control.errors)[0];
-      return this.ValidationService.getErrorMessage('shopping', fieldName, errorKey);
+      return this.validationService.getErrorMessage('shopping', fieldName, errorKey);
     }
     return '';
   }

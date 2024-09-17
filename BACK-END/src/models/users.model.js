@@ -18,7 +18,10 @@ const User = sequelize.define('User', {
   },
   cedulaUsuario: {
     type: DataTypes.STRING,
-    unique : true,
+    unique : {
+      name: 'unique_cedulaUsuario', // Nombre del índice existente
+      msg: 'La cedula del usuario debe ser única.'
+    },
     allowNull: false,
   },
   nombreUsuario: {

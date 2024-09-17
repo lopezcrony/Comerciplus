@@ -1,14 +1,27 @@
 const { body, validationResult } = require('express-validator');
 
-// Validaciones para el modelo Sales
-const validateSales = [
-    body('fechaVenta')
-        .notEmpty().withMessage('La fecha de venta es obligatoria')
-        .isISO8601().withMessage('La fecha de venta debe ser una fecha válida en formato ISO 8601'),
+const validateSaleWithDetails = [
+    // Validar campos de 'sales' (datos generales de la venta)
+    body('sale.fechaVenta')
+        .notEmpty().withMessage('La fecha de venta es obligatoria'),
 
-    // body('totalVenta')
-    //     .isFloat({ min: 0 }).withMessage('El total de la venta debe ser un número mayor o igual a 0'),
+    // Validar el array 'detalleVenta'
+    body('detalleVenta')
+        .isArray().withMessage('Los detalles de la venta deben ser un array')
+        .notEmpty().withMessage('Debe incluir al menos un detalle de venta')
+        .custom(detalles => {
+            for (const detalle of detalles) {
+                if (!detalle.idProducto || !Number.isInteger(detalle.idProducto)) {
+                    throw new Error('El ID del producto es obligatorio y debe ser un número entero positivo');
+                }
+                if (!detalle.cantidadProducto || !Number.isInteger(detalle.cantidadProducto) || detalle.cantidadProducto <= 0) {
+                    throw new Error('La cantidad del producto es obligatoria y debe ser mayor a 0.');
+                }
+            }
+            return true;
+        }),
 
+    // Middleware para manejar errores de validación
     (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -19,5 +32,5 @@ const validateSales = [
 ];
 
 module.exports = {
-    validateSales
+    validateSaleWithDetails
 };

@@ -20,10 +20,16 @@ const getOneShopping = async (req, res) => {
 
 const createShopping = async (req, res) => {
     try {
-        const newShopping = await shoppingService.createShopping(req.body);
+        const { shopping, shoppingDetail } = req.body;
+
+        if (!shoppingDetail || shoppingDetail.length === 0) {
+            return res.status(400).json({ message: 'La compra debe tener al menos un detalle de compra.' });
+        }
+
+        const newShopping = await shoppingService.createShopping(shopping, shoppingDetail);
         res.status(201).json({ message: 'Compra registrada exitosamente.', newShopping });
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER: Error al crear la compra.', error: error.message});
+        res.status(500).json({ message: 'CONTROLLER: Error al crear la compra.', error: error.message });
     }
 };
 

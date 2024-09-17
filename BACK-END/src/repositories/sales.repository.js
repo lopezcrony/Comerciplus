@@ -8,8 +8,8 @@ const findSalesById = async (id) => {
     return await Sales.findByPk(id);
 };
 
-const createSales = async (salesData) => {
-    return await Sales.create(salesData);
+const createSales = async (salesData, options) => {
+    return await Sales.create(salesData, options);
 };
 
 const updateTotalSale = async (id, newTotalSale) => {
