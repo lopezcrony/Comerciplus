@@ -34,7 +34,7 @@ const actualizarimagen = async (req, res = response) => {
     //limpiar imagenes
     if (modelo.imagenProducto) {
         // borrar la imagen del servidor
-        const pathImagen = path.join(__dirname, '../uploads',coleccion, modelo.imagenProducto );
+        const pathImagen = path.join(__dirname, '../uploads', coleccion, modelo.imagenProducto);
         if (fs.existsSync(pathImagen)) {
             fs.unlinkSync(pathImagen);
         }
@@ -45,7 +45,7 @@ const actualizarimagen = async (req, res = response) => {
 
     await modelo.save();
 
-    res.json( modelo);
+    res.json(modelo);
 }
 
 
@@ -53,33 +53,32 @@ const mostrarImagen = async (req, res = response) => {
 
     const { id, coleccion } = req.params;
     let modelo;
+
     switch (coleccion) {
         case 'productos':
             modelo = await Producto.findByPk(id); // Cambiar findById a findByPk
             if (!modelo) {
-                return res.status(400).json({ msg: `No existe un producto con ese ID ${id}` });
+                return res.status(400).json({ msg: `No existe un producto con el ID ${id}` });
             }
             break;
         default:
             return res.status(500).json({ msg: 'Se me olvidó validar esto' });
     }
 
-    //limpiar imagenes
+    // Verificar si existe una imagen en el modelo
     if (modelo.imagenProducto) {
-        //borrar la imagen del servidor
         const pathImagen = path.join(__dirname, '../uploads', coleccion, modelo.imagenProducto);
+
+        // Verificar si la imagen existe en el servidor
         if (fs.existsSync(pathImagen)) {
-            return res.sendFile(pathImagen)
+            return res.sendFile(pathImagen);
         }
     }
-    res.json({
-        msg:'error aqui va la imagen'
-    })
-    const pathImagen = path.join(__dirname, '../uploads', coleccion, modelo.imagenProducto);
-    if (fs.existsSync(pathImagen)) {
-        return res.sendFile(pathImagen)
-    }
-}
+
+    // Si no hay imagen, responder con un mensaje o una imagen por defecto
+    const pathImagenDefault = path.join(__dirname, '../assets/no-image.jpg'); // Cambia la ruta a donde está tu imagen por defecto
+    return res.sendFile(pathImagenDefault);
+};
 
 module.exports = {
     cargarImagen,

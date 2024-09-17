@@ -35,7 +35,7 @@ export class ProductsComponent implements OnInit {
 
 
   products: Product[] = [];
-
+  barcodes: any[] = [];
   filteredProducts: Product[] = [];
   categories: any[] = [];
 
@@ -152,9 +152,18 @@ export class ProductsComponent implements OnInit {
   openShowModal(product: Product) {
     // Asigna el producto seleccionado a una variable para usar en la vista
     this.selectedProduct = product;
-
     // Muestra la modal
     this.viewModal = true;
+
+
+    this.productService.getBarcodeByProduct(product.idProducto).subscribe({
+      next: (data) => {
+        this.barcodes = data;
+      },
+      error: (err) => {
+        this.toastr.error('Error al cargar los códigos de barra.');
+      }
+    });
   }
 
   //cierra la modal y ya sapo

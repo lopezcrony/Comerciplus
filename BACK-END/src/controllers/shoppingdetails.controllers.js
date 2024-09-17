@@ -1,5 +1,16 @@
 const ShoppingdetailService = require('../services/shoppingdetails.service')
 
+const getAllShoppingDetailsByShopping = async (req, res) => {
+    try {
+        const { idCompra } = req.params;
+        const shoppingdetail = await ShoppingdetailService.getAllShoppingDetailsByShopping(idCompra);
+        res.status(200).json(shoppingdetail);
+    } catch (error) {
+        res.status(500).json({ message: 'CONTROLLER: Error al obtener los detalles de compra', error });
+    }
+};
+
+
 const getAllShoppingDetails = async (req, res) => {
     try {
         const shoppingdetail = await ShoppingdetailService.getAllShoppingDetails();
@@ -60,4 +71,5 @@ module.exports = {
     createShoppingdetail,
     updateShoppingdetail,
     deleteOneShoppingdetail,
+    getAllShoppingDetailsByShopping
 }

@@ -3,27 +3,17 @@
 
 <!-- PLANTILLA CRUD -->
 <!-- aqui se llaman  las funciones definidas en el component.ts -->
-<app-crud [items]="filteredProducts" 
-[columns]="columns" 
-[canDelete]="true" 
-[canSeeDetail]="true"
-[canChangeStatus]="true" 
-[showStateColumn]="true" 
-[statusField]="'estadoProducto'" 
-
-(create)="openCreateModal()"
-(export)="exportProduct()" 
-(edit)="openEditModal($event)" 
-(delete)="confirmDelete($event)"
-(detail)="openShowModal($event)" 
-(search)="searchProduct($event)" 
-(statusChange)="changeProductStatus($event)">
+<app-crud [items]="filteredProducts" [columns]="columns" [canDelete]="true" [canSeeDetail]="true"
+    [canChangeStatus]="true" [showStateColumn]="true" [statusField]="'estadoProducto'" (create)="openCreateModal()"
+    (export)="exportProduct()" (edit)="openEditModal($event)" (delete)="confirmDelete($event)"
+    (detail)="openShowModal($event)" (search)="searchProduct($event)" (statusChange)="changeProductStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->
 
-<p-dialog [(visible)]="showModal" [style]="{width: '450px','height':'511px'}" [header]="isEditing ? 'Editar Producto' : 'Crear Producto'"
-    [modal]="true" class="p-fluid m-2" appCrudModal [isEditing]="isEditing" (save)="saveProduct()" (cancel)="closeModal()">
+<p-dialog [(visible)]="showModal" [style]="{width: '450px','height':'511px'}"
+    [header]="isEditing ? 'Editar Producto' : 'Crear Producto'" [modal]="true" class="p-fluid m-2" appCrudModal
+    [isEditing]="isEditing" (save)="saveProduct()" (cancel)="closeModal()">
     <ng-template pTemplate="content">
         <form [formGroup]="productForm">
 
@@ -41,8 +31,8 @@
                     <label for="categoria">Categoría</label>
                     <div class="p-inputgroup">
                         <p-dropdown [options]="categories" formControlName="idCategoria" optionLabel="nombreCategoria"
-                            optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]= "false"
-                            [virtualScrollItemSize]="38" styleClass="w-full" >
+                            optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="false"
+                            [virtualScrollItemSize]="38" styleClass="w-full">
                         </p-dropdown>
                         <button pButton pRipple type="button" icon="pi pi-plus"
                             class="p-button p-button-success p-button-icon-only p-button-sm ml-2"
@@ -85,8 +75,8 @@
                 <ng-template pTemplate="footer">
                     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
                         (click)="categoryModalVisible = false"></button>
-                        <button pButton pRipple label="Guardar" icon="pi pi-check"
-            class="p-button-text custom-save-btn" (click)="saveCategory()"></button>
+                    <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text custom-save-btn"
+                        (click)="saveCategory()"></button>
                 </ng-template>
             </p-dialog>
 
@@ -103,7 +93,7 @@
 
                 <div class="field">
                     <label for="stock">Stock</label>
-                    <input type="number" pInputText id="stock" formControlName="stock"  />
+                    <input type="number" pInputText id="stock" formControlName="stock" />
                 </div>
             </div>
 
@@ -112,7 +102,8 @@
                 <div class="field">
                     <label for="precioVenta">Cargar imagen</label>
                     <p-fileUpload mode="basic" chooseLabel="Subir" chooseIcon="pi pi-upload" name="imagenProducto"
-                        (onSelect)="onFileSelect($event)" accept="image/*" maxFileSize="1000000" [style]="{'margin-top':'5px'}">
+                        (onSelect)="onFileSelect($event)" accept="image/*" maxFileSize="1000000"
+                        [style]="{'margin-top':'5px'}">
                     </p-fileUpload>
                 </div>
             </div>
@@ -133,36 +124,57 @@
     class="p-fluid">
     <ng-template pTemplate="content">
 
-        <div class="field-group">
-            <div class="field">
-                <label for="nombreProducto">Nombre Producto:</label>
-            <p>{{ selectedProduct?.nombreProducto }}</p>
-            </div>
-            
-            <div class="field">
-                <label for="categoria">Categoría:</label>
-                <p>{{ selectedProduct?.idCategoria}}</p>
-            </div>
+        <!-- Información del producto -->
+
+        <div class="field">
+            <label for="nombreProducto">Nombre Producto:
+                <span>{{ selectedProduct?.nombreProducto }}</span>
+            </label>
         </div>
 
-        <div class="field-group">
+        <div class="field">
+            <label for="categoria">Categoría:
+                <span>{{ selectedProduct?.idCategoria }}</span>
+            </label>
+        </div>
+
+
+        
             <div class="field">
-                <label for="precioVenta">Precio venta:</label>
-                <p>{{ selectedProduct?.precioVenta | currency }}</p>
+                <label for="precioVenta">Precio venta:
+                    <span>{{ selectedProduct?.precioVenta | currency }}</span>
+                </label>
             </div>
 
             <div class="field">
-                <label for="stock">Stock:</label>
-                <p>{{ selectedProduct?.stock }}</p>
+                <label for="stock">Stock:
+                    <span>{{ selectedProduct?.stock }}</span>
+                </label>
             </div>
-        </div>
 
         <div class="field image-container">
             <label for="imagenProducto">Imagen:</label>
-            <img *ngIf="selectedProduct?.idProducto" [src]="getImageUrl(selectedProduct?.idProducto)" alt="Imagen del Producto">
-          </div>  
+            <img *ngIf="selectedProduct?.idProducto" [src]="getImageUrl(selectedProduct?.idProducto)"
+                alt="Imagen del Producto">
+        </div>
+
+        <!-- Tabla de códigos de barra -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Código Barra</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let codigo of barcodes">
+                    <td>{{ codigo.codigoBarra }}</td>
+                </tr>
+            </tbody>
+        </table>
+
     </ng-template>
 </p-dialog>
+
 
 
 <!-- modal para ver detalle producto fin -->

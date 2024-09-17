@@ -30,7 +30,12 @@ export class ProductsService {
   getImageUrl(productId: any): string {
     return `${this.baseUrl}/productos/${productId}`;
   }
+
+  getBarcodeByProduct(idProducto: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:3006/codigo_barra/${idProducto}`);
+  }
   
+
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl).pipe(
       catchError(this.handleError)

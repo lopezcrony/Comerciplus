@@ -4,6 +4,16 @@ const productRepository = require('../repositories/products.repository');
 const shoppingRepository = require('../repositories/shopping.repository');
 const { sequelize } = require('../config/db');
 
+
+
+const getAllShoppingDetailsByShopping = async (idCompra) => {
+    try {
+        return await shoppingDetailRepository.findAllShoppinDetailsByShopping(idCompra);
+    } catch (error) {
+        throw error;
+    }
+};
+
 const getAllShoppingDetails = async () => {
     try {
         return await shoppingDetailRepository.findAllShoppingDetails();
@@ -98,4 +108,5 @@ module.exports = {
     createShoppingDetail,
     updateShoppingDetail,
     deleteOneShoppingDetail,
+    getAllShoppingDetailsByShopping
 };

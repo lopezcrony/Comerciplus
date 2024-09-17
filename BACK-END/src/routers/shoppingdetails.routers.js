@@ -5,6 +5,7 @@ const { validateShoppingDetail } = require("../middlewares/shoppingdetails.valid
 const router = Router();
 
 router
+    .get('/:idCompra', shoppingDetailsController.getAllShoppingDetailsByShopping)
     .get('/', shoppingDetailsController.getAllShoppingDetails)
     .get('/:id', shoppingDetailsController.getOneShoppingdetail)
     .post('/', validateShoppingDetail, shoppingDetailsController.createShoppingdetail)

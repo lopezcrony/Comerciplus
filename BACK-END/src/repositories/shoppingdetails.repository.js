@@ -6,6 +6,10 @@ const findByCompraId = async (idCompra) => {
     });
 };
 
+const findAllShoppinDetailsByShopping = async (idCompra) => {
+    return await shoppingDetails.findAll({where:{idCompra:idCompra}});
+};
+
 const findAllShoppingDetails = async () => {
     return await shoppingDetails.findAll();
 };
@@ -52,5 +56,6 @@ module.exports = {
     updateShoppingDetail,
     deleteShoppingDetail,
     findShoppingDetailByCompraAndProducto,
-    findByCompraId
+    findByCompraId,
+    findAllShoppinDetailsByShopping
 };
