@@ -29,7 +29,7 @@ export class ShoppingdetailsService {
     );
   }
 
-  createShoppingDetail(Shoppingdetails: Shoppingdetails): Observable<Shoppingdetails> {
+  createShoppingDetail(Shoppingdetails: any): Observable<Shoppingdetails> {
     return this.http.post<Shoppingdetails>(this.apiUrl, Shoppingdetails).pipe(
       catchError(this.handleError)
     );

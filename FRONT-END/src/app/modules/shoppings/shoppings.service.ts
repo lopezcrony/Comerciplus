@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 
 import { environment } from '../../../environments/environment'; 
 import { Shopping } from "../shoppings/shopping.model";
+import { Shoppingdetails } from '../shoppingdetails/model';
 
 
 @Injectable({
@@ -31,8 +32,17 @@ export class ShoppingsService {
     );
   }
 
-  createShopping(Shopping: Shopping): Observable<Shopping> {
-    return this.http.post<Shopping>(this.apiUrl, Shopping).pipe(
+  // createShopping(Shopping: Shopping): Observable<Shopping> {
+  //   return this.http.post<Shopping>(this.apiUrl, Shopping).pipe(
+  //     catchError(this.handleError)
+  //   );
+  // }
+
+  createShopping(shopping: Shopping, shoppingDetail: Shoppingdetails[]): Observable<any> {
+    const payload = { shopping, shoppingDetail };
+    console.log('Sending to backend:', payload);
+    return this.http.post(this.apiUrl, payload).pipe(
+      tap(response => console.log('Response from backend:', response)),
       catchError(this.handleError)
     );
   }
