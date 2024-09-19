@@ -14,9 +14,9 @@ const createReturnProvider = async (ReturnProviderData) => {
 
 const updateReturnProviderStatus = async (id, status) => {
 
-    const ReturnProvider = await findSalesById(id);
+    const ReturnProvider = await findReturnProviderById(id);
     if (ReturnProvider) {
-        return await returnProvider.update({estado : status});
+        return await ReturnProvider.update({estado : status});
     }
     throw new Error('Devolucion Local no encontrada');
 };

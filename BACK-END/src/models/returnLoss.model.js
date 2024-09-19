@@ -35,17 +35,6 @@ const returnLoss=sequelize.define('returnLoss',{
             is: /^[a-zA-Záéíóúñ ]+$/,
         },
     },
-    CodigoProducto:{
-        type:DataTypes.INTEGER,
-        allowNull: false,
-    },
-    NombreProducto:{
-        type: DataTypes.STRING(100),
-        allowNull: false,
-        validate: {
-            is: /^[a-zA-Záéíóúñ0-9 ]+$/,
-        },
-    }
     
 },{tableName:'darDeBaja',
     timestamps:false

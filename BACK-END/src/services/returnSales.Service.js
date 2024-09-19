@@ -5,7 +5,6 @@ const barCodeRepository = require('../repositories/Barcode.repository');
 const productRepository = require('../repositories/products.repository');
 const providersRepository = require('../repositories/providers.repository');
 
-const { and } = require('sequelize');
 
 
 const getAllReturnSales = async () => {
@@ -37,18 +36,18 @@ const createReturnSales = async (ReturnSalesData) => {
         ReturnSalesData.idCodigoBarra = IdCode;
 
         // Se asigna el nombre relacionado con el Id
-        const Codigo = barCode.codigoBarra;
-        ReturnSalesData.CodigoProducto = Codigo;
+        // const Codigo = barCode.codigoBarra;
+        // ReturnSalesData.CodigoProducto = Codigo;
 
         // Se valida que exista el producto utilizando el ID del producto del código de barras
         const product = await productRepository.findProductById(barCode.idProducto, { transaction });
         if (!product) throw new Error('SERVICE: Producto no encontrado.');
-        const nombreProducto = product.nombreProducto;
-        ReturnSalesData.NombreProducto = nombreProducto;
+        // const nombreProducto = product.nombreProducto;
+        // ReturnSalesData.NombreProducto = nombreProducto;
 
         const provider = await providersRepository.findProviderById(ReturnSalesData.idProveedor, { transaction });
         if (!provider) throw new Error('SERVICE: No se encontró el proveedor.');
-        const NameProvider = provider.nombreProveedor;
+        // const NameProvider = provider.nombreProveedor;
 
         const valor = product.precioVenta * ReturnSalesData.cantidad;
         ReturnSalesData.valorDevolucion = valor;
@@ -59,9 +58,7 @@ const createReturnSales = async (ReturnSalesData) => {
         if (motivo === 'Caducidad' && tipo === 'Producto') {
             const data = {
                 idProveedor: ReturnSalesData.idProveedor,
-                NombreProveedor: NameProvider,
                 idCodigoBarra: IdCode,
-                CodigoProducto: Codigo,
                 cantidad: ReturnSalesData.cantidad,
                 fecha: ReturnSalesData.fechaDevolucion,
                 motivoDevolucion: ReturnSalesData.motivoDevolucion
@@ -75,9 +72,7 @@ const createReturnSales = async (ReturnSalesData) => {
         if (motivo === 'Caducidad' && tipo === 'Dinero') {
             const Caducidad = {
                 idProveedor: ReturnSalesData.idProveedor,
-                NombreProveedor: NameProvider,
                 idCodigoBarra: IdCode,
-                CodigoProducto: Codigo,
                 cantidad: ReturnSalesData.cantidad,
                 fecha: ReturnSalesData.fechaDevolucion,
                 motivoDevolucion: ReturnSalesData.motivoDevolucion
@@ -104,6 +99,21 @@ const createReturnSales = async (ReturnSalesData) => {
         }
         throw error;
     }
+
+
+    
+};
+
+const updateReturnSalesStatus = async (id, status) => {
+    try {
+        const result = await returnSalesRepository.updateReturnSalesStatus(id, status);
+        if (!result) {
+            throw new Error('SERVICE: La devolución por venta no se pudo actualizar');
+        }
+        return result;
+    } catch (error) {
+        throw new Error('Error al cambiar el estado de la devolución de venta: ' + error.message);
+    }
 };
 
 
@@ -112,4 +122,5 @@ module.exports = {
     getAllReturnSales,
     getOneReturnSales,
     createReturnSales,
+    updateReturnSalesStatus
 };

@@ -8,6 +8,6 @@ router
     .get('/', returnProviderController.GetAllreturnProvider)
     .get('/:id', returnProviderController.GetOnereturnProvider)
     .post('/',validateReturnProvider, returnProviderController.CreateNewreturnProvider)
-    .patch('/:id',validateReturnProvider, returnProviderController.updateSalereturnProviderStatus)    
+    .patch('/:id', returnProviderController.updateSalereturnProviderStatus)    
 
 module.exports = router;
