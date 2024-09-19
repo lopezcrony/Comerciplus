@@ -10,7 +10,10 @@ import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { LossService } from './loss.service';
 import { Loss } from './loss.model';
+
 import { ValidationService } from '../../shared/validators/validations.service';
+import { ProductsService } from '../products/products.service';
+import { Product } from '../products/products.model';
 
 @Component({
   selector: 'app-loss',
@@ -25,6 +28,7 @@ import { ValidationService } from '../../shared/validators/validations.service';
 export class LossComponent implements OnInit {
   loss: Loss[] = [];
   filteredLoss: Loss[] = [];
+  products: Product[] = [];
 
   colums: { field: string, header: string }[] = [
     { field: 'CodigoProducto', header: 'Código' },
@@ -46,6 +50,8 @@ export class LossComponent implements OnInit {
     private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService,
+    private productService:ProductsService,
+    
   ) {
     this.LossForm = this.fb.group({
       CodigoProducto: ['', validationService.getValidatorsForField('loss', 'CodigoProducto')],      
@@ -57,15 +63,22 @@ export class LossComponent implements OnInit {
 
   ngOnInit() {
     this.loadLoss();
+    // this.loadCode()
   }
 
   loadLoss() {
     this.lossService.getLoss().subscribe(data => {
-      this.loss = data;
+      this.loss = data
       this.filteredLoss = data;
     },
     );
   }
+
+  // loadCode() {
+  //   this.productService.getBarcodeByProduct().subscribe(data => {
+  //     this.products=data ;
+  //   });
+  // }
 
   openCreateModal() {
     this.isEditing = false;
@@ -132,8 +145,8 @@ export class LossComponent implements OnInit {
     }
     
     this.filteredLoss = this.loss.filter(loss =>
-      loss.CodigoProducto.toString().includes(query.toLowerCase()) ||
-      loss.NombreProducto.toLowerCase().includes(query.toLowerCase()) ||
+      // loss.CodigoProducto.toString().includes(query.toLowerCase()) ||
+      // loss.NombreProducto.toLowerCase().includes(query.toLowerCase()) ||
       loss.motivo.toLowerCase().includes(query.toLowerCase()) ||
       loss.cantidad.toString().includes(query) ||
       loss.fechaDeBaja && new Date(loss.fechaDeBaja).toLocaleDateString().includes(query) // Para la fecha

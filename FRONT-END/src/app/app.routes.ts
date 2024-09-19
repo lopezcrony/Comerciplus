@@ -14,6 +14,7 @@ import { CreditsComponent } from './modules/credits/credits.component';
 import { ShoppingsComponent } from './modules/shoppings/shoppings.component';
 import { LoginComponent } from './login/login.component';
 import { ShoppinviewComponent } from './modules/shoppinview/shoppinview.component';
+import { DetailSaleComponent } from './modules/detailSale/detail-sale.component';
 
 
 export const routes: Routes = [
@@ -36,6 +37,8 @@ export const routes: Routes = [
       { path: 'products', component: ProductsComponent},
       { path: 'shoppings', component: ShoppingsComponent},
       { path: 'shoppingview', component: ShoppinviewComponent},
+      { path: 'detailSales', component: DetailSaleComponent},
+
       { path: '', redirectTo: 'crud', pathMatch: 'full' },
       // { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirigir a login si no hay ninguna ruta
     ]

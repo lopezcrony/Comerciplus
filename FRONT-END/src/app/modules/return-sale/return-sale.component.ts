@@ -161,11 +161,11 @@ export class ReturnSaleComponent implements OnInit {
     // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
 
     this.filteredReturnSale = this.returnSale.filter(returSale =>
-      returSale.CodigoProducto.toString().includes(lowerCaseQuery) ||
+      // returSale.CodigoProducto.toString().includes(lowerCaseQuery) ||
       returSale.tipoReembolso.toLowerCase().includes(lowerCaseQuery) ||
       returSale.cantidad.toString().includes(lowerCaseQuery) ||
       returSale.motivoDevolucion.toLowerCase().includes(lowerCaseQuery) ||
-      returSale.NombreProducto.toLowerCase().includes(lowerCaseQuery) ||
+      // returSale.NombreProducto.toLowerCase().includes(lowerCaseQuery) ||
       returSale.fechaDevolucion && new Date(returSale.fechaDevolucion).toLocaleDateString().includes(lowerCaseQuery) ||
       returSale.valorDevolucion.toString().includes(lowerCaseQuery)
     );
