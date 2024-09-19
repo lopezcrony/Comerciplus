@@ -15,10 +15,14 @@ import { ShoppingsComponent } from './modules/shoppings/shoppings.component';
 import { LoginComponent } from './login/login.component';
 import { ShoppinviewComponent } from './modules/shoppinview/shoppinview.component';
 import { DetailSaleComponent } from './modules/detailSale/detail-sale.component';
+import { RecoverComponent } from './recover/recover.component';
+import { RestoreComponent } from './restore/restore.component';
 
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },  // Ruta para el login
+  { path: 'recover', component: RecoverComponent},
+  { path: 'restore', component: RestoreComponent},
   {
     path: '',
     component: LayoutComponent,
