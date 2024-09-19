@@ -19,6 +19,14 @@ export class DetailSalesService {
     );
   }
 
+  getDetailSale(): Observable<DetailSale[]> {
+    return this.http.get<DetailSale[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  
+
   private handleError(error: HttpErrorResponse) {
     console.error('Error completo:', error);
     let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';

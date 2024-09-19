@@ -38,6 +38,7 @@ export class CRUDComponent {
   @Input() showStateColumn: boolean = false;
   @Input() creditColumn: boolean = false;
   @Input() actions: boolean = true;
+  @Input() SelectChangeStatus: boolean=false;
 
   // Datos de entrada para la tabla
   @Input() items: any[] = [];
@@ -99,6 +100,10 @@ export class CRUDComponent {
     return item[this.statusField];
   }
 
+  getSelectStatus(item: any): string {
+    return item[this.statusField];
+  }
+
   confirmChangeStatus(item: any) {
     this.alertsService.confirm(
       `¿Estás seguro de cambiar el estado?`,
@@ -117,4 +122,5 @@ export class CRUDComponent {
   getImageUrl(productId: any): string {
     return this.productService.getImageUrl(productId);
   }
+
 }

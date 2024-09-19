@@ -1,4 +1,3 @@
-
 <nav class="sidebar" [ngClass]="{'open': isSidebarVisible, 'collapsed': !isSidebarVisible}">
   <div class="mt-5">
     <ul>
@@ -9,7 +8,9 @@
       <li>
         <a (click)="toggleSubmenu('Shoppings')" class="menu-link">
           <i class="pi pi-shop mr-2" style="color:#3F51B5;"></i>Compras
-          <i class="bi" [ngClass]="{'bi-chevron-right': !isSubmenuOpen('Shoppings'), 'bi-chevron-down': isSubmenuOpen('Shoppings')}" style="float:right;"></i>
+          <i class="bi"
+            [ngClass]="{'bi-chevron-right': !isSubmenuOpen('Shoppings'), 'bi-chevron-down': isSubmenuOpen('Shoppings')}"
+            style="float:right;"></i>
         </a>
         <ul [@submenuAnimation]="getSubmenuState('Shoppings')" class="submenu">
           <li class="item" routerLink="/categories" routerLinkActive="active" (click)="closeSidebar()">
@@ -25,13 +26,15 @@
             <i class="bi bi-basket2 mr-2" style="color:crimson;"></i><a>Compras</a>
           </li>
         </ul>
-        
+
       </li>
 
       <li>
         <a (click)="toggleSubmenu('Sales')" class="menu-link">
           <i class="bi bi-coin mr-3" style="color:#29af2f;"></i>Ventas
-          <i class="bi" [ngClass]="{'bi-chevron-right': !isSubmenuOpen('Sales'), 'bi-chevron-down': isSubmenuOpen('Sales')}" style="float:right;"></i>
+          <i class="bi"
+            [ngClass]="{'bi-chevron-right': !isSubmenuOpen('Sales'), 'bi-chevron-down': isSubmenuOpen('Sales')}"
+            style="float:right;"></i>
         </a>
         <ul [@submenuAnimation]="getSubmenuState('Sales')" class="submenu">
           <li class="item" routerLink="/clients" routerLinkActive="active" (click)="closeSidebar()">
@@ -40,6 +43,8 @@
           <li class="item" routerLink="/sales" routerLinkActive="active" (click)="closeSidebar()">
             <i class="bi bi-cash-coin mr-2" style="color:springgreen;"></i><a>Ventas</a>
           </li>
+          <li class="item" routerLink="/detailSales" routerLinkActive="active" (click)="closeSidebar()"><i
+              class="bi bi-cash-coin mr-2" style="color:springgreen;"></i><a>Resumen de venta</a></li>
           <li class="item" routerLink="/credits" routerLinkActive="active" (click)="closeSidebar()">
             <i class="bi bi-credit-card mr-2" style="color:yellowgreen;"></i><a>Créditos</a>
           </li>
@@ -49,7 +54,9 @@
       <li>
         <a (click)="toggleSubmenu('Returns')" class="menu-link">
           <i class="pi pi-sync mr-2" style="color:#7B1FA2;"></i>Devoluciones
-          <i class="bi" [ngClass]="{'bi-chevron-right': !isSubmenuOpen('Returns'), 'bi-chevron-down': isSubmenuOpen('Returns')}" style="float:right;"></i>
+          <i class="bi"
+            [ngClass]="{'bi-chevron-right': !isSubmenuOpen('Returns'), 'bi-chevron-down': isSubmenuOpen('Returns')}"
+            style="float:right;"></i>
         </a>
         <ul [@submenuAnimation]="getSubmenuState('Returns')" class="submenu">
           <li class="item" routerLink="/loss" routerLinkActive="active" (click)="closeSidebar()">
@@ -67,7 +74,9 @@
       <li>
         <a (click)="toggleSubmenu('config')" class="menu-link">
           <i class="bi bi-gear mr-2" style="color:darkcyan;"></i>Configuración
-          <i class="bi" [ngClass]="{'bi-chevron-right': !isSubmenuOpen('config'), 'bi-chevron-down': isSubmenuOpen('config')}" style="float:right;"></i>
+          <i class="bi"
+            [ngClass]="{'bi-chevron-right': !isSubmenuOpen('config'), 'bi-chevron-down': isSubmenuOpen('config')}"
+            style="float:right;"></i>
         </a>
         <ul [@submenuAnimation]="getSubmenuState('config')" class="submenu">
           <li class="item" routerLink="/roles" routerLinkActive="active" (click)="closeSidebar()">
@@ -78,7 +87,7 @@
           </li>
         </ul>
       </li>
-      
+
     </ul>
   </div>
 </nav>

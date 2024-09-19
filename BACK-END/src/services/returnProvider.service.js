@@ -38,21 +38,21 @@ const createReturnProvider = async (returnProviderData) => {
             returnProviderData.idCodigoBarra=IdCode
         }
         //Se asigna el nombre relacionado con el Id
-        if (barCode) {
-            const Codigo = barCode.codigoBarra;
-            returnProviderData.CodigoProducto = Codigo;
-        }
+        // if (barCode) {
+        //     const Codigo = barCode.codigoBarra;
+        //     returnProviderData.CodigoProducto = Codigo;
+        // }
 
         const provider= await providersRepository.findProviderById(returnProviderData.idProveedor, {transaction})
 
         if (!provider) throw new Error('SERVICE: No se encontró el proveedor.');
 
-        if (provider) {
-            const NameProvider = provider.nombreProveedor;
+        // if (provider) {
+        //     const NameProvider = provider.nombreProveedor;
 
-            returnProviderData.NombreProveedor = NameProvider;
+        //     returnProviderData.NombreProveedor = NameProvider;
 
-        }
+        // }
 
         //  Se valida que exista el producto utilizando el ID del producto del código de barras
         const product = await productRepository.findProductById(barCode.idProducto, { transaction });
@@ -84,7 +84,7 @@ const updateReturnProvider = async (id, status) => {
         }
         return result;
     } catch (error) {
-        throw new Error('Error al cambiar el estado de la venta: ' + error.message);
+        throw new Error('Error al cambiar el estado de la venta Service: ' + error.message);
     }
 };
 

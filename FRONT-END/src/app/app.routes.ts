@@ -16,6 +16,7 @@ import { LoginComponent } from './Auth/login/login.component';
 import { ShoppinviewComponent } from './modules/shoppinview/shoppinview.component';
 import { RecoverComponent } from './Auth/recover/recover.component';
 import { RestoreComponent } from './Auth/restore/restore.component';
+import { DetailSaleComponent } from './modules/detailSale/detail-sale.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },  // Ruta para el login
@@ -39,6 +40,8 @@ export const routes: Routes = [
       { path: 'products', component: ProductsComponent},
       { path: 'shoppings', component: ShoppingsComponent},
       { path: 'shoppingview', component: ShoppinviewComponent},
+      { path: 'detailSales', component: DetailSaleComponent},
+
       { path: '', redirectTo: 'crud', pathMatch: 'full' },
       // { path: '', redirectTo: 'login', pathMatch: 'full' }, // Redirigir a login si no hay ninguna ruta
     ]

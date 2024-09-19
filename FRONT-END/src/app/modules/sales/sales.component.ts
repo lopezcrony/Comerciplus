@@ -173,8 +173,7 @@ export class SalesComponent implements OnInit {
   }
 
   createSale() {
-
-    if (this.detailSale.length === 0) this.toastr.error('No hay productos en la venta', 'Error');
+   if (this.detailSale.length === 0) this.toastr.error('No hay productos en la venta', 'Error');
 
     const saleData = {
       fechaVenta: new Date()
@@ -237,6 +236,11 @@ export class SalesComponent implements OnInit {
 
     this.resetForm();
     this.toastr.success('Venta finalizada correctamente', 'Éxito');
+  }
+
+  cancelSale(){
+    this.resetForm();
+    this.toastr.success('Venta Cancelada', 'Info');
   }
 
   resetForm(): void {

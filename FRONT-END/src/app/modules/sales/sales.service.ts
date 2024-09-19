@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
 import { Sale } from './sales.model';
 import { DetailSale } from '../detailSale/detailSale.model';
@@ -22,9 +23,24 @@ export class SaleService {
       catchError(this.handleError)
     );
   }
+  getSales(): Observable<Sale[]> {
+    return this.http.get<Sale[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateStatusSale(id: number, status: boolean): Observable<Sale> {
+    const body = { estado: status };
+    
+    return this.http.patch<Sale>(`${this.apiUrl}/${id}`, body).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
 
 
   private handleError(error: HttpErrorResponse) {
+    // Puedes ajustar la lógica para diferentes tipos de errores aquí
     let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';
     if (error.error instanceof ErrorEvent) {
       // Error del lado del cliente
