@@ -30,10 +30,11 @@ export class RestoreComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.route.queryParams.subscribe(params => {
       this.token = params['token'];
+      console.log('Token recibido:', this.token); // Verifica el token aquí
     });
-  }
+  };
 
   toggleNewPasswordVisibility() {
     this.showNewPassword = !this.showNewPassword;
@@ -59,19 +60,21 @@ export class RestoreComponent implements OnInit {
     if (!this.validatePassword()) {
       return;
     }
-
-    // Opcional: Si el backend requiere el token JWT en el header
+  
+    // Cambia el nombre del header a "x-reset-token"
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`
+      'x-reset-token': this.token
     });
-
-    this.http.post('http://localhost:3006/restore/', 
-      { token: this.token, newPassword: this.newPassword },
+  
+    console.log('Token a enviar:', this.token); // Verifica el token aquí
+  
+    this.http.post('http://localhost:3006/restore', 
+      { claveUsuario: this.newPassword },
       { headers }) // Se añade si el token va en los headers.
       .subscribe({
         next: (response: any) => {
           this.toastr.success('Tu contraseña ha sido actualizada exitosamente');
-          this.router.navigate(['/login']);
+          this.router.navigate(['/']);
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error al restablecer la contraseña:', error);
@@ -84,5 +87,6 @@ export class RestoreComponent implements OnInit {
           }
         }
       });
-    }
+  }
+  
 }

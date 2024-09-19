@@ -1,3 +1,7 @@
+
+
+
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,10 +43,10 @@ export class RecoverComponent {
       return;
     }
 
-    this.http.post('http://localhost:3006/recover/recover', { correoUsuario: this.correoUsuario }).subscribe({
-      next: (response: any) => {
+    this.http.post('http://localhost:3006/recover', { correoUsuario: this.correoUsuario }).subscribe({
+      next: ( ) => {
         this.toastr.success('Se han enviado instrucciones para restablecer tu contraseña a tu correo electrónico');
-        this.router.navigate(['/login']);
+        this.router.navigate(['/']);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error al enviar la solicitud de recuperación:', error);
