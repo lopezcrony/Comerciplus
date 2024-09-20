@@ -30,14 +30,12 @@ export class SaleService {
   }
 
   updateStatusSale(id: number, status: boolean): Observable<Sale> {
-    const body = { estado: status };
+    const body = { estadoVenta: status };
     
     return this.http.patch<Sale>(`${this.apiUrl}/${id}`, body).pipe(
       catchError(this.handleError)
     );
-  }
-  
-
+  } 
 
   private handleError(error: HttpErrorResponse) {
     // Puedes ajustar la lógica para diferentes tipos de errores aquí

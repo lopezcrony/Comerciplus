@@ -30,6 +30,7 @@ export class CRUDComponent {
   @Input() canSeeDetail: boolean = true;
   @Input() canCreate: boolean = true;
   @Input() canDelete: boolean = true;
+  @Input() canCancel: boolean = false;
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean = true;
   @Input() canChangeStatus: boolean = false;
@@ -55,6 +56,8 @@ export class CRUDComponent {
   @Output() installment = new EventEmitter<any>();
   @Output() statusChange = new EventEmitter<any>();
   @Output() search = new EventEmitter<string>();
+  @Output() cancel = new EventEmitter<any>();
+
 
   // Parámetro de búsqueda
   searchQuery = '';
@@ -77,6 +80,10 @@ export class CRUDComponent {
 
   onDelete(item: any) {
     this.delete.emit(item);
+  }
+
+  onCancel(item: any) {
+    this.cancel.emit(item);
   }
 
   onDetail(item: any) {

@@ -88,8 +88,11 @@
                 class="p-button-rounded p-button-danger p-button-outlined p-button-sm mr-2"
                 (click)="onDelete(item)"></button>
               <button *ngIf="canSeeDetail" pButton pRipple icon="pi pi-eye"
-                class="p-button-rounded p-button-warning p-button-outlined p-button-sm"
+                class="p-button-rounded p-button-warning p-button-outlined p-button-sm mr-2"
                 (click)="onDetail(item)"></button>
+                <button *ngIf="canCancel" pButton pRipple icon="pi pi-times"
+                class="p-button-rounded p-button-danger p-button-outlined p-button-sm"
+                (click)="onCancel(item)"></button>
                 
             </div>
           </td>

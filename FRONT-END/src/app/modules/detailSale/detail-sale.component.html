@@ -7,13 +7,15 @@
 [canExport]="false" 
 [canEdit]="false"
 [canCreate]="false"
-    [canSeeDetail]="true" 
+[canCancel]="true"
+(cancel)="cancelSale($event)"    
+[canSeeDetail]="true" 
     [canChangeStatus]="true" 
     [showStateColumn]="true" 
-    [statusField]="'estado'"
+    [statusField]="'estadoVenta'"
     (detail)="openShowModal($event)" 
     (search)="searchDetailSale($event)"
-    (statusChange)="changeSaletStatus($event)">
+    (statusChange)="changeSaleStatus($event)">
 </app-crud>
 
 
@@ -41,7 +43,7 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let detail of filteredDetailSale" style="border-bottom: 1px solid #ddd;">
-                        <td style="padding: 10px;">{{ detail.idProducto }}</td>
+                        <td style="padding: 10px;">{{ detail.idProducto }}</td> <!-- Mostrar nombre del producto -->
                         <td style="padding: 10px;">{{ detail.cantidadProducto }}</td>
                         <td style="padding: 10px;">{{ detail.subtotal | currency }}</td>
                     </tr>

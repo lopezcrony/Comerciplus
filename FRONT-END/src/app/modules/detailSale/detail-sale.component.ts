@@ -10,6 +10,9 @@ import {DetailSale} from './detailSale.model'
 import { DetailSalesService } from './detail.Sale.service';
 import {Sale} from '../sales/sales.model'
 import {SaleService} from '../sales/sales.service'
+import { ConfirmationService } from 'primeng/api';
+import { Product } from '../products/products.model';
+import { ProductsService } from '../products/products.service';
 
 
 @Component({
@@ -31,6 +34,8 @@ filteredSale: Sale[]=[];
 detailSale: DetailSale[]=[]
 filteredDetailSale: DetailSale[] =[]
 
+products: Product[]=[]
+
 
 
 colums: { field: string, header: string }[] = [
@@ -44,12 +49,15 @@ showModal = false;
 viewModal = false;
 selectedDetailSales: DetailSale | undefined
 detailModalVisible: boolean =false
+isFieldDisabled: boolean = false;
 
 
 constructor(
   private saleService:SaleService,
+  private confirmationService: ConfirmationService,
   private detailSaleService:DetailSalesService,
-  private toastr: ToastrService
+  private toastr: ToastrService,
+  private productService: ProductsService
 ){}
 
 
@@ -64,6 +72,13 @@ loadSales() {
   },
   );
 }
+
+loadProducts() {
+  this.productService.getAllProducts().subscribe(data => {
+    this.products = data;
+  });
+}
+
 
 showCategoryModal() {
   this.detailModalVisible = true;
@@ -94,16 +109,21 @@ openShowModal(detailSale: DetailSale ) {
 
 }
 
-changeSaletStatus(updatedSale: Sale) {
-  const estadoProducto = updatedSale.estado ?? false;
+changeSaleStatus(updatedSale: Sale) {
+  // Asegúrate de que el estado es un booleano (true o false)
+  const estadoVentas = updatedSale.estadoVenta !== undefined ? updatedSale.estadoVenta : false;
 
-  this.saleService.updateStatusSale(updatedSale.idVenta, estadoProducto).subscribe({
+  // Llamar al servicio para actualizar el estadoVenta
+  this.saleService.updateStatusSale(updatedSale.idVenta, estadoVentas).subscribe({
     next: () => {
+      // Actualiza las listas Sales y filteredSale
       [this.Sales, this.filteredSale].forEach(list => {
-        const index = list.findIndex(c => c.idVenta === updatedSale.idVenta);
+        const index = list.findIndex(sale => sale.idVenta === updatedSale.idVenta);
         if (index !== -1) {
-          list[index] = { ...list[index], ...updatedSale };
+          // Actualiza solo el campo 'estadoVenta' en lugar de reemplazar todo el objeto
+          list[index] = { ...list[index], estadoVenta: estadoVentas };
         }
+        console.log(estadoVentas)
       });
       this.toastr.success('Estado actualizado con éxito', 'Éxito');
     },
@@ -113,7 +133,32 @@ changeSaletStatus(updatedSale: Sale) {
   });
 }
 
+cancelSale(updatedSale: Sale) {
+  // Mostrar mensaje de confirmación
+  this.confirmationService.confirm({
+    message: '¿Estás seguro de que deseas cancelar esta venta?',
+    header: 'Confirmación de Anulación',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
+      updatedSale.estadoVenta = false; // Cambiamos el estado a "false"
+      
+      // Llama a la función que cambia el estado
+      this.changeSaleStatus(updatedSale);
+      
+      // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
+      this.disableField();
+    },
+    reject: () => {
+      this.toastr.info('Anulación cancelada', 'Información');
+    }
+  });
+}
 
+
+disableField() {
+  this.isFieldDisabled = true; // Cambia el estado del flag
+}
 
 searchDetailSale(query: string){
   const lowerCaseQuery = query.toLowerCase();
@@ -123,7 +168,7 @@ searchDetailSale(query: string){
     this.filteredSale = this.Sales.filter(detailSale => 
       detailSale.totalVenta.toString().includes(lowerCaseQuery) ||
       detailSale.fechaVenta && new Date(detailSale.fechaVenta).toLocaleDateString().includes(lowerCaseQuery) ||
-      detailSale.estado
+      detailSale.estadoVenta
     );
 }
 
