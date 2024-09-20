@@ -6,5 +6,6 @@ export interface ReturnSaleModel{
     fechaDevolucion:Date, 
     motivoDevolucion:string,
     tipoReembolso:string, 
-    valorDevolucion:number
+    valorDevolucion:number,
+    estado: boolean;
 }

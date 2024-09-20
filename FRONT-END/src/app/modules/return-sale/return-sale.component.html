@@ -8,7 +8,12 @@
   [canExport]="false" 
   [canEdit]="false"
   [canSeeDetail]="false" 
-  [actions]="false"
+  [actions]="true"
+  [canCancel]="true"
+(cancel)="cancelSale($event)"   
+  [canChangeStatus]="true" 
+  [showStateColumn]="true" 
+  [statusField]="'estado'"
   (create)="openCreateModal()"
   (search)="searchReturnSale($event)">
 </app-crud>

@@ -36,9 +36,9 @@ export class ReturnProviderComponent implements OnInit{
   filteredReturnProvider: returnProviderModel[] = [];
 
   colums: { field: string, header: string }[] = [
-    { field: 'NombreProveedor', header: 'Proveedor' },
-    { field: 'CodigoProducto', header: 'Código' },
-    { field: '#', header: 'Producto' },
+    { field: 'idProveedor', header: 'Proveedor' },
+    { field: 'idCodigoBarra', header: 'Código' },
+    // { field: '#', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
     { field: 'motivoDevolucion', header: '  Motivo' },
     { field: 'fecha', header: '  fecha' },

@@ -14,6 +14,10 @@ import { Loss } from './loss.model';
 import { ValidationService } from '../../shared/validators/validations.service';
 import { ProductsService } from '../products/products.service';
 import { Product } from '../products/products.model';
+import { forkJoin } from 'rxjs';
+import { BarcodesService } from '../barcodes/barcodes.service';
+import { Barcode } from '../barcodes/barcode.model';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-loss',
@@ -28,11 +32,11 @@ import { Product } from '../products/products.model';
 export class LossComponent implements OnInit {
   loss: Loss[] = [];
   filteredLoss: Loss[] = [];
-  products: Product[] = [];
+  barcode: Barcode[] = [];
 
   colums: { field: string, header: string }[] = [
-    { field: 'CodigoProducto', header: 'Código' },
-    { field: 'NombreProducto', header: 'Producto' },
+    { field: 'idCodigoBarra', header: 'Código' },
+    // { field: 'idProducto', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
     { field: 'motivo', header: 'Motivo' },
     { field: 'fechaDeBaja', header: 'Fecha' },
@@ -50,7 +54,9 @@ export class LossComponent implements OnInit {
     private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService,
-    private productService:ProductsService,
+    private barcodeService: BarcodesService,
+  private confirmationService: ConfirmationService,
+
     
   ) {
     this.LossForm = this.fb.group({
@@ -62,7 +68,7 @@ export class LossComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadLoss();
+    this.loadLoss()
     // this.loadCode()
   }
 
@@ -137,6 +143,61 @@ export class LossComponent implements OnInit {
       }
     });
   }
+
+
+
+
+  // changeSaleStatus(updatedSale: Loss) {
+  //   // Asegúrate de que el estado es un booleano (true o false)
+  //   const estadoVentas = updatedSale.estado !== undefined ? updatedSale.estado : false;
+  
+  //   // Llamar al servicio para actualizar el estadoVenta
+  //   this.lossService.updateStatusSale(updatedSale.idDevolucionVenta, estadoVentas).subscribe({
+  //     next: () => {
+  //       // Actualiza las listas Sales y filteredSale
+  //       [this.returnSale, this.filteredReturnSale].forEach(list => {
+  //         const index = list.findIndex(sale => sale.idDevolucionVenta === updatedSale.idDevolucionVenta);
+  //         if (index !== -1) {
+  //           // Actualiza solo el campo 'estadoVenta' en lugar de reemplazar todo el objeto
+  //           list[index] = { ...list[index], estado: estadoVentas };
+  //         }
+  //         console.log(estadoVentas)
+  //       });
+  //       this.toastr.success('Estado actualizado con éxito', 'Éxito');
+  //     },
+  //     error: () => {
+  //       this.toastr.error('Error al actualizar el estado', 'Error');
+  //     }
+  //   });
+  // }
+  
+  // cancelSale(updatedSale: Loss) {
+  //   // Mostrar mensaje de confirmación
+  //   this.confirmationService.confirm({
+  //     message: '¿Estás seguro de que deseas cancelar esta venta?',
+  //     header: 'Confirmación de Anulación',
+  //     icon: 'pi pi-exclamation-triangle',
+  //     accept: () => {
+  //       // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
+  //       updatedSale.estado = false; // Cambiamos el estado a "false"
+        
+  //       // Llama a la función que cambia el estado
+  //       this.changeSaleStatus(updatedSale);
+        
+  //       // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
+  //       // this.disableField();
+  //     },
+  //     reject: () => {
+  //       this.toastr.info('Anulación cancelada', 'Información');
+  //     }
+  //   });
+  // }
+
+
+
+
+
+
 
   searchLoss(query: string) {
     if (!query) {

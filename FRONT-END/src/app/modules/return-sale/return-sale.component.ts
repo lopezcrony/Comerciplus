@@ -14,6 +14,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ReturnSaleService } from './return-sale.service';
 import { ReturnSaleModel } from './return-sale.model';
 import { ValidationService } from '../../shared/validators/validations.service';
+import { ConfirmationService } from 'primeng/api';
 
 
 @Component({
@@ -34,14 +35,13 @@ export class ReturnSaleComponent implements OnInit {
   filteredReturnSale: ReturnSaleModel[] = [];
 
   colums: { field: string, header: string }[] = [
-    { field: 'CodigoProducto', header: 'Código' },
-    { field: 'NombreProducto', header: 'Producto' },
+    { field: 'idCodigoBarra', header: 'Código' },
+    // { field: 'NombreProducto', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
     { field: 'tipoReembolso', header: 'Tipo Reembolso' },
     { field: 'motivoDevolucion', header: 'Motivo' },   
     { field: 'valorDevolucion', header: 'Valor' },
     { field: 'fechaDevolucion', header: 'Fecha' },
-
   ];
 
   returnSaleForm: FormGroup;
@@ -63,7 +63,9 @@ export class ReturnSaleComponent implements OnInit {
     private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService,
-    private providerService: ProvidersService
+    private providerService: ProvidersService,
+  private confirmationService: ConfirmationService,
+
 
   ) {
     this.returnSaleForm = this.fb.group({
@@ -154,6 +156,57 @@ export class ReturnSaleComponent implements OnInit {
 
   }
 
+
+  changeSaleStatus(updatedSale: ReturnSaleModel) {
+    // Asegúrate de que el estado es un booleano (true o false)
+    const estadoVentas = updatedSale.estado !== undefined ? updatedSale.estado : false;
+  
+    // Llamar al servicio para actualizar el estadoVenta
+    this.returnSaleService.updateStatusSale(updatedSale.idDevolucionVenta, estadoVentas).subscribe({
+      next: () => {
+        // Actualiza las listas Sales y filteredSale
+        [this.returnSale, this.filteredReturnSale].forEach(list => {
+          const index = list.findIndex(sale => sale.idDevolucionVenta === updatedSale.idDevolucionVenta);
+          if (index !== -1) {
+            // Actualiza solo el campo 'estadoVenta' en lugar de reemplazar todo el objeto
+            list[index] = { ...list[index], estado: estadoVentas };
+          }
+          console.log(estadoVentas)
+        });
+        this.toastr.success('Estado actualizado con éxito', 'Éxito');
+      },
+      error: () => {
+        this.toastr.error('Error al actualizar el estado', 'Error');
+      }
+    });
+  }
+  
+  cancelSale(updatedSale: ReturnSaleModel) {
+    // Mostrar mensaje de confirmación
+    this.confirmationService.confirm({
+      message: '¿Estás seguro de que deseas cancelar esta venta?',
+      header: 'Confirmación de Anulación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
+        updatedSale.estado = false; // Cambiamos el estado a "false"
+        
+        // Llama a la función que cambia el estado
+        this.changeSaleStatus(updatedSale);
+        
+        // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
+        // this.disableField();
+      },
+      reject: () => {
+        this.toastr.info('Anulación cancelada', 'Información');
+      }
+    });
+  }
+  
+  
+  // disableField() {
+  //   this.isFieldDisabled = true; // Cambia el estado del flag
+  // }
 
   searchReturnSale(query: string) {
     const lowerCaseQuery = query.toLowerCase();

@@ -13,6 +13,7 @@ import {SaleService} from '../sales/sales.service'
 import { ConfirmationService } from 'primeng/api';
 import { Product } from '../products/products.model';
 import { ProductsService } from '../products/products.service';
+import { forkJoin } from 'rxjs';
 
 
 @Component({
@@ -75,10 +76,9 @@ loadSales() {
 
 loadProducts() {
   this.productService.getAllProducts().subscribe(data => {
-    this.products = data;
+    this.products = data.filter(d => d.estadoProducto === true);
   });
 }
-
 
 showCategoryModal() {
   this.detailModalVisible = true;

@@ -14,8 +14,7 @@
     [showStateColumn]="true" 
     [statusField]="'estadoVenta'"
     (detail)="openShowModal($event)" 
-    (search)="searchDetailSale($event)"
-    (statusChange)="changeSaleStatus($event)">
+    (search)="searchDetailSale($event)">
 </app-crud>
 
 
@@ -36,7 +35,7 @@
             <table class="table" style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background-color: #f4f4f4;">
-                        <th style="padding: 10px; text-align: left;">ID Producto</th>
+                        <th style="padding: 10px; text-align: left;">Producto</th>
                         <th style="padding: 10px; text-align: left;">Cantidad</th>
                         <th style="padding: 10px; text-align: left;">Subtotal</th>
                     </tr>
