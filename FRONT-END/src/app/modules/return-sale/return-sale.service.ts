@@ -32,6 +32,14 @@ export class ReturnSaleService {
       catchError(this.handleError)
     );
   }
+
+  updateStatusSale(id: number, status: boolean): Observable<ReturnSaleModel> {
+    const body = { estado: status };
+    
+    return this.http.patch<ReturnSaleModel>(`${this.apiUrl}/${id}`, body).pipe(
+      catchError(this.handleError)
+    );
+  }
  
  private handleError(error: HttpErrorResponse) {
   console.error('Ocurrió un error:', error);

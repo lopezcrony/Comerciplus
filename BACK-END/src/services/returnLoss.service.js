@@ -39,16 +39,16 @@ const createReturnLoss = async (ReturnLossData) => {
 
         // const CodigoPerdida=getAllReturnLoss(ReturnLossData.idCodigoBarra)
 
-        if (barCode) {
-            const Codigo = barCode.codigoBarra;
-            ReturnLossData.CodigoProducto = Codigo;
-        }
+        // if (barCode) {
+        //     const Codigo = barCode.codigoBarra;
+        //     ReturnLossData.CodigoProducto = Codigo;
+        // }
 
-        if(product){
-            const nombreProducto= product.nombreProducto;
+        // if(product){
+        //     const nombreProducto= product.nombreProducto;
 
-            ReturnLossData.NombreProducto= nombreProducto
-        }
+        //     ReturnLossData.NombreProducto= nombreProducto
+        // }
 
         // Se actualiza el stock del producto
         const newStock = product.stock - ReturnLossData.cantidad;

@@ -17,10 +17,6 @@
                 key: 'idProveedor'
             }
         },
-        NombreProveedor:{
-            type:DataTypes.STRING,
-            allowNull: false,
-        },
         idCodigoBarra: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -28,10 +24,6 @@
                 model: 'codigoBarras',
                 key: 'idCodigoBarra'
             }
-        },
-        CodigoProducto:{
-            type:DataTypes.INTEGER,
-            allowNull: false,
         },
         cantidad: {
             type: DataTypes.INTEGER,

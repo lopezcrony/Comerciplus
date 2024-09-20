@@ -36,14 +36,14 @@ export class ReturnProviderComponent implements OnInit{
   filteredReturnProvider: returnProviderModel[] = [];
 
   colums: { field: string, header: string }[] = [
-    { field: 'NombreProveedor', header: 'Proveedor' },
-    { field: 'CodigoProducto', header: 'Código Barras' },
+    { field: 'idProveedor', header: 'Proveedor' },
+    { field: 'idCodigoBarra', header: 'Código' },
+    // { field: '#', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
-    { field: 'motivoDevolucion', header: 'Motivo' },
-    { field: 'fecha', header: 'fecha' },
-    { field: 'estado', header: 'Estado' },
+    { field: 'motivoDevolucion', header: '  Motivo' },
+    { field: 'fecha', header: '  fecha' },
     
-
+    
   ];
 
   returnProviderForm: FormGroup;
@@ -158,8 +158,8 @@ export class ReturnProviderComponent implements OnInit{
     // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
 
     this.filteredReturnProvider = this.returnProvider.filter(returnProviders =>
-      returnProviders.CodigoProducto.toString().includes(lowerCaseQuery) ||
-      returnProviders.NombreProveedor.toLowerCase().includes(lowerCaseQuery) ||  
+      // returnProviders.CodigoProducto.toString().includes(lowerCaseQuery) ||
+      // returnProviders.NombreProveedor.toLowerCase().includes(lowerCaseQuery) ||  
       returnProviders.cantidad.toString().includes(lowerCaseQuery) ||
       returnProviders.motivoDevolucion.toLowerCase().includes(lowerCaseQuery) ||
       returnProviders.estado.toLowerCase().includes(lowerCaseQuery)

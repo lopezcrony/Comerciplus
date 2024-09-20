@@ -1,0 +1,61 @@
+<h2 class="title" style="text-align: center;">Resumen de ventas</h2>
+
+<!-- PLANTILLA CRUD -->
+<app-crud [items]="filteredSale" 
+[columns]="colums" 
+[canDelete]="false" 
+[canExport]="false" 
+[canEdit]="false"
+[canCreate]="false"
+[canCancel]="true"
+(cancel)="cancelSale($event)"    
+[canSeeDetail]="true" 
+    [canChangeStatus]="true" 
+    [showStateColumn]="true" 
+    [statusField]="'estadoVenta'"
+    (detail)="openShowModal($event)" 
+    (search)="searchDetailSale($event)">
+</app-crud>
+
+
+<!-- modal para ver detalle producto inicio -->
+<p-dialog [(visible)]="detailModalVisible" [style]="{width: '500px'}" [header]="'Detalle de Venta'" [modal]="true" class="p-fluid" [closable]="true">
+    <ng-template pTemplate="content">
+
+        <!-- Información del Venta -->
+        <div class="form-grid" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <div class="field" style="font-weight: bold;">
+                <label for="idVenta" style="margin-right: 10px;">ID Venta:</label>
+                <span>{{ selectedDetailSales?.idVenta }}</span>
+            </div>
+        </div>
+
+        <!-- Tabla de Detalles de Venta -->
+        <div class="details-table">
+            <table class="table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #f4f4f4;">
+                        <th style="padding: 10px; text-align: left;">Producto</th>
+                        <th style="padding: 10px; text-align: left;">Cantidad</th>
+                        <th style="padding: 10px; text-align: left;">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let detail of filteredDetailSale" style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 10px;">{{ detail.idProducto }}</td> <!-- Mostrar nombre del producto -->
+                        <td style="padding: 10px;">{{ detail.cantidadProducto }}</td>
+                        <td style="padding: 10px;">{{ detail.subtotal | currency }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </ng-template>
+
+    <!-- Botones del modal -->
+    <ng-template pTemplate="footer">
+        <div class="footer-buttons" style="text-align: right;">
+            <button pButton type="button" label="Cerrar" icon="pi pi-times" (click)="detailModalVisible = false" class="p-button-text"></button>
+        </div>
+    </ng-template>
+</p-dialog>

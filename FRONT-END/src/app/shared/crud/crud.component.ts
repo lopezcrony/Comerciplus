@@ -30,6 +30,7 @@ export class CRUDComponent {
   @Input() canSeeDetail: boolean = true;
   @Input() canCreate: boolean = true;
   @Input() canDelete: boolean = true;
+  @Input() canCancel: boolean = false;
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean = true;
   @Input() canChangeStatus: boolean = false;
@@ -38,6 +39,7 @@ export class CRUDComponent {
   @Input() showStateColumn: boolean = false;
   @Input() creditColumn: boolean = false;
   @Input() actions: boolean = true;
+  @Input() SelectChangeStatus: boolean=false;
 
   // Datos de entrada para la tabla
   @Input() items: any[] = [];
@@ -54,6 +56,8 @@ export class CRUDComponent {
   @Output() installment = new EventEmitter<any>();
   @Output() statusChange = new EventEmitter<any>();
   @Output() search = new EventEmitter<string>();
+  @Output() cancel = new EventEmitter<any>();
+
 
   // Parámetro de búsqueda
   searchQuery = '';
@@ -78,6 +82,10 @@ export class CRUDComponent {
     this.delete.emit(item);
   }
 
+  onCancel(item: any) {
+    this.cancel.emit(item);
+  }
+
   onDetail(item: any) {
     this.detail.emit(item);
   }
@@ -99,6 +107,10 @@ export class CRUDComponent {
     return item[this.statusField];
   }
 
+  getSelectStatus(item: any): string {
+    return item[this.statusField];
+  }
+
   confirmChangeStatus(item: any) {
     this.alertsService.confirm(
       `¿Estás seguro de cambiar el estado?`,
@@ -117,4 +129,5 @@ export class CRUDComponent {
   getImageUrl(productId: any): string {
     return this.productService.getImageUrl(productId);
   }
+
 }

@@ -29,9 +29,31 @@ const CreateNewReturnSale = async (req, res) => {
     }
 }
 
+const updateReturnSalesStatus  = async (req, res) => {
+    try {
+        let { estado } = req.body;
+
+        if (estado === '0' || estado === 0) {
+            estado = false;
+        } else if (estado === '1' || estado === 1) {
+            estado = true;
+        } else if (estado === true || estado === false) {
+            
+        } else {
+            return res.status(400).json({ message: 'El estado debe ser un valor booleano' });
+        }
+        
+        await returnSale.updateReturnSalesStatus(req.params.id, estado);
+        res.json({ message: 'Estado actualizado con éxito.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar el estado del proveedor', error: error.message });
+    }
+};
+
 
 module.exports = {
     GetAllReturnSale,
     GetOneReturnSale,
     CreateNewReturnSale,
+    updateReturnSalesStatus
 }
