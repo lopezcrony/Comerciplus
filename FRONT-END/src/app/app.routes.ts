@@ -7,17 +7,16 @@ import { LossComponent } from './modules/loss/loss.component';
 import { CategoriesComponent } from './modules/categories/categories.component';
 import { ProductsComponent } from './modules/products/products.component';
 import { RolesComponent } from './modules/roles/roles.component';
-import {SalesComponent} from './modules/sales/sales.component'
-import {ReturnProviderComponent} from './modules/return-provider/return-provider.component'
+import { SalesComponent} from './modules/sales/sales.component'
+import { ReturnProviderComponent} from './modules/return-provider/return-provider.component'
 import { ReturnSaleComponent } from './modules/return-sale/return-sale.component';
 import { CreditsComponent } from './modules/credits/credits.component';
 import { ShoppingsComponent } from './modules/shoppings/shoppings.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './Auth/login/login.component';
 import { ShoppinviewComponent } from './modules/shoppinview/shoppinview.component';
+import { RecoverComponent } from './Auth/recover/recover.component';
+import { RestoreComponent } from './Auth/restore/restore.component';
 import { DetailSaleComponent } from './modules/detailSale/detail-sale.component';
-import { RecoverComponent } from './recover/recover.component';
-import { RestoreComponent } from './restore/restore.component';
-
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },  // Ruta para el login
