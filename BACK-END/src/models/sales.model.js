@@ -19,7 +19,11 @@ const Sales= sequelize.define('ventas', {
         validate: {
             min: 0
         }
-    }
+    },
+    estadoVenta: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      }
 }, {tableName:'ventas',
     timestamps:false
 });
