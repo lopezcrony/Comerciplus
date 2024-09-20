@@ -16,6 +16,7 @@ import { Shoppingdetails } from '../shoppingdetails/model';
 
 import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-shopping',
@@ -67,6 +68,9 @@ export class ShoppingsComponent implements OnInit {
   get shoppingDetailArray() {
     return this.shoppingForm.get('shoppingDetail') as FormArray;
   }
+
+
+  
 
   loadShoppings() {
     this.shoppingService.getAllShoppings().subscribe(data => {

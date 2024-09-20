@@ -4,6 +4,10 @@ const findAllBarcodesByProduct = async (idProduct) => {
     return await Barcode.findAll({where:{idProducto:idProduct}});
 };
 
+const findAllBarcodes = async () => {
+    return await Barcode.findAll();
+};
+
 const findBarcodeByCode = async (codigo) => {
     return await Barcode.findOne({ where: { codigoBarra: codigo } });
 };
@@ -38,5 +42,6 @@ module.exports = {
     createBarcode,
     updateBarcode,
     deleteBarcode,
-    findBarcodeByCode
+    findBarcodeByCode,
+    findAllBarcodes
 };

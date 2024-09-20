@@ -4,6 +4,7 @@ const router = Router();
 
 router
     .get('/:idProducto', BarcodeController.getAllBarcodesByProduct)
+    .get('/', BarcodeController.getAllBarcodes)
     .get('/:id', BarcodeController.getOneBarcode)
     .post('/', BarcodeController.createBarcode)
     .put('/:id', BarcodeController.updateBarcode)

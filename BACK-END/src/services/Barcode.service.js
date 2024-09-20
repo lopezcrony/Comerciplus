@@ -8,6 +8,14 @@ const getAllBarcodesByProduct = async (idProduct) => {
     }
 };
 
+const getAllBarcodes = async () => {
+    try {
+        return await BarcodeRepository.findAllBarcodes();
+    } catch (error) {
+        throw error;
+    }
+};
+
 const getOneBarcode = async (id) => {
     try {
         return await BarcodeRepository.findBarcodeById(id);
@@ -60,4 +68,5 @@ module.exports = {
     createBarcode,
     updateBarcode,
     deleteOneBarcode,
+    getAllBarcodes
 };

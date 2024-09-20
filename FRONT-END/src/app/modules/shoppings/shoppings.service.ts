@@ -26,6 +26,11 @@ export class ShoppingsService {
     );
   }
 
+
+  getShoppingdetailsByShopping(idCompra: number): Observable<any[]> {
+    return this.http.get<any[]>(`http://localhost:3006/detallecompras/${idCompra}`);
+  }
+
   getOneShopping(id: number): Observable<Shopping> {
     return this.http.get<Shopping>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
@@ -59,6 +64,12 @@ export class ShoppingsService {
     return this.http.get<any[]>(`${environment.apiUrl}/proveedores`).pipe(
       catchError(this.handleError)
     );
+  }
+
+
+  // Método para anular la compra y revertir las acciones
+  anularCompra(idCompra: number): Observable<any> {
+    return this.http.delete(`/api/shoppings/${idCompra}/anular`);
   }
 
   checkShoppingExists(numeroFactura: string): Observable<boolean> {
