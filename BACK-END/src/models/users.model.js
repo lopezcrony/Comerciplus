@@ -74,7 +74,6 @@ const User = sequelize.define(
       },
       beforeUpdate: async (user) => {
         if (user.changed("claveUsuario") && !user.claveUsuario.startsWith('$2b$')) {
-          console.log("Contraseña cambiada, encriptando...");
           user.claveUsuario = await bcrypt.hash(user.claveUsuario, 10);
         }
       },

@@ -16,13 +16,8 @@ const loginUser = async (correoUsuario, claveUsuario) => {
   }
 
   const freshUser = await userRepository.findUserById(user.idUsuario);
-  console.log("Contraseña fresca de DB:", freshUser.claveUsuario);
   
   const isPasswordValid = await bcrypt.compare(claveUsuario, freshUser.claveUsuario);
-
-  console.log("Contraseña recibida en login:", claveUsuario);
-  console.log("Contraseña hasheada en DB:", user.claveUsuario);
-  console.log("Resultado de bcrypt.compare:", isPasswordValid);
 
   if (!isPasswordValid) {
     throw new Error("Contraseña incorrecta");

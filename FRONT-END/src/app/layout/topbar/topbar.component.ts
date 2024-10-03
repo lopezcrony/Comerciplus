@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-topbar',
@@ -13,37 +14,22 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class TopbarComponent {
   @Output() toggleSidebar = new EventEmitter<void>();
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private authService: AuthService) {}
 
   toggleSidebarVisibility() {
     this.toggleSidebar.emit();
   }
 
   logout() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-      this.http.post('/api/auth/logout', {}, { headers }).subscribe(
-        (response) => {
-          console.log('Logout exitoso', response);
-          this.clearLocalStorageAndRedirect();
-        },
-        (error) => {
-          console.error('Error en logout', error);
-          // Aún así, limpiamos el almacenamiento local y redirigimos
-          this.clearLocalStorageAndRedirect();
-        }
-      );
-    } else {
-      console.log('No hay token almacenado');
-      this.router.navigate(['/']);
-    }
+    // Eliminar el token y los datos del usuario del almacenamiento local
+    this.authService.logout();
+    this.preventBack();
   }
 
-  private clearLocalStorageAndRedirect() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user'); // Si almacenas información del usuario
-    this.router.navigate(['/']);
+  preventBack(): void {
+    history.pushState(null, '', location.href);
+    window.onpopstate = function () {
+      history.go(1);
+    };
   }
 }

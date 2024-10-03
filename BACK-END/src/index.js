@@ -54,7 +54,7 @@ class Server{
         this.app.use('/uploads', require('./routers/uploads.js'));
 
         // Ruta para login (autenticación con JWT)
-        this.app.use('/login', require('./routers/authRoutes.js'));
+        this.app.use('/login', require('./routers/auth.routes.js'));
         this.app.use('/recover', require('./routers/recover.routers.js'));
         this.app.use('/restore', require('./routers/restore.routers.js'));
         

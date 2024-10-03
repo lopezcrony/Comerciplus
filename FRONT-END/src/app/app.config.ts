@@ -1,3 +1,5 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -7,7 +9,6 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog'; 
 import { TableModule } from 'primeng/table';   
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ToastrModule } from 'ngx-toastr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { routes } from './app.routes';
@@ -22,6 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     importProvidersFrom([
       ...SHARED_IMPORTS,
+      BrowserAnimationsModule,
       FormsModule,
       ReactiveFormsModule,
       ButtonModule,      

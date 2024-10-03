@@ -38,7 +38,7 @@ exports.resetPasswordWithToken = async (req, res) => {
 
         // Verifica inmediatamente después de guardar
         const updatedUser = await User.findByPk(user.idUsuario);
-        console.log("Contraseña guardada en DB:", updatedUser.claveUsuario);
+        // console.log("Contraseña guardada en DB:", updatedUser.claveUsuario);
 
         res
             .status(200)

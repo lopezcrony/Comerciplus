@@ -1,80 +1,66 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ToastrService } from 'ngx-toastr';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
+
+import { LoginService } from './login.service';
+import { ValidationService } from '../../shared/validators/validations.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  correoUsuario: string = '';
-  claveUsuario: string = '';
+  loginForm: FormGroup;
+
   showPassword: boolean = false;
-  errorMessage: string = '';
-  
-  emailPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  passwordPattern: RegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,16}$/;
 
   constructor(
-    private http: HttpClient, 
-    private router: Router,
-    private toastr: ToastrService
-  ) {}
+    private loginService: LoginService,
+    private fb: FormBuilder,
+    private validationService: ValidationService,
+
+  ) {
+    this.loginForm = this.fb.group({
+      correoUsuario: ['', validationService.getValidatorsForField("login", "correoUsuario")],
+      claveUsuario: ['', validationService.getValidatorsForField("login", "claveUsuario")],
+    });
+  }
 
   toggleShowPassword() {
     this.showPassword = !this.showPassword;
   }
 
-  validateEmail(): boolean {
-    if (!this.emailPattern.test(this.correoUsuario)) {
-      this.toastr.error('El correo electrónico debe tener un formato válido');
-      return false;
-    }
-    return true;
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.loginForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
   }
 
-  validatePassword(): boolean {
-    if (!this.passwordPattern.test(this.claveUsuario)) {
-      this.toastr.error('La contraseña debe tener entre 8 y 16 caracteres, incluir al menos una mayúscula, una minúscula y un número');
-      return false;
+  getErrorMessage(fieldName: string): string {
+    const control = this.loginForm.get(fieldName);
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('login', fieldName, errorKey);
     }
-    return true;
+    return '';
+  }
+
+  private markFormFieldsAsTouched() {
+    Object.values(this.loginForm.controls).forEach(control => control.markAsTouched());
   }
 
   onSubmit() {
-    if (!this.validateEmail() || !this.validatePassword()) {
-      return;
-    }
+    if (this.loginForm.invalid) return this.markFormFieldsAsTouched();
+
+    const formValue = this.loginForm.value;
 
     const loginData = {
-      correoUsuario: this.correoUsuario,
-      claveUsuario: this.claveUsuario
+      correoUsuario: formValue.correoUsuario,
+      claveUsuario: formValue.claveUsuario
     };
 
-    this.http.post('http://localhost:3006/login', loginData).subscribe({
-      next: (response: any) => {
-        localStorage.setItem('token', response.token);
-        this.toastr.success('Inicio de sesión exitoso');
-        this.router.navigate(['/users']);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error al iniciar sesión:', error);
-        if (error.status === 401) {
-          this.toastr.error('Credenciales incorrectas');
-        } else if (error.status === 404) {
-          this.toastr.error('Usuario no encontrado');
-        } else if (error.status === 0) {
-          this.toastr.error('No se pudo conectar con el servidor. Verifica tu conexión o que el servidor esté en funcionamiento.');
-        } else {
-          this.toastr.error('Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.');
-        }
-      }
-    });
+    this.loginService.login(loginData);
   }
 }
