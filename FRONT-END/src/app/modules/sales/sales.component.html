@@ -81,16 +81,85 @@
     <div class="p-fluid">
 
       <form [formGroup]="creditForm">
-        <div class="p-field mb-2">
-          <label for="cliente" class="block mb-1 texto-pequeno">Cliente</label>
-          <p-autoComplete id="cliente" formControlName="cliente" [suggestions]="filteredCredits"
-            (completeMethod)="searchCreditClient($event)" (onSelect)="onClientSelect($event)" field="nombreCliente"
-            [dropdown]="true" placeholder="Buscar cliente" [style]="{'width':'100%'}" styleClass="texto-pequeno">
-            <ng-template let-cliente pTemplate="item">
-              <div class="texto-pequeno">{{cliente.nombreCliente}} - CC {{cliente.cedulaCliente}}</div>
-            </ng-template>
-          </p-autoComplete>
+
+        <div class="">
+          <div class="p-field mb-2">
+            <label for="cliente" class="block mb-1 texto-pequeno">Cliente</label>
+            <div class="cliente-container">
+              <p-autoComplete id="cliente" formControlName="cliente" [suggestions]="filteredCredits"
+                (completeMethod)="searchCreditClient($event)" (onSelect)="onClientSelect($event)" field="nombreCliente"
+                [dropdown]="true" placeholder="Buscar cliente" [style]="{'width':'calc(100% - 2.5rem)'}" styleClass="texto-pequeno">
+                <ng-template let-cliente pTemplate="item">
+                  <div class="texto-pequeno">{{cliente.nombreCliente}} - CC {{cliente.cedulaCliente}}</div>
+                </ng-template>
+              </p-autoComplete>
+              <button pButton pRipple type="button" icon="pi pi-plus"
+                class="p-button-secondary p-button-success p-button-icon-only p-button reduce-margin"
+                style="padding: 0.75rem 3rem;" (click)="showClientModal = true"></button>
+            </div>
+          </div>
         </div>
+        
+        <!-- MODAL TO CREATE A CLIENT-->
+        <p-dialog header="Agregar Cliente" [modal]="true" [(visible)]="showClientModal" [style]="{width: '500px'}">
+          <ng-template pTemplate="content">
+            <form [formGroup]="clientForm">
+
+              <div class="field" [ngClass]="{'error': isFieldInvalid('cedulaCliente')}">
+                <label for="cedulaCliente">Cédula</label>
+                <input type="text" pInputText id="cedulaCliente" formControlName="cedulaCliente" maxlength="15" autofocus />
+                <small class="p-error" *ngIf="isFieldInvalid('cedulaCliente')">
+                  {{ getErrorMessage('cedulaCliente') }}
+                </small>
+              </div>
+        
+              <div class="field-group">
+                <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCliente')}">
+                  <label for="nombreCliente">Nombre</label>
+                  <input type="text" pInputText id="nombreCliente" formControlName="nombreCliente" />
+                  <small class="p-error" *ngIf="isFieldInvalid('nombreCliente')">
+                    {{ getErrorMessage('nombreCliente') }}
+                  </small>
+                </div>
+        
+                <div class="field" [ngClass]="{'error': isFieldInvalid('apellidoCliente')}">
+                  <label for="apellidoCliente">Apellido</label>
+                  <input type="text" pInputText id="apellidoCliente" formControlName="apellidoCliente" />
+                  <small class="p-error" *ngIf="isFieldInvalid('apellidoCliente')">
+                    {{ getErrorMessage('apellidoCliente') }}
+                  </small>
+                </div>
+              </div>
+        
+              <div class="field-group">
+                <div class="field" [ngClass]="{'error': isFieldInvalid('direccionCliente')}">
+                  <label for="direccionCliente">Dirección</label>
+                  <input type="text" pInputText id="direccionCliente" formControlName="direccionCliente" />
+                  <small class="p-error" *ngIf="isFieldInvalid('direccionCliente')">
+                    {{ getErrorMessage('direccionCliente') }}
+                  </small>
+                </div>
+        
+                <div class="field" [ngClass]="{'error': isFieldInvalid('telefonoCliente')}">
+                  <label for="telefonoCliente">Teléfono</label>
+                  <input type="text" pInputText id="telefonoCliente" formControlName="telefonoCliente" minlength="7"
+                    maxlength="10" />
+                  <small class="p-error" *ngIf="isFieldInvalid('telefonoCliente')">
+                    {{ getErrorMessage('telefonoCliente') }}
+                  </small>
+                </div>
+              </div>
+            </form>
+          </ng-template>
+
+          <ng-template pTemplate="footer">
+            <button pButton label="Cancelar" icon="pi pi-times" (click)="cancelClientCreation()"
+              class="p-button-text p-button-sm boton-pequeno"></button>
+            <button pButton label="Guardar" icon="pi pi-check" (click)="saveClient()" class="p-button-text p-button-sm boton-pequeno"></button>
+          </ng-template>
+
+        </p-dialog>
+
 
         <div class="p-field mb-2">
           <label for="totalVenta" class="block mb-1 texto-pequeno">Total de la Venta</label>

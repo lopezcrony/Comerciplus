@@ -85,3 +85,16 @@
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   }
 }
+
+.cliente-container {
+  display: flex;
+  align-items: center;
+}
+
+.cliente-container p-autoComplete {
+  flex-grow: 1;
+}
+
+.reduce-margin {
+  margin-left: 0.1rem; /* Ajusta este valor según sea necesario */
+}

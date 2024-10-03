@@ -19,6 +19,7 @@ import { ClientService } from '../clients/clients.service';
 import { SaleService } from './sales.service';
 import { ToastrService } from 'ngx-toastr';
 import { CreditDetailService } from '../detailCredit/creditDetail.service';
+import { ValidationService } from '../../shared/validators/validations.service';
 
 @Component({
   selector: 'app-sales',
@@ -37,11 +38,13 @@ export class SalesComponent implements OnInit {
 
   busquedaForm: FormGroup;
   creditForm: FormGroup;
+  clientForm!: FormGroup;
 
   total: number = 0;
   selectedClient: any = null;
   imprimirRecibo: boolean = false;
   showCreditModal: boolean = false;
+  showClientModal: boolean = false;
   saleCompleted: boolean = false;
   idSale: number | null = null;
   products: Product[] = [];
@@ -62,7 +65,8 @@ export class SalesComponent implements OnInit {
     private creditDetailService: CreditDetailService,
     private clientService: ClientService,
     private detailSalesService: DetailSalesService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private validationService: ValidationService
   ) {
     this.busquedaForm = this.fb.group({
       busqueda: ['']
@@ -72,6 +76,15 @@ export class SalesComponent implements OnInit {
       montoCredito: [0, [Validators.required, Validators.min(1)]],
       plazoMaximo: ['', Validators.required],
       totalVenta: [{ value: this.total, disabled: true }]
+    });
+    this.clientForm = this.fb.group({
+      idCliente: [null],
+      cedulaCliente: ['', this.validationService.getValidatorsForField('clients', 'cedulaCliente')],
+      nombreCliente: ['', this.validationService.getValidatorsForField('clients', 'nombreCliente')],
+      apellidoCliente: ['', this.validationService.getValidatorsForField('clients', 'apellidoCliente')],
+      direccionCliente: ['', this.validationService.getValidatorsForField('clients', 'direccionCliente')],
+      telefonoCliente: ['', this.validationService.getValidatorsForField('clients', 'telefonoCliente')],
+      estadoCliente: [true]
     });
   }
 
@@ -286,4 +299,42 @@ export class SalesComponent implements OnInit {
     return product ? product.precioVenta : 0;
   };
 
+  cancelClientCreation() {
+    this.showClientModal = false;
+  }
+
+// ---------------------------------------- CREATE CLIENT----------------------------------------- //
+
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.clientForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  }  
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.clientForm.get(fieldName);
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('clients', fieldName, errorKey);
+    }
+    return '';
+  }
+
+  private markFormFieldsAsTouched() {
+    Object.values(this.clientForm.controls).forEach(control => control.markAsTouched());
+  }
+
+  saveClient(){
+    if (this.clientForm.invalid) return this.markFormFieldsAsTouched(); 
+
+    this.clientService.createClient(this.clientForm.value).subscribe({
+      next: () => {
+        this.toastr.success('Cliente creado correctamente', 'Éxito');
+        this.showClientModal = false;
+        this.loadCreditsClients();
+      },
+      error: (error) => {
+        this.toastr.error(`No se pudo crear el cliente: ${error.message}`, 'Error');
+      }
+    });
+  }
 }
