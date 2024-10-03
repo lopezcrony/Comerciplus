@@ -154,8 +154,8 @@
 
           <ng-template pTemplate="footer">
             <button pButton label="Cancelar" icon="pi pi-times" (click)="cancelClientCreation()"
-              class="p-button-text p-button-sm boton-pequeno"></button>
-            <button pButton label="Guardar" icon="pi pi-check" (click)="saveClient()" class="p-button-text p-button-sm boton-pequeno"></button>
+            class="p-button-text custom-cancel-btn"></button>
+            <button pButton label="Guardar" icon="pi pi-check" (click)="saveClient()" class="p-button-text custom-save-btn"></button>
           </ng-template>
 
         </p-dialog>
@@ -186,8 +186,8 @@
 
     <ng-template pTemplate="footer">
       <button pButton label="Cancelar" icon="pi pi-times" (click)="cancelarAsignacionCredito()"
-        class="p-button-text p-button-sm boton-pequeno"></button>
+      class="p-button-text custom-cancel-btn"></button>
       <button pButton label="Confirmar" icon="pi pi-check" (click)="addSaleToCredit()"
-        class="p-button-text p-button-sm boton-pequeno"></button>
+        class="p-button-text custom-save-btn"></button>
     </ng-template>
   </p-dialog>
