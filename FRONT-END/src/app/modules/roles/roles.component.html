@@ -1,37 +1,47 @@
-<!-- PLANTILLA CRUD -->
 <app-crud 
-[items]="filteredRoles" 
-[columns]="columns" 
-[canDelete]="true" 
-[canExport]="false"
-[canSeeDetail]="false" 
-[canChangeStatus]="true"
-[showStateColumn]="true"
-[statusField]="'estadoRol'"
-(create)="openCreateModal()"
-(export)="exportRoles()" 
-(edit)="openEditModal($event)" 
-(delete)="confirmDelete($event)"
-(search)="searchRoles($event)"
-(statusChange)="changeRoleStatus($event)">
+  [items]="filteredRoles"
+  [columns]="columns"
+  [canDelete]="true"
+  [canExport]="false"
+  [canSeeDetail]="false"
+  [canChangeStatus]="true"
+  [showStateColumn]="true"
+  [statusField]="'estadoRol'"
+  (create)="openCreateModal()"
+  (export)="exportRoles()"
+  (edit)="openEditModal($event)"
+  (delete)="confirmDelete($event)"
+  (search)="searchRoles($event)"
+  (statusChange)="changeRoleStatus($event)">
 </app-crud>
 
-<!-- FORMULARIOS -->
 <p-dialog [(visible)]="showModal" [style]="{width: '450px'}" [header]="isEditing ? 'Editar Rol' : 'Crear Rol'"
     [modal]="true" class="p-fluid" appCrudModal [isEditing]="isEditing" (save)="saveRole()" (cancel)="closeModal()">
     
     <ng-template pTemplate="content">
         <form [formGroup]="rolesForm">
             <div class="field" [ngClass]="{'error': isFieldInvalid('nombreRol')}">
-                <label for="nombreRol">Nombre</label>
+                <label for="nombreRol">Nombre del Nuevo Rol</label>
                 <input type="text" pInputText id="nombreRol" formControlName="nombreRol" autofocus />
                 <small class="p-error" *ngIf="isFieldInvalid('nombreRol')">
                     {{ getErrorMessage('nombreRol') }}
                 </small>
             </div>
+            <div class="field">
+                <label>
+                    <input type="checkbox" (change)="toggleAllPermissions($event)" [checked]="areAllPermissionsChecked()"> Todos
+                </label>
+            </div>
+            <div class="field" formArrayName="permissions">
+                <div *ngFor="let permission of permissions; let i = index">
+                    <label>
+                        <input type="checkbox" [formControlName]="i"> {{permission.nombrePermiso}}
+                    </label>
+                </div>
+            </div>
         </form>
     </ng-template>
-
+    
     <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
             (click)="closeModal()" (click)="cancelModalMessage()"></button>

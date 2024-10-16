@@ -1,15 +1,7 @@
-const { Router } = require("express");
-const permissionController = require("../controllers/permissions.controllers");
-const { validatePermission } = require('../middlewares/permissions.validations')
+const express = require('express');
+const router = express.Router();
+const PermissionController = require('../controllers/permissions.controller');
 
-const router = Router();
-
-router
-    .get('/', permissionController.GetAllPermissions)
-    .get('/:id', permissionController.GetOnePermissions)
-    .post('/', validatePermission, permissionController.CreateNewPermission)
-    .put('/:id', validatePermission, permissionController.UpdatePermission)
-    .delete('/:id', permissionController.DeleteOnePermission)
-
+router.get('/', PermissionController.getAllPermissions); // Define la ruta para obtener permisos
 
 module.exports = router;

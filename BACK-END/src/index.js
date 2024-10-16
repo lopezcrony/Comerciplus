@@ -47,7 +47,6 @@ class Server{
         this.app.use('/categorias', require('./routers/categories.routers.js'));
         this.app.use('/roles', require('./routers/roles.routers.js'));
         this.app.use('/permisos', require('./routers/permissions.routers.js'));
-        this.app.use('/permisosRol', require('./routers/permissionsRoles.routers.js'));
         this.app.use('/usuarios', require('./routers/users.routers.js'));
         this.app.use('/compras', require('./routers/shopping.routers.js'));
         this.app.use('/detallecompras', require('./routers/shoppingdetails.routers.js'));

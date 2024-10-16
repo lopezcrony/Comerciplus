@@ -8,6 +8,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button'; 
 import { DialogModule } from 'primeng/dialog'; 
 import { TableModule } from 'primeng/table';   
+import { CheckboxModule } from 'primeng/checkbox'; 
+import { MultiSelectModule } from 'primeng/multiselect';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -29,6 +31,8 @@ export const appConfig: ApplicationConfig = {
       ButtonModule,      
       DialogModule,
       TableModule,
+      CheckboxModule,
+      MultiSelectModule,
       ConfirmDialog,
       ToastrModule.forRoot({
         positionClass: 'toast-bottom-right',

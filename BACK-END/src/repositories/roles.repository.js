@@ -1,46 +1,49 @@
 const Roles = require('../models/roles.model');
+const Permissions = require('../models/permissions.model');
 
 const findAllRoles = async () => {
-    return await Roles.findAll();
+  return await Roles.findAll({
+    include: [{
+      model: Permissions,
+      through: { attributes: [] }
+    }]
+  });
 };
 
 const findRoleById = async (id) => {
-    return await Roles.findByPk(id);
+  return await Roles.findByPk(id, {
+    include: [{
+      model: Permissions,
+      through: { attributes: [] }
+    }]
+  });
 };
 
 const createRole = async (roleData) => {
-    return await Roles.create(roleData);
+  return await Roles.create(roleData);
 };
 
 const updateRole = async (id, roleData) => {
-    const role = await findRoleById(id);
-    if (role) {
-        return await role.update(roleData);
-    }
-    throw new Error('Rol no encontrado');
-};
-
-const updateRoleStatus = async (id, status) => {
-
-    const role = await findRoleById(id);
-    if (role) {
-        return await role.update({estadoRol : status});
-    }
-    throw new Error('Rol no encontrado');
+  const [updatedRows] = await Roles.update(roleData, { where: { idRol: id } });
+  if (updatedRows > 0) {
+    return await findRoleById(id);
+  }
+  return null;
 };
 
 const deleteRole = async (id) => {
-    const result = await Roles.destroy({
-        where: { idRol: id }
-    });
-    return result;
+  return await Roles.destroy({ where: { idRol: id } });
+};
+
+const updateRoleStatus = async (id, status) => {
+  return await Roles.update({ estadoRol: status }, { where: { idRol: id } });
 };
 
 module.exports = {
-    findAllRoles,
-    findRoleById,
-    createRole,
-    updateRole,
-    updateRoleStatus,
-    deleteRole
+  findAllRoles,
+  findRoleById,
+  createRole,
+  updateRole,
+  deleteRole,
+  updateRoleStatus
 };

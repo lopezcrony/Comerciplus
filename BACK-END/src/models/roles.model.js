@@ -11,7 +11,7 @@ const Roles = sequelize.define('Roles', {
   nombreRol: {
     type: DataTypes.STRING(100),
     unique: {
-      name: 'unique_nombreRol', // Nombre del índice existente
+      name: 'unique_nombreRol',
       msg: 'El nombre del rol debe ser único.'
     },
     allowNull: false
@@ -24,10 +24,5 @@ const Roles = sequelize.define('Roles', {
   tableName: 'roles',
   timestamps: false
 });
-
-Roles.associate = (models) => {
-  Roles.hasMany(models.User, { foreignKey: 'idRol' });
-  Roles.hasMany(models.PermissionRole, { foreignKey: 'idRol' });
-};
 
 module.exports = Roles;

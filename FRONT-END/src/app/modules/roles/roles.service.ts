@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Role } from './roles.model';
 
@@ -15,6 +15,7 @@ export class RolesService {
 
   getAllRoles(): Observable<Role[]> {
     return this.http.get<Role[]>(this.apiUrl).pipe(
+      tap(roles => console.log('Roles recibidos del servidor:', roles)),
       catchError(this.handleError)
     );
   }
@@ -25,14 +26,18 @@ export class RolesService {
     );
   }
 
-  createRoles(roles: Role): Observable<Role> {
-    return this.http.post<Role>(this.apiUrl, roles).pipe(
+  createRoles(role: Role): Observable<Role> {
+    console.log('Enviando rol al servidor:', role);
+    return this.http.post<Role>(this.apiUrl, role).pipe(
+      tap(createdRole => console.log('Rol creado en el servidor:', createdRole)),
       catchError(this.handleError)
     );
   }
 
-  updateRoles(roles: Role): Observable<Role> {
-    return this.http.put<Role>(`${this.apiUrl}/${roles.idRol}`, roles).pipe(
+  updateRoles(role: Role): Observable<Role> {
+    console.log('Actualizando rol en el servidor:', role);
+    return this.http.put<Role>(`${this.apiUrl}/${role.idRol}`, role).pipe(
+      tap(updatedRole => console.log('Rol actualizado en el servidor:', updatedRole)),
       catchError(this.handleError)
     );
   }
@@ -43,14 +48,14 @@ export class RolesService {
     );
   }
 
-  deleteRoles(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+  deleteRoles(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
   private handleError(error: HttpErrorResponse) {
     console.error('Ocurrió un error:', error);
-    return throwError('Algo salió mal; por favor, intente nuevamente más tarde.');
+    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 }

@@ -1,17 +1,14 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { RolesService } from './roles.service';
-import { Role } from './roles.model';
+import { PermissionsService } from './permissions.service';
+import { Role, Permission } from './roles.model';
 import { ValidationService } from '../../shared/validators/validations.service';
-
+import { AlertsService } from '../../shared/alerts/alerts.service';
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { AlertsService } from '../../shared/alerts/alerts.service';
-
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
-
-
 
 @Component({
   selector: 'app-roles',
@@ -24,11 +21,12 @@ import { ToastrService } from 'ngx-toastr';
   ],
 })
 export class RolesComponent implements OnInit {
-
   filteredRoles: Role[] = [];
   roles: Role[] = [];
+  permissions: Permission[] = [];
   columns = [
-    { field: 'nombreRol', header: 'Nombre' }
+    { field: 'nombreRol', header: 'Nombre' },
+    { field: 'permissions', header: 'Permisos' }
   ];
   rolesForm: FormGroup;
   showModal = false;
@@ -36,6 +34,7 @@ export class RolesComponent implements OnInit {
 
   constructor(
     private roleService: RolesService,
+    private permissionsService: PermissionsService,
     private alertsService: AlertsService,
     private fb: FormBuilder,
     private toastr: ToastrService,
@@ -44,56 +43,63 @@ export class RolesComponent implements OnInit {
     this.rolesForm = this.fb.group({
       idRol: [null],
       nombreRol: ['', this.validationService.getValidatorsForField('roles','nombreRol')],
-      estadoRol: [true]
+      estadoRol: [true],
+      permissions: this.fb.array([])
     });
   }
 
   ngOnInit() {
     this.loadRoles();
+    this.loadPermissions();
   }
 
   loadRoles() {
     this.roleService.getAllRoles().subscribe(data => {
       console.log('Roles cargados:', data);
       this.roles = data;
-      this.filteredRoles = data;
+      this.filteredRoles = data.map(role => ({
+        ...role,
+        permissions: role.Permissions?.map(p => p.nombrePermiso).join(', ') || ''
+      }));
       console.log('Roles filtrados:', this.filteredRoles);
     });
+  }
+
+  loadPermissions() {
+    this.permissionsService.getAllPermissions().subscribe(data => {
+      this.permissions = data;
+      this.initPermissionsForm();
+    });
+  }
+
+  initPermissionsForm() {
+    const permissionsControls = this.permissions.map(permission => 
+       this.fb.control(false)
+    );
+    this.rolesForm.setControl('permissions', this.fb.array(permissionsControls));
   }
 
   openCreateModal() {
     this.isEditing = false;
     this.rolesForm.reset({ estadoRol: true });
+    this.initPermissionsForm();
     this.showModal = true;
   }
 
-  openEditModal(roles: Role) {
+  openEditModal(role: Role) {
     this.isEditing = true;
-    this.rolesForm.patchValue(roles);
+    this.rolesForm.patchValue({
+      idRol: role.idRol,
+      nombreRol: role.nombreRol,
+      estadoRol: role.estadoRol
+    });
+    const permissionsArray = this.rolesForm.get('permissions') as FormArray;
+    permissionsArray.controls.forEach((control, index) => {
+      control.setValue(role.Permissions?.some(p => p.idPermiso === this.permissions[index].idPermiso) || false);
+    });
     this.showModal = true;
   }
-  cancelModalMessage(){
-    this.alertsService.menssageCancel()
-  }
-
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.rolesForm.get(fieldName);
-    return !!(field?.invalid && (field.touched || field.dirty));
-  }  
-
-  getErrorMessage(fieldName: string): string {
-    const control = this.rolesForm.get(fieldName);
-    if (control?.errors) {
-      const errorKey = Object.keys(control.errors)[0];
-      return this.validationService.getErrorMessage('roles', fieldName, errorKey);
-    }
-    return '';
-  }
-
-  private markFormFieldsAsTouched() {
-    Object.values(this.rolesForm.controls).forEach(control => control.markAsTouched());
-  }
-
+      
   saveRole() {
     if (this.rolesForm.invalid) {
       this.markFormFieldsAsTouched();
@@ -101,29 +107,37 @@ export class RolesComponent implements OnInit {
     }
 
     const roleData = this.rolesForm.value;
-    const request = this.isEditing 
-      ? this.roleService.updateRoles(roleData) 
+    roleData.permissions = this.permissions
+      .filter((_, index) => roleData.permissions[index])
+      .map(p => p.nombrePermiso);
+
+    console.log('Datos del rol a enviar:', roleData);
+
+    const request = this.isEditing
+      ? this.roleService.updateRoles(roleData)
       : this.roleService.createRoles(roleData);
 
     request.subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('Respuesta del servidor:', response);
         this.toastr.success('¡Rol guardado con éxito!', 'Éxito');
         this.loadRoles();
         this.closeModal();
       },
-      error: () => this.toastr.error('Error al guardar rol', 'Error')
+      error: (error) => {
+        console.error('Error al guardar el rol:', error);
+        this.toastr.error('Error al guardar rol', 'Error');
+      }
     });
   }
 
   confirmDelete(role: Role) {
     this.alertsService.confirm(
-      `¿Estás seguro de eliminar a ${role.nombreRol} ?`,
+      `¿Estás seguro de eliminar a ${role.nombreRol}?`,
       () => this.roleService.deleteRoles(role.idRol).subscribe(() => {
-        this.toastr.success('Usuario eliminado exitosamente', 'Éxito');
+        this.toastr.success('Rol eliminado exitosamente', 'Éxito');
         this.loadRoles();
-
       })
-
     );
   }
 
@@ -132,14 +146,14 @@ export class RolesComponent implements OnInit {
   }
 
   searchRoles(query: string) {
-    this.filteredRoles = this.roles.filter(roles =>
-      roles.nombreRol.toLowerCase().includes(query.toLowerCase())
+    this.filteredRoles = this.roles.filter(role =>
+      role.nombreRol.toLowerCase().includes(query.toLowerCase())
     );
-  };
+  }
 
   changeRoleStatus(updatedRole: Role) {
     const estadoRol = updatedRole.estadoRol ?? false;
-  
+    
     this.roleService.updateStatusRole(updatedRole.idRol, estadoRol).subscribe({
       next: () => {
         [this.roles, this.filteredRoles].forEach(list => {
@@ -154,9 +168,51 @@ export class RolesComponent implements OnInit {
         this.toastr.error('Error al actualizar el estado del rol', 'Error');
       }
     });
-  };
-  
-  exportRoles() { };
-  
-}
+  }
 
+  isPermissionChecked(permissionId: number): boolean {
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    return permissions.at(this.permissions.findIndex(p => p.idPermiso === permissionId)).value;
+  }
+
+  toggleAllPermissions(event: any) {
+    const checked = event.target.checked;
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    permissions.controls.forEach(control => control.setValue(checked));
+  }
+
+  areAllPermissionsChecked(): boolean {
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    return permissions.controls.every(control => control.value);
+  }
+
+  exportRoles() {
+    // Implementar la lógica de exportación si es necesario
+  }
+
+  markFormFieldsAsTouched() {
+    Object.values(this.rolesForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    const control = this.rolesForm.get(fieldName);
+    return control ? control.invalid && (control.dirty || control.touched) : false;
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.rolesForm.get(fieldName);
+    if (control && control.errors) {
+      if (control.errors['required']) {
+        return 'Este campo es requerido';
+      }
+      // Agrega más mensajes de error según tus validaciones
+    }
+    return '';
+  }
+
+  cancelModalMessage() {
+    // Implementa la lógica para el mensaje de cancelación si es necesario
+  }
+}
