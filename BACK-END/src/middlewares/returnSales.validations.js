@@ -2,10 +2,7 @@ const { body, validationResult } = require('express-validator');
 
 // Validaciones para el modelo returnSales
 const validateReturnSales = [
-    body('idDetalleVenta')
-        .notEmpty().withMessage('El id del detalle de venta es obligatorio')
-        .isInt({ min: 1 }).withMessage('El id del detalle de venta debe ser un número entero positivo'),
-
+    
     
     body('cantidad')
         .notEmpty().withMessage('La cantidad es obligatoria')
