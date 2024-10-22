@@ -35,7 +35,7 @@ export class LossComponent implements OnInit {
   barcode: Barcode[] = [];
 
   colums: { field: string, header: string }[] = [
-    { field: 'idCodigoBarra', header: 'Código' },
+    { field: 'codigoBarra', header: 'Código' },
     // { field: 'idProducto', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
     { field: 'motivo', header: 'Motivo' },
@@ -68,23 +68,30 @@ export class LossComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadLoss()
-    // this.loadCode()
+    this.loadBardCode(); // Cargamos primero los códigos de barras
   }
-
+  
   loadLoss() {
     this.lossService.getLoss().subscribe(data => {
-      this.loss = data
-      this.filteredLoss = data;
-    },
-    );
+      this.loss = data.map(repp => {
+        const code = this.barcode.find(codes => codes.idCodigoBarra === repp.idCodigoBarra);
+  
+        return { 
+          ...repp, 
+          codigoBarra: code ? code.codigoBarra : 'Codigo no encontrado'
+        };
+      });
+      this.filteredLoss = this.loss; // Asegúrate de asignar correctamente los datos filtrados
+    });
   }
-
-  // loadCode() {
-  //   this.productService.getBarcodeByProduct().subscribe(data => {
-  //     this.products=data ;
-  //   });
-  // }
+  
+  loadBardCode() {
+    this.barcodeService.getAllBarcodes().subscribe(data => {
+      this.barcode = data; // Guardamos los códigos de barras
+      this.loadLoss(); // Ahora que los códigos están cargados, podemos cargar las pérdidas
+    });
+  }
+  
 
   openCreateModal() {
     this.isEditing = false;
