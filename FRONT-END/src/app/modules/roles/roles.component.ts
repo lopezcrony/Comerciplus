@@ -26,7 +26,6 @@ export class RolesComponent implements OnInit {
   permissions: Permission[] = [];
   columns = [
     { field: 'nombreRol', header: 'Nombre' },
-    { field: 'permissions', header: 'Permisos' }
   ];
   rolesForm: FormGroup;
   showModal = false;
