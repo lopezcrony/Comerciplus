@@ -42,6 +42,7 @@ export class CRUDComponent {
   @Input() SelectChangeStatus: boolean=false;
 
   // Datos de entrada para la tabla
+  @Input() Module: string = '';
   @Input() items: any[] = [];
   @Input() columns: { field: string, header: string }[] = [];
   @Input() statusField: string = 'estado';

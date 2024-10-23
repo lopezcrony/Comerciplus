@@ -1,6 +1,5 @@
-<h2 class="title" style="text-align: center;">Compras</h2>
 
-<app-crud [items]="filteredShoppings" [columns]="columns" [canDelete]="false" [canEdit]="false" [canSeeDetail]="true"
+<app-crud [Module]="'Compras'" [items]="filteredShoppings" [columns]="columns" [canDelete]="false" [canEdit]="false" [canSeeDetail]="true"
     [canChangeStatus]="true" [showStateColumn]="true" [statusField]="'estadoCompra'" (create)="openShopping()"
     (search)="searchShopping($event)" (detail)="openShowModal($event)" (statusChange)="changeShoppingStatus($event)">
 </app-crud>

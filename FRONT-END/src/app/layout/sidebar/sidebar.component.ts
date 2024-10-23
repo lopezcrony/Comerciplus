@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { trigger, state, style, animate, transition } from '@angular/animations';
@@ -34,11 +34,16 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     ])
   ],
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
   @Input() isSidebarVisible: boolean = true;
   @Output() sidebarClosed = new EventEmitter<void>();
 
   private activeSubmenu: string | null = null;
+
+  ngOnInit() {
+    // Recupera el estado del submenú del almacenamiento local al inicializar
+    this.activeSubmenu = localStorage.getItem('activeSubmenu');
+  }
 
   isSubmenuOpen(submenu: string): boolean {
     return this.activeSubmenu === submenu;
@@ -50,6 +55,8 @@ export class SidebarComponent {
     } else {
       this.activeSubmenu = submenu;
     }
+    // Guarda el estado del submenú en el almacenamiento local
+    localStorage.setItem('activeSubmenu', this.activeSubmenu || '');
   }
 
   getSubmenuState(submenu: string): string {
@@ -57,6 +64,6 @@ export class SidebarComponent {
   }
 
   closeSidebar() {
-    this.sidebarClosed.emit(); // Emite el evento para cerrar el sidebar
+    this.sidebarClosed.emit();
   }
 }
