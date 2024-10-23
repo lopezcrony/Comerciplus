@@ -15,6 +15,8 @@ import { ReturnSaleService } from './return-sale.service';
 import { ReturnSaleModel } from './return-sale.model';
 import { ValidationService } from '../../shared/validators/validations.service';
 import { ConfirmationService } from 'primeng/api';
+import { Barcode } from '../barcodes/barcode.model';
+import { BarcodesService } from '../barcodes/barcodes.service';
 
 
 @Component({
@@ -31,11 +33,12 @@ import { ConfirmationService } from 'primeng/api';
 export class ReturnSaleComponent implements OnInit {
 
   providers:any []=[];
+  barcode: Barcode[] = [];
   returnSale: ReturnSaleModel[] = [];
   filteredReturnSale: ReturnSaleModel[] = [];
 
   colums: { field: string, header: string }[] = [
-    { field: 'idCodigoBarra', header: 'Código' },
+    { field: 'codigoBarra', header: 'Código' },
     // { field: 'NombreProducto', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
     { field: 'tipoReembolso', header: 'Tipo Reembolso' },
@@ -64,6 +67,7 @@ export class ReturnSaleComponent implements OnInit {
     private toastr: ToastrService,
     private validationService: ValidationService,
     private providerService: ProvidersService,
+    private barcodeService: BarcodesService,
   private confirmationService: ConfirmationService,
 
 
@@ -79,14 +83,21 @@ export class ReturnSaleComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadReturnSale();
     this.loadProviders()
+    this.loadBardCode()
   }
 
   loadReturnSale() {
     this.returnSaleService.getReturnSale().subscribe(data => {
-      this.returnSale = data;
-      this.filteredReturnSale = data;
+      this.returnSale = data.map(repp => {
+        const code = this.barcode.find(codes => codes.idCodigoBarra === repp.idCodigoBarra);
+  
+        return { 
+          ...repp, 
+          codigoBarra: code ? code.codigoBarra : 'Codigo no encontrado'
+        };
+      });
+      this.filteredReturnSale = this.returnSale;
     },
     );
   }
@@ -94,6 +105,13 @@ export class ReturnSaleComponent implements OnInit {
   loadProviders() {
     this.providerService.getAllProviders().subscribe(data => {
       this.providers = data.filter(p => p.estadoProveedor === true);
+    });
+  }
+
+  loadBardCode() {
+    this.barcodeService.getAllBarcodes().subscribe(data => {
+      this.barcode = data; // Guardamos los códigos de barras
+      this.loadReturnSale(); // Ahora que los códigos están cargados, podemos cargar las pérdidas
     });
   }
 
