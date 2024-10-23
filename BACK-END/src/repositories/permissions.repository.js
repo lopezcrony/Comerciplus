@@ -5,9 +5,20 @@ findAllPermissions = async () => {
     return await Permission.findAll();
 }
 
+// findPermissionById = async (id) => {
+//     return await PermissionRole.findAll({
+//         where: { idRol: id }
+//     });
+// };
+
 findPermissionById = async (id) => {
     return await PermissionRole.findAll({
-        where: { idRol: id }
+        where: { idRol: id },
+        include: [{
+            model: Permission,
+            required: true,
+            attributes: ['nombrePermiso']
+        }]
     });
 };
 

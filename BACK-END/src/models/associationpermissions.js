@@ -1,14 +1,15 @@
 const Roles = require('./roles.model');
 const Permissions = require('./permissions.model');
+const PermissionRole = require('./permissionsRoles.model')
 
 Roles.belongsToMany(Permissions, {
-  through: 'PermissionRole',
+  through: PermissionRole,
   foreignKey: 'idRol',
   otherKey: 'idPermiso'
 });
 
 Permissions.belongsToMany(Roles, {
-  through: 'PermissionRole',
+  through: PermissionRole,
   foreignKey: 'idPermiso',
   otherKey: 'idRol'
 });

@@ -1,17 +1,48 @@
 const Permissions = require('../models/permissions.model');
 
 const predefinedPermissions = [
-  { nombrePermiso: 'Dashboard' },
-  { nombrePermiso: 'Roles' },
-  { nombrePermiso: 'Ventas' },
-  { nombrePermiso: 'Proveedores' },
-  { nombrePermiso: 'Productos' },
-  { nombrePermiso: 'Créditos' },
-  { nombrePermiso: 'Usuarios' },
-  { nombrePermiso: 'Clientes' },
-  { nombrePermiso: 'Categorias' },
-  { nombrePermiso: 'Compras' },
-  { nombrePermiso: 'Devoluciones' }
+
+  { nombrePermiso: 'Crear Rol' },
+  { nombrePermiso: 'Eliminar Rol' },
+  { nombrePermiso: 'Editar Rol' },
+
+  { nombrePermiso: 'Crear Venta' },
+  { nombrePermiso: 'Eliminar Venta' },
+  { nombrePermiso: 'Editar Venta' },
+  { nombrePermiso: 'Ver Detalle de Venta' },
+
+  { nombrePermiso: 'Crear Proveedor' },
+  { nombrePermiso: 'Eliminar Proveedor' },
+  { nombrePermiso: 'Editar Proveedor' },
+
+  { nombrePermiso: 'Crear Producto' },
+  { nombrePermiso: 'Eliminar Producto' },
+  { nombrePermiso: 'Editar Producto' },
+
+  { nombrePermiso: 'Crear Crédito' },
+  { nombrePermiso: 'Eliminar Crédito' },
+  { nombrePermiso: 'Editar Crédito' },
+
+  { nombrePermiso: 'Crear Usuario' },
+  { nombrePermiso: 'Eliminar Usuario' },
+  { nombrePermiso: 'Editar Usuario' },
+
+  { nombrePermiso: 'Crear Cliente' },
+  { nombrePermiso: 'Eliminar Cliente' },
+  { nombrePermiso: 'Editar Cliente' },
+
+  { nombrePermiso: 'Crear Categoria' },
+  { nombrePermiso: 'Eliminar Categoria' },
+  { nombrePermiso: 'Editar Categoria' },
+
+  { nombrePermiso: 'Crear Compra' },
+  { nombrePermiso: 'Eliminar Compra' },
+  { nombrePermiso: 'Editar Compra' },
+
+  { nombrePermiso: 'Crear Devolución' },
+  { nombrePermiso: 'Eliminar Devolución' },
+  { nombrePermiso: 'Editar Devolución' }
+  
 ];
 
 const seedPermissions = async () => {
