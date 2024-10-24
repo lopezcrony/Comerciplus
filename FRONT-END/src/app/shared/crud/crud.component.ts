@@ -31,6 +31,8 @@ export class CRUDComponent {
   @Input() canCreate: boolean = true;
   @Input() canDelete: boolean = true;
   @Input() canCancel: boolean = false;
+  @Input() canCancelSale: boolean = false;
+
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean = true;
   @Input() canChangeStatus: boolean = false;
