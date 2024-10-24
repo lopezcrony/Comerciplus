@@ -63,11 +63,11 @@
     }
 
     columns: { field: string, header: string }[] = [
-      { field: 'idProveedor', header: 'Proveedor' },
-      { field: 'fechaCompra', header: 'fecha compra' },  
-      { field: 'fechaRegistro', header: 'fecha registro' },  
-      { field: 'numeroFactura', header: 'Nro.factura' },  
-      { field: 'valorCompra', header: 'valor' },  
+      { field: 'nombreProveedor', header: 'Proveedor' },
+      { field: 'fechaCompra', header: 'Fecha Compra' },  
+      { field: 'fechaRegistro', header: 'Fecha Registro' },  
+      { field: 'numeroFactura', header: 'Nro. Factura' },  
+      { field: 'valorCompra', header: 'Valor Compra' },  
     ];
 
 
@@ -94,8 +94,11 @@
 
     loadShoppings() {
       this.shoppingService.getAllShoppings().subscribe(data => {
-        this.shoppings = data;
-        this.filteredShoppings = data;
+        this.shoppings = data.map(shopping => {
+          const provider = this.providers.find(p => p.idProveedor === shopping.idProveedor);
+          return { ...shopping, nombreProveedor: provider.nombreProveedor };
+        });
+        this.filteredShoppings = this.shoppings;
       });
     }
 
