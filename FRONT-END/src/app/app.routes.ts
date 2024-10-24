@@ -25,6 +25,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'recover', component: RecoverComponent },
   { path: 'restore', component: RestoreComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: '',
     component: LayoutComponent,
