@@ -49,6 +49,7 @@ export class CRUDComponent {
   @Input() columns: { field: string, header: string }[] = [];
   @Input() statusField: string = 'estado';
 
+
   // Funciones del CRUD
   @Output() create = new EventEmitter<void>();
   @Output() deleteAll = new EventEmitter<void>();
@@ -60,6 +61,8 @@ export class CRUDComponent {
   @Output() statusChange = new EventEmitter<any>();
   @Output() search = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<any>();
+  @Output() changeStatusProvider = new EventEmitter<any>();
+
 
 
   // Parámetro de búsqueda
@@ -89,6 +92,10 @@ export class CRUDComponent {
     this.cancel.emit(item);
   }
 
+  onStatusProvider(item: any) {
+    this.changeStatusProvider.emit(item);
+  }
+
   onDetail(item: any) {
     this.detail.emit(item);
   }
@@ -111,14 +118,24 @@ export class CRUDComponent {
   }
 
   getSelectStatus(item: any): string {
-    return item[this.statusField];
+    return item[this.statusField]; 
   }
+  
 
   confirmChangeStatus(item: any) {
     this.alertsService.confirm(
       `¿Estás seguro de cambiar el estado?`,
       () => {
         this.changeStatus(item);
+      }
+    );
+  }
+
+  confirmChangeStatusProvider(item: any) {
+    this.alertsService.confirm(
+      `¿Estás seguro de cambiar el estado?`,
+      () => {
+        this.onStatusProvider(item);
       }
     );
   }
