@@ -1,7 +1,8 @@
 <h2 class="title" style="text-align: center;">Devolución por Proveedor</h2>
 
 
-<app-crud [items]="filteredReturnProvider" 
+<app-crud 
+[items]="filteredReturnProvider" 
 [columns]="colums" 
 [canDelete]="false" 
 [canExport]="false" 
@@ -15,7 +16,8 @@
 
 [actions]="false" 
 (create)="openCreateModal()" 
-(search)="searchreturnProvider($event)">
+(search)="searchreturnProvider($event)"
+(changeStatusProvider)="changeReturnProviderStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->

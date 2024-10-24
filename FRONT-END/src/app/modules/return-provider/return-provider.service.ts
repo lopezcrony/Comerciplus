@@ -31,25 +31,25 @@ export class ReturnProviderService {
       );
     }
 
-    updateStatusProduct(id: number, status: string): Observable<returnProviderModel> {
-      const body = { estadoProducto: status };
+    updateStatusReturnProvider(id: number, status: string): Observable<returnProviderModel> {
+      const body = { estado: status };
       
       return this.http.patch<returnProviderModel>(`${this.apiUrl}/${id}`, body).pipe(
         catchError(this.handleError)
       );
     }
 
-  private handleError(error: HttpErrorResponse) {
-    // Puedes ajustar la lógica para diferentes tipos de errores aquí
-    let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';
-    if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      // Error del lado del servidor
-      errorMessage = error.error?.message || errorMessage;
+    private handleError(error: HttpErrorResponse) {
+      // Puedes ajustar la lógica para diferentes tipos de errores aquí
+      let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';
+      if (error.error instanceof ErrorEvent) {
+        // Error del lado del cliente
+        errorMessage = `Error: ${error.error.message}`;
+      } else {
+        // Error del lado del servidor
+        errorMessage = error.error?.message || errorMessage;
+      }
+      return throwError(() => new Error(errorMessage));
     }
-    return throwError(() => new Error(errorMessage));
-  }
    }
 

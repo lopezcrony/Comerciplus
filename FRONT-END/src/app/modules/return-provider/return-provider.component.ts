@@ -200,10 +200,12 @@ export class ReturnProviderComponent implements OnInit {
   }
 
   changeReturnProviderStatus(updatedReturnProvider: returnProviderModel) {
-    const estado = updatedReturnProvider.estado ?? false;
+    const estado = updatedReturnProvider.estado;
+    console.log('Valor que se envía al servicio:', estado);
 
-    this.returnProviderService.updateStatusProduct(updatedReturnProvider.idDevolucionLocal, estado).subscribe({
-      next: () => {
+    this.returnProviderService.updateStatusReturnProvider(updatedReturnProvider.idDevolucionLocal, estado).subscribe({
+      next: (response) => {
+        console.log('Respuesta del servicio:', response);  // Verificar si hay respuesta exitosa
         [this.returnProvider, this.filteredReturnProvider].forEach(list => {
           const index = list.findIndex(p => p.idDevolucionLocal === updatedReturnProvider.idDevolucionLocal);
           if (index !== -1) {
@@ -212,9 +214,11 @@ export class ReturnProviderComponent implements OnInit {
         });
         this.toastr.success('Estado del proveedor actualizado con éxito', 'Éxito');
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error al intentar actualizar el estado:', err);  // Verifica si hay error
         this.toastr.error('Error al actualizar el estado del proveedor', 'Error');
       }
     });
-  }
+}
+
 }
