@@ -106,6 +106,9 @@
               <button *ngIf="canCancel && item.estado !== false" pButton pRipple icon="pi pi-times"
                 class="p-button-rounded p-button-danger p-button-outlined p-button-sm"
                 (click)="onCancel(item)"></button>
+                <button *ngIf="canCancelSale && item.estadoVenta !== false" pButton pRipple icon="pi pi-times"
+                class="p-button-rounded p-button-danger p-button-outlined p-button-sm"
+                (click)="onCancel(item)"></button>
             </div>
           </td>
         </tr>

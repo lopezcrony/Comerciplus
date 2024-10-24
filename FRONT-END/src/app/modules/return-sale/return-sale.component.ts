@@ -201,11 +201,10 @@ export class ReturnSaleComponent implements OnInit {
   
   cancelSale(updatedSale: ReturnSaleModel) {
     // Mostrar mensaje de confirmación
-    this.confirmationService.confirm({
-      message: '¿Estás seguro de que deseas cancelar esta venta?',
-      header: 'Confirmación de Anulación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
+    this.alertsService.confirm(
+    `¿Estás seguro de que deseas cancelar esta venta?`,
+      
+      () => {
         // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
         updatedSale.estado = false; // Cambiamos el estado a "false"
         
@@ -215,16 +214,13 @@ export class ReturnSaleComponent implements OnInit {
         // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
         // this.disableField();
       },
-      reject: () => {
+      () => {
         this.toastr.info('Anulación cancelada', 'Información');
       }
-    });
+    );
   }
   
   
-  // disableField() {
-  //   this.isFieldDisabled = true; // Cambia el estado del flag
-  // }
 
   searchReturnSale(query: string) {
     const lowerCaseQuery = query.toLowerCase();
