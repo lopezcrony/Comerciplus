@@ -27,10 +27,10 @@ const deleteShopping = async (id) => {
     return result;
 };
 
-const updateShoppingStatus = async (id, status) => {
+const cancelShopping = async (id) => {
     const shopping = await findProductById(id);
     if (shopping) {
-        return await shopping.update({ estadoCompra: status });
+        return await shopping.update({ estadoCompra: false });
     }
     throw new Error('REPOSITORY: Compra no encontrada');
 };
@@ -42,5 +42,5 @@ module.exports = {
     createShopping,
     deleteShopping,
     updateValorShopping,
-    updateShoppingStatus
+    cancelShopping
 };

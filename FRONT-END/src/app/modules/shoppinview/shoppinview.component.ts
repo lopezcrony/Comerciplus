@@ -123,9 +123,9 @@
     
 
     ngOnInit() {
-      this.loadShoppings();
       this.loadProviders();
       this.loadProducts();
+      this.loadShoppings();
     }
 
     changeShoppingStatus(shopping: Shopping) {
@@ -147,6 +147,19 @@
         });
       }
     }
+
+    // cancelShopping(shopping: Shopping) {
+
+    //   this.shoppingService.cancelShopping(shopping.idCompra).subscribe({
+    //     next: () => {
+    //       this.loadShoppings(); // Recargar la lista de compras para reflejar el cambio
+    //       this.toastr.success('Compra anulada con éxito.', 'Éxito');
+    //     },
+    //     error: () => {
+    //       this.toastr.error('Error al anular la compra.', 'Error');
+    //     }
+    //   });
+    // }
 
     // Verifica si el botón de cambio de estado debe estar deshabilitado
     isChangeStatusDisabled(shopping: Shopping): boolean {
