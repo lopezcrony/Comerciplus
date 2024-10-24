@@ -82,6 +82,13 @@
             </div>
           </td>
 
+          <td *ngIf="canChangeStatusSales" [style]="{'text-align': 'center'}">
+            <div class="flex justify-center items-center">
+              <p-button [rounded]="true" [label]="getStatus(item) ? 'Activo' : 'Inactivo'"
+                [styleClass]="getStatus(item) ? 'true-chip tipo-chip' : 'false-chip tipo-chip'"
+                ></p-button>
+            </div>
+          </td>
 
 
           <td [style]="{'text-align': 'center'}">
@@ -95,10 +102,9 @@
               <button *ngIf="canSeeDetail" pButton pRipple icon="pi pi-eye"
                 class="p-button-rounded p-button-warning p-button-outlined p-button-sm mr-2"
                 (click)="onDetail(item)"></button>
-                <button *ngIf="canCancel" pButton pRipple icon="pi pi-times"
+                <button *ngIf="canCancel && item.estado !== false" pButton pRipple icon="pi pi-times"
                 class="p-button-rounded p-button-danger p-button-outlined p-button-sm"
-                (click)="onCancel(item)"></button>
-                
+                (click)="onCancel(item)"></button>                
             </div>
           </td>
         </tr>

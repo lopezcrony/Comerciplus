@@ -34,6 +34,8 @@ export class CRUDComponent {
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean = true;
   @Input() canChangeStatus: boolean = false;
+  @Input() canChangeStatusSales: boolean = false;
+
   @Input() img: boolean = false;
   @Input() canInstallment: boolean = false;
   @Input() showStateColumn: boolean = false;
