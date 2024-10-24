@@ -40,7 +40,7 @@ products: Product[]=[]
 
 
 colums: { field: string, header: string }[] = [
-  { field: 'idVenta', header: '#Venta' },
+  { field: 'idVenta', header: 'Nro. Venta' },
   { field: 'fechaVenta', header: 'Fecha' },
   { field: 'totalVenta', header: 'Total' },
     

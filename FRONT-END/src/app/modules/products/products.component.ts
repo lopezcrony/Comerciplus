@@ -42,7 +42,7 @@ export class ProductsComponent implements OnInit {
   columns: { field: string, header: string }[] = [
     { field: 'nombreProducto', header: 'Producto' },
     { field: 'imagenProducto', header: 'Imágen' },
-    { field: 'idCategoria', header: 'Categoría' },
+    { field: 'nombreCategoria', header: 'Categoría' },
     { field: 'precioVenta', header: 'Precio venta' },
     { field: 'stock', header: 'Stock' }
   ];
@@ -114,8 +114,11 @@ export class ProductsComponent implements OnInit {
 
   loadProducts() {
     this.productService.getAllProducts().subscribe(data => {
-      this.products = data;
-      this.filteredProducts = data;
+      this.products = data.map(product => {
+        const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
+        return { ...product, nombreCategoria: category.nombreCategoria };
+      });
+      this.filteredProducts = this.products;
     });
   }
 
@@ -129,8 +132,8 @@ export class ProductsComponent implements OnInit {
 
   //funcion inicializadora(todo lo de aqui se inicia de una)
   ngOnInit() {
-    this.loadProducts();
     this.loadCategories();
+    this.loadProducts();
   }
 
 
