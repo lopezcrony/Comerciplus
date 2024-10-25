@@ -7,12 +7,13 @@
   import { ProductsService } from '../products/products.service';
   import { ShoppingsService } from '../shoppings/shoppings.service';
   import { ProvidersService } from '../providers/providers.service';
+  import { Proveedor } from '../providers/providers.model';
   import { ToastrService } from 'ngx-toastr';
   import { MessageService } from 'primeng/api';
   import { ValidationService } from '../../shared/validators/validations.service';
   import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   import { Shopping } from '../shoppings/shopping.model';
-  import { Router } from '@angular/router'; 
+  import { Router, RouterModule } from '@angular/router'; 
 
 
 
@@ -24,7 +25,8 @@
       CRUDComponent,
       DropdownModule,
       CrudModalDirective,
-      AutoCompleteModule
+      AutoCompleteModule,
+      RouterModule,
     ],
     templateUrl: './shoppinview.component.html',
     styleUrl: './shoppinview.component.css'
@@ -35,7 +37,7 @@
     shoppings:Shopping[]=[];
     filteredProducts: any[] = [];
     filteredShoppings: any[] = [];
-    providers: any[] = [];
+    providers: Proveedor[] = [];
     products: any[] = [];
     shoppingdetails: any[] = [];
     viewModal = false;
@@ -63,7 +65,7 @@
     }
 
     columns: { field: string, header: string }[] = [
-      { field: 'idProveedor', header: 'Proveedor' },
+      { field: 'nombreProveedor', header: 'Proveedor' },
       { field: 'fechaCompra', header: 'fecha compra' },  
       { field: 'fechaRegistro', header: 'fecha registro' },  
       { field: 'numeroFactura', header: 'Nro.factura' },  
@@ -94,8 +96,11 @@
 
     loadShoppings() {
       this.shoppingService.getAllShoppings().subscribe(data => {
-        this.shoppings = data;
-        this.filteredShoppings = data;
+        this.shoppings = data.map(shopping =>{
+          const provider = this.providers.find(p =>p.idProveedor === shopping.idProveedor)!;
+          return { ...shopping, nombreProveedor: provider.nombreProveedor};
+        });
+        this.filteredShoppings = this.shoppings;
       });
     }
 
@@ -105,6 +110,16 @@
         this.providers = data.filter(p=>p.estadoProveedor === true);
       });
     }
+
+    // loadProducts() {
+    //   this.productService.getAllProducts().subscribe(data => {
+    //     this.products = data.map(product =>{
+    //       const categorie = this.categories.find(c => c.idCategoria === product.idCategoria)!;
+    //       return{...product,nombreCategoria: categorie.nombreCategoria};
+    //     });
+    //     this.filteredProducts = this.products;
+    //   });
+    // }
 
     loadProducts() {
       this.productService.getAllProducts().subscribe(data => {
@@ -120,9 +135,9 @@
     
 
     ngOnInit() {
-      this.loadShoppings();
-      this.loadProviders();
       this.loadProducts();
+      this.loadProviders();
+      this.loadShoppings();
     }
 
     changeShoppingStatus(shopping: Shopping) {

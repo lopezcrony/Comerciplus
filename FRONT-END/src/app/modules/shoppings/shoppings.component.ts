@@ -17,6 +17,7 @@ import { Shoppingdetails } from '../shoppingdetails/model';
 import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Observable } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-shopping',
@@ -26,7 +27,8 @@ import { Observable } from 'rxjs';
     DropdownModule,
     AutoCompleteModule,
     CRUDComponent,
-    CrudModalDirective
+    CrudModalDirective,
+    RouterModule,
   ],
   templateUrl: './shoppingscreate.component.html',
   styleUrls: ['./shoppings.component.css'],

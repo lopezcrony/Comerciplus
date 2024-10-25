@@ -84,7 +84,7 @@ export class UsersComponent implements OnInit {
       this.filteredUsers = this.users;
     });
   }
-
+  
   openCreateModal() {
     this.isEditing = false;
     this.userForm.reset({ estadoUsuario: true });
