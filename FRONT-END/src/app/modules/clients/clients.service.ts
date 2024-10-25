@@ -50,8 +50,14 @@ export class ClientService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }  
 
-  private handleError(error: HttpErrorResponse) {
-    console.error('Ocurrió un error:', error);
-    return throwError('Algo salió mal; por favor, intente nuevamente más tarde.');
+    private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      this.toastr.error(error.error.message, 'Error');
+    } else {
+      // Error del lado del servidor
+      this.toastr.error(error.error.message, 'Error');
+    }
+    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 }
