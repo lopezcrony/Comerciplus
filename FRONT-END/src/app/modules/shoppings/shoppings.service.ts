@@ -26,7 +26,6 @@ export class ShoppingsService {
     );
   }
 
-
   getShoppingdetailsByShopping(idCompra: number): Observable<any[]> {
     return this.http.get<any[]>(`http://localhost:3006/detallecompras/${idCompra}`);
   }
@@ -71,6 +70,12 @@ export class ShoppingsService {
   anularCompra(idCompra: number): Observable<any> {
     return this.http.delete(`/api/shoppings/${idCompra}/anular`);
   }
+
+  // cancelShopping(id: number): Observable<any> {
+  //   return this.http.patch<any>(`${this.apiUrl}/${id}`).pipe(
+  //     catchError(this.handleError)
+  //   );
+  // }
 
   checkShoppingExists(numeroFactura: string): Observable<boolean> {
     return this.http.get<boolean>(`/api/shoppings/exists/${encodeURIComponent(numeroFactura)}`);

@@ -115,11 +115,11 @@ export class ProductsComponent implements OnInit {
 
   loadProducts() {
     this.productService.getAllProducts().subscribe(data => {
-        this.products = data.map(product => {
-            const categorie = this.categories.find(c => c.idCategoria === product.idCategoria);
-            return { ...product, nombreCategoria : categorie?.nombreCategoria };
-        });
-        this.filteredProducts = this.products;
+      this.products = data.map(product => {
+        const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
+        return { ...product, nombreCategoria: category.nombreCategoria };
+      });
+      this.filteredProducts = this.products;
     });
 }
 

@@ -9,6 +9,9 @@ import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { ReturnProviderService } from './return-provider.service';
 import { ProvidersService } from '../providers/providers.service';
+import { Proveedor } from '../providers/providers.model';
+import {BarcodesService} from '../barcodes/barcodes.service';
+import {Barcode} from '../barcodes/barcode.model'
 
 
 
@@ -16,6 +19,7 @@ import { ProvidersService } from '../providers/providers.service';
 import { DropdownModule } from 'primeng/dropdown';
 import { returnProviderModel } from './return-provider.model';
 import { ValidationService } from '../../shared/validators/validations.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-return-provider',
@@ -25,25 +29,28 @@ import { ValidationService } from '../../shared/validators/validations.service';
     CRUDComponent,
     CrudModalDirective,
     DropdownModule,
-],
+  ],
 
   templateUrl: './return-provider.component.html',
 })
-export class ReturnProviderComponent implements OnInit{
-  
-  providers:any []=[];
+export class ReturnProviderComponent implements OnInit {
+
+  providers: Proveedor[] = [];
+  filterProvider: Proveedor[] = [];
+  code: Barcode[] =[];
+  filterCode: Barcode[] =[];
   returnProvider: returnProviderModel[] = [];
   filteredReturnProvider: returnProviderModel[] = [];
 
   colums: { field: string, header: string }[] = [
-    { field: 'idProveedor', header: 'Proveedor' },
-    { field: 'idCodigoBarra', header: 'Código' },
+    { field: 'nombreProveedor', header: 'Proveedor' },
+    { field: 'codigoBarra', header: 'Código' },
     // { field: '#', header: 'Producto' },
     { field: 'cantidad', header: 'Cantidad' },
     { field: 'motivoDevolucion', header: '  Motivo' },
     { field: 'fecha', header: '  fecha' },
-    
-    
+
+
   ];
 
   returnProviderForm: FormGroup;
@@ -57,38 +64,56 @@ export class ReturnProviderComponent implements OnInit{
     private alertsService: AlertsService,
     private toastr: ToastrService,
     private validationService: ValidationService,
-    private providerService: ProvidersService
+    private providerService: ProvidersService,
+    private barcodeService :BarcodesService
   ) {
     this.returnProviderForm = this.fb.group({
       idProveedor: ['', validationService.getValidatorsForField('returnProvider', 'idProveedor')],
-      CodigoProducto: ['', validationService.getValidatorsForField('returnProvider', 'CodigoProducto')],      
+      CodigoProducto: ['', validationService.getValidatorsForField('returnProvider', 'CodigoProducto')],
       cantidad: ['', validationService.getValidatorsForField('returnProvider', 'cantidad')],
       fecha: new Date(),
       motivoDevolucion: ['', validationService.getValidatorsForField('returnProvider', 'motivoDevolucion')],
-      estado:['Por notificar']
+      estado: ['Por notificar']
     });
   }
 
   ngOnInit() {
-    this.loadReturnProvider();
-    this.loadProviders()
+    this.loadProviders();
+    this.loadBardCode();
   }
-
+  
   loadReturnProvider() {
     this.returnProviderService.getReturnProvider().subscribe(data => {
-      this.returnProvider = data;
-      this.filteredReturnProvider = data;
-    },
-    );
-  }
+      this.returnProvider = data.map(repp => {
+        const provider = this.providers.find(p => p.idProveedor === repp.idProveedor)
 
-  //funcion para traer las categorias y luego llenar el select de productos
+        const code=this.code.find(codes=> codes.idCodigoBarra === repp.idCodigoBarra)
+
+        return { ...repp, 
+          nombreProveedor: provider ? provider.nombreProveedor : 'Proveedor no encontrado',
+
+          codigoBarra: code ? code.codigoBarra : 'Codigo no encontrado'
+         };
+      });
+      this.filteredReturnProvider = this.returnProvider;
+    });
+  }
+  
   loadProviders() {
     this.providerService.getAllProviders().subscribe(data => {
-      this.providers = data.filter(p => p.estadoProveedor === true);
+      this.providers = data
+      // .filter(p => p.estadoProveedor === true);
+      // Una vez cargados los proveedores, cargamos los retornos
+      this.loadReturnProvider();
     });
   }
 
+  loadBardCode(){
+    this.barcodeService.getAllBarcodes().subscribe(data=>{
+      this.code=data;
+      this.loadReturnProvider();
+    })
+  } 
 
   openCreateModal() {
     this.isEditing = false;
@@ -129,8 +154,8 @@ export class ReturnProviderComponent implements OnInit{
     const request = this.isEditing ?
       this.returnProviderService.createReturnProvider(returnProviderData) :
       this.returnProviderService.createReturnProvider(returnProviderData);
-      //Para validar
-      console.log(returnProviderData)
+    //Para validar
+    console.log(returnProviderData)
 
     request.subscribe({
       next: () => {
@@ -140,7 +165,7 @@ export class ReturnProviderComponent implements OnInit{
       },
       error: (error) => {
         this.toastr.error(error.message, 'Error');
-        
+
         // if (error.status === 500) {
         //   this.toastr.error('No se puede agregar la devolucion', 'Error');
         // } else {
@@ -164,13 +189,23 @@ export class ReturnProviderComponent implements OnInit{
       returnProviders.motivoDevolucion.toLowerCase().includes(lowerCaseQuery) ||
       returnProviders.estado.toLowerCase().includes(lowerCaseQuery)
     );
+
+    this.filterCode = this.code.filter(code=>
+      code.codigoBarra.toString().includes(lowerCaseQuery)
+    )
+
+    this.filterProvider = this.providers.filter(code=>
+      code.nombreProveedor.toLowerCase().includes(lowerCaseQuery)
+    )
   }
 
   changeReturnProviderStatus(updatedReturnProvider: returnProviderModel) {
-    const estado = updatedReturnProvider.estado ?? false;
-  
-    this.returnProviderService.updateStatusProduct(updatedReturnProvider.idDevolucionLocal, estado).subscribe({
-      next: () => {
+    const estado = updatedReturnProvider.estado;
+    console.log('Valor que se envía al servicio:', estado);
+
+    this.returnProviderService.updateStatusReturnProvider(updatedReturnProvider.idDevolucionLocal, estado).subscribe({
+      next: (response) => {
+        console.log('Respuesta del servicio:', response);  // Verificar si hay respuesta exitosa
         [this.returnProvider, this.filteredReturnProvider].forEach(list => {
           const index = list.findIndex(p => p.idDevolucionLocal === updatedReturnProvider.idDevolucionLocal);
           if (index !== -1) {
@@ -179,9 +214,11 @@ export class ReturnProviderComponent implements OnInit{
         });
         this.toastr.success('Estado del proveedor actualizado con éxito', 'Éxito');
       },
-      error: () => {
+      error: (err) => {
+        console.error('Error al intentar actualizar el estado:', err);  // Verifica si hay error
         this.toastr.error('Error al actualizar el estado del proveedor', 'Error');
       }
     });
-  } 
+}
+
 }

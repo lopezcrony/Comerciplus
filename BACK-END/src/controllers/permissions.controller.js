@@ -9,6 +9,20 @@ const getAllPermissions = async (req, res) => {
   }
 };
 
+const getPermissionsByRole = async (req, res) => {
+  try {
+    const { idRol } = req.params;
+    const permissions = await PermissionService.getPermissionsByRole(idRol);
+    if (!permissions) {
+      return res.status(404).json({ message: 'Permisos no encontrados para el rol' });
+    }
+    res.status(200).json(permissions);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener los permisos', error: error.message });
+  }
+};
+
 module.exports = {
   getAllPermissions,
+  getPermissionsByRole
 };

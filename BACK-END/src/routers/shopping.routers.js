@@ -10,5 +10,6 @@ router
     .post('/', validateShopping, shoppingController.createShopping)
     .delete('/:id', shoppingController.deleteOneShopping)
     .patch('/:id', shoppingController.updateShoppingStatus)
+    // .patch('/:id', shoppingController.cancelShopping)
 
 module.exports = router;

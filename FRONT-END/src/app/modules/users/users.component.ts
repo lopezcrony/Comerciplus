@@ -32,12 +32,12 @@ export class UsersComponent implements OnInit {
   filteredUsers: User[] = [];
   roles: Role[] = [];
   columns = [
+    { field: 'nombreRol', header: 'Rol' },
     { field: 'cedulaUsuario', header: 'Cédula' },
     { field: 'nombreUsuario', header: 'Nombre' },
     { field: 'apellidoUsuario', header: 'Apellido' },
     { field: 'telefonoUsuario', header: 'Teléfono' },
     { field: 'correoUsuario', header: 'Correo' },
-    { field: 'nombreRol', header: 'Rol' }
   ];
   userForm: FormGroup;
   showModal = false;

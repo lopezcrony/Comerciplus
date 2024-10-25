@@ -6,6 +6,10 @@
       <button *ngIf="canExport" pButton pRipple label="Descargar" icon="pi pi-download"
         class="p-button-help p-button-rounded p-button-outlined" (click)="onExport()"></button>
     </div>
+
+    <!-- Aplicar clases flex y margin auto para centrar el texto -->
+    <h3 class="title flex-grow text-center" style="margin: 0; margin-right: 200px;">{{ Module }}</h3>
+
     <div class="relative flex items-center space-x-2 ml-auto">
       <input pInputText type="text" [(ngModel)]="searchQuery" (input)="onSearch()" placeholder="Buscar"
         class="search-input" />
@@ -14,6 +18,7 @@
         (click)="clearSearch()"></i>
     </div>
   </div>
+
 
   <div class="table-container">
     <p-table [value]="items" [tableStyle]="{'min-width': '50rem', 'margin': '0 auto', 'text-align': 'center'}"
@@ -26,7 +31,7 @@
           <th *ngFor="let col of columns" [pSortableColumn]="col.field" [style]="{'text-align': 'center'}">
             {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
           </th>
-          
+
           <th *ngIf="showStateColumn" [style]="{'text-align': 'center'}">Estado</th>
           <th *ngIf="creditColumn" [style]="{'text-align': 'center'}">Abonar</th>
           <th *ngIf="creditColumn" [style]="{'text-align': 'center'}">Historial</th>
@@ -48,17 +53,19 @@
             <ng-template #textContent>
               {{item[col.field]}}
             </ng-template>
-            
+
           </td>
           <td *ngIf="SelectChangeStatus" [style]="{'text-align': 'center'}">
             <div class="flex justify-center items-center">
               <!-- Reemplazamos el botón por el select -->
-              <select [ngClass]="getSelectStatus(item) ? 'true-chip tipo-chip' : 'false-chip tipo-chip'">
-                <option value="Por notificar" (onClick)="confirmChangeStatus(item)" [selected]="getSelectStatus(item) ">Por notificar</option>
-                <option value="Notificado" (onClick)="confirmChangeStatus(item)" [selected]="getSelectStatus(item)">Notificado</option>
-                <option value="En proceso" (onClick)="confirmChangeStatus(item)" [selected]="getSelectStatus(item)">En proceso</option>
-                <option value="Finalizado" (onClick)="confirmChangeStatus(item)" [selected]="getSelectStatus(item)">Finalizado</option>
+              <select [ngClass]="getSelectStatus(item) ? 'true-chip tipo-chip' : 'false-chip tipo-chip'"
+                [(ngModel)]="item[statusField]" (change)="confirmChangeStatusProvider(item)">
+                <option value="Por notificar">Por notificar</option>
+                <option value="Notificado">Notificado</option>
+                <option value="En proceso">En proceso</option>
+                <option value="Finalizado">Finalizado</option>
               </select>
+
             </div>
           </td>
 
@@ -67,7 +74,7 @@
               class="p-button-rounded p-button-success p-button-outlined p-button-sm mr-2"
               (click)="onInstallment(item)"></button>
           </td>
-          
+
 
           <td *ngIf="canChangeStatus" [style]="{'text-align': 'center'}">
             <div class="flex justify-center items-center">
@@ -77,6 +84,12 @@
             </div>
           </td>
 
+          <td *ngIf="canChangeStatusSales" [style]="{'text-align': 'center'}">
+            <div class="flex justify-center items-center">
+              <p-button [rounded]="true" [label]="getStatus(item) ? 'Activo' : 'Inactivo'"
+                [styleClass]="getStatus(item) ? 'true-chip tipo-chip' : 'false-chip tipo-chip'"></p-button>
+            </div>
+          </td>
 
 
           <td [style]="{'text-align': 'center'}">
@@ -90,10 +103,12 @@
               <button *ngIf="canSeeDetail" pButton pRipple icon="pi pi-eye"
                 class="p-button-rounded p-button-warning p-button-outlined p-button-sm mr-2"
                 (click)="onDetail(item)"></button>
-                <button *ngIf="canCancel" pButton pRipple icon="pi pi-times"
+              <button *ngIf="canCancel && item.estado !== false" pButton pRipple icon="pi pi-times"
                 class="p-button-rounded p-button-danger p-button-outlined p-button-sm"
                 (click)="onCancel(item)"></button>
-                
+                <button *ngIf="canCancelSale && item.estadoVenta !== false" pButton pRipple icon="pi pi-times"
+                class="p-button-rounded p-button-danger p-button-outlined p-button-sm"
+                (click)="onCancel(item)"></button>
             </div>
           </td>
         </tr>

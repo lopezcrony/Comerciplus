@@ -44,8 +44,15 @@ const deleteOneShopping = async (req, res) => {
     }
 };
 
-
-
+const cancelShopping = async (req, res) => {    
+    try {
+        const { id } = req.params;
+        await shoppingService.cancelShopping(id);
+        res.status(200).json({ message: 'Compra anulada con éxito' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al anular la compra', error: error.message });
+    }
+};
 
 const updateShoppingStatus  = async (req, res) => {
     try {
@@ -74,5 +81,6 @@ module.exports = {
     getOneShopping,
     createShopping,
     deleteOneShopping,
-    updateShoppingStatus
+    updateShoppingStatus,
+    cancelShopping
 }

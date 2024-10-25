@@ -28,7 +28,7 @@ import { RouterModule } from '@angular/router';
     AutoCompleteModule,
     CRUDComponent,
     CrudModalDirective,
-    RouterModule,
+    RouterModule
   ],
   templateUrl: './shoppingscreate.component.html',
   styleUrls: ['./shoppings.component.css'],

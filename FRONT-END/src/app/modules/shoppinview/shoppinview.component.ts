@@ -66,10 +66,10 @@
 
     columns: { field: string, header: string }[] = [
       { field: 'nombreProveedor', header: 'Proveedor' },
-      { field: 'fechaCompra', header: 'fecha compra' },  
-      { field: 'fechaRegistro', header: 'fecha registro' },  
-      { field: 'numeroFactura', header: 'Nro.factura' },  
-      { field: 'valorCompra', header: 'valor' },  
+      { field: 'fechaCompra', header: 'Fecha Compra' },  
+      { field: 'fechaRegistro', header: 'Fecha Registro' },  
+      { field: 'numeroFactura', header: 'Nro. Factura' },  
+      { field: 'valorCompra', header: 'Valor Compra' },  
     ];
 
 
@@ -96,9 +96,9 @@
 
     loadShoppings() {
       this.shoppingService.getAllShoppings().subscribe(data => {
-        this.shoppings = data.map(shopping =>{
-          const provider = this.providers.find(p =>p.idProveedor === shopping.idProveedor)!;
-          return { ...shopping, nombreProveedor: provider.nombreProveedor};
+        this.shoppings = data.map(shopping => {
+          const provider = this.providers.find(p => p.idProveedor === shopping.idProveedor);
+          return { ...shopping, nombreProveedor: provider.nombreProveedor };
         });
         this.filteredShoppings = this.shoppings;
       });
@@ -135,8 +135,13 @@
     
 
     ngOnInit() {
+<<<<<<< HEAD
       this.loadProducts();
       this.loadProviders();
+=======
+      this.loadProviders();
+      this.loadProducts();
+>>>>>>> fae97e2a8a5a42e5c6acb184a9606b559270ba47
       this.loadShoppings();
     }
 
@@ -159,6 +164,19 @@
         });
       }
     }
+
+    // cancelShopping(shopping: Shopping) {
+
+    //   this.shoppingService.cancelShopping(shopping.idCompra).subscribe({
+    //     next: () => {
+    //       this.loadShoppings(); // Recargar la lista de compras para reflejar el cambio
+    //       this.toastr.success('Compra anulada con éxito.', 'Éxito');
+    //     },
+    //     error: () => {
+    //       this.toastr.error('Error al anular la compra.', 'Error');
+    //     }
+    //   });
+    // }
 
     // Verifica si el botón de cambio de estado debe estar deshabilitado
     isChangeStatusDisabled(shopping: Shopping): boolean {

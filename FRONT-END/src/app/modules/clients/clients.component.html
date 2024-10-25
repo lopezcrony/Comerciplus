@@ -1,5 +1,5 @@
 <!-- PLANTILLA CRUD -->
-<app-crud [items]="filteredClients" [columns]="columns" [canDelete]="false" [canExport]="true" [canSeeDetail]="true"
+<app-crud [Module]="'Clientes'" [items]="filteredClients" [columns]="columns" [canDelete]="false" [canExport]="true" [canSeeDetail]="true"
   [canChangeStatus]="true" [showStateColumn]="true" [statusField]="'estadoCliente'" (create)="openCreateModal()"
   (export)="exportClients()" (edit)="openEditModal($event)" (detail)="openHistoryModal($event)"
   (search)="searchClients($event)" (statusChange)="changeClientStatus($event)">

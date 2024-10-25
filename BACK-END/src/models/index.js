@@ -49,6 +49,22 @@ const models = {
     returnProvider,
 };
 
+  roles.belongsToMany(permissions, {
+    through: permissionsRoles,
+    foreignKey: 'idRol',
+    otherKey: 'idPermiso'
+  });
+  
+  permissions.belongsToMany(roles, {
+    through: permissionsRoles,
+    foreignKey: 'idPermiso',
+    otherKey: 'idRol'
+  });
+
+// Asociaciones adicionales para consultas directas si son necesarias
+permissionsRoles.belongsTo(roles, { foreignKey: 'idRol' });
+permissionsRoles.belongsTo(permissions, { foreignKey: 'idPermiso' });
+
 const connectDb = async () => {
     try {
         await sequelize.sync({ alter: true });

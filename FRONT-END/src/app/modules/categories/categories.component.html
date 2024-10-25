@@ -1,8 +1,9 @@
-<h2 class="title" style="text-align: center;">Categoria de productos</h2>
+
 
 <!-- PLANTILLA CRUD -->
 <!-- aqui se llaman  las funciones definidas en el component.ts -->
 <app-crud 
+    [Module]="'Categorías de Productos'"
     [items]="filteredCategories"
     [columns]="columns" 
     [canDelete]="true" 

@@ -11,12 +11,16 @@ import { ToastrService } from 'ngx-toastr';
 export class AuthService {
   private tokenKey: string = 'authToken';
   private userKey: string = 'userData';
+  private initialized = false;
 
-  constructor(private toastr: ToastrService, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) { }
+  constructor(private toastr: ToastrService, private router: Router, @Inject(PLATFORM_ID) private platformId: Object) { 
+    this.initializeAuth();
+  }
 
   setSession(authResult: { token: string; user: any }): void {
     localStorage.setItem(this.tokenKey, authResult.token);
     localStorage.setItem(this.userKey, JSON.stringify(authResult.user));
+    this.initialized = true;
   }
 
   getToken(): string | null {
@@ -64,8 +68,27 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
-    this.router.navigate(['']).then(() => {
+    this.router.navigate(['/login']).then(() => {
       this.toastr.success('Sesión cerrada exitosamente');
     });
+  }
+
+  initializeAuth(): Promise<boolean> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        this.initialized = true;
+        const isAuthenticated = this.isAuthenticated();
+        
+        if (isAuthenticated) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }, 500);
+    });
+  }
+
+  isInitialized(): boolean {
+    return this.initialized;
   }
 }

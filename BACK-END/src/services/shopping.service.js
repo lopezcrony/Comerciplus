@@ -100,6 +100,38 @@ const deleteOneShopping = async (id) => {
     }
 };
 
+const cancelShopping = async (id) => {
+    const transaction = await sequelize.transaction();
+    try {
+
+        const shopping = await shoppingRepository.findShoppingById(id);
+        if(!shopping){
+            return res.status(404).json({ message: 'Compra no encontrada.'})
+        }
+
+        // Actualizar stock de productos
+        const detailShopping = await shoppingDetailRepository.findAllShoppinDetailsByShopping(id)
+        
+        for ( const d of detailShopping){
+            const product = await productRepository.findProductById(d.idProducto, { transaction });
+            if (!product) throw new Error('SERVICE: Producto no encontrado.');
+
+            const newStock = product.stock - d.cantidadProducto;
+            await productRepository.updateProductoStock(product.idProducto, newStock, { transaction }); 
+        }
+        const result = await shoppingRepository.cancelShopping(id, { transaction });
+
+        if (!result) {
+            throw new Error('SERVICE: No se pudo anular la compra.');
+        }
+        await transaction.commit();
+        return result;
+    } catch (error) {
+        throw new Error('SERVICE: Error al anular la compra: ' + error.message);
+    }
+};
+
+
 const updateValorCompra = async (id, newValorCompra) => {
     try {
         const result = shoppingRepository.updateValorShopping(id, newValorCompra);
@@ -119,5 +151,6 @@ module.exports = {
     createShopping,
     updateShoppingStatus,
     deleteOneShopping,
+    cancelShopping,
     updateValorCompra
 };

@@ -40,7 +40,7 @@ products: Product[]=[]
 
 
 colums: { field: string, header: string }[] = [
-  { field: 'idVenta', header: '#Venta' },
+  { field: 'idVenta', header: 'Nro. Venta' },
   { field: 'fechaVenta', header: 'Fecha' },
   { field: 'totalVenta', header: 'Total' },
     
@@ -56,6 +56,7 @@ isFieldDisabled: boolean = false;
 constructor(
   private saleService:SaleService,
   private confirmationService: ConfirmationService,
+  private alertsService: AlertsService,
   private detailSaleService:DetailSalesService,
   private toastr: ToastrService,
   private productService: ProductsService
@@ -76,7 +77,8 @@ loadSales() {
 
 loadProducts() {
   this.productService.getAllProducts().subscribe(data => {
-    this.products = data.filter(d => d.estadoProducto === true);
+    this.products = data
+    this.loadSales()
   });
 }
 
@@ -134,31 +136,26 @@ changeSaleStatus(updatedSale: Sale) {
 }
 
 cancelSale(updatedSale: Sale) {
-  // Mostrar mensaje de confirmación
-  this.confirmationService.confirm({
-    message: '¿Estás seguro de que deseas cancelar esta venta?',
-    header: 'Confirmación de Anulación',
-    icon: 'pi pi-exclamation-triangle',
-    accept: () => {
-      // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
-      updatedSale.estadoVenta = false; // Cambiamos el estado a "false"
-      
-      // Llama a la función que cambia el estado
-      this.changeSaleStatus(updatedSale);
-      
-      // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
-      this.disableField();
-    },
-    reject: () => {
-      this.toastr.info('Anulación cancelada', 'Información');
-    }
-  });
-}
-
-
-disableField() {
-  this.isFieldDisabled = true; // Cambia el estado del flag
-}
+    // Mostrar mensaje de confirmación
+    this.alertsService.confirm(
+      `¿Estás seguro de que deseas cancelar este detalle de venta?`,
+        
+        () => {
+        // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
+        updatedSale.estadoVenta = false; // Cambiamos el estado a "false"
+        
+        // Llama a la función que cambia el estado
+        this.changeSaleStatus(updatedSale);
+        
+        // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
+        // this.disableField();
+      },
+      () => {
+        this.toastr.info('Anulación cancelada', 'Información');
+      }
+    );
+  }
+  
 
 searchDetailSale(query: string){
   const lowerCaseQuery = query.toLowerCase();

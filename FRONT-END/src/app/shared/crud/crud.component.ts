@@ -31,9 +31,13 @@ export class CRUDComponent {
   @Input() canCreate: boolean = true;
   @Input() canDelete: boolean = true;
   @Input() canCancel: boolean = false;
+  @Input() canCancelSale: boolean = false;
+
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean = true;
   @Input() canChangeStatus: boolean = false;
+  @Input() canChangeStatusSales: boolean = false;
+
   @Input() img: boolean = false;
   @Input() canInstallment: boolean = false;
   @Input() showStateColumn: boolean = false;
@@ -42,9 +46,11 @@ export class CRUDComponent {
   @Input() SelectChangeStatus: boolean=false;
 
   // Datos de entrada para la tabla
+  @Input() Module: string = '';
   @Input() items: any[] = [];
   @Input() columns: { field: string, header: string }[] = [];
   @Input() statusField: string = 'estado';
+
 
   // Funciones del CRUD
   @Output() create = new EventEmitter<void>();
@@ -57,6 +63,8 @@ export class CRUDComponent {
   @Output() statusChange = new EventEmitter<any>();
   @Output() search = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<any>();
+  @Output() changeStatusProvider = new EventEmitter<any>();
+
 
 
   // Parámetro de búsqueda
@@ -86,6 +94,10 @@ export class CRUDComponent {
     this.cancel.emit(item);
   }
 
+  onStatusProvider(item: any) {
+    this.changeStatusProvider.emit(item);
+  }
+
   onDetail(item: any) {
     this.detail.emit(item);
   }
@@ -108,14 +120,24 @@ export class CRUDComponent {
   }
 
   getSelectStatus(item: any): string {
-    return item[this.statusField];
+    return item[this.statusField]; 
   }
+  
 
   confirmChangeStatus(item: any) {
     this.alertsService.confirm(
       `¿Estás seguro de cambiar el estado?`,
       () => {
         this.changeStatus(item);
+      }
+    );
+  }
+
+  confirmChangeStatusProvider(item: any) {
+    this.alertsService.confirm(
+      `¿Estás seguro de cambiar el estado?`,
+      () => {
+        this.onStatusProvider(item);
       }
     );
   }
