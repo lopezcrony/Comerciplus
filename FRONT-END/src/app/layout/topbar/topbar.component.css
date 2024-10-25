@@ -1,6 +1,6 @@
 .topbar {
   position: fixed;
-  height: 4rem;
+  height: 3rem;
   z-index: 1;
   left: 0;
   top: 0;
@@ -111,4 +111,50 @@
   .btn-logout {
     order: 3;
   }
+}
+/* OVERLAY */
+.user-info-container {
+  padding: 0.5rem;
+  width: 200px;
+}
+
+.user-avatar-name {
+  display: flex;
+  align-items: center; /* Alinear verticalmente avatar y nombre */
+  gap: 10px; /* Espacio entre avatar y nombre */
+}
+
+.user-avatar-name h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #495057;
+}
+
+.user-details {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.user-details p {
+  margin: 0.25rem 0;
+  color: #6c757d;
+}
+
+.user-role {
+  font-weight: bold;
+  color: #2196F3 !important;
+  margin-top: 1rem !important;
+}
+
+.user-id {
+  font-size: 0.9rem;
+  color: #9CA3AF !important;
+}
+
+:host ::ng-deep .p-button.p-button-text {
+  color: #708090;
+}
+
+:host ::ng-deep .p-button.p-button-text:hover {
+  background: rgba(112, 128, 144, 0.1);
 }
