@@ -1,25 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DropdownModule } from 'primeng/dropdown';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { CheckboxModule } from 'primeng/checkbox';
-import { OrderListModule } from 'primeng/orderlist';
-import { catchError, forkJoin, throwError } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { CardModule } from 'primeng/card';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
+import { ValidationService } from '../../shared/validators/validations.service';
+
 import { DetailSale } from '../detailSale/detailSale.model';
 import { Product } from '../products/products.model';
 import { Credit } from '../credits/credit.model';
 import { Client } from '../clients/client.model';
 
-import { DetailSalesService } from '../detailSale/detail.Sale.service';
 import { ProductsService } from '../products/products.service';
 import { CreditsService } from '../credits/credits.service';
 import { ClientService } from '../clients/clients.service';
 import { SaleService } from './sales.service';
-import { ToastrService } from 'ngx-toastr';
 import { CreditDetailService } from '../detailCredit/creditDetail.service';
-import { ValidationService } from '../../shared/validators/validations.service';
 
 @Component({
   selector: 'app-sales',
@@ -28,10 +26,8 @@ import { ValidationService } from '../../shared/validators/validations.service';
   styleUrls: ['./sales.component.css'],
   imports: [
     ...SHARED_IMPORTS,
-    DropdownModule,
-    AutoCompleteModule,
-    CheckboxModule,
-    OrderListModule,
+    InputSwitchModule,
+    CardModule
   ]
 })
 export class SalesComponent implements OnInit {
@@ -45,15 +41,14 @@ export class SalesComponent implements OnInit {
   imprimirRecibo: boolean = false;
   showCreditModal: boolean = false;
   showClientModal: boolean = false;
-  saleCompleted: boolean = false;
   idSale: number | null = null;
+
   products: Product[] = [];
   clients: Client[] = [];
   credits: Credit[] = [];
   detailSale: any[] = [];
 
   filteredProducts: Product[] = [];
-  filteredClients: Client[] = [];
   filteredCredits: Credit[] = [];
   filteredBarcodes: any[] = [];
 
@@ -64,7 +59,6 @@ export class SalesComponent implements OnInit {
     private creditService: CreditsService,
     private creditDetailService: CreditDetailService,
     private clientService: ClientService,
-    private detailSalesService: DetailSalesService,
     private toastr: ToastrService,
     private validationService: ValidationService
   ) {
@@ -96,8 +90,9 @@ export class SalesComponent implements OnInit {
   loadProducts() {
     this.productService.getAllProducts().subscribe(data => {
       this.products = data.filter(p => p.estadoProducto === true);
+      this.filteredProducts = [...this.products]; 
     });
-  }
+  }  
 
   getImageUrl(productId: any): string {
     return this.productService.getImageUrl(productId);
@@ -186,35 +181,40 @@ export class SalesComponent implements OnInit {
   }
 
   createSale() {
-   if (this.detailSale.length === 0) this.toastr.error('No hay productos en la venta', 'Error');
+    if (this.detailSale.length === 0) {
+      this.toastr.error('No hay productos en la venta', 'Error');
+      return;
+    }
 
-    const saleData = {
-      fechaVenta: new Date()
-    };
-
+    const saleData = { fechaVenta: new Date() };
     const saleDetail = this.detailSale;
 
     this.saleService.createSale(saleData, saleDetail).subscribe({
       next: (response) => {
         this.idSale = response.newSale.idVenta;
+        
+        this.loadProducts();        
       },
       error: (error) => {
         this.toastr.error('No se pudo registrar la venta', 'Error');
         console.error('Error al guardar la venta:', error);
-        console.log(saleData, saleDetail)
-
       }
-    });
-  };
-
-  updateCreditForm() {
-    this.creditForm.patchValue({
-      totalVenta: this.total
     });
   }
 
+  finalizeSale(){
+    this.createSale();
+    this.toastr.success('Venta registrada', 'Éxito');
+    this.resetForm();
+  }
+
+  cancelSale(){
+    this.resetForm();
+    this.toastr.success('Venta Cancelada', 'Info');
+  };
+
   showCreditAssignmentModal() {
-    if (!this.saleCompleted) this.createSale();
+    this.createSale();
     this.showCreditModal = true;
   }
 
@@ -230,30 +230,24 @@ export class SalesComponent implements OnInit {
 
     this.creditDetailService.addSaleToCredit(creditDetail).subscribe({
       next: () => {
-        this.toastr.success('Crédito asignado correctamente', 'Éxito');
+        this.toastr.success('Venta asignada', 'Éxito');
         this.closeModal();
+        this.resetForm();
       },
       error: (error) => {
         this.toastr.error(`No se pudo asignar el crédito: ${error.message}`, 'Error');
+        // Aquí se debería eliminar la venta creada
       }
     });
-
   }
+
+  cancelarAsignacionCredito() {
+    this.closeModal();
+    // Aquí se debería eliminar la venta creada
+  };
 
   closeModal() {
     this.showCreditModal = false;
-  }
-
-  finalizeSale() {
-    if (!this.saleCompleted) this.createSale();
-
-    this.resetForm();
-    this.toastr.success('Venta finalizada correctamente', 'Éxito');
-  }
-
-  cancelSale(){
-    this.resetForm();
-    this.toastr.success('Venta Cancelada', 'Info');
   }
 
   resetForm(): void {
@@ -263,12 +257,8 @@ export class SalesComponent implements OnInit {
     this.total = 0;
     this.selectedClient = null;
     this.imprimirRecibo = false;
-    this.saleCompleted = false;
     this.idSale = null;
-  }
-
-  cancelarAsignacionCredito() {
-    this.closeModal();
+    this.loadProducts();
   }
 
   onClientSelect(event: any) {

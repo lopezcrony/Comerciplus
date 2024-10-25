@@ -14,27 +14,25 @@ const createShopping = async (shoppingData, options) => {
 
 const updateValorShopping = async (id, newTotalShopping) => {
     const shopping = await findShoppingById(id);
-    if(shopping){
-        return await sale.update({ valorCompra : newTotalShopping});
+    if (shopping) {
+        return await sale.update({ valorCompra: newTotalShopping });
     }
     throw new Error('REPOSITORY: La compra no existe.');
 };
 
 const deleteShopping = async (id) => {
     const result = await Shopping.destroy({
-        where: { 	idCompra : id }
+        where: { idCompra: id }
     });
     return result;
 };
 
 const cancelShopping = async (id) => {
-    const shopping = await findProductById(id);
-    if (shopping) {
-        return await shopping.update({ estadoCompra: false });
-    }
-    throw new Error('REPOSITORY: Compra no encontrada');
+    return Shopping.update(
+        { estadoCompra: false }, 
+        { where: { idCompra: id } }
+    );
 };
-
 
 module.exports = {
     findAllShoppings,

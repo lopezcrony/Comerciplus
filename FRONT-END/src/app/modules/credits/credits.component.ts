@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Credit } from './credit.model';
-import { Client } from '../clients/client.model';
-import { CreditsService } from './credits.service';
-import { ClientService } from '../clients/clients.service';
-import { Installment } from '../installments/installment.model';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
@@ -11,10 +9,11 @@ import { CRUDComponent } from '../../shared/crud/crud.component';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 import { ValidationService } from '../../shared/validators/validations.service';
 
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { forkJoin } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-
+import { Credit } from './credit.model';
+import { Client } from '../clients/client.model';
+import { CreditsService } from './credits.service';
+import { ClientService } from '../clients/clients.service';
+import { Installment } from '../installments/installment.model';
 
 @Component({
   selector: 'app-credits',
@@ -35,10 +34,10 @@ export class CreditsComponent implements OnInit {
   filteredCredits: any[] = [];
   selectedCredit: Credit | null = null;
   
-  columns: { field: string, header: string }[] = [
-    { field: 'cedulaCliente', header: 'Identificación' },
-    { field: 'nombreCliente', header: 'Cliente' },
-    { field: 'totalCredito', header: 'Deuda Actual' },
+  columns: { field: string, header: string, type: string }[] = [
+    { field: 'cedulaCliente', header: 'Identificación', type: 'text' },
+    { field: 'nombreCliente', header: 'Cliente', type: 'text' },
+    { field: 'totalCredito', header: 'Deuda Actual', type: 'currency' },
   ];
 
   installmentForm: FormGroup;

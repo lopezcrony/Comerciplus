@@ -7,25 +7,19 @@ import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { ValidationService } from '../../shared/validators/validations.service';
 
+import { Shopping } from './shopping.model';
 import { ShoppingsService } from './shoppings.service';
 import { ProvidersService } from '../providers/providers.service';
 import { ProductsService } from '../products/products.service';
 
-import { Shopping } from './shopping.model';
-import { Shoppingdetails } from '../shoppingdetails/model';
-
-import { DropdownModule } from 'primeng/dropdown';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { Observable } from 'rxjs';
 import { RouterModule } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-shopping',
   standalone: true,
   imports: [
     ...SHARED_IMPORTS,
-    DropdownModule,
-    AutoCompleteModule,
     CRUDComponent,
     CrudModalDirective,
     RouterModule
@@ -61,9 +55,7 @@ export class ShoppingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadShoppings();
-    this.loadProviders();
-    this.loadProducts();
+    this.loadData();
     this.addShoppingDetail();
   }
 
@@ -71,28 +63,38 @@ export class ShoppingsComponent implements OnInit {
     return this.shoppingForm.get('shoppingDetail') as FormArray;
   }
 
+  loadData(){
+    forkJoin({
+      providers: this.providerService.getAllProviders(),
+      products: this.productService.getAllProducts(),
+      shoppings: this.shoppingService.getAllShoppings()
+    }).subscribe(({ providers, products, shoppings }) => {
 
-  
-
-  loadShoppings() {
-    this.shoppingService.getAllShoppings().subscribe(data => {
-      this.shoppings = data;
-      this.filteredShoppings = data;
-    });
-  }
-
-  loadProviders() {
-    this.providerService.getAllProviders().subscribe(data => {
-      this.providers = data.filter(p => p.estadoProveedor === true);
-    });
-  }
-
-  loadProducts() {
-    this.productService.getAllProducts().subscribe(data => {
-      this.products = data.filter(pr => pr.estadoProducto === true);
+      this.providers = providers.filter(p => p.estadoProveedor === true);
+      this.products = products.filter(pr => pr.estadoProducto === true);
       this.filteredProducts = this.products;
-    });
+  })
   }
+
+  // loadShoppings() {
+  //   this.shoppingService.getAllShoppings().subscribe(data => {
+  //     this.shoppings = data;
+  //     this.filteredShoppings = data;
+  //   });
+  // }
+
+  // loadProviders() {
+  //   this.providerService.getAllProviders().subscribe(data => {
+  //     this.providers = data.filter(p => p.estadoProveedor === true);
+  //   });
+  // }
+
+  // loadProducts() {
+  //   this.productService.getAllProducts().subscribe(data => {
+  //     this.products = data.filter(pr => pr.estadoProducto === true);
+  //     this.filteredProducts = this.products;
+  //   });
+  // }
 
   searchProduct(event: any) {
     const query = event.query.toLowerCase();

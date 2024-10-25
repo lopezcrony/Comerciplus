@@ -1,21 +1,9 @@
 <!-- PLANTILLA CRUD -->
 <!-- aqui se llaman  las funciones definidas en el component.ts -->
-<app-crud 
-[Module]="'Productos'"
-[items]="filteredProducts" 
-[columns]="columns" 
-[canDelete]="true" 
-[canSeeDetail]="true"
-    [canChangeStatus]="true" 
-    [showStateColumn]="true" 
-    [statusField]="'estadoProducto'" 
-    (create)="openCreateModal()"
-    (export)="exportProduct()" 
-    (edit)="openEditModal($event)" 
-    (delete)="confirmDelete($event)"
-    (detail)="openShowModal($event)" 
-    (search)="searchProduct($event)" 
-    (statusChange)="changeProductStatus($event)">
+<app-crud [Module]="'Productos'" [items]="filteredProducts" [columns]="columns" [canDelete]="true" [canSeeDetail]="true"
+    [canChangeStatus]="true" [showStateColumn]="true" [statusField]="'estadoProducto'" (create)="openCreateModal()"
+    (export)="exportProduct()" (edit)="openEditModal($event)" (delete)="confirmDelete($event)"
+    (detail)="openShowModal($event)" (search)="searchProduct($event)" (statusChange)="changeProductStatus($event)">
 </app-crud>
 
 <!-- FORMULARIOS -->
@@ -45,7 +33,7 @@
                         </p-dropdown>
                         <button pButton pRipple type="button" icon="pi pi-plus"
                             class="p-button p-button-success p-button-icon-only p-button-sm ml-2"
-                            (click)="showCategoryModal()"></button>
+                            (click)="openCategoryModal()"></button>
                     </div>
                     <small class="p-error" *ngIf="isFieldInvalid('idCategoria')">
                         {{ getErrorMessage('idCategoria') }}
@@ -129,60 +117,60 @@
 </p-dialog>
 
 <!-- modal para ver detalle producto inicio -->
-<p-dialog [(visible)]="viewModal" [style]="{width: '450px'}" [header]="'Detalle del Producto'" [modal]="true"
-    class="p-fluid">
+<p-dialog [(visible)]="viewModal" [style]="{width: '500px', 'height':'400px'}" [header]="'Información del Producto'" [modal]="true" class="p-fluid">
     <ng-template pTemplate="content">
 
-        <!-- Información del producto -->
-
-        <div class="field">
-            <label for="nombreProducto">Nombre Producto:
-                <span>{{ selectedProduct?.nombreProducto }}</span>
-            </label>
-        </div>
-
-        <div class="field">
-            <label for="categoria">Categoría:
-                <span>{{ selectedProduct?.idCategoria }}</span>
-            </label>
-        </div>
-
-
-        
-            <div class="field">
-                <label for="precioVenta">Precio venta:
-                    <span>{{ selectedProduct?.precioVenta | currency }}</span>
-                </label>
+        <div class="product-details-container">
+            <div class="image-container">
+                <img [src]="getImageUrl(selectedProduct.idProducto)" alt="{{ selectedProduct.nombreProducto }}">
             </div>
 
-            <div class="field">
-                <label for="stock">Stock:
-                    <span>{{ selectedProduct?.stock }}</span>
-                </label>
-            </div>
+            <div class="product-info">
+                <div class="field">
+                    <label for="nombreProducto">Nombre Producto:
+                        <span>{{ selectedProduct.nombreProducto }}</span>
+                    </label>
+                </div>
 
-        <div class="field image-container">
-            <label for="imagenProducto">Imagen:</label>
-            <img *ngIf="selectedProduct?.idProducto" [src]="getImageUrl(selectedProduct?.idProducto)"
-                alt="Imagen del Producto">
+                <div class="field">
+                    <label for="categoria">Categoría:
+                        <span>{{ getNameCategory(selectedProduct.idCategoria) }}</span>
+                    </label>
+                </div>
+
+                <div class="field">
+                    <label for="precioVenta">Precio venta:
+                        <span>{{ selectedProduct.precioVenta | currency }}</span>
+                    </label>
+                </div>
+
+                <div class="field">
+                    <label for="stock">Stock:
+                        <span>{{ selectedProduct.stock }}</span>
+                    </label>
+                </div>
+            </div>
         </div>
 
         <!-- Tabla de códigos de barra -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Código Barra</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let codigo of barcodes">
-                    <td>{{ codigo.codigoBarra }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="barcode-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Códigos de Barra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let codigo of barcodes">
+                        <td>{{ codigo.codigoBarra }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </ng-template>
 </p-dialog>
+
 
 
 

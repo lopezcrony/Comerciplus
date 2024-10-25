@@ -1,11 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
-import { IconFieldModule } from 'primeng/iconfield';
-import { ToggleButtonModule } from 'primeng/togglebutton';
+
+import { SHARED_IMPORTS } from '../shared-imports';
 import { AlertsService } from '../alerts/alerts.service';
 import { ProductsService } from '../../modules/products/products.service';
 
@@ -14,12 +10,7 @@ import { ProductsService } from '../../modules/products/products.service';
   standalone: true,
   imports: [
     CommonModule,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    FormsModule,
-    IconFieldModule,
-    ToggleButtonModule
+    ...SHARED_IMPORTS,
   ],
   templateUrl: './crud.component.html',
   styleUrl: './crud.component.css'
@@ -31,12 +22,11 @@ export class CRUDComponent {
   @Input() canCreate: boolean = true;
   @Input() canDelete: boolean = true;
   @Input() canCancel: boolean = false;
-  @Input() canCancelSale: boolean = false;
 
   @Input() canExport: boolean = true;
   @Input() canEdit: boolean = true;
   @Input() canChangeStatus: boolean = false;
-  @Input() canChangeStatusSales: boolean = false;
+  @Input() canStatus: boolean = false;
 
   @Input() img: boolean = false;
   @Input() canInstallment: boolean = false;
@@ -48,9 +38,8 @@ export class CRUDComponent {
   // Datos de entrada para la tabla
   @Input() Module: string = '';
   @Input() items: any[] = [];
-  @Input() columns: { field: string, header: string }[] = [];
+  @Input() columns: { field: string, header: string, type: string }[] = [];
   @Input() statusField: string = 'estado';
-
 
   // Funciones del CRUD
   @Output() create = new EventEmitter<void>();
@@ -64,8 +53,6 @@ export class CRUDComponent {
   @Output() search = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<any>();
   @Output() changeStatusProvider = new EventEmitter<any>();
-
-
 
   // Parámetro de búsqueda
   searchQuery = '';
@@ -147,7 +134,6 @@ export class CRUDComponent {
     this.statusChange.emit(updatedItem);
   }
 
-  
   getImageUrl(productId: any): string {
     return this.productService.getImageUrl(productId);
   }

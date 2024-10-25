@@ -7,6 +7,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment'; 
 import { Shopping } from "../shoppings/shopping.model";
 import { Shoppingdetails } from '../shoppingdetails/model';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Injectable({
@@ -17,7 +18,7 @@ export class ShoppingsService {
   private apiUrl=`${environment.apiUrl}/compras`;
 
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private toastr: ToastrService) { }
 
 
   getAllShoppings(): Observable<Shopping[]> {
@@ -27,7 +28,7 @@ export class ShoppingsService {
   }
 
   getShoppingdetailsByShopping(idCompra: number): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:3006/detallecompras/${idCompra}`);
+    return this.http.get<any[]>(`${environment.apiUrl}/detallecompras/${idCompra}`);
   }
 
   getOneShopping(id: number): Observable<Shopping> {
@@ -35,12 +36,6 @@ export class ShoppingsService {
       catchError(this.handleError)
     );
   }
-
-  // createShopping(Shopping: Shopping): Observable<Shopping> {
-  //   return this.http.post<Shopping>(this.apiUrl, Shopping).pipe(
-  //     catchError(this.handleError)
-  //   );
-  // }
 
   createShopping(shopping: Shopping, shoppingDetail: Shoppingdetails[]): Observable<any> {
     const payload = { shopping, shoppingDetail };
@@ -65,32 +60,25 @@ export class ShoppingsService {
     );
   }
 
-
-  // Método para anular la compra y revertir las acciones
-  anularCompra(idCompra: number): Observable<any> {
-    return this.http.delete(`/api/shoppings/${idCompra}/anular`);
+  // Metodo para cancelar una compra
+  cancelShopping(id: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`,{}).pipe(
+      catchError(this.handleError)
+    );
   }
-
-  // cancelShopping(id: number): Observable<any> {
-  //   return this.http.patch<any>(`${this.apiUrl}/${id}`).pipe(
-  //     catchError(this.handleError)
-  //   );
-  // }
 
   checkShoppingExists(numeroFactura: string): Observable<boolean> {
     return this.http.get<boolean>(`/api/shoppings/exists/${encodeURIComponent(numeroFactura)}`);
   }
 
   private handleError(error: HttpErrorResponse) {
-    // Puedes ajustar la lógica para diferentes tipos de errores aquí
-    let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';
     if (error.error instanceof ErrorEvent) {
       // Error del lado del cliente
-      errorMessage = `Error: ${error.error.message}`;
+      this.toastr.error(error.error.message, 'Error');
     } else {
       // Error del lado del servidor
-      errorMessage = error.error?.message || errorMessage;
+      this.toastr.error(error.error.message, 'Error');
     }
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 }

@@ -121,3 +121,8 @@
     flex: 1; /* Hace que el contenedor crezca para ocupar el espacio disponible */
   }
 }
+
+.anulado-row {
+  background-color: rgba(108, 117, 125, 0.15);
+  color: #6c757d;
+}

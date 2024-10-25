@@ -2,22 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
-import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
+import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
+import { ValidationService } from '../../shared/validators/validations.service';
 
 import { ProvidersService } from '../providers/providers.service';
-
-
-import { DropdownModule } from 'primeng/dropdown';
 import { ReturnSaleService } from './return-sale.service';
 import { ReturnSaleModel } from './return-sale.model';
-import { ValidationService } from '../../shared/validators/validations.service';
-import { ConfirmationService } from 'primeng/api';
 import { Barcode } from '../barcodes/barcode.model';
 import { BarcodesService } from '../barcodes/barcodes.service';
-
 
 @Component({
   selector: 'app-return-sale',
@@ -26,7 +21,6 @@ import { BarcodesService } from '../barcodes/barcodes.service';
     ...SHARED_IMPORTS,
     CRUDComponent,
     CrudModalDirective,
-    DropdownModule
   ],
   templateUrl: './return-sale.component.html',
 })
@@ -37,14 +31,14 @@ export class ReturnSaleComponent implements OnInit {
   returnSale: ReturnSaleModel[] = [];
   filteredReturnSale: ReturnSaleModel[] = [];
 
-  colums: { field: string, header: string }[] = [
-    { field: 'codigoBarra', header: 'Código' },
+    colums: { field: string, header: string, type: string }[] = [
+    { field: 'codigoBarra', header: 'Código', type: 'text' },
     // { field: 'NombreProducto', header: 'Producto' },
-    { field: 'cantidad', header: 'Cantidad' },
-    { field: 'tipoReembolso', header: 'Tipo Reembolso' },
-    { field: 'motivoDevolucion', header: 'Motivo' },   
-    { field: 'valorDevolucion', header: 'Valor' },
-    { field: 'fechaDevolucion', header: 'Fecha' },
+    { field: 'cantidad', header: 'Cantidad', type: 'text' },
+    { field: 'tipoReembolso', header: 'Tipo Reembolso', type: 'text' },
+    { field: 'motivoDevolucion', header: 'Motivo', type: 'text' },   
+    { field: 'valorDevolucion', header: 'Valor', type: 'currency' },
+    { field: 'fechaDevolucion', header: 'Fecha', type: 'date' },
   ];
 
   returnSaleForm: FormGroup;
@@ -68,9 +62,6 @@ export class ReturnSaleComponent implements OnInit {
     private validationService: ValidationService,
     private providerService: ProvidersService,
     private barcodeService: BarcodesService,
-  private confirmationService: ConfirmationService,
-
-
   ) {
     this.returnSaleForm = this.fb.group({
       CodigoProducto: ['', validationService.getValidatorsForField('returnSale', 'CodigoProducto')],      

@@ -1,23 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
-import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
+import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
-// import {ProductsService} from '../products/products.service'
+import { ValidationService } from '../../shared/validators/validations.service';
 
 import { LossService } from './loss.service';
 import { Loss } from './loss.model';
-
-import { ValidationService } from '../../shared/validators/validations.service';
-import { ProductsService } from '../products/products.service';
-import { Product } from '../products/products.model';
-import { forkJoin } from 'rxjs';
 import { BarcodesService } from '../barcodes/barcodes.service';
 import { Barcode } from '../barcodes/barcode.model';
-import { ConfirmationService } from 'primeng/api';
+import { forkJoin } from 'rxjs';
+import { ProductsService } from '../products/products.service';
 
 @Component({
   selector: 'app-loss',
@@ -31,22 +27,25 @@ import { ConfirmationService } from 'primeng/api';
 })
 export class LossComponent implements OnInit {
   loss: Loss[] = [];
+  barcode: any[] = [];
+  products: any[] = [];
+
   filteredLoss: Loss[] = [];
-  barcode: Barcode[] = [];
-
-  colums: { field: string, header: string }[] = [
-    { field: 'codigoBarra', header: 'Código' },
-    // { field: 'idProducto', header: 'Producto' },
-    { field: 'cantidad', header: 'Cantidad' },
-    { field: 'motivo', header: 'Motivo' },
-    { field: 'fechaDeBaja', header: 'Fecha' },
-
-  ];
-
-  LossForm: FormGroup;
+  filterCode: Barcode[] = [];
 
   showModal = false;
   isEditing = false;
+
+  LossForm: FormGroup;
+
+    colums: { field: string, header: string, type: string }[] = [
+    { field: 'codigoBarra', header: 'Código', type: 'text' },
+    { field: 'nombreProducto', header: 'Producto', type: 'text' },
+    { field: 'cantidad', header: 'Cantidad', type: 'text' },
+    { field: 'motivo', header: 'Motivo', type: 'text' },
+    { field: 'fechaDeBaja', header: 'Fecha', type: 'dateTime' },
+
+  ];
 
   constructor(
     private lossService: LossService,
@@ -55,9 +54,7 @@ export class LossComponent implements OnInit {
     private toastr: ToastrService,
     private validationService: ValidationService,
     private barcodeService: BarcodesService,
-  private confirmationService: ConfirmationService,
-
-    
+    private productService: ProductsService
   ) {
     this.LossForm = this.fb.group({
       CodigoProducto: ['', validationService.getValidatorsForField('loss', 'CodigoProducto')],      
@@ -68,30 +65,39 @@ export class LossComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadBardCode(); // Cargamos primero los códigos de barras
+    this.loadData();
   }
-  
-  loadLoss() {
-    this.lossService.getLoss().subscribe(data => {
-      this.loss = data.map(repp => {
-        const code = this.barcode.find(codes => codes.idCodigoBarra === repp.idCodigoBarra);
-  
-        return { 
-          ...repp, 
-          codigoBarra: code ? code.codigoBarra : 'Codigo no encontrado'
-        };
-      });
-      this.filteredLoss = this.loss; // Asegúrate de asignar correctamente los datos filtrados
-    });
+
+  loadData() {
+    forkJoin({
+      loss: this.lossService.getLoss(),
+      code: this.barcodeService.getAllBarcodes(),
+      products: this.productService.getAllProducts()
+    }).subscribe({
+      next: ({ loss, code, products }) => {
+
+        this.products = products;
+        this.barcode = code.map(c => {
+          const product = this.products.find(p => p.idProducto === c.idProducto);
+          return { ...c, nombreProducto: product.nombreProducto };
+        });
+
+        this.loss = loss.map(repp => {
+          const code = this.barcode.find(codes => codes.idCodigoBarra === repp.idCodigoBarra);
+          return { 
+            ...repp, 
+            codigoBarra: code ? code.codigoBarra : 'Desconocido',
+            nombreProducto: code ? code.nombreProducto : 'Desconocido'
+          };
+        });
+        this.filteredLoss = this.loss; 
+      },
+      error: (error) => {
+        console.error('Error al cargar los datos', error);
+        this.toastr.error('Ocurrió un error al cargar los datos', 'Error');
+      }
+    })
   }
-  
-  loadBardCode() {
-    this.barcodeService.getAllBarcodes().subscribe(data => {
-      this.barcode = data; // Guardamos los códigos de barras
-      this.loadLoss(); // Ahora que los códigos están cargados, podemos cargar las pérdidas
-    });
-  }
-  
 
   openCreateModal() {
     this.isEditing = false;
@@ -137,7 +143,7 @@ export class LossComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.toastr.success('Pérdida guardada con éxito!', 'Éxito');
-        this.loadLoss();
+        this.loadData();
         this.closeModal();
       },
       error: (error) => {

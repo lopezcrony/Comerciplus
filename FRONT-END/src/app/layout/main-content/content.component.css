@@ -1,9 +1,9 @@
 .main-container {
   position: fixed;
-  top: 4.5rem;
-  left: 15.5rem; /* Espacio reservado para el sidebar en escritorio */
-  width: calc(100% - 15rem); /* Se ajusta al espacio restante en escritorio */
-  height: calc(100vh - 5rem);
+  top: 3.5rem;
+  left: 14.2rem; /* Espacio reservado para el sidebar en escritorio */
+  width: calc(100% - 14.5rem); /* Se ajusta al espacio restante en escritorio */
+  height: calc(100vh - 4rem);
   z-index: 999;
   overflow-y: auto;
   user-select: none;
@@ -29,5 +29,6 @@
 }
 .content {
   flex: 1;
-  padding: 1rem;
+  padding: 0rem;
+  margin-top: 0.5rem;
 }

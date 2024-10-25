@@ -1,7 +1,19 @@
 
-<app-crud [Module]="'Compras'" [items]="filteredShoppings" [columns]="columns" [canDelete]="false" [canEdit]="false" [canSeeDetail]="true"
-    [canChangeStatus]="true" [showStateColumn]="true" [statusField]="'estadoCompra'" (create)="openShopping()"
-    (search)="searchShopping($event)" (detail)="openShowModal($event)" (statusChange)="changeShoppingStatus($event)">
+<app-crud 
+ [Module]="'Compras'"
+ [items]="filteredShoppings" 
+ [columns]="columns" 
+ [canDelete]="false" 
+ [canEdit]="false"  
+ [canSeeDetail]="true"
+ [canStatus]="true" 
+ [canCancel]="true"
+ [showStateColumn]="true"
+ [statusField]="'estadoCompra'" 
+ (create)="openShopping()"
+ (cancel)="cancelShopping($event)"  
+ (search)="searchShopping($event)" 
+ (detail)="openShowModal($event)">
 </app-crud>
 
 <p-dialog [(visible)]="viewModal" [style]="{width: '600px'}" [modal]="true" class="p-fluid">

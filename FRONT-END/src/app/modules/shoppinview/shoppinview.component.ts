@@ -1,20 +1,18 @@
   import { Component, OnInit } from '@angular/core';
+  import { Router } from '@angular/router'; 
+  import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+  import { ToastrService } from 'ngx-toastr';
+
   import { CRUDComponent } from '../../shared/crud/crud.component';
   import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
   import { SHARED_IMPORTS } from '../../shared/shared-imports';
-  import { DropdownModule } from 'primeng/dropdown';
-  import { AutoCompleteModule } from 'primeng/autocomplete';
+  import { ValidationService } from '../../shared/validators/validations.service';
+  import { AlertsService } from '../../shared/alerts/alerts.service';
+
   import { ProductsService } from '../products/products.service';
   import { ShoppingsService } from '../shoppings/shoppings.service';
   import { ProvidersService } from '../providers/providers.service';
-  import { ToastrService } from 'ngx-toastr';
-  import { MessageService } from 'primeng/api';
-  import { ValidationService } from '../../shared/validators/validations.service';
-  import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   import { Shopping } from '../shoppings/shopping.model';
-  import { Router } from '@angular/router'; 
-
-
 
   @Component({
     selector: 'app-shoppinview',
@@ -22,9 +20,7 @@
     imports: [
       ...SHARED_IMPORTS,
       CRUDComponent,
-      DropdownModule,
       CrudModalDirective,
-      AutoCompleteModule
     ],
     templateUrl: './shoppinview.component.html',
     styleUrl: './shoppinview.component.css'
@@ -41,8 +37,6 @@
     viewModal = false;
     selectedShopping: Shopping | undefined;
 
-
-
     constructor(
       private fb: FormBuilder,
       private router : Router,
@@ -50,8 +44,8 @@
       private providerService: ProvidersService,
       private productService: ProductsService,
       private toastr: ToastrService,
-      private messageService: MessageService,
-      private ValidationService: ValidationService
+      private ValidationService: ValidationService,
+      private alertsService: AlertsService
     ) {
       this.shoppingForm = this.fb.group({
         idProveedor: ['', Validators.required],
@@ -62,14 +56,48 @@
       });
     }
 
-    columns: { field: string, header: string }[] = [
-      { field: 'nombreProveedor', header: 'Proveedor' },
-      { field: 'fechaCompra', header: 'Fecha Compra' },  
-      { field: 'fechaRegistro', header: 'Fecha Registro' },  
-      { field: 'numeroFactura', header: 'Nro. Factura' },  
-      { field: 'valorCompra', header: 'Valor Compra' },  
+    columns: { field: string, header: string, type: string }[] = [
+      { field: 'nombreProveedor', header: 'Proveedor', type: 'text' },
+      { field: 'fechaCompra', header: 'Fecha Compra', type: 'date' },  
+      { field: 'fechaRegistro', header: 'Fecha Registro', type: 'date' },  
+      { field: 'numeroFactura', header: 'Nro. Factura', type: 'text' },  
+      { field: 'valorCompra', header: 'Valor Compra', type: 'currency' },  
     ];
 
+    // Métodos para cargar proveedores y productos
+    loadProviders() {
+      this.providerService.getAllProviders().subscribe(data => {
+        this.providers = data.filter(p=>p.estadoProveedor === true);
+      });
+    }
+
+    loadProducts() {
+      this.productService.getAllProducts().subscribe(data => {
+        this.products = data.filter(pr => pr.estadoProducto === true);
+        this.filteredProducts = this.products; 
+      });
+    }
+
+    getProductName(idProducto: number): string {
+      const product = this.products.find(p => p.idProducto === idProducto);
+      return product ? product.nombreProducto : 'Desconocido';
+    }
+
+    loadShoppings() {
+      this.shoppingService.getAllShoppings().subscribe(data => {
+        this.shoppings = data.map(shopping => {
+          const provider = this.providers.find(p => p.idProveedor === shopping.idProveedor);
+          return { ...shopping, nombreProveedor: provider.nombreProveedor };
+        });
+        this.filteredShoppings = this.shoppings;
+      });
+    }
+
+    ngOnInit() {
+      this.loadProviders();
+      this.loadShoppings();
+      this.loadProducts();
+    }
 
     openShopping() {
       this.router.navigate(['/shoppings']); // Navega a la ruta del componente ShoppinviewComponent
@@ -92,78 +120,22 @@
       });
     }
 
-    loadShoppings() {
-      this.shoppingService.getAllShoppings().subscribe(data => {
-        this.shoppings = data.map(shopping => {
-          const provider = this.providers.find(p => p.idProveedor === shopping.idProveedor);
-          return { ...shopping, nombreProveedor: provider.nombreProveedor };
-        });
-        this.filteredShoppings = this.shoppings;
-      });
-    }
+    cancelShopping(shopping: Shopping) {
 
-    // Métodos para cargar proveedores y productos
-    loadProviders() {
-      this.providerService.getAllProviders().subscribe(data => {
-        this.providers = data.filter(p=>p.estadoProveedor === true);
-      });
-    }
-
-    loadProducts() {
-      this.productService.getAllProducts().subscribe(data => {
-        this.products = data.filter(pr => pr.estadoProducto === true);
-        this.filteredProducts = this.products; 
-      });
-    }
-
-    getProductName(idProducto: number): string {
-      const product = this.products.find(p => p.id === idProducto);
-      return product ? product.nombreProducto : 'Desconocido'; // Cambia 'name' si el campo es diferente
-    }
-    
-
-    ngOnInit() {
-      this.loadProviders();
-      this.loadProducts();
-      this.loadShoppings();
-    }
-
-    changeShoppingStatus(shopping: Shopping) {
-      if (shopping.estadoCompra === false) {
-        this.toastr.warning('La compra ya está anulada y no puede cambiarse de estado.', 'Advertencia');
-        return;
-      }
-
-      // Confirmar la acción con el usuario
-      if (confirm('¿Está seguro de que desea anular esta compra? Esta acción no se puede deshacer.')) {
-        this.shoppingService.updateStatusShopping(shopping.idCompra, false).subscribe({
-          next: () => {
-            this.loadShoppings(); // Recargar la lista de compras para reflejar el cambio
-            this.toastr.success('Compra anulada con éxito.', 'Éxito');
-          },
-          error: () => {
-            this.toastr.error('Error al anular la compra.', 'Error');
-          }
-        });
-      }
-    }
-
-    // cancelShopping(shopping: Shopping) {
-
-    //   this.shoppingService.cancelShopping(shopping.idCompra).subscribe({
-    //     next: () => {
-    //       this.loadShoppings(); // Recargar la lista de compras para reflejar el cambio
-    //       this.toastr.success('Compra anulada con éxito.', 'Éxito');
-    //     },
-    //     error: () => {
-    //       this.toastr.error('Error al anular la compra.', 'Error');
-    //     }
-    //   });
-    // }
-
-    // Verifica si el botón de cambio de estado debe estar deshabilitado
-    isChangeStatusDisabled(shopping: Shopping): boolean {
-      return shopping.estadoCompra === false; // Deshabilitar si está anulado
+      this.alertsService.confirm(
+        `¿Estás seguro de anular esta compra?`,
+        () => {
+          this.shoppingService.cancelShopping(shopping.idCompra).subscribe({
+            next: () => {
+              this.loadShoppings();
+              this.toastr.success('Compra anulada con éxito.', 'Éxito');
+            },
+            error: () => {
+              this.toastr.error('Error al anular la compra.', 'Error');
+            }
+          });
+        }
+      );
     }
 
     searchShopping(query: string) {

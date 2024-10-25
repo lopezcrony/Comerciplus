@@ -25,7 +25,11 @@ export class DetailSalesService {
     );
   }
 
-  
+  getDetailSaleByidSale(idSale: number): Observable<DetailSale[]> {
+    return this.http.get<DetailSale[]>(`${this.apiUrl}/venta/${idSale}`).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: HttpErrorResponse) {
     console.error('Error completo:', error);

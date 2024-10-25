@@ -32,9 +32,8 @@ export class ProductsService {
   }
 
   getBarcodeByProduct(idProducto: number): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:3006/codigo_barra/${idProducto}`);
+    return this.http.get<any[]>(`${environment.apiUrl}/codigo_barra/${idProducto}`);
   }
-  
 
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl).pipe(
@@ -71,12 +70,6 @@ export class ProductsService {
   // Método para eliminar
   deleteProduct(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-
-  getAllCategories(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/categorias`).pipe(
-      catchError(this.handleError)
-    );
   }
 
   checkProductExists(nombreProducto: string): Observable<boolean> {
