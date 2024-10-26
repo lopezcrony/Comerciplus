@@ -24,7 +24,16 @@ const getOneBarcode = async (req, res) => {
         const barcode = await barcodeService.getOneBarcode(req.params.id);
         res.status(200).json(barcode);
     } catch (error) {
-        res.status(500).json({message: 'CONTROLLER: Error al obtener el codigo.', error});
+        res.status(500).json({message: 'Error al obtener el codigo.', error});
+    }
+};
+
+const getProductByBarcode = async (req, res) => {
+    try {
+        const barcode = await barcodeService.getProductByBarcode(req.params.barcode);
+        res.status(200).json(barcode);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener el producto por codigo de barra.', error: error.message });
     }
 };
 
@@ -65,6 +74,7 @@ const deleteOneBarcode = async (req, res) => {
 module.exports = {
     getAllBarcodesByProduct,
     getOneBarcode,
+    getProductByBarcode,
     createBarcode,
     updateBarcode,
     deleteOneBarcode,

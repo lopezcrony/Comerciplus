@@ -11,13 +11,13 @@ import { SalesComponent} from './modules/sales/sales.component';
 import { ReturnProviderComponent} from './modules/return-provider/return-provider.component';
 import { ReturnSaleComponent } from './modules/return-sale/return-sale.component';
 import { CreditsComponent } from './modules/credits/credits.component';
-import { ShoppingsComponent } from './modules/shoppings/shoppings.component';
-import { LoginComponent } from './auth/login/login.component';
-import { ShoppinviewComponent } from './modules/shoppinview/shoppinview.component';
-import { RecoverComponent } from './auth/recover/recover.component';
-import { RestoreComponent } from './auth/restore/restore.component';
+import { ShoppingsComponent } from './modules/shoppingdetails/shoppings.component';
+import { LoginComponent } from './Auth/login/login.component';
+import { ShoppinviewComponent } from './modules/shoppings/shopping.component';
+import { RecoverComponent } from './Auth/recover/recover.component';
+import { RestoreComponent } from './Auth/restore/restore.component';
 import { DetailSaleComponent } from './modules/detailSale/detail-sale.component';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard } from './Auth/auth.guard';
 import { LoadingComponent } from './shared/loading/loading.component';
 
 export const routes: Routes = [

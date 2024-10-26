@@ -5,9 +5,9 @@ import { RouterModule } from '@angular/router';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
-import { AuthService } from '../../auth/auth.service';
-import { User } from '../../modules/users/users.model';
+import { AuthService } from '../../Auth/auth.service';
 import { RolesService } from '../../modules/roles/roles.service';
+import { AlertsService} from '../../shared/alerts/alerts.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -30,7 +30,8 @@ export class TopbarComponent implements OnInit {
 
   constructor(
     private authService: AuthService, 
-    private roleService: RolesService
+    private roleService: RolesService,
+    private alertService: AlertsService
   ) {}
 
   ngOnInit() {
@@ -60,8 +61,11 @@ export class TopbarComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
-    this.preventBack();
+    this.alertService.confirm('¿Estás seguro de cerrar sesión?', 
+      () => { 
+        this.authService.logout(); 
+        this.preventBack(); 
+      });
   }
 
   preventBack(): void {

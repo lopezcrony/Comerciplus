@@ -6,7 +6,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { routes } from './app.routes';
-import { AuthService } from './auth/auth.service';
+import { AuthService } from './Auth/auth.service';
 import { APP_INITIALIZER } from '@angular/core';
 import { ButtonModule } from 'primeng/button'; 
 import { DialogModule } from 'primeng/dialog'; 

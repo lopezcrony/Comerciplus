@@ -6,12 +6,13 @@ import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment'; 
 
 import { returnProviderModel } from './return-provider.model'
+import { ToastrService } from 'ngx-toastr';
 @Injectable({
   providedIn: 'root'
 })
 export class ReturnProviderService {
   private apiUrl= `${environment.apiUrl}/devolucionLocal`
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
     getReturnProvider(): Observable<returnProviderModel[]> {
       return this.http.get<returnProviderModel[]>(this.apiUrl).pipe(
         catchError(this.handleError)

@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Role } from './roles.model';
-import { AuthService } from '../../auth/auth.service';
+import { AuthService } from '../../Auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
@@ -26,13 +26,13 @@ export class RolesService {
   getAllRoles(): Observable<Role[]> {
     return this.http.get<Role[]>(this.apiUrl, { headers: this.getHeaders() }).pipe(
       tap(roles => console.log('Roles recibidos del servidor:', roles)),
-      catchError(this.handleError.bind(this))
+      catchError(this.handleError)
     );
   }
 
   getOneRole(id: number): Observable<Role> {
     return this.http.get<Role>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).pipe(
-      catchError(this.handleError.bind(this))
+      catchError(this.handleError)
     );
   }
 
@@ -40,7 +40,7 @@ export class RolesService {
     console.log('Enviando rol al servidor:', role);
     return this.http.post<Role>(this.apiUrl, role, { headers: this.getHeaders() }).pipe(
       tap(createdRole => console.log('Rol creado en el servidor:', createdRole)),
-      catchError(this.handleError.bind(this))
+      catchError(this.handleError)
     );
   }
 
@@ -48,19 +48,19 @@ export class RolesService {
     console.log('Actualizando rol en el servidor:', role);
     return this.http.put<Role>(`${this.apiUrl}/${role.idRol}`, role, { headers: this.getHeaders() }).pipe(
       tap(updatedRole => console.log('Rol actualizado en el servidor:', updatedRole)),
-      catchError(this.handleError.bind(this))
+      catchError(this.handleError)
     );
   }
 
   updateStatusRole(id: number, status: boolean): Observable<Role> {
     return this.http.patch<Role>(`${this.apiUrl}/${id}`, { estadoRol: status }, { headers: this.getHeaders() }).pipe(
-      catchError(this.handleError.bind(this))
+      catchError(this.handleError)
     );
   }
 
   deleteRoles(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).pipe(
-      catchError(this.handleError.bind(this))
+      catchError(this.handleError)
     );
   }
 

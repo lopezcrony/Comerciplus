@@ -6,7 +6,7 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment'; 
 import { Shopping } from "../shoppings/shopping.model";
-import { Shoppingdetails } from '../shoppingdetails/model';
+import { Shoppingdetails } from '../shoppingdetails/shoppingDetail.model';
 import { ToastrService } from 'ngx-toastr';
 
 

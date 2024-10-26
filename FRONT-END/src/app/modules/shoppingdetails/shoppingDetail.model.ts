@@ -6,5 +6,4 @@ export interface Shoppingdetails {
     cantidadProducto: number  ,
     precioCompraUnidad: number,
     subtotal: number,
-    
   }

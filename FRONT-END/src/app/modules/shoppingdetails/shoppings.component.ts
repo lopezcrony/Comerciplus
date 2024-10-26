@@ -7,8 +7,8 @@ import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { ValidationService } from '../../shared/validators/validations.service';
 
-import { Shopping } from './shopping.model';
-import { ShoppingsService } from './shoppings.service';
+import { Shopping } from '../shoppings/shopping.model';
+import { ShoppingsService } from '../shoppings/shoppings.service';
 import { ProvidersService } from '../providers/providers.service';
 import { ProductsService } from '../products/products.service';
 
@@ -24,7 +24,7 @@ import { forkJoin } from 'rxjs';
     CrudModalDirective,
     RouterModule
   ],
-  templateUrl: './shoppingscreate.component.html',
+  templateUrl: './shopping.create.component.html',
   styleUrls: ['./shoppings.component.css'],
 })
 export class ShoppingsComponent implements OnInit {
@@ -69,32 +69,11 @@ export class ShoppingsComponent implements OnInit {
       products: this.productService.getAllProducts(),
       shoppings: this.shoppingService.getAllShoppings()
     }).subscribe(({ providers, products, shoppings }) => {
-
       this.providers = providers.filter(p => p.estadoProveedor === true);
       this.products = products.filter(pr => pr.estadoProducto === true);
-      this.filteredProducts = this.products;
+      this.filteredShoppings = shoppings;
   })
   }
-
-  // loadShoppings() {
-  //   this.shoppingService.getAllShoppings().subscribe(data => {
-  //     this.shoppings = data;
-  //     this.filteredShoppings = data;
-  //   });
-  // }
-
-  // loadProviders() {
-  //   this.providerService.getAllProviders().subscribe(data => {
-  //     this.providers = data.filter(p => p.estadoProveedor === true);
-  //   });
-  // }
-
-  // loadProducts() {
-  //   this.productService.getAllProducts().subscribe(data => {
-  //     this.products = data.filter(pr => pr.estadoProducto === true);
-  //     this.filteredProducts = this.products;
-  //   });
-  // }
 
   searchProduct(event: any) {
     const query = event.query.toLowerCase();

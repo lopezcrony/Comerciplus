@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { Proveedor } from './providers.model';
 import { environment } from '../../../environments/environment'; 
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root' 
@@ -10,24 +11,47 @@ import { environment } from '../../../environments/environment';
 export class ProvidersService {
   private apiUrl = `${environment.apiUrl}/proveedores`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getAllProviders(): Observable<Proveedor[]> {
-    return this.http.get<Proveedor[]>(this.apiUrl);
-  }
+    return this.http.get<Proveedor[]>(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
+    };
 
   createProvider(proveedor: Proveedor): Observable<Proveedor> {
-    return this.http.post<Proveedor>(this.apiUrl, proveedor);
-  }
+    return this.http.post<Proveedor>(this.apiUrl, proveedor).pipe(
+      catchError(this.handleError)
+    );
+    };
 
   updateProvider(proveedor: Proveedor): Observable<Proveedor> {
-    return this.http.put<Proveedor>(`${this.apiUrl}/${proveedor.idProveedor}`, proveedor);
-  }
+    return this.http.put<Proveedor>(`${this.apiUrl}/${proveedor.idProveedor}`, proveedor).pipe(
+      catchError(this.handleError)
+    );
+    };
+
   updateStatusProvider(id:number, status: boolean):Observable<Proveedor> {
-    return this.http.patch<Proveedor>(`${this.apiUrl}/${id}`, { estadoProveedor: status });
-  }
+    return this.http.patch<Proveedor>(`${this.apiUrl}/${id}`, { estadoProveedor: status }).pipe(
+      catchError(this.handleError)
+    );
+    };
 
   deleteProvider(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
+    };
+
+private handleError(error: HttpErrorResponse) {
+    let errorMessage: string;
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente o de la red
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = `Error: ${error.error.message}`;
+    }
+    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 }

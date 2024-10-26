@@ -17,6 +17,8 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CheckboxModule } from 'primeng/checkbox';
 import { OrderListModule } from 'primeng/orderlist';
+import { CalendarModule } from 'primeng/calendar';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 export const SHARED_IMPORTS = [
   CommonModule,
@@ -38,4 +40,6 @@ export const SHARED_IMPORTS = [
   FileUploadModule,
   CheckboxModule,
   OrderListModule,
+  CalendarModule,
+  InputSwitchModule
 ];

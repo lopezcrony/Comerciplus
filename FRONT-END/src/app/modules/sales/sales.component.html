@@ -1,25 +1,35 @@
-<!-- components/sale/sale.component.html -->
 <div class="card">
   <div class="venta-productos-container">
     <div class="carrito-venta">
-      <h1 class="texto-pequeno">Módulo de Ventas</h1>
+      <div class="flex items-center gap-2 mb-3">
+        <h1 class="texto-pequeno m-0">Módulo de Ventas </h1>
+      </div>
 
+      <!-- Busqueda por nombre de producto y código de barras -->
       <form [formGroup]="busquedaForm" class="mb-3">
-        <p-autoComplete formControlName="busqueda" [suggestions]="filteredProducts"
-          (completeMethod)="searchProduct($event)" (onSelect)="addProductSale($event)" [dropdown]="true"
-          field="nombreProducto" [forceSelection]="true" placeholder="Buscar producto por nombre o código"
-          [style]="{'width':'100%'}">
+        <p-autoComplete #searchInput formControlName="busqueda" [suggestions]="filteredProducts"
+          [(ngModel)]="selectedProduct" (completeMethod)="handleSearch($event)" (onSelect)="addProductSale($event)"
+          (keydown.enter)="onEnterPressed()" [dropdown]="true" [forceSelection]="true" [autoHighlight]="true"
+          placeholder="Buscar por código de barras o nombre del producto" [style]="{'width':'100%'}" autofocus>
           <ng-template let-product pTemplate="item">
             <div class="product-item">
-              <!-- <img [src]="getImageUrl(product.idProducto)" [alt]="product.nombreProducto" width="24" /> -->
               <div>{{product.nombreProducto}}</div>
-              <div>Cantidad: {{product.stock}}</div>
+              <div [class.stock-warning]="product.stock <= 5">
+                Cantidad: {{product.stock}}
+                <span *ngIf="product.stock > 0 && product.stock <= 5" class="stock-alert">
+                  ¡Stock bajo!
+                </span>
+                <span *ngIf="product.stock === 0" class="stock-alert">
+                  ¡Sin Stock!
+                </span>
+              </div>
               <div class="font-bold">{{product.precioVenta | currency}}</div>
             </div>
           </ng-template>
         </p-autoComplete>
       </form>
 
+      <!-- Tabla de productos en venta -->
       <p-table [value]="detailSale" styleClass="p-datatable-sm texto-pequeno">
         <ng-template pTemplate="header">
           <tr>
@@ -32,17 +42,27 @@
         </ng-template>
         <ng-template pTemplate="body" let-item>
           <tr>
-            <td>{{ getProductName(item.idProducto) }}</td>
+            <td>
+              {{ getProductName(item.idProducto) }}
+              <div *ngIf="getProductStock(item.idProducto) <= 5" class="stock-warning">
+                ¡Quedan solo {{getProductStock(item.idProducto)}} unidades!
+              </div>
+            </td>
             <td>{{ getProductPrice(item.idProducto) | currency }}</td>
             <td>
-              <p-inputNumber [(ngModel)]="item.cantidadProducto" [showButtons]="true" buttonLayout="horizontal"
-                spinnerMode="horizontal" [min]="1" (onInput)="updateSubtotal(item)" [size]="3">
-              </p-inputNumber>
+              <div class="quantity-controls">
+                <button pButton type="button" icon="pi pi-minus" (click)="cambiarCantidad(item, -1)"></button>
+                <p-inputNumber [(ngModel)]="item.cantidadProducto" [showButtons]="false" [size]="3"
+                  (onInput)="updateSubtotal(item)">
+                </p-inputNumber>
+                <button pButton type="button" icon="pi pi-plus" (click)="cambiarCantidad(item, 1)"></button>
+              </div>
             </td>
             <td>{{ item.subtotal | currency }}</td>
             <td>
               <button pButton icon="pi pi-trash" class="p-button-danger p-button-sm boton-pequeno"
-                (click)="removeProductFromSale(item)"></button>
+                (click)="removeProductFromSale(item)">
+              </button>
             </td>
           </tr>
         </ng-template>
@@ -52,6 +72,7 @@
     <div class="detalle-venta">
       <h2 class="texto-pequeno">Detalles de Venta</h2>
 
+      <!-- Switch para imprimir recibo -->
       <div class="flex align-items-center justify-content-between mb-4 p-3 bg-gray-50 rounded-lg">
         <div class="flex align-items-center gap-2">
           <i class="pi pi-print text-gray-600 text-xl"></i>
@@ -62,6 +83,7 @@
         </div>
       </div>
 
+      <!-- Total -->
       <div class="mb-4 p-4 bg-blue-50 rounded-lg">
         <div class="text-sm text-blue-600 mb-1">Total a Pagar</div>
         <div class="text-2xl font-bold text-blue-700">
@@ -69,17 +91,21 @@
         </div>
       </div>
 
-      <button pButton label="Pago a Crédito" icon="pi pi-credit-card" (click)="showCreditAssignmentModal()"
-        class="p-button-info p-button-sm w-full mb-2 boton-pequeno"></button>
+      <!-- Botones de acción -->
+      <div class="action-buttons">
+        <button pButton label="Pago a Crédito" icon="pi pi-credit-card" (click)="showCreditAssignmentModal()"
+          class="p-button-info p-button-sm w-full mb-2 boton-pequeno">
+        </button>
 
-      <button pButton label="Pago de Contado" icon="pi pi-check-circle" (click)="finalizeSale()"
-        class="p-button-success p-button-sm w-full mb-2 boton-pequeno" [style]="{'background': 'rgb(22 163 74)'}"></button>
+        <button pButton label="Pago de Contado" icon="pi pi-check-circle" (click)="finalizeSale()"
+          class="p-button-success p-button-sm w-full mb-2 boton-pequeno" [style]="{'background': 'rgb(22 163 74)'}">
+        </button>
 
-      <button pButton label="Cancelar" icon="pi pi-times-circle" (click)="cancelSale()"
-        class="p-button-danger p-button-sm w-full boton-pequeno"></button>
-
+        <button pButton label="Cancelar" icon="pi pi-times-circle" (click)="cancelSale()"
+          class="p-button-danger p-button-sm w-full boton-pequeno">
+        </button>
+      </div>
     </div>
-
   </div>
 
   <!------------------------- CREAR CRÉDITO ------------------------->
@@ -98,7 +124,7 @@
                 [dropdown]="true" placeholder="Buscar cliente" [style]="{'width':'calc(100% - 2.5rem)'}"
                 styleClass="texto-pequeno">
                 <ng-template let-cliente pTemplate="item">
-                  <div class="texto-pequeno">{{cliente.nombreCliente}} - CC {{cliente.cedulaCliente}}</div>
+                  <div>{{cliente.nombreCliente}} - CC {{cliente.cedulaCliente}}</div>
                 </ng-template>
               </p-autoComplete>
               <button pButton pRipple type="button" icon="pi pi-user-plus"
@@ -186,10 +212,12 @@
         </div>
 
         <div class="p-field mb-2">
-          <label for="plazoMaximo" class="block mb-1 texto-pequeno">Plazo máximo</label>
-          <input type="text" pInputText id="plazoMaximo" formControlName="plazoMaximo"
-            placeholder="Ingrese el plazo máximo de tiempo para pagar" autofocus />
+          <label for="plazoMaximo" class="block mb-1 texto-pequeno">Plazo máximo de pago</label>
+          <p-calendar id="plazoMaximo" formControlName="plazoMaximo" [iconDisplay]="'input'" inputId="icondisplay"
+            placeholder="Ingrese la fecha límite de pago" [inputStyle]="{'width':'80%'}" [showIcon]="true" class="custom-calendar" appendTo="body">
+          </p-calendar>
         </div>
+
       </form>
 
     </div>

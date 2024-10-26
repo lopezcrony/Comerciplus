@@ -43,6 +43,9 @@ const DetalleCompra = sequelize.define('DetalleCompra', {
         defaultValue: 0, // Valor inicial
     },
 }, {
+    defaultScope: {
+        order: [['idDetalleCompra', 'DESC']],
+    },
     tableName: 'detalle_compras',
     timestamps: false,
     // CAMBIO: Hooks que calculan el subtotal antes de crear o actualizar un registro.

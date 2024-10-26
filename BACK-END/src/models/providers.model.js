@@ -33,6 +33,9 @@ const Proveedor = sequelize.define('Proveedor', {
     defaultValue: true
   }
 }, {
+  defaultScope: {
+    order: [['idProveedor', 'DESC']]
+  },
   tableName: 'proveedores',
   timestamps: false
 });

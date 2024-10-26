@@ -43,6 +43,9 @@ const Compra = sequelize.define('Compra', {
         defaultValue: true,
     },
 }, {
+    defaultScope: {
+        order: [['idCompra', 'DESC']],
+    },
     tableName: 'compras',
     timestamps: false,
 });

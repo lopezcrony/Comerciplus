@@ -60,15 +60,14 @@ const User = sequelize.define(
     },
   },
   {
+    defaultScope: {
+      order: [["idUsuario", "DESC"]],
+    },
     tableName: "usuarios",
     timestamps: false,
     hooks: {
       beforeCreate: async (user) => {
         if (user.claveUsuario) {
-          console.log(
-            "Encriptando contraseña antes de crear:",
-            user.claveUsuario
-          );
           user.claveUsuario = await bcrypt.hash(user.claveUsuario, 10);
         }
       },

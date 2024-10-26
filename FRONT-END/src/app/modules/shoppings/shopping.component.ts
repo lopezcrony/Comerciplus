@@ -1,6 +1,7 @@
   import { Component, OnInit } from '@angular/core';
   import { Router } from '@angular/router'; 
   import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+  import { forkJoin } from 'rxjs';
   import { ToastrService } from 'ngx-toastr';
 
   import { CRUDComponent } from '../../shared/crud/crud.component';
@@ -10,9 +11,9 @@
   import { AlertsService } from '../../shared/alerts/alerts.service';
 
   import { ProductsService } from '../products/products.service';
-  import { ShoppingsService } from '../shoppings/shoppings.service';
+  import { ShoppingsService } from './shoppings.service';
   import { ProvidersService } from '../providers/providers.service';
-  import { Shopping } from '../shoppings/shopping.model';
+  import { Shopping } from './shopping.model';
 
   @Component({
     selector: 'app-shoppinview',
@@ -22,8 +23,7 @@
       CRUDComponent,
       CrudModalDirective,
     ],
-    templateUrl: './shoppinview.component.html',
-    styleUrl: './shoppinview.component.css'
+    templateUrl: './shopping.component.html'
   })
   export class ShoppinviewComponent implements OnInit {
 
@@ -64,39 +64,27 @@
       { field: 'valorCompra', header: 'Valor Compra', type: 'currency' },  
     ];
 
-    // Métodos para cargar proveedores y productos
-    loadProviders() {
-      this.providerService.getAllProviders().subscribe(data => {
-        this.providers = data.filter(p=>p.estadoProveedor === true);
-      });
-    }
-
-    loadProducts() {
-      this.productService.getAllProducts().subscribe(data => {
-        this.products = data.filter(pr => pr.estadoProducto === true);
-        this.filteredProducts = this.products; 
-      });
-    }
-
-    getProductName(idProducto: number): string {
-      const product = this.products.find(p => p.idProducto === idProducto);
-      return product ? product.nombreProducto : 'Desconocido';
-    }
-
-    loadShoppings() {
-      this.shoppingService.getAllShoppings().subscribe(data => {
-        this.shoppings = data.map(shopping => {
+    // Asegura que se cargue toda la información antes de ser mostrada
+    loadAllData() {
+      forkJoin({
+        providers: this.providerService.getAllProviders(),
+        products: this.productService.getAllProducts(),
+        shoppings: this.shoppingService.getAllShoppings()
+      }).subscribe(({ providers, products, shoppings }) => {
+        this.providers = providers.filter(p => p.estadoProveedor === true);
+        this.products = products.filter(pr => pr.estadoProducto === true);
+        this.filteredProducts = this.products;
+    
+        this.shoppings = shoppings.map(shopping => {
           const provider = this.providers.find(p => p.idProveedor === shopping.idProveedor);
-          return { ...shopping, nombreProveedor: provider.nombreProveedor };
+          return { ...shopping, nombreProveedor: provider ? provider.nombreProveedor : 'Desconocido' };
         });
         this.filteredShoppings = this.shoppings;
       });
     }
 
     ngOnInit() {
-      this.loadProviders();
-      this.loadShoppings();
-      this.loadProducts();
+      this.loadAllData();
     }
 
     openShopping() {
@@ -109,10 +97,12 @@
       // Muestra la modal
       this.viewModal = true;
 
-
       this.shoppingService.getShoppingdetailsByShopping(shopping.idCompra).subscribe({
         next: (data) => {
-          this.shoppingdetails = data;
+          this.shoppingdetails = data.map(detail => {
+            const product = this.products.find(p => p.idProducto === detail.idProducto);
+            return { ...detail, nombreProducto: product ? product.nombreProducto : 'Desconocido' };
+          });
         },
         error: (err) => {
           this.toastr.error('Error al cargar los detalles de compra.');
@@ -127,7 +117,7 @@
         () => {
           this.shoppingService.cancelShopping(shopping.idCompra).subscribe({
             next: () => {
-              this.loadShoppings();
+              this.loadAllData();
               this.toastr.success('Compra anulada con éxito.', 'Éxito');
             },
             error: () => {
@@ -139,7 +129,6 @@
     }
 
     searchShopping(query: string) {
-      let lowerCaseQuery = query.toLowerCase();
 
       // Intenta convertir la consulta a un número
       let numericQuery = parseFloat(query);
@@ -154,6 +143,5 @@
         return idProveedor || numeroFactura;
       });
     }
-
 
   }

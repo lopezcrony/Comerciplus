@@ -24,6 +24,21 @@ const getOneBarcode = async (id) => {
     }
 };
 
+const getProductByBarcode = async (barcode) => {
+    try {
+        const barcodeInfo = await BarcodeRepository.findBarcodeByCode(barcode);
+
+        if (!barcodeInfo) {
+            throw new Error('No se encontró el producto');
+        }
+        return barcodeInfo;
+    } catch (error) {
+        console.error("Error en el servicio:", error.message);
+        throw error;
+    }
+};
+
+
 const createBarcode = async (BarcodeData) => {
     try {
         return await BarcodeRepository.createBarcode(BarcodeData);
@@ -65,6 +80,7 @@ const deleteOneBarcode = async (id) => {
 module.exports = {
     getAllBarcodesByProduct,
     getOneBarcode,
+    getProductByBarcode,
     createBarcode,
     updateBarcode,
     deleteOneBarcode,

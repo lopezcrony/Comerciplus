@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment'; 
-import { Shoppingdetails } from "../shoppingdetails/model";
+import { Shoppingdetails } from "./shoppingDetail.model";
 import { Observable, throwError } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Injectable({
@@ -15,7 +16,7 @@ export class ShoppingdetailsService {
 
   private apiUrl=`${environment.apiUrl}/detallecompras`;
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private toastr: ToastrService) { }
 
   getAllShoppingDetails(): Observable<Shoppingdetails[]> {
     return this.http.get<Shoppingdetails[]>(this.apiUrl).pipe(
@@ -35,32 +36,19 @@ export class ShoppingdetailsService {
     );
   }
 
-
   getDetailByShopping(idCompra: number) {
-    return this.http.get<Shoppingdetails[]>(`${this.apiUrl}/detalleCompra/${idCompra}`);
-  }
-  
-
-
-
-  getAllProviders(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/proveedores`).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get<Shoppingdetails[]>(`${this.apiUrl}/${idCompra}`);
   }
 
-
-
-  private handleError(error: HttpErrorResponse) {
-    // Puedes ajustar la lógica para diferentes tipos de errores aquí
-    let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';
+private handleError(error: HttpErrorResponse) {
+    let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente
+      // Error del lado del cliente o de la red
       errorMessage = `Error: ${error.error.message}`;
     } else {
       // Error del lado del servidor
-      errorMessage = error.error?.message || errorMessage;
+      errorMessage = `Error: ${error.error.message}`;
     }
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 }

@@ -21,6 +21,7 @@
 
 .btn-logout {
   background: none;
+  color: rgb(72, 72, 72);
   border: none;
   cursor: pointer;
   padding: 8px 15px;
@@ -30,17 +31,14 @@
 }
 
 .btn-logout i {
-  color: black;
+  color: rgb(72, 72, 72);
   font-size: 18px;
   margin-right: 8px;
 }
 
-.btn-logout span {
-  color: black;
-}
 
-.btn-logout:hover i,
-.btn-logout:hover span {
+.btn-logout:hover,
+.btn-logout:hover i {
   color: #69C7F1;
 }
 

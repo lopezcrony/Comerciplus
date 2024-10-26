@@ -1,8 +1,4 @@
-const { sequelize } = require('../config/db');
 const detailSalesRepository = require('../repositories/detailSales.repository');
-const salesRepository = require('../repositories/sales.repository');
-const barCodeRepository = require('../repositories/Barcode.repository');
-const productRepository = require ('../repositories/products.repository');
 
 const getAlldetailSales = async () => {
     try {

@@ -6,6 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Credit } from './credit.model';
 import { Installment } from '../installments/installment.model';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Injectable({
@@ -16,7 +17,7 @@ export class CreditsService {
   private creditsUrl = `${environment.apiUrl}/creditos`;
   private installmentUrl = `${environment.apiUrl}/abonos`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getAllCredits(): Observable<Credit[]> {
     return this.http.get<Credit[]>(this.creditsUrl).pipe(
@@ -44,8 +45,15 @@ export class CreditsService {
     return this.http.put<Installment>(`${this.installmentUrl}/${idAbono}/cancel`, {});
   };
 
-  private handleError(error: HttpErrorResponse) {
-    console.error('Ocurrió un error:', error);
+private handleError(error: HttpErrorResponse) {
+    let errorMessage: string;
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente o de la red
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = `Error: ${error.error.message}`;
+    }
     return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 
