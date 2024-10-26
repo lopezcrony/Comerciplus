@@ -263,7 +263,6 @@ export class SalesComponent implements OnInit {
   finalizeSale() {
     this.createSale((completed) => {
       if (!completed) return;
-
       this.toastr.success('Venta registrada', 'Éxito');
       this.resetForm();
     });
@@ -307,9 +306,6 @@ export class SalesComponent implements OnInit {
   showCreditAssignmentModal() {
     this.createSale((completed) => {
       if (!completed) return;
-
-      this.toastr.success('Venta registrada', 'Éxito');
-      this.resetForm();
     });
     this.loadCreditsClients();
     this.showCreditModal = true;

@@ -60,6 +60,7 @@
         <tr>
           <th>Fecha</th>
           <th>Tipo</th>
+          <!-- <th>Fecha Pago</th> -->
           <th>Estado</th>
           <th>Monto</th>
           <th>Saldo</th>
@@ -78,6 +79,7 @@
               {{item.tipo}}
             </span>
           </td>
+          <!-- <td>{{item.plazoMaximo}}</td> -->
           <td>
             <ng-container *ngIf="item.tipo === 'Abono'">
               {{item.estadoAbono ? 'Activo' : 'Anulado'}}
