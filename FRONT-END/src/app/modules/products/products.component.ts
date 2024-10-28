@@ -141,7 +141,7 @@ export class ProductsComponent implements OnInit {
 
   getNameCategory(id: number) {
     const category = this.categories.find(c => c.idCategoria === id);
-    return category.nombreCategoria;
+    return category?.nombreCategoria;
   }
 
   //cierra la modal y ya sapo
