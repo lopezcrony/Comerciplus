@@ -86,6 +86,7 @@ export class ProductsComponent implements OnInit {
   categoryModalVisible: boolean = false;
   newCategory = { name: '', description: '' };
   selectedProduct: Product | undefined;
+  selectedCategory: Categorie | undefined;
 
 
   showCategoryModal() {
@@ -130,6 +131,11 @@ export class ProductsComponent implements OnInit {
       this.categories = data.filter(category => category.estadoCategoria === true);
     });
   }
+
+  getCategoryName(id: any): string {
+    const category = this.categories.find(cat => cat.idCategoria === id);
+    return category ? category.nombreCategoria : 'Desconocida';
+}
 
 
   //funcion inicializadora(todo lo de aqui se inicia de una)

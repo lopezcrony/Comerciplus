@@ -45,7 +45,9 @@
                         </p-dropdown>
                         <button pButton pRipple type="button" icon="pi pi-plus"
                             class="p-button p-button-success p-button-icon-only p-button-sm ml-2"
-                            (click)="showCategoryModal()"></button>
+                            (click)="showCategoryModal()"
+                            pTooltip="crear categoria"
+                            ></button>
                     </div>
                     <small class="p-error" *ngIf="isFieldInvalid('idCategoria')">
                         {{ getErrorMessage('idCategoria') }}
@@ -136,50 +138,54 @@
         <!-- Información del producto -->
 
         <div class="field">
-            <label for="nombreProducto">Nombre Producto:
+            <label for="nombreProducto"><th>Nombre Producto: </th>
                 <span>{{ selectedProduct?.nombreProducto }}</span>
             </label>
         </div>
 
         <div class="field">
-            <label for="categoria">Categoría:
-                <span>{{ selectedProduct?.idCategoria }}</span>
+            <label for="categoria"><th>Categoría: </th>
+                <span>{{ getCategoryName(selectedProduct?.idCategoria) }}</span>
             </label>
         </div>
+        
 
 
         
             <div class="field">
-                <label for="precioVenta">Precio venta:
+                <label for="precioVenta"><th>Precio venta:</th> 
                     <span>{{ selectedProduct?.precioVenta | currency }}</span>
                 </label>
             </div>
 
             <div class="field">
-                <label for="stock">Stock:
+                <label for="stock"><th>Stock:</th>
                     <span>{{ selectedProduct?.stock }}</span>
                 </label>
             </div>
 
         <div class="field image-container">
-            <label for="imagenProducto">Imagen:</label>
+            <label for="imagenProducto"><th>Imagen:</th> </label>
             <img *ngIf="selectedProduct?.idProducto" [src]="getImageUrl(selectedProduct?.idProducto)"
                 alt="Imagen del Producto">
         </div>
+        
 
         <!-- Tabla de códigos de barra -->
-        <table>
-            <thead>
+        <p-table [value]="barcodes" class="p-datatable-sm">
+            <ng-template pTemplate="header">
                 <tr>
-                    <th>Código Barra</th>
+                    <th>Códigos Barra</th>
                 </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let codigo of barcodes">
+            </ng-template>
+            <ng-template pTemplate="body" let-codigo>
+                <tr>
                     <td>{{ codigo.codigoBarra }}</td>
                 </tr>
-            </tbody>
-        </table>
+            </ng-template>
+        </p-table>
+        
+        
 
     </ng-template>
 </p-dialog>

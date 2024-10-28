@@ -22,7 +22,9 @@ export const productsValidationConfig: FieldValidation[] = [
   {
     name: 'nombreProducto',
     rules: [
-      { type: 'required', message: 'Ingrese el nombre del producto.' }
+      { type: 'required', message: 'Ingrese el nombre del producto.' },
+      { type: 'pattern', value: 'onlyLetters', message: 'El nombre solo debe contener letras.' },
+
     ]
   },
   {

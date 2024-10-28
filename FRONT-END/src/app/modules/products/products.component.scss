@@ -3,6 +3,7 @@
     flex-direction: column;
     align-items: center;
     margin-top: 1rem; // Espaciado superior
+    margin-bottom: 20px; // Espaciado superior
   }
   
   .image-container img {
@@ -18,5 +19,11 @@
     margin-bottom: 0.5rem; // Espaciado inferior
   }
 
-  
+  .p-datatable {
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
+    overflow: hidden; /* Para que los bordes redondeados se vean bien */
+    margin-bottom: 20px; /* Espacio inferior */
+}
+
   

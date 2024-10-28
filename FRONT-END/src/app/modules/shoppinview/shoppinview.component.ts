@@ -8,6 +8,7 @@
   import { ShoppingsService } from '../shoppings/shoppings.service';
   import { ProvidersService } from '../providers/providers.service';
   import { Proveedor } from '../providers/providers.model';
+  import { Product } from '../products/products.model';
   import { ToastrService } from 'ngx-toastr';
   import { MessageService } from 'primeng/api';
   import { ValidationService } from '../../shared/validators/validations.service';
@@ -38,7 +39,7 @@
     filteredProducts: any[] = [];
     filteredShoppings: any[] = [];
     providers: Proveedor[] = [];
-    products: any[] = [];
+    products: Product[] = [];
     shoppingdetails: any[] = [];
     viewModal = false;
     selectedShopping: Shopping | undefined;
@@ -98,7 +99,7 @@
       this.shoppingService.getAllShoppings().subscribe(data => {
         this.shoppings = data.map(shopping => {
           const provider = this.providers.find(p => p.idProveedor === shopping.idProveedor);
-          return { ...shopping, nombreProveedor: provider.nombreProveedor };
+          return { ...shopping, nombreProveedor: provider?.nombreProveedor };
         });
         this.filteredShoppings = this.shoppings;
       });
@@ -128,20 +129,15 @@
       });
     }
 
-    getProductName(idProducto: number): string {
-      const product = this.products.find(p => p.id === idProducto);
-      return product ? product.nombreProducto : 'Desconocido'; // Cambia 'name' si el campo es diferente
-    }
+    getProductName(id: any): string {
+    const product = this.products.find(pro => pro.idProducto === id);
+    return product ? product.nombreProducto : 'Desconocida';
+}
     
 
     ngOnInit() {
-<<<<<<< HEAD
-      this.loadProducts();
-      this.loadProviders();
-=======
       this.loadProviders();
       this.loadProducts();
->>>>>>> fae97e2a8a5a42e5c6acb184a9606b559270ba47
       this.loadShoppings();
     }
 

@@ -31,15 +31,16 @@
                 <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
                     <label for="nombreCategoria">Nombre categoria</label>
                     <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria" required
-                        autofocus />
+                        maxlength="20" autofocus />
                     <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
                         {{ getErrorMessage('nombreCategoria') }}
                     </small>
                 </div>
+                
 
                 <div class="field" [ngClass]="{'error': isFieldInvalid('descripcionCategoria')}">
                     <label for="descripcionCategoria">Descripcion</label>
-                    <input type="text" pInputText id="descripcionCategoria" formControlName="descripcionCategoria" />
+                    <input type="text" pInputText id="descripcionCategoria" formControlName="descripcionCategoria" maxlength="50" />
                     <small class="p-error" *ngIf="isFieldInvalid('descripcionCategoria')">
                         {{ getErrorMessage('descripcionCategoria') }}
                     </small>
