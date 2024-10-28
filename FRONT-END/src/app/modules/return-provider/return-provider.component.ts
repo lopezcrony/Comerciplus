@@ -1,25 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
 
-import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
+import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
+import { ValidationService } from '../../shared/validators/validations.service';
 
 import { ReturnProviderService } from './return-provider.service';
 import { ProvidersService } from '../providers/providers.service';
 import { Proveedor } from '../providers/providers.model';
-import {BarcodesService} from '../barcodes/barcodes.service';
-import {Barcode} from '../barcodes/barcode.model'
-
-
-
-// import { AutoCompleteModule } from 'primeng/autocomplete';
-import { DropdownModule } from 'primeng/dropdown';
+import { BarcodesService } from '../barcodes/barcodes.service';
+import { Barcode } from '../barcodes/barcode.model'
 import { returnProviderModel } from './return-provider.model';
-import { ValidationService } from '../../shared/validators/validations.service';
-import { forkJoin } from 'rxjs';
+import { ProductsService } from '../products/products.service';
 
 @Component({
   selector: 'app-return-provider',
@@ -28,7 +24,6 @@ import { forkJoin } from 'rxjs';
     ...SHARED_IMPORTS,
     CRUDComponent,
     CrudModalDirective,
-    DropdownModule,
   ],
 
   templateUrl: './return-provider.component.html',
@@ -36,28 +31,29 @@ import { forkJoin } from 'rxjs';
 export class ReturnProviderComponent implements OnInit {
 
   providers: Proveedor[] = [];
+  products: any[] = [];
+  code: any[] = [];
+
+  filterCode: Barcode[] = [];
   filterProvider: Proveedor[] = [];
-  code: Barcode[] =[];
-  filterCode: Barcode[] =[];
+
   returnProvider: returnProviderModel[] = [];
   filteredReturnProvider: returnProviderModel[] = [];
-
-  colums: { field: string, header: string }[] = [
-    { field: 'nombreProveedor', header: 'Proveedor' },
-    { field: 'codigoBarra', header: 'Código' },
-    // { field: '#', header: 'Producto' },
-    { field: 'cantidad', header: 'Cantidad' },
-    { field: 'motivoDevolucion', header: '  Motivo' },
-    { field: 'fecha', header: '  fecha' },
-
-
-  ];
 
   returnProviderForm: FormGroup;
 
   showModal = false;
   isEditing = false;
 
+  colums: { field: string, header: string, type: string }[] = [
+    { field: 'nombreProveedor', header: 'Proveedor', type: 'text' },
+    { field: 'codigoBarra', header: 'Código', type: 'text' },
+    { field: 'nombreProducto', header: 'Producto', type: 'text' },
+    { field: 'cantidad', header: 'Cantidad', type: 'text' },
+    { field: 'motivoDevolucion', header: '  Motivo', type: 'text' },
+    { field: 'fecha', header: '  Fecha', type: 'dateTime' },
+  ];
+  
   constructor(
     private returnProviderService: ReturnProviderService,
     private fb: FormBuilder,
@@ -65,7 +61,8 @@ export class ReturnProviderComponent implements OnInit {
     private toastr: ToastrService,
     private validationService: ValidationService,
     private providerService: ProvidersService,
-    private barcodeService :BarcodesService
+    private barcodeService: BarcodesService,
+    private productService: ProductsService
   ) {
     this.returnProviderForm = this.fb.group({
       idProveedor: ['', validationService.getValidatorsForField('returnProvider', 'idProveedor')],
@@ -78,42 +75,42 @@ export class ReturnProviderComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadProviders();
-    this.loadBardCode();
-  }
-  
-  loadReturnProvider() {
-    this.returnProviderService.getReturnProvider().subscribe(data => {
-      this.returnProvider = data.map(repp => {
-        const provider = this.providers.find(p => p.idProveedor === repp.idProveedor)
+    this.loadData();
+  };
 
-        const code=this.code.find(codes=> codes.idCodigoBarra === repp.idCodigoBarra)
+  loadData() {
+    forkJoin({
+      providers: this.providerService.getAllProviders(),
+      products: this.productService.getAllProducts(),
+      barcodes: this.barcodeService.getAllBarcodes(),
+      returnProviders: this.returnProviderService.getReturnProvider()
+    }).subscribe({
+      next: ({ providers, products, barcodes, returnProviders }) => {
+        this.providers = providers;
+        this.products = products;
+        this.code = barcodes.map(c => {
+          const product = this.products.find(p => p.idProducto === c.idProducto);
+          return { ...c, nombreProducto: product?.nombreProducto || 'Desconocido' };
+        });
 
-        return { ...repp, 
-          nombreProveedor: provider ? provider.nombreProveedor : 'Proveedor no encontrado',
+        this.returnProvider = returnProviders.map(repp => {
+          const provider = this.providers.find(p => p.idProveedor === repp.idProveedor);
+          const code = this.code.find(codes => codes.idCodigoBarra === repp.idCodigoBarra);
 
-          codigoBarra: code ? code.codigoBarra : 'Codigo no encontrado'
-         };
-      });
-      this.filteredReturnProvider = this.returnProvider;
+          return {
+            ...repp,
+            nombreProveedor: provider ? provider.nombreProveedor : 'Desconocido',
+            codigoBarra: code ? code.codigoBarra : 'Desconocido',
+            nombreProducto: code ? code.nombreProducto : 'Desconocido'
+          };
+        });
+        this.filteredReturnProvider = this.returnProvider;
+      },
+      error: (err) => {
+        this.toastr.error('Error al cargar los datos.', 'Error');
+      }
     });
   }
-  
-  loadProviders() {
-    this.providerService.getAllProviders().subscribe(data => {
-      this.providers = data
-      // .filter(p => p.estadoProveedor === true);
-      // Una vez cargados los proveedores, cargamos los retornos
-      this.loadReturnProvider();
-    });
-  }
-
-  loadBardCode(){
-    this.barcodeService.getAllBarcodes().subscribe(data=>{
-      this.code=data;
-      this.loadReturnProvider();
-    })
-  } 
 
   openCreateModal() {
     this.isEditing = false;
@@ -160,7 +157,7 @@ export class ReturnProviderComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.toastr.success('Devolucion a proveedor guardada con éxito!', 'Éxito');
-        this.loadReturnProvider();
+        this.loadData();
         this.closeModal();
       },
       error: (error) => {
@@ -190,11 +187,11 @@ export class ReturnProviderComponent implements OnInit {
       returnProviders.estado.toLowerCase().includes(lowerCaseQuery)
     );
 
-    this.filterCode = this.code.filter(code=>
+    this.filterCode = this.code.filter(code =>
       code.codigoBarra.toString().includes(lowerCaseQuery)
     )
 
-    this.filterProvider = this.providers.filter(code=>
+    this.filterProvider = this.providers.filter(code =>
       code.nombreProveedor.toLowerCase().includes(lowerCaseQuery)
     )
   }
@@ -219,6 +216,6 @@ export class ReturnProviderComponent implements OnInit {
         this.toastr.error('Error al actualizar el estado del proveedor', 'Error');
       }
     });
-}
+  }
 
 }

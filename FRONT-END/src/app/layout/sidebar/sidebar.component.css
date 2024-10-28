@@ -1,13 +1,13 @@
 .sidebar {
   background-color: #ffffff;
-  width: 230px;
+  width: 210px;
   padding: 1rem;
   position: fixed;
-  height: calc(100vh - 5rem);
+  height: calc(100vh - 4rem);
   z-index: 999;
   overflow-y: auto;
   user-select: none;
-  top: 4.5rem;
+  top: 3.5rem;
   transform: translateX(0);
   opacity: 1;
   border-radius: 12px;

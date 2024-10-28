@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
@@ -31,9 +31,9 @@ export class CategoriesComponent implements OnInit {
   filteredCategories: Categorie[] = [];
 
   //esta es la info que se muestra en el crud, y los campos (field donde se muestran(llamalos como en el modelo) ) y el (header el nombre del campo)
-  columns: { field: string, header: string }[] = [
-    { field: 'nombreCategoria', header: 'Nombre' },
-    { field: 'descripcionCategoria', header: 'Descripción' }  
+  columns: { field: string, header: string, type: string }[] = [
+    { field: 'nombreCategoria', header: 'Nombre', type: 'text' },
+    { field: 'descripcionCategoria', header: 'Descripción', type: 'text' }  
   ];
 
   //aqui se define la variable del formulario

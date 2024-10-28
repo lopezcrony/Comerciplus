@@ -21,7 +21,7 @@
 
 
   <div class="table-container">
-    <p-table [value]="items" [tableStyle]="{'min-width': '50rem', 'margin': '0 auto', 'text-align': 'center'}"
+    <p-table [value]="items" [tableStyle]="{'min-width': '50rem', 'margin': '0', 'text-align': 'center'}"
       sortMode="multiple" [paginator]="true" [rows]="5" [showCurrentPageReport]="true"
       currentPageReportTemplate="Mostrando {last} de {totalRecords} registros" [rowsPerPageOptions]="[5, 10, 25]">
 
@@ -41,20 +41,29 @@
 
       <!-- Cuerpo de la tabla -->
       <ng-template pTemplate="body" let-item>
-        <tr>
-          <td *ngFor="let col of columns"
-            [style]="{'word-wrap': 'break-word', 'white-space': 'normal', 'text-align': 'center'}">
-            <!-- Valida si el valor es una URL de imagen -->
-            <ng-container *ngIf="col.field === 'imagenProducto'; else textContent">
-              <img *ngIf="item[col.field]" [src]="getImageUrl(item.idProducto)" alt="{{item[col.field]}}"
-                class="w-24 h-24 object-cover" />
+        <tr [ngClass]="{'anulado-row': item[statusField] === false}">
+
+          <td *ngFor="let col of columns" [style]="{'word-wrap': 'break-word', 'white-space': 'normal', 'text-align': 'center'}">
+                  
+            <ng-container [ngSwitch]="col.type">
+              <!-- Para formato de fecha -->
+              <span *ngSwitchCase="'date'">{{ item[col.field] | date: 'shortDate' }}</span>
+
+              <!-- Para formato de fecha y hora-->
+              <span *ngSwitchCase="'dateTime'">{{ item[col.field] | date: 'short' }}</span>
+      
+              <!-- Para formato de moneda -->
+              <span *ngSwitchCase="'currency'">{{ item[col.field] | currency }}</span>
+      
+              <!-- Mostrar imagen si es tipo image -->
+              <img *ngSwitchCase="'image'" [src]="getImageUrl(item.idProducto)" alt="{{item[col.field]}}" class="w-12 h-12 object-cover" />
+      
+              <!-- Mostrar texto normal  -->
+              <span *ngSwitchDefault>{{ item[col.field] }}</span>
             </ng-container>
-
-            <ng-template #textContent>
-              {{item[col.field]}}
-            </ng-template>
-
+      
           </td>
+
           <td *ngIf="SelectChangeStatus" [style]="{'text-align': 'center'}">
             <div class="flex justify-center items-center">
               <!-- Reemplazamos el botón por el select -->
@@ -68,25 +77,26 @@
 
             </div>
           </td>
-
+          <!-- Botón para abonar (Créditos) -->
           <td *ngIf="canInstallment" [style]="{'text-align': 'center'}">
             <button *ngIf="canInstallment" pButton pRipple icon="pi pi-money-bill"
               class="p-button-rounded p-button-success p-button-outlined p-button-sm mr-2"
               (click)="onInstallment(item)"></button>
           </td>
 
-
+          <!-- Botón para cambiar estado (Activo - Inactivo) -->
           <td *ngIf="canChangeStatus" [style]="{'text-align': 'center'}">
             <div class="flex justify-center items-center">
               <p-button [rounded]="true" [label]="getStatus(item) ? 'Activo' : 'Inactivo'"
                 [styleClass]="getStatus(item) ? 'true-chip tipo-chip' : 'false-chip tipo-chip'"
-                (onClick)="confirmChangeStatus(item)"></p-button>
+                (onClick)="confirmChangeStatus(item)" pTooltip="Cambiar Estado"></p-button>
             </div>
           </td>
 
-          <td *ngIf="canChangeStatusSales" [style]="{'text-align': 'center'}">
+          <!-- Botón para visualizar el estado actual (Compras y Ventas) -->
+          <td *ngIf="canStatus" [style]="{'text-align': 'center'}">
             <div class="flex justify-center items-center">
-              <p-button [rounded]="true" [label]="getStatus(item) ? 'Activo' : 'Inactivo'"
+              <p-button [rounded]="true" [label]="getStatus(item) ? 'Vigente' : 'Anulado'"
                 [styleClass]="getStatus(item) ? 'true-chip tipo-chip' : 'false-chip tipo-chip'"></p-button>
             </div>
           </td>
@@ -94,23 +104,25 @@
 
           <td [style]="{'text-align': 'center'}">
             <div class="flex justify-center">
+              <!-- Botón para Editar -->
               <button *ngIf="canEdit" pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-info p-button-outlined p-button-sm mr-2"
-                (click)="onEdit(item)"></button>
+                class="p-button-rounded p-button-info p-button-outlined p-button-sm mr-2" (click)="onEdit(item)"
+                pTooltip="Editar"></button>
+              <!-- Botón para Eliminar -->
               <button *ngIf="canDelete" pButton pRipple icon="pi pi-trash"
-                class="p-button-rounded p-button-danger p-button-outlined p-button-sm mr-2"
-                (click)="onDelete(item)"></button>
+                class="p-button-rounded p-button-danger p-button-outlined p-button-sm mr-2" (click)="onDelete(item)"
+                pTooltip="Eliminar"></button>
+              <!-- Botón para Ver el Detalle -->
               <button *ngIf="canSeeDetail" pButton pRipple icon="pi pi-eye"
-                class="p-button-rounded p-button-warning p-button-outlined p-button-sm mr-2"
-                (click)="onDetail(item)"></button>
-              <button *ngIf="canCancel && item.estado !== false" pButton pRipple icon="pi pi-times"
-                class="p-button-rounded p-button-danger p-button-outlined p-button-sm"
-                (click)="onCancel(item)"></button>
-                <button *ngIf="canCancelSale && item.estadoVenta !== false" pButton pRipple icon="pi pi-times"
-                class="p-button-rounded p-button-danger p-button-outlined p-button-sm"
-                (click)="onCancel(item)"></button>
+                class="p-button-rounded p-button-warning p-button-outlined p-button-sm mr-2" (click)="onDetail(item)"
+                pTooltip="Ver Detalle"></button>
+              <!-- Botón para Anular -->
+              <button *ngIf="canCancel && item[statusField] !== false" pButton pRipple icon="pi pi-times"
+                class="p-button-rounded p-button-danger p-button-outlined p-button-sm" (click)="onCancel(item)"
+                pTooltip="Anular"></button>
             </div>
           </td>
+
         </tr>
       </ng-template>
     </p-table>

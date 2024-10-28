@@ -1,19 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { DropdownModule } from 'primeng/dropdown';
-import { AlertsService } from '../../shared/alerts/alerts.service';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
+import { AlertsService } from '../../shared/alerts/alerts.service';
+import { ValidationService } from '../../shared/validators/validations.service';
 
-import { UsersService } from './users.service';
-import { RolesService } from '../roles/roles.service';
 import { User } from './users.model';
 import { Role } from '../roles/roles.model';
-import { ValidationService } from '../../shared/validators/validations.service';
-import { FloatLabelModule } from 'primeng/floatlabel';
+import { UsersService } from './users.service';
+import { RolesService } from '../roles/roles.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-users',
@@ -23,21 +22,20 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     ...SHARED_IMPORTS,
     CRUDComponent,
     CrudModalDirective,
-    DropdownModule,
-    FloatLabelModule
   ],
 })
+
 export class UsersComponent implements OnInit {
   users: User[] = [];
   filteredUsers: User[] = [];
   roles: Role[] = [];
   columns = [
-    { field: 'nombreRol', header: 'Rol' },
-    { field: 'cedulaUsuario', header: 'Cédula' },
-    { field: 'nombreUsuario', header: 'Nombre' },
-    { field: 'apellidoUsuario', header: 'Apellido' },
-    { field: 'telefonoUsuario', header: 'Teléfono' },
-    { field: 'correoUsuario', header: 'Correo' },
+    { field: 'nombreRol', header: 'Rol', type: 'text' },
+    { field: 'cedulaUsuario', header: 'Cédula', type: 'text' },
+    { field: 'nombreUsuario', header: 'Nombre', type: 'text' },
+    { field: 'apellidoUsuario', header: 'Apellido', type: 'text' },
+    { field: 'telefonoUsuario', header: 'Teléfono', type: 'text' },
+    { field: 'correoUsuario', header: 'Correo', type: 'text' },
   ];
   userForm: FormGroup;
   showModal = false;
@@ -65,8 +63,21 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadRoles();
-    this.loadUsers();
+    this.loadData();
+  }
+
+  loadData() {
+    forkJoin({
+      roles: this.roleService.getAllRoles(),
+      users: this.userService.getAllUsers()
+    }).subscribe(({ roles, users }) => {
+      this.roles = roles.filter(r => r.estadoRol === true);
+      this.users = users.map((user: User) => {
+        const role = this.roles.find(r => r.idRol === user.idRol)!;
+        return { ...user, nombreRol: role.nombreRol };
+      });
+      this.filteredUsers = this.users;
+    });
   }
 
   loadRoles() {
@@ -75,16 +86,6 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  loadUsers() {
-    this.userService.getAllUsers().subscribe(data => {
-      this.users = data.map(user => {
-        const role = this.roles.find(r => r.idRol === user.idRol)!;
-        return { ...user, nombreRol: role.nombreRol };
-      });
-      this.filteredUsers = this.users;
-    });
-  }
-  
   openCreateModal() {
     this.isEditing = false;
     this.userForm.reset({ estadoUsuario: true });
@@ -139,7 +140,7 @@ export class UsersComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.toastr.success('¡Usuario guardado con éxito!', 'Éxito');
-        this.loadUsers();
+        this.loadData();
         this.closeModal();
       },
       error: () => this.toastr.error('Error al guardar el usuario', 'Error')
@@ -151,7 +152,7 @@ export class UsersComponent implements OnInit {
       `¿Estás seguro de eliminar a ${user.nombreUsuario} ${user.apellidoUsuario}?`,
       () => this.userService.deleteUser(user.idUsuario).subscribe(() => {
         this.toastr.success('Usuario eliminado exitosamente', 'Éxito');
-        this.loadUsers();
+        this.loadData();
 
       })
 

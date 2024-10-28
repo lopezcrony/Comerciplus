@@ -3,10 +3,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { environment } from '../../../environments/environment'; 
-
+import { environment } from '../../../environments/environment';
 import { Client } from './client.model';
-
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,7 @@ import { Client } from './client.model';
 export class ClientService {
   private apiUrl = `${environment.apiUrl}/clientes`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   getAllClients(): Observable<Client[]> {
     return this.http.get<Client[]>(this.apiUrl).pipe(
@@ -45,13 +44,20 @@ export class ClientService {
       catchError(this.handleError)
     );
   }
-  
+
   deleteClient(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }  
+  }
 
-  private handleError(error: HttpErrorResponse) {
-    console.error('Ocurrió un error:', error);
-    return throwError('Algo salió mal; por favor, intente nuevamente más tarde.');
+private handleError(error: HttpErrorResponse) {
+    let errorMessage: string;
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente o de la red
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = `Error: ${error.error.message}`;
+    }
+    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 }

@@ -30,7 +30,7 @@ const loginUser = async (correoUsuario, claveUsuario) => {
       correoUsuario: user.correoUsuario,
     },
     SECRET_KEY,
-    { expiresIn: "1h" }
+    { expiresIn: "18h" }
   );
 
   return {
@@ -40,6 +40,7 @@ const loginUser = async (correoUsuario, claveUsuario) => {
     user: {
       idUsuario: user.idUsuario,
       nombreUsuario: user.nombreUsuario,
+      apellidoUsuario: user.apellidoUsuario,
       correoUsuario: user.correoUsuario,
       idRol: user.idRol,
     },

@@ -9,7 +9,7 @@ router
     .get('/:id', shoppingController.getOneShopping)
     .post('/', validateShopping, shoppingController.createShopping)
     .delete('/:id', shoppingController.deleteOneShopping)
-    .patch('/:id', shoppingController.updateShoppingStatus)
-    // .patch('/:id', shoppingController.cancelShopping)
+    // .patch('/:id', shoppingController.updateShoppingStatus)
+    .put('/:id', shoppingController.cancelShopping)
 
 module.exports = router;

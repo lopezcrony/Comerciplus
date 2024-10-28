@@ -21,6 +21,9 @@ const Roles = sequelize.define('Roles', {
     defaultValue: true
   }
 }, {
+  defaultScope: {
+    order: [['idRol', 'DESC']]
+  },
   tableName: 'roles',
   timestamps: false
 });

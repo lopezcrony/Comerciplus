@@ -24,6 +24,9 @@ const Credito = sequelize.define('Credito', {
         }
     }
 }, {
+    defaultScope: {
+        order: [['idCredito', 'DESC']],  // Aplicar orden descendente por defecto
+    },
     tableName: 'creditos',
     timestamps: false
 });

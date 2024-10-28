@@ -28,6 +28,9 @@ const CategoriaProducto = sequelize.define('CategoriaProducto', {
         defaultValue: true,
     },
 }, {
+    defaultScope: {
+        order: [['idCategoria', 'DESC']],
+    },
     tableName: 'categorias_productos',
     timestamps: false,
 });

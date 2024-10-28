@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment'; 
 import { Categorie } from './categories.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class CategoriesService {
   private apiUrl = `${environment.apiUrl}/categorias`; 
 
   //el client de http es el estandar para conectar la base de datos, no es nada del modulo de clientes
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private toastr: ToastrService) { }
 
 
   getAllCategories(): Observable<Categorie[]> {
@@ -49,13 +50,21 @@ export class CategoriesService {
     );
   }
   
-  // Método para eliminar un cliente
   deleteCategorie(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  private handleError(error: HttpErrorResponse) {
-    console.error('Ocurrió un error:', error);
-    return throwError('Algo salió mal; por favor, intente nuevamente más tarde.');
+private handleError(error: HttpErrorResponse) {
+    let errorMessage: string;
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente o de la red
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = `Error: ${error.error.message}`;
+    }
+    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 }

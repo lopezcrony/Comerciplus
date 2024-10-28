@@ -62,6 +62,9 @@ const returnSales = sequelize.define('returnSales', {
         defaultValue: true
       }
 }, {
+    defaultScope: {
+        order: [['idDevolucionVenta', 'DESC']],  // Aplicar orden descendente por defecto
+    },
     tableName: 'devolucionVenta',
     timestamps: false
 });

@@ -50,7 +50,14 @@ export class UsersService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    console.error('Ocurrió un error:', error);
-    return throwError('Algo salió mal; por favor, intente nuevamente más tarde.');
+    let errorMessage: string;
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente o de la red
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = `Error: ${error.error.message}`;
+    }
+    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 }

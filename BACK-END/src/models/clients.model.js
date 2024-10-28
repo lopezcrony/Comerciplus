@@ -12,7 +12,7 @@ const Cliente = sequelize.define('Cliente', {
         unique: {
             name: 'unique_cedulaCliente', // Nombre del índice existente
             msg: 'La cédula del cliente debe ser única.'
-          },
+        },
         allowNull: false
     },
     nombreCliente: {
@@ -36,8 +36,11 @@ const Cliente = sequelize.define('Cliente', {
         defaultValue: true
     }
 }, {
+    defaultScope: {
+        order: [['idCliente', 'DESC']],  // Aplicar orden descendente por defecto
+    },
     tableName: 'clientes', 
-    timestamps: false // Es para integrar las columnas de createdAt/updatedAt
+    timestamps: false
 });
 
 module.exports = Cliente;

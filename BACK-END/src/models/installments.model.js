@@ -31,6 +31,9 @@ const Abono = sequelize.define('Abono', {
         defaultValue: true
     }
 }, {
+    defaultScope: {
+        order: [['idAbono', 'DESC']],  // Aplicar orden descendente por defecto
+    },
     tableName: 'abonos',
     timestamps: false
 });

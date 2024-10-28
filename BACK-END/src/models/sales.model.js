@@ -24,7 +24,11 @@ const Sales= sequelize.define('ventas', {
         type: DataTypes.BOOLEAN,
         defaultValue: true
       }
-}, {tableName:'ventas',
+}, {
+    defaultScope: {
+        order: [['idVenta', 'DESC']],  // Aplicar orden descendente por defecto
+    },
+    tableName:'ventas',
     timestamps:false
 });
 

@@ -37,6 +37,10 @@ const DetalleCredito = sequelize.define('detallecredito', {
         allowNull: false
     },
 }, {
+    
+    defaultScope: {
+        order: [['idDetalleCredito', 'DESC']],  // Aplicar orden descendente por defecto
+    },
     tableName: 'detalle_credito',
     timestamps: true 
 });

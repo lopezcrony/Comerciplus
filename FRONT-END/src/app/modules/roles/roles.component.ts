@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { RolesService } from './roles.service';
-import { PermissionsService } from './permissions.service';
-import { Role, Permission } from './roles.model';
+
 import { ValidationService } from '../../shared/validators/validations.service';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
+
+import { RolesService } from './roles.service';
+import { PermissionsService } from './permissions.service';
+import { Role, Permission } from './roles.model';
 
 @Component({
   selector: 'app-roles',
@@ -25,7 +27,7 @@ export class RolesComponent implements OnInit {
   roles: Role[] = [];
   permissions: Permission[] = [];
   columns = [
-    { field: 'nombreRol', header: 'Nombre' },
+    { field: 'nombreRol', header: 'Nombre', type: 'text' },
   ];
   rolesForm: FormGroup;
   showModal = false;

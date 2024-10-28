@@ -48,6 +48,9 @@ const Producto = sequelize.define('Producto', {
     defaultValue: true,
   },
 }, {
+  defaultScope: {
+    order: [['idProducto', 'DESC']],
+  },
   tableName: 'productos',
   timestamps: false,
 });
@@ -61,6 +64,11 @@ Producto.associate = (models) => {
     Producto.hasMany(models.detalleVenta, {
       foreignKey: 'idDetalleVenta',
       as: 'detalleVenta'
+    });
+
+    Producto.hasMany(models.CodigoBarra, {
+      foreignKey: 'idProducto',
+      as: 'producto'
     });
 };
 

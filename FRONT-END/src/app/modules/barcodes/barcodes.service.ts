@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Barcode } from './barcode.model';
 import { catchError, Observable, throwError } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class BarcodesService {
   private apiUrl = `${environment.apiUrl}/codigo_barra`; 
 
   
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private toastr: ToastrService) { }
 
 
   getAllBarcodes(): Observable<Barcode[]> {
@@ -27,8 +28,22 @@ export class BarcodesService {
     );
   }
 
-  private handleError(error: HttpErrorResponse) {
-    console.error('Ocurrió un error:', error);
-    return throwError('Algo salió mal; por favor, intente nuevamente más tarde.');
+  // Función parar obtener un producto por su código de barras
+  getProductByBarcode(barcode: string): any {
+    return this.http.get(`${this.apiUrl}/codigo/${barcode}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+private handleError(error: HttpErrorResponse) {
+    let errorMessage: string;
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente o de la red
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = `Error: ${error.error.message}`;
+    }
+    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
 }

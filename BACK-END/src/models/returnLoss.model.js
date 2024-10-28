@@ -36,7 +36,11 @@ const returnLoss=sequelize.define('returnLoss',{
         },
     },
     
-},{tableName:'darDeBaja',
+},{
+    defaultScope: {
+        order: [['idDevolucionDeBaja', 'DESC']],  // Aplicar orden descendente por defecto
+    },
+    tableName:'darDeBaja',
     timestamps:false
 });
 

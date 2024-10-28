@@ -1,5 +1,6 @@
-import { ClientService } from './clients.service';
-import { Client } from './client.model';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 import { ValidationService } from '../../shared/validators/validations.service';
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
@@ -7,9 +8,8 @@ import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { Client } from './client.model';
+import { ClientService } from './clients.service';
 import { CreditsService } from '../credits/credits.service';
 
 @Component({
@@ -30,11 +30,11 @@ export class ClientsComponent implements OnInit {
   filteredClients: Client[] = [];
   historyItems: any[] = [];
 
-  columns: { field: string, header: string }[] = [
-    { field: 'cedulaCliente', header: 'Cédula' },
-    { field: 'nombreCliente', header: 'Nombre' },
-    { field: 'apellidoCliente', header: 'Apellido' },
-    { field: 'telefonoCliente', header: 'Teléfono' }
+  columns: { field: string, header: string, type: string }[] = [
+    { field: 'cedulaCliente', header: 'Cédula', type: 'text' },
+    { field: 'nombreCliente', header: 'Nombre', type: 'text' },
+    { field: 'apellidoCliente', header: 'Apellido', type: 'text' },
+    { field: 'telefonoCliente', header: 'Teléfono', type: 'text' },
   ];
 
   clientForm: FormGroup;

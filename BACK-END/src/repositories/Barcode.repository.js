@@ -9,7 +9,9 @@ const findAllBarcodes = async () => {
 };
 
 const findBarcodeByCode = async (codigo) => {
-    return await Barcode.findOne({ where: { codigoBarra: codigo } });
+    return await Barcode.findOne({ 
+        where: { codigoBarra: codigo },
+    });
 };
 
 const findBarcodeById = async (id) => {

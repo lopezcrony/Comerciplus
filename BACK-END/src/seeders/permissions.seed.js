@@ -6,42 +6,40 @@ const predefinedPermissions = [
   { nombrePermiso: 'Eliminar Rol' },
   { nombrePermiso: 'Editar Rol' },
 
+  { nombrePermiso: 'Crear Usuario' },
+  { nombrePermiso: 'Editar Usuario' },
+  { nombrePermiso: 'Eliminar Usuario' },
+
   { nombrePermiso: 'Crear Venta' },
-  { nombrePermiso: 'Eliminar Venta' },
-  { nombrePermiso: 'Editar Venta' },
-  { nombrePermiso: 'Ver Detalle de Venta' },
+  { nombrePermiso: 'Anular Venta' },	
 
   { nombrePermiso: 'Crear Proveedor' },
-  { nombrePermiso: 'Eliminar Proveedor' },
-  { nombrePermiso: 'Editar Proveedor' },
+  { nombrePermiso: 'Editar Proveedor' },	
 
   { nombrePermiso: 'Crear Producto' },
   { nombrePermiso: 'Eliminar Producto' },
-  { nombrePermiso: 'Editar Producto' },
+  { nombrePermiso: 'Editar Producto' },	
+  { nombrePermiso: 'Descargar Informe Producto' },
 
   { nombrePermiso: 'Crear Crédito' },
-  { nombrePermiso: 'Eliminar Crédito' },
   { nombrePermiso: 'Editar Crédito' },
-
-  { nombrePermiso: 'Crear Usuario' },
-  { nombrePermiso: 'Eliminar Usuario' },
-  { nombrePermiso: 'Editar Usuario' },
+  { nombrePermiso: 'Anular Abono' },	
 
   { nombrePermiso: 'Crear Cliente' },
-  { nombrePermiso: 'Eliminar Cliente' },
   { nombrePermiso: 'Editar Cliente' },
+  { nombrePermiso: 'Descargar Informe Cliente' },
 
-  { nombrePermiso: 'Crear Categoria' },
-  { nombrePermiso: 'Eliminar Categoria' },
-  { nombrePermiso: 'Editar Categoria' },
+  { nombrePermiso: 'Crear Categoría' },
+  { nombrePermiso: 'Eliminar Categoría' },
+  { nombrePermiso: 'Editar Categoría' },
 
   { nombrePermiso: 'Crear Compra' },
-  { nombrePermiso: 'Eliminar Compra' },
-  { nombrePermiso: 'Editar Compra' },
+  { nombrePermiso: 'Anular Compra' },
+  { nombrePermiso: 'Descargar Informe Compra' },		
 
   { nombrePermiso: 'Crear Devolución' },
-  { nombrePermiso: 'Eliminar Devolución' },
-  { nombrePermiso: 'Editar Devolución' }
+  { nombrePermiso: 'Anular Devolución' },
+  { nombrePermiso: 'Cambiar Estado Devolución' }
   
 ];
 

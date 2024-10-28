@@ -10,7 +10,7 @@ import { lossValidationConfig } from '../../modules/loss/loss.validations';
 import { creditsValidationConfig } from '../../modules/credits/credits.validations';
 import { returnProviderValidationConfig } from '../../modules/return-provider/return-provider.validations';
 import { returnSaleValidationConfig } from '../../modules/return-sale/retur-sale.validations';
-import { loginValidation } from '../../auth/login/login.validation';
+import { loginValidation } from '../../Auth/login/login.validation';
 
 export const validationsConfig: ModuleValidationConfig = {
   

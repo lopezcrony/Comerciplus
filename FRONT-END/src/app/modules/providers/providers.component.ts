@@ -1,5 +1,6 @@
-import { ProvidersService } from './providers.service';
-import { Proveedor } from './providers.model';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
@@ -7,9 +8,8 @@ import { CRUDComponent } from '../../shared/crud/crud.component';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 import { ValidationService } from '../../shared/validators/validations.service';
 
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { ProvidersService } from './providers.service';
+import { Proveedor } from './providers.model';
 
 @Component({
   selector: 'app-providers',
@@ -27,17 +27,17 @@ export class ProvidersComponent implements OnInit {
   providers: Proveedor[] = [];
   // Aquí se guardan los proveedores filtrados según la búsqueda
   filteredProviders: Proveedor[] = [];
-
-  columns: { field: string, header: string }[] = [
-    { field: 'nitProveedor', header: 'NIT' },
-    { field: 'nombreProveedor', header: 'Nombre' },
-    { field: 'direccionProveedor', header: 'Dirección' },
-    { field: 'telefonoProveedor', header: 'Teléfono' }
-  ];
   providerForm: FormGroup;
   showModal = false;
   isEditing = false;
 
+  columns: { field: string, header: string, type: string }[] = [
+    { field: 'nitProveedor', header: 'NIT', type: 'text' },
+    { field: 'nombreProveedor', header: 'Nombre', type: 'text' },
+    { field: 'direccionProveedor', header: 'Dirección', type: 'text' },
+    { field: 'telefonoProveedor', header: 'Teléfono', type: 'text' },
+  ];
+  
   constructor(
     private providersService: ProvidersService,
     private fb: FormBuilder,
@@ -56,15 +56,12 @@ export class ProvidersComponent implements OnInit {
     });
   }
 
-  // Cargar la lista de proveedores
   loadProviders() {
     this.providersService.getAllProviders().subscribe(data => {
       this.providers = data;
       this.filteredProviders = data;
     });
   }
-
-
 
   ngOnInit() {
     this.loadProviders();
@@ -74,25 +71,27 @@ export class ProvidersComponent implements OnInit {
     this.isEditing = false;
     this.providerForm.reset({ estadoProveedor: true });
     this.showModal = true;
-  }
-  cancelModalMessage() {
-    this.alertsService.menssageCancel()
-  }
+  };
+
   openEditModal(provider: Proveedor) {
     this.isEditing = true;
     this.providerForm.patchValue(provider);
     this.showModal = true;
-  }
+  };
+
+  cancelModalMessage() {
+    this.alertsService.menssageCancel()
+  };
 
   closeModal() {
     this.showModal = false;
     this.providerForm.reset();
-  }
+  };
 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.providerForm.get(fieldName);
     return !!(field?.invalid && (field.touched || field.dirty));
-  }
+  };
 
   getErrorMessage(fieldName: string): string {
     const control = this.providerForm.get(fieldName);
@@ -101,19 +100,17 @@ export class ProvidersComponent implements OnInit {
       return this.validationService.getErrorMessage('providers', fieldName, errorKey);
     }
     return '';
-  }
+  };
 
   private markFormFieldsAsTouched() {
     Object.values(this.providerForm.controls).forEach(control => control.markAsTouched());
-  }
+  };
 
   // Crea o actualiza un proveedor
   saveProvider() {
 
-    if (this.providerForm.invalid) {
-      this.markFormFieldsAsTouched();
-      return;
-    }
+    if (this.providerForm.invalid) { return this.markFormFieldsAsTouched(); }
+
     const providerData = this.providerForm.value
     const request = this.isEditing
       ? this.providersService.updateProvider(providerData)
@@ -139,7 +136,7 @@ export class ProvidersComponent implements OnInit {
       provider.direccionProveedor.toLowerCase().includes(query.toLowerCase()) ||
       provider.telefonoProveedor.toLowerCase().includes(query.toLowerCase())
     );
-  }
+  };
 
   changeProviderStatus(updatedProvider: Proveedor) {
     const estadoCliente = updatedProvider.estadoProveedor ?? false;
@@ -158,7 +155,6 @@ export class ProvidersComponent implements OnInit {
         this.toastr.error('Error al actualizar el estado del proveedor', 'Error');
       }
     });
-  }
+  };
 
-  exportProviders() { }
-}
+};

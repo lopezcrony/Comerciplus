@@ -1,6 +1,5 @@
     const { DataTypes } = require('sequelize');
     const { sequelize } = require('../config/db');
-    const CodigoBarra = require('./Barcode.model');
 
     const returnProvider = sequelize.define('returnProvider', {
         idDevolucionLocal: {
@@ -50,6 +49,9 @@
             defaultValue: "Por notificar"
         }
     }, {
+        defaultScope: {
+            order: [['idDevolucionLocal', 'DESC']],  // Aplicar orden descendente por defecto
+        },
         tableName: 'devolucionLocal',
         timestamps: false
     });

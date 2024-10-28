@@ -39,6 +39,9 @@ const detalleVenta = sequelize.define('detalleVenta', {
         }
     }
 }, {
+    defaultScope: {
+        order: [['idDetalleVenta', 'DESC']],  // Aplicar orden descendente por defecto
+    },
     tableName: 'detalleVenta',
     timestamps: false
 });

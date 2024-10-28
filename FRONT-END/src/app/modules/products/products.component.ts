@@ -1,18 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { forkJoin } from 'rxjs';
 
-import { SHARED_IMPORTS } from '../../shared/shared-imports'; // Archivo para las importaciones generales
+import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-import { FileUploadModule } from 'primeng/fileupload';
 import { AlertsService } from '../../shared/alerts/alerts.service';
+import { ValidationService } from '../../shared/validators/validations.service';
 
 import { Product } from "../products/products.model";
 import { ProductsService } from "../products/products.service";
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { DropdownModule } from 'primeng/dropdown';
-import { ValidationService } from '../../shared/validators/validations.service';
 import { CategoriesService } from '../categories/categories.service';
 import { Categorie } from '../categories/categories.model';
 
@@ -23,9 +21,6 @@ import { Categorie } from '../categories/categories.model';
     ...SHARED_IMPORTS,
     CRUDComponent,
     CrudModalDirective,
-    AutoCompleteModule,
-    DropdownModule,
-    FileUploadModule
   ],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss']
@@ -34,27 +29,33 @@ import { Categorie } from '../categories/categories.model';
 
 export class ProductsComponent implements OnInit {
 
-
   products: Product[] = [];
   barcodes: any[] = [];
   filteredProducts: Product[] = [];
   categories: Categorie[] = [];
 
-  columns: { field: string, header: string }[] = [
-    { field: 'nombreProducto', header: 'Producto' },
-    { field: 'imagenProducto', header: 'Imágen' },
-    { field: 'nombreCategoria', header: 'Categoría' },
-    { field: 'precioVenta', header: 'Precio venta' },
-    { field: 'stock', header: 'Stock' }
+  columns: { field: string, header: string, type: string }[] = [
+    { field: 'nombreProducto', header: 'Producto', type: 'text' },
+    { field: 'imagenProducto', header: 'Imágen', type: 'image' },
+    { field: 'nombreCategoria', header: 'Categoría', type: 'text' },
+    { field: 'precioVenta', header: 'Precio venta', type: 'currency' },
+    { field: 'stock', header: 'Stock', type: 'text' },
   ];
 
   productForm: FormGroup;
   categorieForm: FormGroup;
+
+  showModal: boolean = false;
+  viewModal: boolean = false;
+  isEditing: boolean = false;
+  categoryModalVisible: boolean = false;
+
   selectedFile: File | null = null;
-  showModal = false;
-  viewModal = false;
-  isEditing = false;
+  selectedProduct!: any;
+
   baseUrl = 'http://localhost:3006/uploads';
+
+  newCategory = { name: '', description: '' };
 
   //constructor para importar el service y validar campos de formulario
   constructor(
@@ -74,8 +75,8 @@ export class ProductsComponent implements OnInit {
       precioVenta: ['', this.validationService.getValidatorsForField('products', 'precioVenta')],
       estadoProducto: [true],
     });
+
     this.categorieForm = this.fb.group({
-      //validar categoría
       idCategoria: [null],
       nombreCategoria: ['', this.validationService.getValidatorsForField('categories', 'nombreCategoria')],
       descripcionCategoria: ['', this.validationService.getValidatorsForField('categories', 'descripcionCategoria')],
@@ -83,15 +84,93 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  categoryModalVisible: boolean = false;
-  newCategory = { name: '', description: '' };
-  selectedProduct: Product | undefined;
-  selectedCategory: Categorie | undefined;
-
-
-  showCategoryModal() {
-    this.categoryModalVisible = true;
+  loadData() {
+    forkJoin({
+      categories: this.categorieService.getAllCategories(),
+      products: this.productService.getAllProducts()
+    }).subscribe({
+      next: ({ categories, products }) => {
+        this.categories = categories.filter(category => category.estadoCategoria === true);
+        this.products = products.map(product => {
+          const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
+          return { ...product, nombreCategoria: category.nombreCategoria };
+        });
+        this.filteredProducts = this.products;
+      },
+      error: (error) => {
+        this.toastr.error('Error al cargar los datos.', 'Error');
+        console.error('Error al cargar los datos:', error);
+      }
+    });
   }
+
+  //funcion inicializadora(todo lo de aqui se inicia de una)
+  ngOnInit() {
+    this.loadData();
+  }
+
+  openCreateModal() {
+    this.isEditing = false;
+    this.productForm.reset({ estadoProducto: true });
+    this.showModal = true;
+  };
+
+  openEditModal(product: Product) {
+    this.isEditing = true;
+    this.productForm.patchValue(product);
+    this.showModal = true;
+  };
+
+  openCategoryModal() {
+    this.categoryModalVisible = true;
+  };
+
+  openShowModal(product: Product) {
+    this.selectedProduct = product;
+    this.viewModal = true;
+
+    this.productService.getBarcodeByProduct(product.idProducto).subscribe({
+      next: (data) => {
+        this.barcodes = data;
+      },
+      error: (err) => {
+        this.toastr.error('Error al cargar los códigos de barra.');
+      }
+    });
+  };
+
+  getNameCategory(id: number) {
+    const category = this.categories.find(c => c.idCategoria === id);
+    return category.nombreCategoria;
+  }
+
+  //cierra la modal y ya sapo
+  closeModal() {
+    this.showModal = false;
+    this.productForm.reset();
+  }
+
+  cancelModalMessage() {
+    this.alertsService.menssageCancel()
+  };
+
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.productForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  };
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.productForm.get(fieldName);
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('products', fieldName, errorKey);
+    }
+    return '';
+  };
+  
+  private markFormFieldsAsTouched() {
+    Object.values(this.productForm.controls).forEach(control => control.markAsTouched());
+  };
 
   saveCategory() {
     if (this.categorieForm.invalid) {
@@ -105,125 +184,28 @@ export class ProductsComponent implements OnInit {
       next: () => {
         this.toastr.success('Categoría creada exitosamente.', 'Éxito');
         this.categoryModalVisible = false;
-        this.loadCategories();
+        this.loadData();
       },
       error: (error) => {
         this.toastr.error(error.message, 'Error');
       }
     });
+  };
 
-  }
-
-  loadProducts() {
-    this.productService.getAllProducts().subscribe(data => {
-      this.products = data.map(product => {
-        const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
-        return { ...product, nombreCategoria: category.nombreCategoria };
-      });
-      this.filteredProducts = this.products;
-    });
-}
-
-
-  //funcion para traer las categorias y luego llenar el select de productos
-  loadCategories() {
-    this.categorieService.getAllCategories().subscribe(data => {
-      this.categories = data.filter(category => category.estadoCategoria === true);
-    });
-  }
-
-  getCategoryName(id: any): string {
-    const category = this.categories.find(cat => cat.idCategoria === id);
-    return category ? category.nombreCategoria : 'Desconocida';
-}
-
-
-  //funcion inicializadora(todo lo de aqui se inicia de una)
-  ngOnInit() {
-    this.loadCategories();
-    this.loadProducts();
-  }
-
-
-  //esta abre la modal de crear  y diferencia si se esta creando o editando
-  openCreateModal() {
-    this.isEditing = false;
-    this.productForm.reset({ estadoProducto: true });
-    this.showModal = true;
-  }
-
-
-  //abre la monda de editar y ya
-  openEditModal(product: Product) {
-    this.isEditing = true;
-    this.productForm.patchValue(product);
-    this.showModal = true;
-  }
-
-  openShowModal(product: Product) {
-    // Asigna el producto seleccionado a una variable para usar en la vista
-    this.selectedProduct = product;
-    // Muestra la modal
-    this.viewModal = true;
-
-
-    this.productService.getBarcodeByProduct(product.idProducto).subscribe({
-      next: (data) => {
-        this.barcodes = data;
-      },
-      error: (err) => {
-        this.toastr.error('Error al cargar los códigos de barra.');
-      }
-    });
-  }
-
-  //cierra la modal y ya sapo
-  closeModal() {
-    this.showModal = false;
-    this.productForm.reset();
-  }
-
-  cancelModalMessage() {
-    this.alertsService.menssageCancel()
-  }
-
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.productForm.get(fieldName);
-    return !!(field?.invalid && (field.touched || field.dirty));
-  }
-
-  getErrorMessage(fieldName: string): string {
-    const control = this.productForm.get(fieldName);
-    if (control?.errors) {
-      const errorKey = Object.keys(control.errors)[0];
-      return this.validationService.getErrorMessage('products', fieldName, errorKey);
-    }
-    return '';
-  }
-
-  private markFormFieldsAsTouched() {
-    Object.values(this.productForm.controls).forEach(control => control.markAsTouched());
-  }
-
-  //funcion para guardar o actualizar una categoria
   saveProduct() {
     // Si es edición, deshabilita los campos que no deben ser modificados.
     if (this.isEditing) {
-      this.productForm.get('stock')?.disable();         // Deshabilita 'stock'
-      this.productForm.get('idCategoria')?.disable();   // Deshabilita 'idCategoria'
-      this.productForm.get('nombreCategoria')?.disable(); // Deshabilita 'nombreCategoria'
+      this.productForm.get('stock')?.disable();         
+      this.productForm.get('idCategoria')?.disable();   
+      this.productForm.get('nombreCategoria')?.disable(); 
     } else {
-      // Si es creación, establece el valor por defecto de 'stock' a 0
       this.productForm.patchValue({
         stock: 0
       });
     }
   
     // Válida el formulario antes de enviarlo
-    if (this.productForm.invalid) {
-      this.markFormFieldsAsTouched();
-      return;
-    }
+    if (this.productForm.invalid) { return this.markFormFieldsAsTouched(); }
   
     // Obtener los valores del formulario, incluyendo los deshabilitados
     const productData = this.productForm.getRawValue();
@@ -236,10 +218,10 @@ export class ProductsComponent implements OnInit {
     // Manejo de la respuesta
     request.subscribe({
       next: () => {
-        this.loadProducts();
         this.isEditing
           ? this.toastr.success('Producto actualizado exitosamente.', 'Éxito')
           : this.toastr.success('Producto creado exitosamente.', 'Éxito');
+        this.loadData();
         this.closeModal();
       },
       error: (error) => {
@@ -254,9 +236,7 @@ export class ProductsComponent implements OnInit {
     //el suscribe es un tipo de try catch
     this.productService.deleteProduct(id).subscribe({
       next: () => {
-        //si es exito carga las categorias 
-        this.loadProducts();
-        //toastr para que muestre el tipo de alertica que sale en la pantalla
+        this.loadData();
         this.toastr.success('Producto eliminado exitosamente.', 'Éxito');
       },
       //si es error muestra el error
@@ -270,7 +250,6 @@ export class ProductsComponent implements OnInit {
       }
     });
   }
-
 
   confirmDelete(product: Product) {
     this.alertsService.confirm(
@@ -317,18 +296,11 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-
   // funciones para la carga de imagenes en productos
 
-
-  getImageUrl(productId?: number): string {
-    if (productId === undefined) {
-      return ''; // Retorna una URL vacía o una imagen por defecto
-    }
-    return `http://localhost:3006/uploads/productos/${productId}`;
+  getImageUrl(id: number) {
+    return this.productService.getImageUrl(id);
   }
-
-
 
   onFileSelect(event: any) {
     const file: File = event.files[0];
@@ -351,7 +323,5 @@ export class ProductsComponent implements OnInit {
       });
     }
   }
-
-
 
 }

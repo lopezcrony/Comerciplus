@@ -65,6 +65,12 @@ const models = {
 permissionsRoles.belongsTo(roles, { foreignKey: 'idRol' });
 permissionsRoles.belongsTo(permissions, { foreignKey: 'idPermiso' });
 
+Object.keys(models).forEach((modelName) => {
+  if (models[modelName].associate) {
+      models[modelName].associate(models);
+  }
+});
+
 const connectDb = async () => {
     try {
         await sequelize.sync({ alter: true });

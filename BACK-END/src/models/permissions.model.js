@@ -17,6 +17,9 @@ const Permissions = sequelize.define('Permissions', {
     allowNull: false
   }
 }, {
+  defaultScope: {
+    order: [['idPermiso', 'DESC']]
+  },
   tableName: 'permisos',
   timestamps: false
 });

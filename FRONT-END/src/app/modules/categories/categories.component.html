@@ -1,7 +1,4 @@
-
-
 <!-- PLANTILLA CRUD -->
-<!-- aqui se llaman  las funciones definidas en el component.ts -->
 <app-crud 
     [Module]="'Categorías de Productos'"
     [items]="filteredCategories"
@@ -22,14 +19,14 @@
 
 <!-- FORMULARIOS -->
 <p-dialog [(visible)]="showModal" [style]="{width: '450px'}"
-    [header]="isEditing ? 'Editar Categoria' : 'Crear Categoria'" [modal]="true" class="p-fluid" appCrudModal
+    [header]="isEditing ? 'Editar Categoría' : 'Crear Categoría'" [modal]="true" class="p-fluid" appCrudModal
     [isEditing]="isEditing" (save)="saveCategorie()" (cancel)="closeModal()">
     <ng-template pTemplate="content">
         <form [formGroup]="categorieForm">
             <!-- pa mostrar los campos al frenta -->
             <div class="field-group">
                 <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
-                    <label for="nombreCategoria">Nombre categoria</label>
+                    <label for="nombreCategoria">Nombre Categoría</label>
                     <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria" required
                         maxlength="20" autofocus />
                     <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
@@ -39,8 +36,8 @@
                 
 
                 <div class="field" [ngClass]="{'error': isFieldInvalid('descripcionCategoria')}">
-                    <label for="descripcionCategoria">Descripcion</label>
-                    <input type="text" pInputText id="descripcionCategoria" formControlName="descripcionCategoria" maxlength="50" />
+                    <label for="descripcionCategoria">Descripción</label>
+                    <input type="text" pInputText id="descripcionCategoria" formControlName="descripcionCategoria" />
                     <small class="p-error" *ngIf="isFieldInvalid('descripcionCategoria')">
                         {{ getErrorMessage('descripcionCategoria') }}
                     </small>

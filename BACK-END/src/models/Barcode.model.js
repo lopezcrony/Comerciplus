@@ -20,12 +20,15 @@ const CodigoBarra = sequelize.define('CodigoBarra', {
   codigoBarra: {
     type: DataTypes.STRING(50),
     allowNull: false,
-    unique:{
+    unique: {
       name: 'unique_codigoBarra', // Nombre del índice existente
-            msg: 'El codigo de barra debe ser único.'
+      msg: 'El codigo de barra debe ser único.'
     }
   },
 }, {
+  defaultScope: {
+    order: [['idCodigoBarra', 'DESC']],
+  },
   tableName: 'codigoBarras',
   timestamps: false,
 });
@@ -33,7 +36,7 @@ const CodigoBarra = sequelize.define('CodigoBarra', {
 CodigoBarra.associate = (models) => {
   CodigoBarra.belongsTo(models.Producto, {
     foreignKey: 'idProducto',
-    as: 'productos'
+    as: 'producto'
   });
 
 

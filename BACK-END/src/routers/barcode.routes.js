@@ -6,6 +6,7 @@ router
     .get('/:idProducto', BarcodeController.getAllBarcodesByProduct)
     .get('/', BarcodeController.getAllBarcodes)
     .get('/:id', BarcodeController.getOneBarcode)
+    .get('/codigo/:barcode', BarcodeController.getProductByBarcode)
     .post('/', BarcodeController.createBarcode)
     .put('/:id', BarcodeController.updateBarcode)
     .delete('/:id', BarcodeController.deleteOneBarcode)
