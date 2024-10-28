@@ -27,7 +27,7 @@
                 <div class="field" [ngClass]="{'error': isFieldInvalid('idCategoria')}">
                     <label for="categoria">Categoría</label>
                     <div class="p-inputgroup">
-                        <p-dropdown [options]="categories" formControlName="idCategoria" optionLabel="nombreCategoria"
+                        <p-dropdown [options]="filteredCategories" formControlName="idCategoria" optionLabel="nombreCategoria"
                             optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="false"
                             [virtualScrollItemSize]="38" styleClass="w-full">
                         </p-dropdown>

@@ -32,6 +32,7 @@ export class ProductsComponent implements OnInit {
   barcodes: any[] = [];
   filteredProducts: Product[] = [];
   categories: any[] = [];
+  filteredCategories: any[] = [];
 
   columns: { field: string, header: string, type: string }[] = [
     { field: 'nombreProducto', header: 'Producto', type: 'text' },
@@ -89,7 +90,8 @@ export class ProductsComponent implements OnInit {
       products: this.productService.getAllProducts()
     }).subscribe({
       next: ({ categories, products }) => {
-        this.categories = categories.filter(category => category.estadoCategoria === true);
+        this.categories = categories;
+        this.filteredCategories = categories.filter(category => category.estadoCategoria === true);
         this.products = products.map(product => {
           const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
           return { ...product, nombreCategoria: category.nombreCategoria };
