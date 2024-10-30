@@ -65,12 +65,13 @@ export class RolesService {
   }
 
   private handleError(error: HttpErrorResponse) {
+    let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente
-      this.toastr.error(error.error.message, 'Error');
+      // Error del lado del cliente o de la red
+      errorMessage = `Error: ${error.error.message}`;
     } else {
       // Error del lado del servidor
-      this.toastr.error(error.error.message, 'Error');
+      errorMessage = `Error: ${error.error.message}`;
     }
     return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }

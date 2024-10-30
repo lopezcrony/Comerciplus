@@ -16,10 +16,7 @@
  (detail)="openShowModal($event)">
 </app-crud>
 
-<p-dialog [(visible)]="viewModal" [style]="{width: '600px'}" [modal]="true" class="p-fluid">
-    <ng-template pTemplate="header">
-        Detalles de la Compra
-    </ng-template>
+<p-dialog [(visible)]="viewModal" [style]="{width: '600px'}" [header]="'Detalle de Compra'" [modal]="true" class="p-fluid">
     <ng-template pTemplate="content">
         <!-- Tabla con los detalles de la compra -->
         <p-table [value]="shoppingdetails" [paginator]="true" [rows]="10">

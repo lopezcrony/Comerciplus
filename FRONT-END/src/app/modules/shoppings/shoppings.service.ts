@@ -7,7 +7,6 @@ import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment'; 
 import { Shopping } from "../shoppings/shopping.model";
 import { Shoppingdetails } from '../shoppingdetails/shoppingDetail.model';
-import { ToastrService } from 'ngx-toastr';
 
 
 @Injectable({
@@ -18,7 +17,7 @@ export class ShoppingsService {
   private apiUrl=`${environment.apiUrl}/compras`;
 
 
-  constructor(private http:HttpClient, private toastr: ToastrService) { }
+  constructor(private http:HttpClient) { }
 
 
   getAllShoppings(): Observable<Shopping[]> {
@@ -72,12 +71,13 @@ export class ShoppingsService {
   }
 
   private handleError(error: HttpErrorResponse) {
+    let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente
-      this.toastr.error(error.error.message, 'Error');
+      // Error del lado del cliente o de la red
+      errorMessage = `Error: ${error.error.message}`;
     } else {
       // Error del lado del servidor
-      this.toastr.error(error.error.message, 'Error');
+      errorMessage = `Error: ${error.error.message}`;
     }
     return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
   }
