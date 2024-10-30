@@ -19,6 +19,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { OrderListModule } from 'primeng/orderlist';
 import { CalendarModule } from 'primeng/calendar';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { RippleModule } from 'primeng/ripple';
 
 export const SHARED_IMPORTS = [
   CommonModule,
@@ -41,5 +42,6 @@ export const SHARED_IMPORTS = [
   CheckboxModule,
   OrderListModule,
   CalendarModule,
-  InputSwitchModule
+  InputSwitchModule,
+  RippleModule,
 ];

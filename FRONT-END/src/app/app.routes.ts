@@ -19,8 +19,10 @@ import { RestoreComponent } from './Auth/restore/restore.component';
 import { DetailSaleComponent } from './modules/detailSale/detail-sale.component';
 import { AuthGuard } from './Auth/auth.guard';
 import { LoadingComponent } from './shared/loading/loading.component';
+import { IndexComponent } from './modules/index/index.component';
 
 export const routes: Routes = [
+  { path: 'index', component: IndexComponent},
   { path: 'loading', component: LoadingComponent },
   { path: 'login', component: LoginComponent },
   { path: 'recover', component: RecoverComponent },
@@ -45,7 +47,7 @@ export const routes: Routes = [
       { path: 'shoppings', component: ShoppingsComponent },
       { path: 'shoppingview', component: ShoppinviewComponent },
       { path: 'detailSales', component: DetailSaleComponent },
-      { path: '', redirectTo: 'users', pathMatch: 'full' },
+      // { path: '', redirectTo: 'index', pathMatch: 'full' },
     ]
   },
 ];
