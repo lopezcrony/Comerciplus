@@ -50,10 +50,22 @@ const updateReturnSalesStatus  = async (req, res) => {
     }
 };
 
+const cancelReturnSale = async (req, res) => {    
+    try {
+        const { id } = req.params;
+        await returnSale.cancelReturnSale(id);
+        res.status(200).json({ message: 'Devolución anulada con éxito' });
+    } catch (error) {
+        console.error('Error en el controlador cancelReturnSale:', error.message);
+        res.status(500).json({ message: 'Error al anular la devolución', error: error.message });
+    }
+};
+
 
 module.exports = {
     GetAllReturnSale,
     GetOneReturnSale,
     CreateNewReturnSale,
-    updateReturnSalesStatus
+    updateReturnSalesStatus,
+    cancelReturnSale
 }

@@ -10,5 +10,6 @@ router
     .get('/:id', returnSalesController.GetOneReturnSale)
     .post('/', validateReturnSales, returnSalesController.CreateNewReturnSale)
     .patch('/:id', returnSalesController.updateReturnSalesStatus )
+    .put('/:id', returnSalesController.cancelReturnSale)
 
 module.exports = router;
