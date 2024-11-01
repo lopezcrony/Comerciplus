@@ -93,7 +93,7 @@ export class ProductsComponent implements OnInit {
         this.categories = categories.filter(category => category.estadoCategoria === true);
         this.products = products.map(product => {
           const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
-          return { ...product, nombreCategoria: category.nombreCategoria };
+          return { ...product, nombreCategoria: category?.nombreCategoria };
         });
         this.filteredProducts = this.products;
       },
@@ -184,7 +184,7 @@ export class ProductsComponent implements OnInit {
       next: () => {
         this.toastr.success('Categoría creada exitosamente.', 'Éxito');
         this.categoryModalVisible = false;
-        this.loadData();
+        this.loadDataAll();
       },
       error: (error) => {
         this.toastr.error(error.message, 'Error');
@@ -295,6 +295,27 @@ export class ProductsComponent implements OnInit {
       }
     });
   }
+
+loadDataAll() {
+    forkJoin({
+      categories: this.categorieService.getAllCategories(),
+      products: this.productService.getAllProducts()
+    }).subscribe({
+      next: ({ categories, products }) => {
+        this.categories = categories.filter(category => category);
+        this.products = products.map(product => {
+          const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
+          return { ...product, nombreCategoria: category?.nombreCategoria };
+        });
+        this.filteredProducts = this.products;
+      },
+      error: (error) => {
+        this.toastr.error('Error al cargar los datos.', 'Error');
+        console.error('Error al cargar los datos:', error);
+      }
+    });
+  }
+
 
   // funciones para la carga de imagenes en productos
 
