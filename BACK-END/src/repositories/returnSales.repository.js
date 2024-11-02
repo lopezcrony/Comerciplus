@@ -21,9 +21,17 @@ const updateReturnSalesStatus = async (id, status) => {
     throw new Error('Devolucion por Venta no encontrada');
 };
 
+const cancelReturnSale = async (id) => {
+    return returnSales.update(
+        { estado: false }, 
+        { where: { idDevolucionVenta: id } }
+    );
+};
+
 module.exports = {
     findAllReturnSales,
     findReturnSalesById,
     createreturnSales,
-    updateReturnSalesStatus
+    updateReturnSalesStatus,
+    cancelReturnSale
 };
