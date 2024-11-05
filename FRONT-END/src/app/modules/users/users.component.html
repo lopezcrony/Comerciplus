@@ -35,7 +35,7 @@
 
         <div class="field" [ngClass]="{'error': isFieldInvalid('idRol')}">
           <label for="idRol">Rol</label>
-          <p-dropdown [options]="roles" formControlName="idRol" optionLabel="nombreRol" optionValue="idRol"
+          <p-dropdown [options]="filteredRoles" formControlName="idRol" optionLabel="nombreRol" optionValue="idRol"
             placeholder="Seleccionar rol"></p-dropdown>
           <small class="p-error" *ngIf="isFieldInvalid('idRol')">
             {{ getErrorMessage('idRol') }}
@@ -89,14 +89,13 @@
         </div>
       
         <div class="field" *ngIf="!isEditing">
-          <label for="claveUsuario">Confirmar contraseña</label>
-          <input type="password" pInputText id="confirmarClave" formControlName="claveUsuario" required />
-          <small class="p-error" *ngIf="isFieldInvalid('claveUsuario')">
-            {{ getErrorMessage('claveUsuario') }}
+          <label for="confirmarClave">Confirmar contraseña</label>
+          <input type="password" pInputText id="confirmarClave" formControlName="confirmarClave" required />
+          <small class="p-error" *ngIf="isFieldInvalid('confirmarClave')">
+            Las contraseñas no coinciden
           </small>
         </div>
       </div>
-      
 
     </form>
   </ng-template>

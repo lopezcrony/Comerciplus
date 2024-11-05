@@ -29,6 +29,7 @@ export class UsersComponent implements OnInit {
   users: User[] = [];
   filteredUsers: User[] = [];
   roles: Role[] = [];
+  filteredRoles: Role[] = [];
   columns = [
     { field: 'nombreRol', header: 'Rol', type: 'text' },
     { field: 'cedulaUsuario', header: 'Cédula', type: 'text' },
@@ -57,8 +58,10 @@ export class UsersComponent implements OnInit {
       apellidoUsuario: ['', validationService.getValidatorsForField('users', 'apellidoUsuario')],
       telefonoUsuario: ['', validationService.getValidatorsForField('users', 'telefonoUsuario')],
       correoUsuario: ['', validationService.getValidatorsForField('users', 'correoUsuario')],
-      claveUsuario: ['', validationService.getValidatorsForField('users', 'claveUsuario')],
-      estadoUsuario: [true]
+      claveUsuario: ['', this.isEditing ? [] : validationService.getValidatorsForField('users', 'claveUsuario')],
+      confirmarClave: ['', this.isEditing ? [] : validationService.getValidatorsForField('users', 'claveUsuario')]
+    }, {
+      validators: this.isEditing ? [] : [this.passwordMatchValidator]
     });
   }
 
@@ -71,7 +74,8 @@ export class UsersComponent implements OnInit {
       roles: this.roleService.getAllRoles(),
       users: this.userService.getAllUsers()
     }).subscribe(({ roles, users }) => {
-      this.roles = roles.filter(r => r.estadoRol === true);
+      this.filteredRoles = roles.filter(r => r.estadoRol === true);
+      this.roles = roles;
       this.users = users.map((user: User) => {
         const role = this.roles.find(r => r.idRol === user.idRol)!;
         return { ...user, nombreRol: role.nombreRol };
@@ -98,12 +102,17 @@ export class UsersComponent implements OnInit {
     this.showModal = true;
   }
 
-  cancelModalMessage(){
+  cancelModalMessage() {
     this.alertsService.menssageCancel()
   }
 
   closeModal() {
     this.showModal = false;
+  }
+
+  passwordMatchValidator(g: FormGroup) {
+    return g.get('claveUsuario')?.value === g.get('confirmarClave')?.value
+      ? null : { 'mismatch': true };
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -131,11 +140,24 @@ export class UsersComponent implements OnInit {
       return;
     }
 
-    const user = this.userForm.value
+    const userData = { ...this.userForm.value };
 
-    const request = this.isEditing 
-    ? this.userService.updateUser(user) 
-    : this.userService.createUser(user);
+    // Si estamos editando, eliminamos el campo de contraseña
+    if (this.isEditing) {
+      delete userData.claveUsuario;
+      delete userData.confirmarClave;
+    } else {
+      // Si estamos creando, verificamos que las contraseñas coincidan
+      if (userData.claveUsuario !== userData.confirmarClave) {
+        this.toastr.error('Las contraseñas no coinciden', 'Error');
+        return;
+      }
+      delete userData.confirmarClave;
+    }
+
+    const request = this.isEditing
+      ? this.userService.updateUser(userData)
+      : this.userService.createUser(userData);
 
     request.subscribe({
       next: () => {
@@ -145,7 +167,7 @@ export class UsersComponent implements OnInit {
       },
       error: () => this.toastr.error('Error al guardar el usuario', 'Error')
     });
-};
+  };
 
   confirmDelete(user: User) {
     this.alertsService.confirm(
@@ -160,8 +182,7 @@ export class UsersComponent implements OnInit {
   }
 
   searchUser(query: string) {
-    this.filteredUsers = this.users.filter(user =>
-    {
+    this.filteredUsers = this.users.filter(user => {
       // Para buscar por el nombre del rol
       const roleUser = user as User & { nombreRol?: string };
 
@@ -178,7 +199,7 @@ export class UsersComponent implements OnInit {
 
   changeUserStatus(updatedUser: User) {
     const estadoUsuario = updatedUser.estadoUsuario ?? false;
-  
+
     this.userService.updateStatusUser(updatedUser.idUsuario, estadoUsuario).subscribe({
       next: () => {
         [this.users, this.filteredUsers].forEach(list => {
@@ -196,5 +217,5 @@ export class UsersComponent implements OnInit {
   };
 
   exportUsers() { };
-  
+
 }
