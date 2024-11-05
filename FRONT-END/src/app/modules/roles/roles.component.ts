@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-
 import { ValidationService } from '../../shared/validators/validations.service';
 import { AlertsService } from '../../shared/alerts/alerts.service';
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
 import { CrudModalDirective } from '../../shared/directives/crud-modal.directive';
-
 import { RolesService } from './roles.service';
 import { PermissionsService } from './permissions.service';
-import { Role, Permission } from './roles.model';
+import { Role, Permission, PermissionGroup } from './roles.model';
 
 @Component({
   selector: 'app-roles',
-  standalone: true,
   templateUrl: './roles.component.html',
+  styleUrls: ['./roles.component.scss'],
+  standalone: true,
   imports: [
     ...SHARED_IMPORTS,
     CRUDComponent,
@@ -25,13 +24,13 @@ import { Role, Permission } from './roles.model';
 export class RolesComponent implements OnInit {
   filteredRoles: Role[] = [];
   roles: Role[] = [];
-  permissions: Permission[] = [];
+  permissionGroups: PermissionGroup[] = [];
+  rolesForm!: FormGroup;
+  showModal = false;
+  isEditing = false;
   columns = [
     { field: 'nombreRol', header: 'Nombre', type: 'text' },
   ];
-  rolesForm: FormGroup;
-  showModal = false;
-  isEditing = false;
 
   constructor(
     private roleService: RolesService,
@@ -41,12 +40,24 @@ export class RolesComponent implements OnInit {
     private toastr: ToastrService,
     private validationService: ValidationService,
   ) {
+    this.initForm();
+  }
+
+  private initForm() {
     this.rolesForm = this.fb.group({
       idRol: [null],
-      nombreRol: ['', this.validationService.getValidatorsForField('roles','nombreRol')],
+      nombreRol: ['', this.validationService.getValidatorsForField('roles', 'nombreRol')],
       estadoRol: [true],
-      permissions: this.fb.array([])
+      permissions: this.fb.array([], [this.atLeastOnePermissionValidator()])
     });
+  }
+
+  private atLeastOnePermissionValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const permissions = control as FormArray;
+      const hasSelectedPermission = permissions.controls.some(c => c.value === true);
+      return hasSelectedPermission ? null : { requirePermission: true };
+    };
   }
 
   ngOnInit() {
@@ -54,36 +65,96 @@ export class RolesComponent implements OnInit {
     this.loadPermissions();
   }
 
+  private groupPermissions(permissions: Permission[]): PermissionGroup[] {
+    const moduleMap = new Map<string, Permission[]>();
+    
+    permissions.forEach(permission => {
+      const modulo = this.getModuleFromPermission(permission.nombrePermiso);
+      if (!moduleMap.has(modulo)) {
+        moduleMap.set(modulo, []);
+      }
+      moduleMap.get(modulo)?.push(permission);
+    });
+
+    return Array.from(moduleMap.entries()).map(([modulo, permisos]) => ({
+      modulo,
+      icon: this.getModuleIcon(modulo),
+      permisos,
+      checked: false
+    }));
+  }
+
+  private getModuleFromPermission(permissionName: string): string {
+    if (permissionName.includes('Rol')) return 'Roles';
+    if (permissionName.includes('Usuario')) return 'Usuarios';
+    if (permissionName.includes('Venta')) return 'Ventas';
+    if (permissionName.includes('Proveedor')) return 'Proveedores';
+    if (permissionName.includes('Producto')) return 'Productos';
+    if (permissionName.includes('Crédito') || permissionName.includes('Abono')) return 'Créditos';
+    if (permissionName.includes('Cliente')) return 'Clientes';
+    if (permissionName.includes('Categoría')) return 'Categorias';
+    if (permissionName.includes('Compra')) return 'Compras';
+    if (permissionName.includes('Devolución')) return 'Devoluciones';
+    return 'Otros';
+  }
+
+  private getModuleIcon(modulo: string): string {
+    const iconMap: { [key: string]: string } = {
+      'Roles': 'pi pi-users',
+      'Usuarios': 'pi pi-user',
+      'Ventas': 'pi pi-shopping-cart',
+      'Proveedores': 'pi pi-truck',
+      'Productos': 'pi pi-box',
+      'Créditos': 'pi pi-money-bill',
+      'Clientes': 'pi pi-user-plus',
+      'Categorias': 'pi pi-tags',
+      'Compras': 'pi pi-shopping-bag',
+      'Devoluciones': 'pi pi-replay'
+    };
+    return iconMap[modulo] || 'pi pi-circle';
+  }
+
   loadRoles() {
-    this.roleService.getAllRoles().subscribe(data => {
-      console.log('Roles cargados:', data);
-      this.roles = data;
-      this.filteredRoles = data.map(role => ({
-        ...role,
-        permissions: role.Permissions?.map(p => p.nombrePermiso).join(', ') || ''
-      }));
-      console.log('Roles filtrados:', this.filteredRoles);
+    this.roleService.getAllRoles().subscribe({
+      next: (data) => {
+        this.roles = data;
+        this.filteredRoles = data.map(role => ({
+          ...role,
+          permissions: role.Permissions?.map(p => p.nombrePermiso).join(', ') || ''
+        }));
+      },
+      error: (error) => {
+        console.error('Error al cargar roles:', error);
+        this.toastr.error('Error al cargar los roles');
+      }
     });
   }
 
   loadPermissions() {
-    this.permissionsService.getAllPermissions().subscribe(data => {
-      this.permissions = data;
-      this.initPermissionsForm();
+    this.permissionsService.getAllPermissions().subscribe({
+      next: (data) => {
+        this.permissionGroups = this.groupPermissions(data);
+        this.initPermissionsForm(data);
+      },
+      error: (error) => {
+        console.error('Error al cargar permisos:', error);
+        this.toastr.error('Error al cargar los permisos');
+      }
     });
   }
 
-  initPermissionsForm() {
-    const permissionsControls = this.permissions.map(permission => 
-       this.fb.control(false)
-    );
+  initPermissionsForm(permissions: Permission[]) {
+    const permissionsControls = permissions.map(() => this.fb.control(false));
     this.rolesForm.setControl('permissions', this.fb.array(permissionsControls));
   }
 
   openCreateModal() {
     this.isEditing = false;
     this.rolesForm.reset({ estadoRol: true });
-    this.initPermissionsForm();
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    permissions.controls.forEach(control => control.setValue(false));
+    this.permissionGroups.forEach(group => group.checked = false);
+    this.selectAll = false;
     this.showModal = true;
   }
 
@@ -94,30 +165,109 @@ export class RolesComponent implements OnInit {
       nombreRol: role.nombreRol,
       estadoRol: role.estadoRol
     });
-    const permissionsArray = this.rolesForm.get('permissions') as FormArray;
-    permissionsArray.controls.forEach((control, index) => {
-      control.setValue(role.Permissions?.some(p => p.idPermiso === this.permissions[index].idPermiso) || false);
+
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    const allPermissions = this.permissionGroups.flatMap(g => g.permisos);
+    
+    permissions.controls.forEach((control, index) => {
+      const permission = allPermissions[index];
+      const isChecked = role.Permissions?.some(p => p.idPermiso === permission.idPermiso);
+      control.setValue(isChecked);
     });
+
+    this.permissionGroups.forEach(group => {
+      group.checked = this.isGroupChecked(group);
+    });
+
+    this.updateSelectAllState();
     this.showModal = true;
   }
-      
+
+  toggleGroupPermissions(group: PermissionGroup) {
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    const allPermissions = this.permissionGroups.flatMap(g => g.permisos);
+    
+    group.permisos.forEach(permission => {
+      const index = allPermissions.findIndex(p => p.idPermiso === permission.idPermiso);
+      if (index !== -1) {
+        permissions.at(index).setValue(group.checked);
+      }
+    });
+    
+    this.updateSelectAllState();
+  }
+
+  onPermissionChange(group: PermissionGroup) {
+    group.checked = this.isGroupChecked(group);
+    this.updateSelectAllState();
+  }
+
+  // Método para actualizar el estado del checkbox "Seleccionar todos"
+  private updateSelectAllState() {
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    this.selectAll = permissions.controls.every(control => control.value === true);
+  }
+  
+  isGroupChecked(group: PermissionGroup): boolean {
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    const allPermissions = this.permissionGroups.flatMap(g => g.permisos);
+    
+    return group.permisos.every(permission => {
+      const index = allPermissions.findIndex(p => p.idPermiso === permission.idPermiso);
+      return index !== -1 && permissions.at(index).value;
+    });
+  }
+
+  isGroupIndeterminate(group: PermissionGroup): boolean {
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    const allPermissions = this.permissionGroups.flatMap(g => g.permisos);
+    
+    const groupPermissions = group.permisos.map(permission => {
+      const index = allPermissions.findIndex(p => p.idPermiso === permission.idPermiso);
+      return index !== -1 ? permissions.at(index).value : false;
+    });
+    
+    const checkedCount = groupPermissions.filter(Boolean).length;
+    return checkedCount > 0 && checkedCount < group.permisos.length;
+  }
+
+  findPermissionIndex(permission: Permission): number {
+    return this.permissionGroups.flatMap(g => g.permisos)
+      .findIndex(p => p.idPermiso === permission.idPermiso);
+  }
+
+  selectAll: boolean = false;
+
+  toggleAllPermissions(event: any) {
+    const checked = event.checked;
+    const permissions = this.rolesForm.get('permissions') as FormArray;
+    
+    permissions.controls.forEach(control => control.setValue(checked));
+    this.permissionGroups.forEach(group => group.checked = checked);
+    
+    this.selectAll = checked;
+  }
+
   saveRole() {
     if (this.rolesForm.invalid) {
-      this.markFormFieldsAsTouched();
+      const permissionsArray = this.rolesForm.get('permissions') as FormArray;
+      
+      if (!permissionsArray.controls.some(control => control.value === true)) {
+        this.toastr.error('Debe seleccionar al menos un permiso', 'Error de validación');
+      }
+      
+      Object.keys(this.rolesForm.controls).forEach(key => {
+        const control = this.rolesForm.get(key);
+        if (control) control.markAsTouched();
+      });
       return;
     }
-
-    const roleData = this.rolesForm.value;
-    roleData.permissions = this.permissions
-      .filter((_, index) => roleData.permissions[index])
-      .map(p => p.nombrePermiso);
-
-    console.log('Datos del rol a enviar:', roleData);
-
+  
+    const roleData = this.prepareRoleData();
     const request = this.isEditing
       ? this.roleService.updateRoles(roleData)
       : this.roleService.createRoles(roleData);
-
+  
     request.subscribe({
       next: (response) => {
         console.log('Respuesta del servidor:', response);
@@ -132,70 +282,65 @@ export class RolesComponent implements OnInit {
     });
   }
 
-  confirmDelete(role: Role) {
-    this.alertsService.confirm(
-      `¿Estás seguro de eliminar a ${role.nombreRol}?`,
-      () => this.roleService.deleteRoles(role.idRol).subscribe(() => {
-        this.toastr.success('Rol eliminado exitosamente', 'Éxito');
-        this.loadRoles();
-      })
-    );
+  private prepareRoleData() {
+    const formValue = this.rolesForm.value;
+    return {
+      ...formValue,
+      permissions: this.permissionGroups
+        .flatMap(g => g.permisos)
+        .filter((_, index) => formValue.permissions[index])
+        .map(p => p.nombrePermiso)
+    };
   }
 
-  closeModal() {
-    this.showModal = false;
-  }
+    //Este codigo es para eliminar el Rol
 
-  searchRoles(query: string) {
-    this.filteredRoles = this.roles.filter(role =>
-      role.nombreRol.toLowerCase().includes(query.toLowerCase())
-    );
-  }
-
-  changeRoleStatus(updatedRole: Role) {
-    const estadoRol = updatedRole.estadoRol ?? false;
+    confirmDelete(role: Role) {
+      this.alertsService.confirm(
+        `¿Estás seguro de eliminar a ${role.nombreRol}?`,
+        () => this.roleService.deleteRoles(role.idRol).subscribe(() => {
+          this.toastr.success('Rol eliminado exitosamente', 'Éxito');
+          this.loadRoles();
+        })
+      );
+    }
+  
+    closeModal() {
+      this.showModal = false;
+    }
+  
+    //Esto es para buscar los roles
     
-    this.roleService.updateStatusRole(updatedRole.idRol, estadoRol).subscribe({
-      next: () => {
-        [this.roles, this.filteredRoles].forEach(list => {
-          const index = list.findIndex(c => c.idRol === updatedRole.idRol);
-          if (index !== -1) {
-            list[index] = { ...list[index], ...updatedRole };
-          }
-        });
-        this.toastr.success('Estado del rol actualizado con éxito', 'Éxito');
-      },
-      error: () => {
-        this.toastr.error('Error al actualizar el estado del rol', 'Error');
-      }
-    });
-  }
+    searchRoles(query: string) {
+      this.filteredRoles = this.roles.filter(role =>
+        role.nombreRol.toLowerCase().includes(query.toLowerCase())
+      );
+    }
+  
+    //Esto es para cambiar el estado del Rol
+  
+    changeRoleStatus(updatedRole: Role) {
+      const estadoRol = updatedRole.estadoRol ?? false;
+      
+      this.roleService.updateStatusRole(updatedRole.idRol, estadoRol).subscribe({
+        next: () => {
+          [this.roles, this.filteredRoles].forEach(list => {
+            const index = list.findIndex(c => c.idRol === updatedRole.idRol);
+            if (index !== -1) {
+              list[index] = { ...list[index], ...updatedRole };
+            }
+          });
+          this.toastr.success('Estado del rol actualizado con éxito', 'Éxito');
+        },
+        error: () => {
+          this.toastr.error('Error al actualizar el estado del rol', 'Error');
+        }
+      });
+    }
 
-  isPermissionChecked(permissionId: number): boolean {
-    const permissions = this.rolesForm.get('permissions') as FormArray;
-    return permissions.at(this.permissions.findIndex(p => p.idPermiso === permissionId)).value;
-  }
-
-  toggleAllPermissions(event: any) {
-    const checked = event.target.checked;
-    const permissions = this.rolesForm.get('permissions') as FormArray;
-    permissions.controls.forEach(control => control.setValue(checked));
-  }
-
-  areAllPermissionsChecked(): boolean {
-    const permissions = this.rolesForm.get('permissions') as FormArray;
-    return permissions.controls.every(control => control.value);
-  }
-
-  exportRoles() {
-    // Implementar la lógica de exportación si es necesario
-  }
-
-  markFormFieldsAsTouched() {
-    Object.values(this.rolesForm.controls).forEach(control => {
-      control.markAsTouched();
-    });
-  }
+    exportRoles() {
+      // Implementar la lógica de exportación si es necesario
+    }
 
   isFieldInvalid(fieldName: string): boolean {
     const control = this.rolesForm.get(fieldName);
@@ -204,16 +349,14 @@ export class RolesComponent implements OnInit {
 
   getErrorMessage(fieldName: string): string {
     const control = this.rolesForm.get(fieldName);
-    if (control && control.errors) {
-      if (control.errors['required']) {
-        return 'Este campo es requerido';
-      }
-      // Agrega más mensajes de error según tus validaciones
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('roles', fieldName, errorKey);
     }
     return '';
   }
 
   cancelModalMessage() {
-    // Implementa la lógica para el mensaje de cancelación si es necesario
+    this.alertsService.menssageCancel()
   }
 }
