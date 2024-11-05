@@ -27,7 +27,7 @@ export class LoginService {
                 if (response.success) {
                     this.toastr.success('Inicio de sesión exitoso');
                     this.authService.setSession(response);
-                    this.router.navigate(['users']);
+                    this.router.navigate(['index']);
                 }
             },
             error: (error) => {

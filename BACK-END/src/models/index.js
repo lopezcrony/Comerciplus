@@ -49,6 +49,8 @@ const models = {
     returnProvider,
 };
 
+require('./associationpermissions');
+
   roles.belongsToMany(permissions, {
     through: permissionsRoles,
     foreignKey: 'idRol',
@@ -64,12 +66,6 @@ const models = {
 // Asociaciones adicionales para consultas directas si son necesarias
 permissionsRoles.belongsTo(roles, { foreignKey: 'idRol' });
 permissionsRoles.belongsTo(permissions, { foreignKey: 'idPermiso' });
-
-Object.keys(models).forEach((modelName) => {
-  if (models[modelName].associate) {
-      models[modelName].associate(models);
-  }
-});
 
 const connectDb = async () => {
     try {

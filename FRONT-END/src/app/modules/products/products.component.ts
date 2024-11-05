@@ -32,7 +32,8 @@ export class ProductsComponent implements OnInit {
   products: Product[] = [];
   barcodes: any[] = [];
   filteredProducts: Product[] = [];
-  categories: Categorie[] = [];
+  categories: any[] = [];
+  filteredCategories: any[] = [];
 
   columns: { field: string, header: string, type: string }[] = [
     { field: 'nombreProducto', header: 'Producto', type: 'text' },
@@ -90,7 +91,8 @@ export class ProductsComponent implements OnInit {
       products: this.productService.getAllProducts()
     }).subscribe({
       next: ({ categories, products }) => {
-        this.categories = categories.filter(category => category.estadoCategoria === true);
+        this.categories = categories;
+        this.filteredCategories = categories.filter(category => category.estadoCategoria === true);
         this.products = products.map(product => {
           const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
           return { ...product, nombreCategoria: category?.nombreCategoria };
@@ -187,7 +189,7 @@ export class ProductsComponent implements OnInit {
         this.loadDataAll();
       },
       error: (error) => {
-        this.toastr.error(error.message, 'Error');
+        this.toastr.error(`Ya existe una categoria con ese nombre`,'Error');
       }
     });
   };
@@ -225,8 +227,7 @@ export class ProductsComponent implements OnInit {
         this.closeModal();
       },
       error: (error) => {
-        this.toastr.error(error.message, 'Error');
-        console.error('Error al guardar el producto:', error);
+        this.toastr.error(`Ya existe un producto con este nombre`,'Error');
       }
     });
   }
@@ -262,18 +263,20 @@ export class ProductsComponent implements OnInit {
 
   searchProduct(query: string) {
     let lowerCaseQuery = query.toLowerCase();
-
+    let lowerQuery = query.toLowerCase();
     // Intenta convertir la consulta a un número
     let numericQuery = parseFloat(query);
 
     this.filteredProducts = this.products.filter(product => {
       let nombreProductoMatch = product.nombreProducto?.toLowerCase().includes(lowerCaseQuery);
+      const categoriaproduct= product as Product & { nombreCategoria?: string };
 
       // Comparación numérica para el stock
       let stockMatch = !isNaN(numericQuery) && product.stock != null && Number(product.stock) === numericQuery;
-
       // Retorna verdadero si hay coincidencia en nombreProducto o stock
-      return nombreProductoMatch || stockMatch;
+      const matchcategoriaproduct = (categoriaproduct.nombreCategoria || '').toLowerCase().includes(lowerQuery);
+      return nombreProductoMatch || stockMatch || matchcategoriaproduct;
+
     });
   }
 

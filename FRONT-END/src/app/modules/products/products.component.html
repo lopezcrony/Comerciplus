@@ -27,13 +27,13 @@
                 <div class="field" [ngClass]="{'error': isFieldInvalid('idCategoria')}">
                     <label for="categoria">Categoría</label>
                     <div class="p-inputgroup">
-                        <p-dropdown [options]="categories" formControlName="idCategoria" optionLabel="nombreCategoria"
+                        <p-dropdown [options]="filteredCategories" formControlName="idCategoria" optionLabel="nombreCategoria"
                             optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="false"
                             [virtualScrollItemSize]="38" styleClass="w-full">
                         </p-dropdown>
                         <button pButton pRipple type="button" icon="pi pi-plus"
                             class="p-button p-button-success p-button-icon-only p-button-sm ml-2"
-                            (click)="openCategoryModal()"></button>
+                            (click)="openCategoryModal()" pTooltip="Crear categoria"></button>
                     </div>
                     <small class="p-error" *ngIf="isFieldInvalid('idCategoria')">
                         {{ getErrorMessage('idCategoria') }}

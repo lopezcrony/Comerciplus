@@ -16,6 +16,8 @@
  (detail)="openShowModal($event)">
 </app-crud>
 
+<button (click)="downloadPDF()" class="p-button p-button-success">Descargar PDF</button>
+
 <p-dialog [(visible)]="viewModal" [style]="{width: '600px'}" [header]="'Detalle de Compra'" [modal]="true" class="p-fluid">
     <ng-template pTemplate="content">
         <!-- Tabla con los detalles de la compra -->

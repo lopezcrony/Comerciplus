@@ -35,15 +35,12 @@ const createReturnSales = async (ReturnSalesData) => {
         const IdCode = barCode.idCodigoBarra;
         ReturnSalesData.idCodigoBarra = IdCode;
 
-        // Se asigna el nombre relacionado con el Id
-        // const Codigo = barCode.codigoBarra;
-        // ReturnSalesData.CodigoProducto = Codigo;
+       
 
         // Se valida que exista el producto utilizando el ID del producto del código de barras
         const product = await productRepository.findProductById(barCode.idProducto, { transaction });
         if (!product) throw new Error('SERVICE: Producto no encontrado.');
-        // const nombreProducto = product.nombreProducto;
-        // ReturnSalesData.NombreProducto = nombreProducto;
+        
 
         const provider = await providersRepository.findProviderById(ReturnSalesData.idProveedor, { transaction });
         if (!provider) throw new Error('SERVICE: No se encontró el proveedor.');
@@ -116,11 +113,41 @@ const updateReturnSalesStatus = async (id, status) => {
     }
 };
 
+const cancelReturnSale = async (id) => {
+    const transaction = await sequelize.transaction();
+    try {
+
+        const returnSale = await returnSalesRepository.findReturnSalesById(id);
+        if(!returnSale){
+            return res.status(404).json({ message: 'Devolución no encontrada.'})
+        }
+
+        const barcode= await barCodeRepository.findBarcodeById(returnSale.idCodigoBarra)
+        // Actualizar stock de productos
+            const product = await productRepository.findProductById(barcode.idProducto, { transaction });
+            if (!product) throw new Error('SERVICE: Producto no encontrado.');
+
+            const newStock = product.stock + returnSale.cantidad;
+            await productRepository.updateProductoStock(product.idProducto, newStock, { transaction }); 
+        
+        const result = await returnSalesRepository.cancelReturnSale(id, { transaction });
+
+        if (!result) {
+            throw new Error('SERVICE: No se pudo anular la devolución.');
+        }
+        await transaction.commit();
+        return result;
+    } catch (error) {
+        throw new Error('SERVICE: Error al anular la devolución: ' + error.message);
+    }
+};
+
 
 
 module.exports = {
     getAllReturnSales,
     getOneReturnSales,
     createReturnSales,
-    updateReturnSalesStatus
+    updateReturnSalesStatus,
+    cancelReturnSale
 };

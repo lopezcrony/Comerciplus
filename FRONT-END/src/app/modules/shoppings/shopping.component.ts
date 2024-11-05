@@ -14,6 +14,7 @@
   import { ShoppingsService } from './shoppings.service';
   import { ProvidersService } from '../providers/providers.service';
   import { Shopping } from './shopping.model';
+  import { jsPDF } from 'jspdf';
 
   @Component({
     selector: 'app-shoppinview',
@@ -30,7 +31,7 @@
     shoppingForm: FormGroup;
     shoppings:Shopping[]=[];
     filteredProducts: any[] = [];
-    filteredShoppings: any[] = [];
+    filteredShoppings: Shopping[] = [];
     providers: any[] = [];
     products: any[] = [];
     shoppingdetails: any[] = [];
@@ -91,6 +92,29 @@
       this.router.navigate(['/shoppings']); // Navega a la ruta del componente ShoppinviewComponent
     }
 
+
+    // metodo para el pdf
+  downloadPDF() {
+    const doc = new jsPDF();
+    doc.setFontSize(20);
+    doc.text('Reporte de Compras', 10, 10);
+
+    let yPosition = 20; // Inicializa la posición Y para el texto
+
+    this.shoppings.forEach(compra => {
+      doc.setFontSize(12);
+      doc.text(`Proveedor: ${compra.idProveedor}`, 10, yPosition);
+      doc.text(`Fecha de Compra: ${compra.fechaCompra}`, 10, yPosition + 10);
+      doc.text(`Número de Factura: ${compra.numeroFactura}`, 10, yPosition + 20);
+      doc.text(`Valor de Compra: ${compra.valorCompra}`, 10, yPosition + 30);
+      yPosition += 40; // Espacio para la siguiente compra
+
+      yPosition += 10; // Espacio extra entre compras
+    });
+
+    doc.save('reporte_compras.pdf');
+  }
+
     openShowModal(shopping: Shopping) {
       // Asigna el producto seleccionado a una variable para usar en la vista
       this.selectedShopping = shopping;
@@ -129,18 +153,21 @@
     }
 
     searchShopping(query: string) {
+      let lowerQuery = query.toLowerCase();
 
       // Intenta convertir la consulta a un número
       let numericQuery = parseFloat(query);
 
       this.filteredShoppings = this.shoppings.filter(shopping => {
+        const proveedor= shopping as Shopping & { nombreProveedor?: string };
 
         let idProveedor = !isNaN(numericQuery) && shopping.idProveedor != null && Number(shopping.idProveedor) === numericQuery;
         // Comparación numérica para el stock
         let numeroFactura = !isNaN(numericQuery) && shopping.numeroFactura != null && Number(shopping.numeroFactura) === numericQuery;
 
         // Retorna verdadero si hay coincidencia en nombreProducto o stock
-        return idProveedor || numeroFactura;
+        const matchproveedor =(proveedor.nombreProveedor ||'').toLowerCase().includes(lowerQuery);
+        return idProveedor || numeroFactura ||matchproveedor;
       });
     }
 

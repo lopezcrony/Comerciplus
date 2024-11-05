@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
-import { AutoComplete } from 'primeng/autocomplete';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { ValidationService } from '../../shared/validators/validations.service';
@@ -43,6 +42,7 @@ export class SalesComponent implements OnInit {
   showClientModal: boolean = false;
   idSale: number | null = null;
   selectedProduct: any = null;
+  searchText: string = '';
 
   products: Product[] = [];
   clients: Client[] = [];
@@ -102,28 +102,35 @@ export class SalesComponent implements OnInit {
     }
   }
 
-  handleSearch(event: any): void {
+  handleSearch(event: any, searchInput: any): void {
     const query = event.query.toLowerCase();
+    this.searchText = query; // Guardamos el texto de búsqueda
     const isBarcode = /^[0-9]+$/.test(query);
-
+  
     if (isBarcode) {
       setTimeout(() => {
         this.searchByBarcode(query);
-      }, 700)
+      }, 700);
     } else {
-      this.filteredProducts = this.products.filter(p =>
-        p.nombreProducto.toLowerCase().includes(query)
+      let exactMatches = this.products.filter(p =>
+        p.nombreProducto.toLowerCase() === query
       );
-
-      // Auto-seleccionar el primer resultado después de un pequeño delay
+  
+      let partialMatches = this.products.filter(p =>
+        p.nombreProducto.toLowerCase().includes(query) && p.nombreProducto.toLowerCase() !== query
+      );
+  
+      this.filteredProducts = [...exactMatches, ...partialMatches];
+  
       if (this.filteredProducts.length > 0) {
+        this.selectedProduct = this.filteredProducts[0];
+        
         setTimeout(() => {
-          this.selectedProduct = this.filteredProducts[0];
-          this.busquedaForm.get('busqueda')?.setValue(this.selectedProduct.nombreProducto, { emitEvent: false });
-        }, 100);
+          if (searchInput && searchInput.panelVisible) {
+            searchInput.selectItem(this.filteredProducts[0]);
+          }
+        }, 2000);
       }
-      this.busquedaForm.get('busqueda')?.setValue('');
-      this.focusSearchInput();
     }
   }
 
@@ -155,12 +162,27 @@ export class SalesComponent implements OnInit {
 
   // Función para agregar producto cuando se presiona Enter
   onEnterPressed(): void {
-    if (this.filteredProducts.length > 0) {
-      this.selectedProduct = this.filteredProducts[0];
-      this.addProductSale(this.selectedProduct);
+    if (this.selectedProduct) {  // Asegúrate de que haya un producto seleccionado
+      this.addProductSale(this.selectedProduct);  // Añadir el objeto del producto completo, no solo el nombre
+      this.selectedProduct = null;  // Resetea el producto seleccionado después de agregarlo
+      this.busquedaForm.get('busqueda')?.setValue('');  // Limpia el campo de búsqueda
     }
   }
 
+  onSelect(event: any): void {
+    this.selectedProduct = event;
+    this.busquedaForm.get('busqueda')?.setValue(this.searchText);
+    setTimeout(() => {
+      this.clear(); 
+    }, 100);
+  }
+
+  clear() {
+    this.searchText = '';
+    this.selectedProduct = null;
+    this.busquedaForm.get('busqueda')?.setValue('');
+  }
+  
   getImageUrl(productId: any): string {
     return this.productService.getImageUrl(productId);
   }

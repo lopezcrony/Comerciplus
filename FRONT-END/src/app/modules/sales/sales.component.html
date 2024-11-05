@@ -7,26 +7,32 @@
 
       <!-- Busqueda por nombre de producto y código de barras -->
       <form [formGroup]="busquedaForm" class="mb-3">
-        <p-autoComplete #searchInput formControlName="busqueda" [suggestions]="filteredProducts"
-          [(ngModel)]="selectedProduct" (completeMethod)="handleSearch($event)" (onSelect)="addProductSale($event)"
-          (keydown.enter)="onEnterPressed()" [dropdown]="true" [forceSelection]="true" [autoHighlight]="true"
-          placeholder="Buscar por código de barras o nombre del producto" [style]="{'width':'100%'}" autofocus>
-          <ng-template let-product pTemplate="item">
-            <div class="product-item">
-              <div>{{product.nombreProducto}}</div>
-              <div [class.stock-warning]="product.stock <= 5">
-                Cantidad: {{product.stock}}
-                <span *ngIf="product.stock > 0 && product.stock <= 5" class="stock-alert">
-                  ¡Stock bajo!
-                </span>
-                <span *ngIf="product.stock === 0" class="stock-alert">
-                  ¡Sin Stock!
-                </span>
+        <div class="barcode-container m-1">
+          <p-autoComplete #searchInput formControlName="busqueda" [suggestions]="filteredProducts"
+            (completeMethod)="handleSearch($event, searchInput)" (onSelect)="onSelect($event)"
+            (keydown.enter)="onEnterPressed()" [dropdown]="false" [forceSelection]="true" [autoHighlight]="true"
+            placeholder="Buscar por código de barras o nombre del producto" [style]="{'width':'100%'}" autofocus>
+            <ng-template pTemplate="clearicon">
+              <i class="pi pi-times" (click)="clear()"></i>
+            </ng-template>
+
+            <ng-template let-product pTemplate="item">
+              <div class="product-item">
+                <div>{{product.nombreProducto}}</div>
+                <div [class.stock-warning]="product.stock <= 5">
+                  Cantidad: {{product.stock}}
+                  <span *ngIf="product.stock > 0 && product.stock <= 5" class="stock-alert">
+                    ¡Stock bajo!
+                  </span>
+                  <span *ngIf="product.stock === 0" class="stock-alert">
+                    ¡Sin Stock!
+                  </span>
+                </div>
+                <div class="font-bold">{{product.precioVenta | currency}}</div>
               </div>
-              <div class="font-bold">{{product.precioVenta | currency}}</div>
-            </div>
-          </ng-template>
-        </p-autoComplete>
+            </ng-template>
+          </p-autoComplete>
+        </div>
       </form>
 
       <!-- Tabla de productos en venta -->
@@ -214,7 +220,8 @@
         <div class="p-field mb-2">
           <label for="plazoMaximo" class="block mb-1 texto-pequeno">Plazo máximo de pago</label>
           <p-calendar id="plazoMaximo" formControlName="plazoMaximo" [iconDisplay]="'input'" inputId="icondisplay"
-            placeholder="Ingrese la fecha límite de pago" [inputStyle]="{'width':'80%'}" [showIcon]="true" class="custom-calendar" appendTo="body">
+            placeholder="Ingrese la fecha límite de pago" [inputStyle]="{'width':'80%'}" [showIcon]="true"
+            class="custom-calendar" appendTo="body">
           </p-calendar>
         </div>
 
