@@ -40,7 +40,7 @@ export class ShoppingdetailsService {
   }
 
   createShoppingDetail(Shoppingdetails: any): Observable<Shoppingdetails> {
-    return this.http.post<Shoppingdetails>(this.apiUrl, Shoppingdetails).pipe(
+    return this.http.post<Shoppingdetails>(this.apiUrl, Shoppingdetails, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }

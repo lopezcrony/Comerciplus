@@ -27,7 +27,7 @@ export class CreditDetailService {
     }
     
     addSaleToCredit(creditDetail: any): Observable<CreditDetail> {
-        return this.http.post<CreditDetail>(this.creditDetailUrl, creditDetail).pipe(
+        return this.http.post<CreditDetail>(this.creditDetailUrl, creditDetail, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
     }

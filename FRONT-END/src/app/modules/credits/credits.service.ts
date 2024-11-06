@@ -27,7 +27,7 @@ export class CreditsService {
       'Content-Type': 'application/json'
     });
   }
-  
+
   getAllCredits(): Observable<Credit[]> {
     return this.http.get<Credit[]>(this.creditsUrl).pipe(
       catchError(this.handleError)
@@ -45,13 +45,13 @@ export class CreditsService {
   };
 
   createInstallment(installment: Installment): Observable<Installment> {
-    return this.http.post<Installment>(this.installmentUrl, installment).pipe(
+    return this.http.post<Installment>(this.installmentUrl, installment, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   cancelInstallment(idAbono: number): Observable<Installment> {
-    return this.http.put<Installment>(`${this.installmentUrl}/${idAbono}/cancel`, {});
+    return this.http.put<Installment>(`${this.installmentUrl}/${idAbono}/cancel`, {}, { headers: this.getHeaders() });
   };
 
 private handleError(error: HttpErrorResponse) {

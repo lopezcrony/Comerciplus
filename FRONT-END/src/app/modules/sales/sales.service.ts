@@ -28,7 +28,7 @@ export class SaleService {
   
   createSale(sale: any, saleDetail: DetailSale[]): Observable<any> {
     const payload = { sale, saleDetail}
-    return this.http.post<Sale>(this.apiUrl, payload).pipe(
+    return this.http.post<Sale>(this.apiUrl, payload, { headers: this.getHeaders() }).pipe(
       tap(response => console.log('Response from backend:', response)),
       catchError(this.handleError)
     );
@@ -40,13 +40,13 @@ export class SaleService {
   }
 
   cancelSale(id: number): Observable<any> {
-    return this.http.patch<any>(`${this.apiUrl}/${id}`,{}).pipe(
+    return this.http.patch<any>(`${this.apiUrl}/${id}`,{}, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteSale(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }

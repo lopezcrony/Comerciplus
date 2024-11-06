@@ -24,7 +24,7 @@ export class DetailSalesService {
   }
   
   createDetailSale(saleData: any): Observable<any> {
-    return this.http.post<DetailSale>(this.apiUrl, saleData).pipe(
+    return this.http.post<DetailSale>(this.apiUrl, saleData, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
