@@ -56,10 +56,21 @@ const updateSaleStatus  = async (req, res) => {
     }
 };
 
+const cancelSale = async (req, res) => {    
+    try {
+        const { id } = req.params;
+        await saleService.cancelSale(id);
+        res.status(200).json({ message: 'Venta anulada con éxito' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al anular la venta', error: error.message });
+    }
+};
+
 
 module.exports = {
     GetAllSales,
     GetOneSale,
     CreateNewSale,
-    updateSaleStatus    
+    updateSaleStatus,
+    cancelSale    
 }

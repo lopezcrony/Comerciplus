@@ -38,6 +38,12 @@ export class SaleService {
     );
   } 
 
+  cancelSale(id: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`,{}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
