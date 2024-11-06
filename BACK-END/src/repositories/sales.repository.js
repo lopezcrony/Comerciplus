@@ -20,21 +20,19 @@ const updateTotalSale = async (id, newTotalSale) => {
     throw new Error('REPOSITORY: La venta no existe.');
 };
 
-const updateSalesStatus = async (id, status) => {
-
-    const sales = await findSalesById(id);
-    if (sales) {
-        return await sales.update({estadoVenta : status});
-    }
-    throw new Error('Venta no encontrada');
-};
-
-
 const cancelSale = async (id) => {
+    
     return Sales.update(
         { estadoVenta: false }, 
         { where: { idVenta: id } }
     );
+};
+
+const deleteSale = async (id, transaction) => {
+    return await Sales.destroy({ 
+        where: { idVenta: id },
+        transaction 
+    });
 };
 
 module.exports = {
@@ -42,6 +40,6 @@ module.exports = {
     findSalesById,
     createSales,
     updateTotalSale,
-    updateSalesStatus,
-    cancelSale
+    cancelSale,
+    deleteSale
 };

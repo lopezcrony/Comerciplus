@@ -1,4 +1,3 @@
-const { where } = require('sequelize');
 const detailSale = require('../models/detailSale.model');
 
 const findAlldetailSale = async () => {
@@ -16,14 +15,21 @@ const findAllDetailBySale = async (idSale) => {
     });
 };
 
+const deleteAllDetailsBySale = async (saleId, transaction) => {
+    return await detailSale.destroy({ 
+        where: { idVenta: saleId },
+        transaction
+    });
+};
+
 const createdetailSale = async (salesData, options) => {
     return await detailSale.create(salesData, options);
 };
-
 
 module.exports = {
     findAlldetailSale,
     finddetailSalesById,
     createdetailSale,
-    findAllDetailBySale
+    findAllDetailBySale,
+    deleteAllDetailsBySale
 };

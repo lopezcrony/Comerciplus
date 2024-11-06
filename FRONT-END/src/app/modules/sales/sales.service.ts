@@ -30,16 +30,14 @@ export class SaleService {
     );
   }
 
-  updateStatusSale(id: number, status: boolean): Observable<Sale> {
-    const body = { estadoVenta: status };
-    
-    return this.http.patch<Sale>(`${this.apiUrl}/${id}`, body).pipe(
+  cancelSale(id: number): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/${id}`,{}).pipe(
       catchError(this.handleError)
     );
-  } 
+  }
 
-  cancelSale(id: number): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`,{}).pipe(
+  deleteSale(id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${id}`).pipe(
       catchError(this.handleError)
     );
   }
