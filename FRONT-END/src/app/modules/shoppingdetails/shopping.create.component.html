@@ -30,6 +30,14 @@
                     {{ getErrorMessage('shopping', 'fechaCompra') }}
                 </small>
             </div>
+
+            <!-- <div class="field" [ngClass]="{'error': isFieldInvalid('shopping', 'fechaCompra')}">
+                <label for="fechaCompra" class="p-d-block">Fecha Compra</label>
+                <p-calendar formControlName="fechaCompra" id="fechaCompra" [showIcon]="true" dateFormat="dd/mm/yy" required></p-calendar>
+                <small class="p-error" *ngIf="isFieldInvalid('shopping', 'fechaCompra')">
+                    {{ getErrorMessage('shopping', 'fechaCompra') }}
+                </small>
+            </div> -->
         </div>
 
         <div class="field-group mb-5">
@@ -41,9 +49,13 @@
                 </small>
             </div>
 
-            <div class="field">
+            <!-- <div class="field">
                 <label for="valorCompra">Valor Compra</label>
                 <input type="number" pInputText id="valorCompra" formControlName="valorCompra" readonly />
+            </div> -->
+            <div class="field">
+                <label>Valor Compra:</label>
+                <input type="text" formControlName="valorCompra" pInputText readonly>
             </div>
         </div>
     </div>
@@ -57,7 +69,7 @@
                 <label for="producto">Producto</label>
                 <div class="p-inputgroup">
                     <p-autoComplete formControlName="idProducto" [suggestions]="filteredProducts"
-                        (completeMethod)="searchProduct($event)" field="nombreProducto" [dropdown]="true"
+                        (completeMethod)="searchProduct($event)" field="nombreProducto"
                         placeholder="Buscar" [forceSelection]="true" styleClass="w-full">
                     </p-autoComplete>
                 </div>
@@ -91,15 +103,16 @@
                 <input type="text" formControlName="subtotal" pInputText readonly>
             </div>
             <div class="field">
-                <button type="button" (click)="removeShoppingDetail(i)" class="p-button p-button-danger mt-5">
+                <button type="button" (click)="addShoppingDetail()"class="p-button p-button-secondary mr-3" pTooltip="Agregar producto">
+                    <i class="pi pi-plus"></i>
+                </button>
+                <button type="button" (click)="removeShoppingDetail(i)" class="p-button p-button-danger mt-5 "pTooltip="Eliminar producto">
                     <i class="pi pi-trash"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <button type="button" (click)="addShoppingDetail()" class="p-button p-button-secondary mr-3">
-        <i class="pi pi-plus"></i> Agregar producto
-    </button>
-    <button type="submit" class="p-button p-button-success">Guardar Compra</button>
+    
+    <button type="submit" class="p-button p-button-success mt-3">Guardar Compra</button>
 </form>

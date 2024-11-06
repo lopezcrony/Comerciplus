@@ -95,7 +95,7 @@ export class ProductsComponent implements OnInit {
         this.filteredCategories = categories.filter(category => category.estadoCategoria === true);
         this.products = products.map(product => {
           const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
-          return { ...product, nombreCategoria: category.nombreCategoria };
+          return { ...product, nombreCategoria: category?.nombreCategoria };
         });
         this.filteredProducts = this.products;
       },
@@ -186,10 +186,10 @@ export class ProductsComponent implements OnInit {
       next: () => {
         this.toastr.success('Categoría creada exitosamente.', 'Éxito');
         this.categoryModalVisible = false;
-        this.loadData();
+        this.loadDataAll();
       },
       error: (error) => {
-        this.toastr.error(error.message, 'Error');
+        this.toastr.error(`Ya existe una categoria con ese nombre`,'Error');
       }
     });
   };
@@ -227,8 +227,7 @@ export class ProductsComponent implements OnInit {
         this.closeModal();
       },
       error: (error) => {
-        this.toastr.error(error.message, 'Error');
-        console.error('Error al guardar el producto:', error);
+        this.toastr.error(`Ya existe un producto con este nombre`,'Error');
       }
     });
   }
@@ -264,18 +263,20 @@ export class ProductsComponent implements OnInit {
 
   searchProduct(query: string) {
     let lowerCaseQuery = query.toLowerCase();
-
+    let lowerQuery = query.toLowerCase();
     // Intenta convertir la consulta a un número
     let numericQuery = parseFloat(query);
 
     this.filteredProducts = this.products.filter(product => {
       let nombreProductoMatch = product.nombreProducto?.toLowerCase().includes(lowerCaseQuery);
+      const categoriaproduct= product as Product & { nombreCategoria?: string };
 
       // Comparación numérica para el stock
       let stockMatch = !isNaN(numericQuery) && product.stock != null && Number(product.stock) === numericQuery;
-
       // Retorna verdadero si hay coincidencia en nombreProducto o stock
-      return nombreProductoMatch || stockMatch;
+      const matchcategoriaproduct = (categoriaproduct.nombreCategoria || '').toLowerCase().includes(lowerQuery);
+      return nombreProductoMatch || stockMatch || matchcategoriaproduct;
+
     });
   }
 
@@ -297,6 +298,27 @@ export class ProductsComponent implements OnInit {
       }
     });
   }
+
+loadDataAll() {
+    forkJoin({
+      categories: this.categorieService.getAllCategories(),
+      products: this.productService.getAllProducts()
+    }).subscribe({
+      next: ({ categories, products }) => {
+        this.categories = categories.filter(category => category);
+        this.products = products.map(product => {
+          const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
+          return { ...product, nombreCategoria: category?.nombreCategoria };
+        });
+        this.filteredProducts = this.products;
+      },
+      error: (error) => {
+        this.toastr.error('Error al cargar los datos.', 'Error');
+        console.error('Error al cargar los datos:', error);
+      }
+    });
+  }
+
 
   // funciones para la carga de imagenes en productos
 
