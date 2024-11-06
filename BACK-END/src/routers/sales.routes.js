@@ -8,8 +8,7 @@ router
     .get('/', salesController.GetAllSales)
     .get('/:id', salesController.GetOneSale)
     .post('/',validateSaleWithDetails, salesController.CreateNewSale)
-    .patch('/:id', salesController.updateSaleStatus)
-    .put('/:id', salesController.cancelSale)
+    .patch('/:id', salesController.cancelSale)
+    .delete('/:id', salesController.deleteSale)
     
-
 module.exports = router;
