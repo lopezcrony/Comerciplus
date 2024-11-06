@@ -512,7 +512,20 @@ export class SalesComponent implements OnInit {
 
   cancelarAsignacionCredito() {
     this.closeModal();
-    // Aquí se debería eliminar la venta creada
+    if (this.idSale !== null) {
+      this.saleService.deleteSale(this.idSale)
+        .subscribe({
+          next: () => {
+            this.toastr.success('Venta cancelada', 'Éxito');
+            this.resetForm();
+          },
+          error: (error) => {
+            this.toastr.error(`No se pudo cancelar la venta: ${error.message}`, 'Error');
+          }
+        });
+    }
+
+    this.resetForm();
   };
 
   closeModal() {
