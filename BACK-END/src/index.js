@@ -32,6 +32,8 @@ class Server{
     };
 
     routers(){
+        this.app.use('/dashboard', require('./routers/dashboard.routes.js'));
+
         this.app.use('/roles', require('./routers/roles.routes.js'));
         this.app.use('/permisos', require('./routers/permissions.routes.js'));
         this.app.use('/usuarios', require('./routers/users.routes.js'));
