@@ -75,8 +75,8 @@
       </p-table>
     </div>
 
+    <!-- Detalles de venta -->
     <div class="detalle-venta">
-      <h2 class="texto-pequeno">Detalles de Venta</h2>
 
       <!-- Switch para imprimir recibo -->
       <div class="flex align-items-center justify-content-between mb-4 p-3 bg-gray-50 rounded-lg">
@@ -108,10 +108,17 @@
         </button>
 
         <button pButton label="Cancelar" icon="pi pi-times-circle" (click)="cancelSale()"
-          class="p-button-danger p-button-sm w-full boton-pequeno">
+          class="p-button-danger p-button-sm w-full boton-pequeno mb-10">
         </button>
       </div>
+
+      <!-- Botón de Historial de Ventas -->
+      <button pButton pRipple label="Ver el Historial de Ventas" icon="pi pi-history"
+        class="p-button-secondary p-button-sm boton-pequeno p-button-outlined mt-20 w-full" routerLink="/detailSales">
+      </button>
+
     </div>
+
   </div>
 
   <!------------------------- CREAR CRÉDITO ------------------------->
@@ -221,7 +228,7 @@
           <label for="plazoMaximo" class="block mb-1 texto-pequeno">Plazo máximo de pago</label>
           <p-calendar id="plazoMaximo" formControlName="plazoMaximo" [iconDisplay]="'input'" inputId="icondisplay"
             placeholder="Ingrese la fecha límite de pago" [inputStyle]="{'width':'80%'}" [showIcon]="true"
-            class="custom-calendar" appendTo="body">
+            [minDate]="minDate" class="custom-calendar" appendTo="body">
           </p-calendar>
         </div>
 

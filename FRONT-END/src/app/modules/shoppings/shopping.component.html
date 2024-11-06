@@ -3,20 +3,21 @@
  [Module]="'Compras'"
  [items]="filteredShoppings" 
  [columns]="columns" 
+ [showStateColumn]="true"
+ [statusField]="'estadoCompra'"
+
  [canDelete]="false" 
  [canEdit]="false"  
  [canSeeDetail]="true"
  [canStatus]="true" 
  [canCancel]="true"
- [showStateColumn]="true"
- [statusField]="'estadoCompra'" 
+ 
  (create)="openShopping()"
+ (export)="downloadPDF()"
  (cancel)="cancelShopping($event)"  
  (search)="searchShopping($event)" 
  (detail)="openShowModal($event)">
 </app-crud>
-
-<button (click)="downloadPDF()" class="p-button p-button-success">Descargar PDF</button>
 
 <p-dialog [(visible)]="viewModal" [style]="{width: '600px'}" [header]="'Detalle de Compra'" [modal]="true" class="p-fluid">
     <ng-template pTemplate="content">
