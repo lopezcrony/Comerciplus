@@ -99,12 +99,6 @@ export class SalesComponent implements OnInit {
   }
 
   // --------------------------------------BUSCADOR DE PRODUCTOS-------------------------------------------
-  focusSearchInput() {
-    if (this.searchInput) {
-      this.searchInput.nativeElement.focus();
-    }
-  }
-
   handleSearch(event: any, searchInput: any): void {
     const query = event.query.toLowerCase();
     this.searchText = query; // Guardamos el texto de búsqueda
@@ -230,7 +224,6 @@ export class SalesComponent implements OnInit {
       this.updateTotal();
     }
     this.busquedaForm.get('busqueda')?.setValue('');
-    this.focusSearchInput();
   }
 
   cambiarCantidad(item: DetailSale, incremento: number) {

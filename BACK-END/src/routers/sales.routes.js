@@ -7,7 +7,7 @@ const router = Router();
 router
     .get('/', salesController.GetAllSales)
     .get('/:id', salesController.GetOneSale)
-    .post('/',validateSaleWithDetails, salesController.CreateNewSale)
+    .post('/', salesController.CreateNewSale)
     .patch('/:id', salesController.cancelSale)
     .delete('/:id', salesController.deleteSale)
     
