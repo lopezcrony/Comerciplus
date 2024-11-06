@@ -11,6 +11,7 @@ router
     .get('/', salesController.GetAllSales)
     .get('/:id', salesController.GetOneSale)
     .post('/', authenticateJWT, checkPermission('Crear Venta'), salesController.CreateNewSale)
-    .patch('/:id', authenticateJWT, checkPermission('Anular Venta'), salesController.updateSaleStatus)    
+    .patch('/:id', authenticateJWT, checkPermission('Anular Venta'), salesController.cancelSale) 
+    .delete('/:id', salesController.deleteSale)   
     
 module.exports = router;
