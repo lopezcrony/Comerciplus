@@ -21,7 +21,7 @@ const GetOneSale = async (req, res) => {
 
 const CreateNewSale = async (req, res) => {
     try {
-        const {sale, saleDetail} = req.body;
+        const { sale, saleDetail } = req.body;
 
         if (!saleDetail || saleDetail.length === 0) {
             return res.status(400).json({ message: 'Debe agregar mínimo un producto' });
@@ -34,32 +34,34 @@ const CreateNewSale = async (req, res) => {
     }
 };
 
-const updateSaleStatus  = async (req, res) => {
+const cancelSale = async (req, res) => {
     try {
-        let { estadoVenta } = req.body;
-
-        if (estadoVenta == '0' || estadoVenta == 0) {
-            estadoVenta = false;
-            
-        } else if (estadoVenta == '1' || estadoVenta == 1) {
-            estadoVenta = true;
-        } else if (estadoVenta === true || estadoVenta === false) {
-            
-        }else {
-            return res.status(400).json({ message: `El estado debe ser un valor booleano ${estadoVenta}` });
-        }
-        
-        await saleService.updateSalesStatus(req.params.id, estadoVenta);
-        res.json({ message: 'Estado actualizado con éxito.' });
+        const { id } = req.params;
+        await saleService.cancelSale(id);
+        res.status(200).json({ message: 'Venta anulada con éxito' });
     } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el estado de la venta', error: error.message });
+        res.status(500).json({ message: 'Error al anular la venta', error: error.message });
     }
 };
 
+const deleteSale = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await saleService.deleteSale(id);
+        res.status(200).json({ message: result.message });
+    } catch (error) {
+        console.error('Error al eliminar la venta:', error);
+        res.status(500).json({
+            message: 'Error al eliminar la venta',
+            error: error.message
+        });
+    }
+};
 
 module.exports = {
     GetAllSales,
     GetOneSale,
     CreateNewSale,
-    updateSaleStatus    
+    cancelSale,
+    deleteSale
 }

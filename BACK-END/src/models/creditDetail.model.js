@@ -33,7 +33,7 @@ const DetalleCredito = sequelize.define('detallecredito', {
         }
     },
     plazoMaximo: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.DATE,
         allowNull: false
     },
 }, {

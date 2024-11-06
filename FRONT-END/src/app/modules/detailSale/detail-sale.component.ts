@@ -100,25 +100,14 @@ export class DetailSaleComponent implements OnInit {
   }
 
   changeSaleStatus(updatedSale: Sale) {
-    // Asegúrate de que el estado es un booleano (true o false)
-    const estadoVentas = updatedSale.estadoVenta !== undefined ? updatedSale.estadoVenta : false;
 
-    // Llamar al servicio para actualizar el estadoVenta
-    this.saleService.updateStatusSale(updatedSale.idVenta, estadoVentas).subscribe({
+    this.saleService.cancelSale(updatedSale.idVenta).subscribe({
       next: () => {
-        // Actualiza las listas Sales y filteredSale
-        [this.Sales, this.filteredSale].forEach(list => {
-          const index = list.findIndex(sale => sale.idVenta === updatedSale.idVenta);
-          if (index !== -1) {
-            // Actualiza solo el campo 'estadoVenta' en lugar de reemplazar todo el objeto
-            list[index] = { ...list[index], estadoVenta: estadoVentas };
-          }
-          console.log(estadoVentas)
-        });
-        this.toastr.success('Estado actualizado con éxito', 'Éxito');
+        this.loadSales();
+        this.toastr.success(`Venta anulada con éxito.`, 'Éxito');
       },
       error: () => {
-        this.toastr.error('Error al actualizar el estado', 'Error');
+        this.toastr.error(`Error al anular la venta.`, 'Error');
       }
     });
   }
@@ -126,17 +115,22 @@ export class DetailSaleComponent implements OnInit {
   cancelSale(updatedSale: Sale) {
     // Mostrar mensaje de confirmación
     this.alertsService.confirm(
-      `¿Estás seguro de que deseas cancelar este detalle de venta?`,
+      `¿Estás seguro de que deseas cancelar la venta?`,
 
       () => {
-        // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
-        updatedSale.estadoVenta = false; // Cambiamos el estado a "false"
-
-        // Llama a la función que cambia el estado
+        updatedSale.estadoVenta = false; 
         this.changeSaleStatus(updatedSale);
 
-        // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
-        // this.disableField();
+        this.saleService.cancelSale(updatedSale.idVenta).subscribe({
+          next: () => {
+            this.loadSales();
+            this.toastr.success('Venta anulada con éxito.', 'Éxito');
+          },
+          error: () => {
+            this.toastr.error('Error al anular la venta.', 'Error');
+          }
+        });
+        
       },
       () => {
         this.toastr.info('Anulación cancelada', 'Información');

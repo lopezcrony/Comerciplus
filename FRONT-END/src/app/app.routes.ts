@@ -20,6 +20,7 @@ import { DetailSaleComponent } from './modules/detailSale/detail-sale.component'
 import { AuthGuard } from './Auth/auth.guard';
 import { LoadingComponent } from './shared/loading/loading.component';
 import { IndexComponent } from './modules/index/index.component';
+import { DashboardComponent } from './modules/dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: 'index', component: IndexComponent},
@@ -33,6 +34,7 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [AuthGuard],
     children: [
+      { path: 'dashboard', component: DashboardComponent},
       { path: 'users', component: UsersComponent },
       { path: 'roles', component: RolesComponent },
       { path: 'providers', component: ProvidersComponent },

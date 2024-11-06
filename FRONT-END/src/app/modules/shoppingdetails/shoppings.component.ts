@@ -46,7 +46,7 @@ export class ShoppingsComponent implements OnInit {
     this.shoppingForm = this.fb.group({
       shopping: this.fb.group({
         idProveedor: ['', Validators.required],
-        fechaCompra: ['', Validators.required],
+        fechaCompra: [null, Validators.required],
         numeroFactura: ['', Validators.required],
         valorCompra: [{ value: 0, disabled: true }],
       }),
@@ -61,6 +61,12 @@ export class ShoppingsComponent implements OnInit {
 
   get shoppingDetailArray() {
     return this.shoppingForm.get('shoppingDetail') as FormArray;
+  }
+
+  loadShoppings() {
+    this.shoppingService.getAllShoppings().subscribe((data: any) => {
+      this.shoppings = data; // Asegúrate de que el formato sea correcto
+    });
   }
 
   loadData(){
@@ -106,16 +112,25 @@ export class ShoppingsComponent implements OnInit {
     const cantidad = detailGroup.get('cantidadProducto')?.value || 0;
     const precio = detailGroup.get('precioCompraUnidad')?.value || 0;
     const subtotal = cantidad * precio;
-
+  
     detailGroup.patchValue({ subtotal });
+  
+    // Calcula el total después de actualizar el subtotal
     this.calculateTotalValue();
   }
+  
 
-  calculateTotalValue(): number {
-    return this.shoppingDetailArray.controls.reduce((total, control) => {
-      return total + (control.get('subtotal')?.value || 0);
+  calculateTotalValue() {
+    const shoppingDetailArray = this.shoppingForm.get('shoppingDetail') as FormArray;
+    const valorCompra = shoppingDetailArray.controls.reduce((acc, control) => {
+      const subtotal = control.get('subtotal')?.value || 0;
+      return acc + subtotal;
     }, 0);
+  
+    // Actualiza el valor de compra en el control correspondiente
+    this.shoppingForm.get('shopping.valorCompra')?.setValue(valorCompra);
   }
+  
 
   saveShopping() {
     if (this.shoppingForm.invalid) {
@@ -144,8 +159,7 @@ export class ShoppingsComponent implements OnInit {
         this.resetForm();
       },
       error: (error) => {
-        console.error('Error al guardar la compra:', error);
-        this.toastr.error(`Error al guardar la compra: ${error.message}`, 'Error');
+        this.toastr.error(`El numero de factura ya existe`, 'Error');
       }
     });
   }

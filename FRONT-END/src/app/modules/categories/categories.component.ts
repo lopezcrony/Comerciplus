@@ -136,7 +136,9 @@ export class CategoriesComponent implements OnInit {
         this.isEditing ? this.toastr.success('Categoria actualizada exitosamente.', 'Éxito') : this.toastr.success('Categoria creada exitosamente.', 'Éxito');
         this.closeModal();
       },
-      error: (error) => console.error('Error al guardar la categoria:', error)
+      error: (error) => {
+        this.toastr.error(`Ya existe una categoria con ese nombre`,'Error')
+      }
     });
   }
 

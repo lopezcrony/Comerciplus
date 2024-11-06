@@ -3,14 +3,17 @@
  [Module]="'Compras'"
  [items]="filteredShoppings" 
  [columns]="columns" 
+ [showStateColumn]="true"
+ [statusField]="'estadoCompra'"
+
  [canDelete]="false" 
  [canEdit]="false"  
  [canSeeDetail]="true"
  [canStatus]="true" 
  [canCancel]="true"
- [showStateColumn]="true"
- [statusField]="'estadoCompra'" 
+ 
  (create)="openShopping()"
+ (export)="downloadPDF()"
  (cancel)="cancelShopping($event)"  
  (search)="searchShopping($event)" 
  (detail)="openShowModal($event)">

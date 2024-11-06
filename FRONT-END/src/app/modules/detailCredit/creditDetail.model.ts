@@ -3,5 +3,5 @@ export interface CreditDetail{
     idCredito: number;
     idVenta: number;
     montoAcreditado: number;
-    plazoMaximo: string;
+    plazoMaximo: Date;
 }
