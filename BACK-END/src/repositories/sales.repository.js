@@ -30,10 +30,18 @@ const updateSalesStatus = async (id, status) => {
 };
 
 
+const cancelSale = async (id) => {
+    return Sales.update(
+        { estadoVenta: false }, 
+        { where: { idVenta: id } }
+    );
+};
+
 module.exports = {
     findAllSales,
     findSalesById,
     createSales,
     updateTotalSale,
     updateSalesStatus,
+    cancelSale
 };
