@@ -56,13 +56,13 @@ export class ProductsService {
   }
 
   createProduct(Product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, Product).pipe(
+    return this.http.post<Product>(this.apiUrl, Product, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   updateProduct(Product: Product): Observable<Product> {
-    return this.http.put<Product>(`${this.apiUrl}/${Product.idProducto}`, Product).pipe(
+    return this.http.put<Product>(`${this.apiUrl}/${Product.idProducto}`, Product, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
@@ -70,14 +70,14 @@ export class ProductsService {
   updateStatusProduct(id: number, status: boolean): Observable<Product> {
     const body = { estadoProducto: status };
 
-    return this.http.patch<Product>(`${this.apiUrl}/${id}`, body).pipe(
+    return this.http.patch<Product>(`${this.apiUrl}/${id}`, body, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   // Método para eliminar
   deleteProduct(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 
   checkProductExists(nombreProducto: string): Observable<boolean> {

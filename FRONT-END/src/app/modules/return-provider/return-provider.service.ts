@@ -37,7 +37,7 @@ export class ReturnProviderService {
     }
   
     createReturnProvider(returnProvider: returnProviderModel): Observable<returnProviderModel> {
-      return this.http.post<returnProviderModel>(this.apiUrl, returnProvider).pipe(
+      return this.http.post<returnProviderModel>(this.apiUrl, returnProvider, { headers: this.getHeaders() }).pipe(
         catchError(this.handleError)
       );
     }
@@ -45,7 +45,7 @@ export class ReturnProviderService {
     updateStatusReturnProvider(id: number, status: string): Observable<returnProviderModel> {
       const body = { estado: status };
       
-      return this.http.patch<returnProviderModel>(`${this.apiUrl}/${id}`, body).pipe(
+      return this.http.patch<returnProviderModel>(`${this.apiUrl}/${id}`, body, { headers: this.getHeaders() }).pipe(
         catchError(this.handleError)
       );
     }

@@ -38,7 +38,7 @@ export class ReturnSaleService {
   }
 
   createReturnSale(returSale: ReturnSaleModel): Observable<ReturnSaleModel> {
-    return this.http.post<ReturnSaleModel>(this.apiUrl, returSale).pipe(
+    return this.http.post<ReturnSaleModel>(this.apiUrl, returSale, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
@@ -46,7 +46,7 @@ export class ReturnSaleService {
   updateStatusSale(id: number, status: boolean): Observable<ReturnSaleModel> {
     const body = { estado: status };
 
-    return this.http.patch<ReturnSaleModel>(`${this.apiUrl}/${id}`, body).pipe(
+    return this.http.patch<ReturnSaleModel>(`${this.apiUrl}/${id}`, body, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }

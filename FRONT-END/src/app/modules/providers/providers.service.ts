@@ -29,25 +29,25 @@ export class ProvidersService {
     };
 
   createProvider(proveedor: Proveedor): Observable<Proveedor> {
-    return this.http.post<Proveedor>(this.apiUrl, proveedor).pipe(
+    return this.http.post<Proveedor>(this.apiUrl, proveedor, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
     };
 
   updateProvider(proveedor: Proveedor): Observable<Proveedor> {
-    return this.http.put<Proveedor>(`${this.apiUrl}/${proveedor.idProveedor}`, proveedor).pipe(
+    return this.http.put<Proveedor>(`${this.apiUrl}/${proveedor.idProveedor}`, proveedor, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
     };
 
   updateStatusProvider(id:number, status: boolean):Observable<Proveedor> {
-    return this.http.patch<Proveedor>(`${this.apiUrl}/${id}`, { estadoProveedor: status }).pipe(
+    return this.http.patch<Proveedor>(`${this.apiUrl}/${id}`, { estadoProveedor: status }, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
     };
 
   deleteProvider(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
     };

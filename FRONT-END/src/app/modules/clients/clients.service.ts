@@ -37,25 +37,25 @@ export class ClientService {
   }
 
   createClient(client: Client): Observable<Client> {
-    return this.http.post<Client>(this.apiUrl, client).pipe(
+    return this.http.post<Client>(this.apiUrl, client, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   updateClient(client: Client): Observable<Client> {
-    return this.http.put<Client>(`${this.apiUrl}/${client.idCliente}`, client).pipe(
+    return this.http.put<Client>(`${this.apiUrl}/${client.idCliente}`, client, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   updateStatusClient(id: number, status: boolean): Observable<Client> {
-    return this.http.patch<Client>(`${this.apiUrl}/${id}`, { estadoCliente: status }).pipe(
+    return this.http.patch<Client>(`${this.apiUrl}/${id}`, { estadoCliente: status }, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteClient(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
 
 private handleError(error: HttpErrorResponse) {

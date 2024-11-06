@@ -39,7 +39,7 @@ export class LossService {
     }
   
     createLoss(loss: Loss): Observable<Loss> {
-      return this.http.post<Loss>(this.apiUrl, loss).pipe(
+      return this.http.post<Loss>(this.apiUrl, loss, { headers: this.getHeaders() }).pipe(
         catchError(this.handleError)
       );
     }
