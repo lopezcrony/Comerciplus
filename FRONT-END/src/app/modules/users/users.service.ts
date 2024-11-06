@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { User } from './users.model';
+import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,16 @@ import { User } from './users.model';
 export class UsersService {
   private apiUrl = `${environment.apiUrl}/usuarios`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http:HttpClient,private authService: AuthService, private toastr: ToastrService) { }
+
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+  
 
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl).pipe(
@@ -26,25 +37,25 @@ export class UsersService {
   }
 
   createUser(user: User): Observable<User> {
-    return this.http.post<User>(this.apiUrl, user).pipe(
+    return this.http.post<User>(this.apiUrl, user, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   updateUser(user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${user.idUsuario}`, user).pipe(
+    return this.http.put<User>(`${this.apiUrl}/${user.idUsuario}`, user, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   updateStatusUser(id: number, status: boolean): Observable<User> {
-    return this.http.patch<User>(`${this.apiUrl}/${id}`, { estadoUsuario: status }).pipe(
+    return this.http.patch<User>(`${this.apiUrl}/${id}`, { estadoUsuario: status }, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
