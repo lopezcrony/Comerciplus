@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
@@ -7,6 +7,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment'; 
 import { Shopping } from "../shoppings/shopping.model";
 import { Shoppingdetails } from '../shoppingdetails/shoppingDetail.model';
+import { AuthService } from '../../Auth/auth.service';
 
 
 @Injectable({
@@ -17,8 +18,15 @@ export class ShoppingsService {
   private apiUrl=`${environment.apiUrl}/compras`;
 
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private authService: AuthService) { }
 
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
 
   getAllShoppings(): Observable<Shopping[]> {
     return this.http.get<Shopping[]>(this.apiUrl).pipe(

@@ -6,6 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Product } from '../products/products.model';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,15 @@ export class ProductsService {
   private baseUrl = `${environment.apiUrl}/uploads`;
 
 
-  constructor(private http: HttpClient, private toastr: ToastrService) { }
+  constructor(private http: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
 
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
 
   uploadImage(file: File) {
     const formData = new FormData();

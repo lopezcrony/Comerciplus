@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { Sale } from './sales.model';
 import { DetailSale } from '../detailSale/detailSale.model';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,16 @@ export class SaleService {
 
   private apiUrl = `${environment.apiUrl}/ventas`;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(private http: HttpClient, private authService: AuthService, private toastr: ToastrService) {}
 
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+  
   createSale(sale: any, saleDetail: DetailSale[]): Observable<any> {
     const payload = { sale, saleDetail}
     return this.http.post<Sale>(this.apiUrl, payload).pipe(

@@ -119,7 +119,6 @@ export class ShoppingsComponent implements OnInit {
     this.calculateTotalValue();
   }
   
-
   calculateTotalValue() {
     const shoppingDetailArray = this.shoppingForm.get('shoppingDetail') as FormArray;
     const valorCompra = shoppingDetailArray.controls.reduce((acc, control) => {
@@ -131,7 +130,6 @@ export class ShoppingsComponent implements OnInit {
     this.shoppingForm.get('shopping.valorCompra')?.setValue(valorCompra);
   }
   
-
   saveShopping() {
     if (this.shoppingForm.invalid) {
       this.markFormFieldsAsTouched(this.shoppingForm);

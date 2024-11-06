@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
 import { CreditDetail } from './creditDetail.model';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 
 
 @Injectable({
@@ -15,8 +16,16 @@ export class CreditDetailService {
 
     private creditDetailUrl = `${environment.apiUrl}/detallecredito`;
 
-    constructor(private http: HttpClient, private toastr: ToastrService) { }
+    constructor(private http: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
 
+    private getHeaders(): HttpHeaders {
+      const token = this.authService.getToken(); 
+      return new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      });
+    }
+    
     addSaleToCredit(creditDetail: any): Observable<CreditDetail> {
         return this.http.post<CreditDetail>(this.creditDetailUrl, creditDetail).pipe(
       catchError(this.handleError)

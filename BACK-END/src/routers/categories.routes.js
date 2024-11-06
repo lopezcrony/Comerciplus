@@ -11,7 +11,7 @@ const router = Router();
 router
     .get('/', categorieController.getAllCategories)
     .get('/:id', categorieController.getOneCategorie)
-    .post('/', validateCategorie, authenticateJWT, checkPermission('Crear Categoría'), categorieController.createCategorie)
+    .post('/',authenticateJWT, validateCategorie, checkPermission('Crear Categoría'), categorieController.createCategorie)
     .put('/:id', validateCategorie, authenticateJWT, checkPermission('Editar Categoría'), categorieController.updateCategorie)
     .patch('/:id', authenticateJWT, checkPermission('Cambiar Estado Categoría'), categorieController.updateCategorieStatus)
     .delete('/:id', authenticateJWT, checkPermission('Eliminar Categoría'), categorieController.deleteOneCategorie)
