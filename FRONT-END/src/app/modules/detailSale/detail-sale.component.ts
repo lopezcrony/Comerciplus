@@ -126,17 +126,22 @@ export class DetailSaleComponent implements OnInit {
   cancelSale(updatedSale: Sale) {
     // Mostrar mensaje de confirmación
     this.alertsService.confirm(
-      `¿Estás seguro de que deseas cancelar este detalle de venta?`,
+      `¿Estás seguro de que deseas cancelar la venta?`,
 
       () => {
-        // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
-        updatedSale.estadoVenta = false; // Cambiamos el estado a "false"
-
-        // Llama a la función que cambia el estado
+        updatedSale.estadoVenta = false; 
         this.changeSaleStatus(updatedSale);
 
-        // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
-        // this.disableField();
+        this.saleService.cancelSale(updatedSale.idVenta).subscribe({
+          next: () => {
+            this.loadSales();
+            this.toastr.success('Venta anulada con éxito.', 'Éxito');
+          },
+          error: () => {
+            this.toastr.error('Error al anular la venta.', 'Error');
+          }
+        });
+        
       },
       () => {
         this.toastr.info('Anulación cancelada', 'Información');

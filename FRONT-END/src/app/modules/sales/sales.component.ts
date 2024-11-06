@@ -205,7 +205,7 @@ export class SalesComponent implements OnInit {
 
   addProductSale(event: any): void {
     const product = event && event.value ? event.value : event;
-    if (product.stock <= 0) {
+    if (product.stock <= 1) {
       this.toastr.error('Stock insuficiente', 'Error')
     }
     else {
