@@ -10,7 +10,7 @@
     <!-- Formulario de Compra (Shoppings) -->
     <div formGroupName="shopping">
         <div class="field-group">
-            <div class="field" [ngClass]="{'error': isFieldInvalid('shopping', 'idProveedor')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid('idProveedor')}">
                 <label for="proveedor">Proveedor</label>
                 <div class="p-inputgroup">
                     <p-dropdown [options]="providers" formControlName="idProveedor" optionLabel="nombreProveedor"
@@ -18,34 +18,34 @@
                         [virtualScrollItemSize]="38" styleClass="w-full">
                     </p-dropdown>
                 </div>
-                <small class="p-error" *ngIf="isFieldInvalid('shopping', 'idProveedor')">
-                    {{ getErrorMessage('shopping', 'idProveedor') }}
+                <small class="p-error" *ngIf="isFieldInvalid('idProveedor')">
+                    {{ getErrorMessage('idProveedor') }}
                 </small>
             </div>
 
-            <div class="field" [ngClass]="{'error': isFieldInvalid('shopping', 'fechaCompra')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid('fechaCompra')}">
                 <label for="fechaCompra">Fecha Compra</label>
                 <input type="date" pInputText id="fechaCompra" formControlName="fechaCompra" required autofocus />
-                <small class="p-error" *ngIf="isFieldInvalid('shopping', 'fechaCompra')">
-                    {{ getErrorMessage('shopping', 'fechaCompra') }}
+                <small class="p-error" *ngIf="isFieldInvalid('fechaCompra')">
+                    {{ getErrorMessage( 'fechaCompra') }}
                 </small>
             </div>
 
-            <!-- <div class="field" [ngClass]="{'error': isFieldInvalid('shopping', 'fechaCompra')}">
+            <!-- <div class="field" [ngClass]="{'error': isFieldInvalid( 'fechaCompra')}">
                 <label for="fechaCompra" class="p-d-block">Fecha Compra</label>
                 <p-calendar formControlName="fechaCompra" id="fechaCompra" [showIcon]="true" dateFormat="dd/mm/yy" required></p-calendar>
-                <small class="p-error" *ngIf="isFieldInvalid('shopping', 'fechaCompra')">
-                    {{ getErrorMessage('shopping', 'fechaCompra') }}
+                <small class="p-error" *ngIf="isFieldInvalid( 'fechaCompra')">
+                    {{ getErrorMessage( 'fechaCompra') }}
                 </small>
             </div> -->
         </div>
 
         <div class="field-group mb-5">
-            <div class="field" [ngClass]="{'error': isFieldInvalid('shopping', 'numeroFactura')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid( 'numeroFactura')}">
                 <label for="numeroFactura">Número Factura</label>
                 <input type="text" pInputText id="numeroFactura" formControlName="numeroFactura" required autofocus />
-                <small class="p-error" *ngIf="isFieldInvalid('shopping', 'numeroFactura')">
-                    {{ getErrorMessage('shopping', 'numeroFactura') }}
+                <small class="p-error" *ngIf="isFieldInvalid( 'numeroFactura')">
+                    {{ getErrorMessage( 'numeroFactura') }}
                 </small>
             </div>
 
@@ -65,7 +65,7 @@
     <!-- Formulario de Detalles de Compra (ShoppingDetails) -->
     <div formArrayName="shoppingDetail" class="details-container">
         <div *ngFor="let detail of shoppingDetailArray.controls; let i = index" [formGroupName]="i" class="details-row">
-            <div class="field" [ngClass]="{'error': isFieldInvalid('shoppingDetail.' + i, 'idProducto')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid('idProducto')}">
                 <label for="producto">Producto</label>
                 <div class="p-inputgroup">
                     <p-autoComplete formControlName="idProducto" [suggestions]="filteredProducts"
@@ -73,29 +73,29 @@
                         placeholder="Buscar" [forceSelection]="true" styleClass="w-full">
                     </p-autoComplete>
                 </div>
-                <small class="p-error" *ngIf="isFieldInvalid('shoppingDetail.' + i, 'idProducto')">
-                    {{ getErrorMessage('shoppingDetail.' + i, 'idProducto') }}
+                <small class="p-error" *ngIf="isFieldInvalid( 'idProducto')">
+                    {{ getErrorMessage( 'idProducto') }}
                 </small>
             </div>
-            <div class="field" [ngClass]="{'error': isFieldInvalid('shoppingDetail.' + i, 'codigoBarra')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid( 'codigoBarra')}">
                 <label for="codigoBarra">Código de Barra:</label>
                 <input type="text" formControlName="codigoBarra" pInputText>
-                <small class="p-error" *ngIf="isFieldInvalid('shoppingDetail.' + i, 'codigoBarra')">
-                    {{ getErrorMessage('shoppingDetail.' + i, 'codigoBarra') }}
+                <small class="p-error" *ngIf="isFieldInvalid( 'codigoBarra')">
+                    {{ getErrorMessage( 'codigoBarra') }}
                 </small>
             </div>
-            <div class="field" [ngClass]="{'error': isFieldInvalid('shoppingDetail.' + i, 'cantidadProducto')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid( 'cantidadProducto')}">
                 <label for="cantidadProducto">Cantidad:</label>
                 <input type="number" formControlName="cantidadProducto" (input)="calculateSubtotal(i)" pInputText>
-                <small class="p-error" *ngIf="isFieldInvalid('shoppingDetail.' + i, 'cantidadProducto')">
-                    {{ getErrorMessage('shoppingDetail.' + i, 'cantidadProducto') }}
+                <small class="p-error" *ngIf="isFieldInvalid( 'cantidadProducto')">
+                    {{ getErrorMessage( 'cantidadProducto') }}
                 </small>
             </div>
-            <div class="field" [ngClass]="{'error': isFieldInvalid('shoppingDetail.' + i, 'precioCompraUnidad')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid( 'precioCompraUnidad')}">
                 <label for="precioCompraUnidad">Precio x Unidad:</label>
                 <input type="number" formControlName="precioCompraUnidad" (input)="calculateSubtotal(i)" pInputText>
-                <small class="p-error" *ngIf="isFieldInvalid('shoppingDetail.' + i, 'precioCompraUnidad')">
-                    {{ getErrorMessage('shoppingDetail.' + i, 'precioCompraUnidad') }}
+                <small class="p-error" *ngIf="isFieldInvalid( 'precioCompraUnidad')">
+                    {{ getErrorMessage( 'precioCompraUnidad') }}
                 </small>
             </div>
             <div class="field">

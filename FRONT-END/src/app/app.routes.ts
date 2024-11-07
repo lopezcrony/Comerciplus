@@ -11,7 +11,7 @@ import { SalesComponent} from './modules/sales/sales.component';
 import { ReturnProviderComponent} from './modules/return-provider/return-provider.component';
 import { ReturnSaleComponent } from './modules/return-sale/return-sale.component';
 import { CreditsComponent } from './modules/credits/credits.component';
-import { ShoppingsComponent } from './modules/shoppingdetails/shoppings.component';
+import { ShoppingsComponent } from './modules/shoppingdetails/shoppingsDetails.component';
 import { LoginComponent } from './Auth/login/login.component';
 import { ShoppinviewComponent } from './modules/shoppings/shopping.component';
 import { RecoverComponent } from './Auth/recover/recover.component';

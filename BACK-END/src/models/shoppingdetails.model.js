@@ -49,16 +49,7 @@ const DetalleCompra = sequelize.define('DetalleCompra', {
     tableName: 'detalle_compras',
     timestamps: false,
     // CAMBIO: Hooks que calculan el subtotal antes de crear o actualizar un registro.
-    hooks: {
-        beforeCreate: (detalleCompra, options) => {
-            // Calcula el subtotal antes de crear un nuevo detalle de compra
-            detalleCompra.subtotal = detalleCompra.cantidadProducto * detalleCompra.precioCompraUnidad;
-        },
-        beforeUpdate: (detalleCompra, options) => {
-            // Recalcula el subtotal antes de actualizar un detalle de compra existente
-            detalleCompra.subtotal = detalleCompra.cantidadProducto * detalleCompra.precioCompraUnidad;
-        }
-    }
+    
 });
 
 DetalleCompra.associate = (models) => {
