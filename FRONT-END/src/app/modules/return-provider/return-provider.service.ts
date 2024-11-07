@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -7,13 +7,23 @@ import { environment } from '../../../environments/environment';
 
 import { returnProviderModel } from './return-provider.model'
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
 export class ReturnProviderService {
   private apiUrl= `${environment.apiUrl}/devolucionLocal`
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
-    getReturnProvider(): Observable<returnProviderModel[]> {
+  constructor(private http: HttpClient, private authService: AuthService, private toastr: ToastrService) {}
+  
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+  
+  getReturnProvider(): Observable<returnProviderModel[]> {
       return this.http.get<returnProviderModel[]>(this.apiUrl).pipe(
         catchError(this.handleError)
       );
@@ -27,7 +37,7 @@ export class ReturnProviderService {
     }
   
     createReturnProvider(returnProvider: returnProviderModel): Observable<returnProviderModel> {
-      return this.http.post<returnProviderModel>(this.apiUrl, returnProvider).pipe(
+      return this.http.post<returnProviderModel>(this.apiUrl, returnProvider, { headers: this.getHeaders() }).pipe(
         catchError(this.handleError)
       );
     }
@@ -35,7 +45,7 @@ export class ReturnProviderService {
     updateStatusReturnProvider(id: number, status: string): Observable<returnProviderModel> {
       const body = { estado: status };
       
-      return this.http.patch<returnProviderModel>(`${this.apiUrl}/${id}`, body).pipe(
+      return this.http.patch<returnProviderModel>(`${this.apiUrl}/${id}`, body, { headers: this.getHeaders() }).pipe(
         catchError(this.handleError)
       );
     }

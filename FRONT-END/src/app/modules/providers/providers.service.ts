@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { Proveedor } from './providers.model';
 import { environment } from '../../../environments/environment'; 
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 
 @Injectable({
   providedIn: 'root' 
@@ -11,8 +12,16 @@ import { ToastrService } from 'ngx-toastr';
 export class ProvidersService {
   private apiUrl = `${environment.apiUrl}/proveedores`;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) { }
+  constructor(private http: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
 
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+  
   getAllProviders(): Observable<Proveedor[]> {
     return this.http.get<Proveedor[]>(this.apiUrl).pipe(
       catchError(this.handleError)
@@ -20,25 +29,25 @@ export class ProvidersService {
     };
 
   createProvider(proveedor: Proveedor): Observable<Proveedor> {
-    return this.http.post<Proveedor>(this.apiUrl, proveedor).pipe(
+    return this.http.post<Proveedor>(this.apiUrl, proveedor, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
     };
 
   updateProvider(proveedor: Proveedor): Observable<Proveedor> {
-    return this.http.put<Proveedor>(`${this.apiUrl}/${proveedor.idProveedor}`, proveedor).pipe(
+    return this.http.put<Proveedor>(`${this.apiUrl}/${proveedor.idProveedor}`, proveedor, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
     };
 
   updateStatusProvider(id:number, status: boolean):Observable<Proveedor> {
-    return this.http.patch<Proveedor>(`${this.apiUrl}/${id}`, { estadoProveedor: status }).pipe(
+    return this.http.patch<Proveedor>(`${this.apiUrl}/${id}`, { estadoProveedor: status }, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
     };
 
   deleteProvider(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
     };

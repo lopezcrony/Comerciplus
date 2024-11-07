@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 
 import { catchError } from 'rxjs/operators';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment'; 
 import { Shoppingdetails } from "./shoppingsDetail.model";
 import { Observable, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 
 
 @Injectable({
@@ -16,7 +17,15 @@ export class ShoppingdetailsService {
 
   private apiUrl=`${environment.apiUrl}/detallecompras`;
 
-  constructor(private http:HttpClient, private toastr: ToastrService) { }
+  constructor(private http:HttpClient, private authService: AuthService, private toastr: ToastrService) { }
+
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
 
   getAllShoppingDetails(): Observable<Shoppingdetails[]> {
     return this.http.get<Shoppingdetails[]>(this.apiUrl).pipe(
@@ -31,7 +40,7 @@ export class ShoppingdetailsService {
   }
 
   createShoppingDetail(Shoppingdetails: any): Observable<Shoppingdetails> {
-    return this.http.post<Shoppingdetails>(this.apiUrl, Shoppingdetails).pipe(
+    return this.http.post<Shoppingdetails>(this.apiUrl, Shoppingdetails, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }

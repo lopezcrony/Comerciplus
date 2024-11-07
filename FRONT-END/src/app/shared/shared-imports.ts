@@ -20,6 +20,7 @@ import { OrderListModule } from 'primeng/orderlist';
 import { CalendarModule } from 'primeng/calendar';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
+import { RouterModule } from '@angular/router';
 
 export const SHARED_IMPORTS = [
   CommonModule,
@@ -44,4 +45,5 @@ export const SHARED_IMPORTS = [
   CalendarModule,
   InputSwitchModule,
   RippleModule,
+  RouterModule
 ];

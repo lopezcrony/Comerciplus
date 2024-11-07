@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 
 import { environment } from '../../../environments/environment'; 
 import { Shopping } from "../shoppings/shopping.model";
+import { AuthService } from '../../Auth/auth.service';
 import { Shoppingdetails } from '../shoppingdetails/shoppingsDetail.model';
 
 
@@ -17,8 +18,15 @@ export class ShoppingsService {
   private apiUrl=`${environment.apiUrl}/compras`;
 
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private authService: AuthService) { }
 
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
 
   getAllShoppings(): Observable<Shopping[]> {
     return this.http.get<Shopping[]>(this.apiUrl).pipe(
@@ -39,7 +47,7 @@ export class ShoppingsService {
   createShopping(shopping: Shopping, shoppingDetail: Shoppingdetails[]): Observable<any> {
     const payload = { shopping, shoppingDetail };
     console.log('Sending to backend:', payload);
-    return this.http.post(this.apiUrl, payload).pipe(
+    return this.http.post(this.apiUrl, payload, { headers: this.getHeaders() }).pipe(
       tap(response => console.log('Response from backend:', response)),
       catchError(this.handleError)
     );
@@ -48,7 +56,7 @@ export class ShoppingsService {
   updateStatusShopping(id: number, status: boolean): Observable<Shopping> {
     const body = { estadoCompra: status };
     
-    return this.http.patch<Shopping>(`${this.apiUrl}/${id}`, body).pipe(
+    return this.http.patch<Shopping>(`${this.apiUrl}/${id}`, body, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
@@ -61,13 +69,13 @@ export class ShoppingsService {
 
   // Metodo para cancelar una compra
   cancelShopping(id: number): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`,{}).pipe(
+    return this.http.put<any>(`${this.apiUrl}/${id}`,{}, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   checkShoppingExists(numeroFactura: string): Observable<boolean> {
-    return this.http.get<boolean>(`/api/shoppings/exists/${encodeURIComponent(numeroFactura)}`);
+    return this.http.get<boolean>(`/api/shoppings/exists/${encodeURIComponent(numeroFactura)}`, { headers: this.getHeaders() });
   }
 
   private handleError(error: HttpErrorResponse) {

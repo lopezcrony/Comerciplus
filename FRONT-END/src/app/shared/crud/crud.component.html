@@ -56,7 +56,7 @@
               <span *ngSwitchCase="'currency'">{{ item[col.field] | currency }}</span>
       
               <!-- Mostrar imagen si es tipo image -->
-              <img *ngSwitchCase="'image'" [src]="getImageUrl(item.idProducto)" alt="{{item[col.field]}}" class="w-12 h-12 object-cover" />
+              <img *ngSwitchCase="'image'" [src]="getImageUrl(item.idProducto)" alt="{{item[col.field]}}" class="w-18 h-12 object-cover" />
       
               <!-- Mostrar texto normal  -->
               <span *ngSwitchDefault>{{ item[col.field] }}</span>

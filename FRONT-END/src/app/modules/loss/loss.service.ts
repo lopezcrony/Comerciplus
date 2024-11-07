@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 
 import { Loss } from './loss.model';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,15 @@ import { ToastrService } from 'ngx-toastr';
 export class LossService {
   private apiUrl= `${environment.apiUrl}/perdida`
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(private http: HttpClient, private authService: AuthService, private toastr: ToastrService) {}
 
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
 
     getLoss(): Observable<Loss[]> {
       return this.http.get<Loss[]>(this.apiUrl).pipe(
@@ -31,7 +39,7 @@ export class LossService {
     }
   
     createLoss(loss: Loss): Observable<Loss> {
-      return this.http.post<Loss>(this.apiUrl, loss).pipe(
+      return this.http.post<Loss>(this.apiUrl, loss, { headers: this.getHeaders() }).pipe(
         catchError(this.handleError)
       );
     }

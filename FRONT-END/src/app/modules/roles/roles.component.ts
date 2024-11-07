@@ -13,7 +13,7 @@ import { Role, Permission, PermissionGroup } from './roles.model';
 @Component({
   selector: 'app-roles',
   templateUrl: './roles.component.html',
-  styleUrls: ['./roles.component.scss'],
+  styleUrls: ['./roles.component.css'],
   standalone: true,
   imports: [
     ...SHARED_IMPORTS,

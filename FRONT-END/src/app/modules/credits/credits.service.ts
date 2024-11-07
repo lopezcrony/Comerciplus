@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { Credit } from './credit.model';
 import { Installment } from '../installments/installment.model';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 
 
 @Injectable({
@@ -17,7 +18,15 @@ export class CreditsService {
   private creditsUrl = `${environment.apiUrl}/creditos`;
   private installmentUrl = `${environment.apiUrl}/abonos`;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) { }
+  constructor(private http: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
+
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
 
   getAllCredits(): Observable<Credit[]> {
     return this.http.get<Credit[]>(this.creditsUrl).pipe(
@@ -36,13 +45,13 @@ export class CreditsService {
   };
 
   createInstallment(installment: Installment): Observable<Installment> {
-    return this.http.post<Installment>(this.installmentUrl, installment).pipe(
+    return this.http.post<Installment>(this.installmentUrl, installment, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
   cancelInstallment(idAbono: number): Observable<Installment> {
-    return this.http.put<Installment>(`${this.installmentUrl}/${idAbono}/cancel`, {});
+    return this.http.put<Installment>(`${this.installmentUrl}/${idAbono}/cancel`, {}, { headers: this.getHeaders() });
   };
 
 private handleError(error: HttpErrorResponse) {

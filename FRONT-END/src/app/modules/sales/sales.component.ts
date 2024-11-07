@@ -17,6 +17,7 @@ import { ClientService } from '../clients/clients.service';
 import { SaleService } from './sales.service';
 import { CreditDetailService } from '../detailCredit/creditDetail.service';
 import { BarcodesService } from '../barcodes/barcodes.service';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-sales',
@@ -34,6 +35,8 @@ export class SalesComponent implements OnInit {
   busquedaForm: FormGroup;
   creditForm: FormGroup;
   clientForm!: FormGroup;
+
+  minDate: Date = new Date();
 
   total: number = 0;
   selectedClient: any = null;
@@ -96,12 +99,6 @@ export class SalesComponent implements OnInit {
   }
 
   // --------------------------------------BUSCADOR DE PRODUCTOS-------------------------------------------
-  focusSearchInput() {
-    if (this.searchInput) {
-      this.searchInput.nativeElement.focus();
-    }
-  }
-
   handleSearch(event: any, searchInput: any): void {
     const query = event.query.toLowerCase();
     this.searchText = query; // Guardamos el texto de búsqueda
@@ -227,7 +224,6 @@ export class SalesComponent implements OnInit {
       this.updateTotal();
     }
     this.busquedaForm.get('busqueda')?.setValue('');
-    this.focusSearchInput();
   }
 
   cambiarCantidad(item: DetailSale, incremento: number) {
@@ -285,16 +281,19 @@ export class SalesComponent implements OnInit {
   finalizeSale() {
     this.createSale((completed) => {
       if (!completed) return;
+      
       this.toastr.success('Venta registrada', 'Éxito');
+      
+      if (this.imprimirRecibo) this.downloadPDF(); // Llama a la función de descarga del PDF si el switch está activado
+      
       this.resetForm();
     });
   }
-
+  
   cancelSale() {
     this.resetForm();
     this.toastr.success('Venta Cancelada', 'Info');
   };
-
   // ---------------------------------------- ASIGNAR CREDITO ----------------------------------------- //
   loadCreditsClients() {
     forkJoin({
@@ -356,7 +355,20 @@ export class SalesComponent implements OnInit {
 
   cancelarAsignacionCredito() {
     this.closeModal();
-    // Aquí se debería eliminar la venta creada
+    if (this.idSale !== null) {
+      this.saleService.deleteSale(this.idSale)
+        .subscribe({
+          next: () => {
+            this.toastr.success('Venta cancelada', 'Éxito');
+            this.resetForm();
+          },
+          error: (error) => {
+            this.toastr.error(`No se pudo cancelar la venta: ${error.message}`, 'Error');
+          }
+        });
+    }
+
+    this.resetForm();
   };
 
   closeModal() {
@@ -418,4 +430,152 @@ export class SalesComponent implements OnInit {
     this.showClientModal = false;
   }
 
+  // --------------------------------------IMPRIMIR RECIBO-------------------------------------------
+  downloadPDF() {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.width;
+    const pageHeight = doc.internal.pageSize.height;
+    const margin = 12;
+    const lineHeight = 6;
+    let yPosition = margin;
+
+    // Colores corporativos
+    const colors = {
+      primary: [0, 83, 156],    // Azul corporativo
+      secondary: [100, 100, 100], // Gris para texto normal
+      accent: [41, 128, 185],     // Azul claro para detalles
+      success: [46, 204, 113]     // Verde para el total
+    };
+  
+    // Configuración de estilos
+    const styles = {
+      title: { fontSize: 20, fontStyle: 'bold' },
+      subtitle: { fontSize: 12, fontStyle: 'bold' },
+      normal: { fontSize: 10, fontStyle: 'normal' },
+      small: { fontSize: 8, fontStyle: 'normal' }
+    };
+  
+    // Función helper para cambiar estilos
+    const setStyle = (style: { fontSize: any; fontStyle: any; }) => {
+      doc.setFontSize(style.fontSize);
+      doc.setFont('helvetica', style.fontStyle);
+    };
+
+    // Función para establecer color
+    const setColor = (color: number[]) => {
+      doc.setTextColor(color[0], color[1], color[2]);
+    };
+  
+    // Franja de color en la parte superior
+    doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+    doc.rect(0, 0, pageWidth, 15, 'F');
+    
+    // Encabezado
+    setStyle(styles.title);
+    setColor([255, 255, 255]);
+    doc.text('RECIBO DE VENTA', pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += lineHeight + 6;
+  
+    // Información de la venta
+    setStyle(styles.subtitle);
+    const fecha = new Date().toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+    
+    // Información del negocio
+    setStyle(styles.normal);
+    setColor(colors.primary);
+    doc.text('Tienda Santa Clara', margin, yPosition);
+    setColor(colors.secondary);
+    doc.text(`Fecha: ${fecha}`, pageWidth - margin - 50, yPosition);
+    yPosition += lineHeight;
+    doc.text('Calle 80 N°87 A 30', margin, yPosition);
+    yPosition += lineHeight;
+    doc.text('Tel: (123) 456-7890', margin, yPosition);
+    yPosition += lineHeight * 2;
+  
+    // Tabla de productos
+    const tableColumns = {
+      item: { x: margin, width: 15 },
+      producto: { x: margin + 15, width: 70 },
+      cantidad: { x: margin + 85, width: 25 },
+      precio: { x: margin + 110, width: 35 },
+      subtotal: { x: margin + 145, width: 35 }
+    };
+  
+    // Encabezados de tabla con fondo
+    doc.setFillColor(colors.accent[0], colors.accent[1], colors.accent[2]);
+    doc.rect(margin, yPosition - 5, pageWidth - (margin * 2), lineHeight + 3, 'F');
+    
+    setStyle(styles.subtitle);
+    setColor([255, 255, 255]); // Texto blanco para los encabezados
+    doc.text('N°', tableColumns.item.x, yPosition);
+    doc.text('Producto', tableColumns.producto.x, yPosition);
+    doc.text('Cant.', tableColumns.cantidad.x, yPosition);
+    doc.text('Precio', tableColumns.precio.x, yPosition);
+    doc.text('Subtotal', tableColumns.subtotal.x, yPosition);
+    yPosition += lineHeight;
+  
+    // Línea después de encabezados
+    doc.setDrawColor(colors.accent[0], colors.accent[1], colors.accent[2]);
+    doc.setLineWidth(0.5);
+    doc.line(margin, yPosition - 3, pageWidth - margin, yPosition - 3);
+
+    yPosition += 5;
+  
+    // Productos
+    setStyle(styles.normal);
+    setColor(colors.secondary);
+    this.detailSale.forEach((d, index) => {
+      if (yPosition + lineHeight > pageHeight - margin * 2) {
+        doc.addPage();
+        yPosition = margin;
+        // Repetir encabezados en nueva página
+        doc.setFillColor(colors.accent[0], colors.accent[1], colors.accent[2]);
+        doc.rect(margin, yPosition - 5, pageWidth - (margin * 2), lineHeight + 3, 'F');
+        setStyle(styles.subtitle);
+        setColor([255, 255, 255]);
+        doc.text('N°', tableColumns.item.x, yPosition);
+        doc.text('Producto', tableColumns.producto.x, yPosition);
+        doc.text('Cant.', tableColumns.cantidad.x, yPosition);
+        doc.text('Precio', tableColumns.precio.x, yPosition);
+        doc.text('Subtotal', tableColumns.subtotal.x, yPosition);
+        yPosition += lineHeight + 6;
+        setStyle(styles.normal);
+        setColor(colors.secondary);
+      }
+  
+      doc.text(`${index + 1}`, tableColumns.item.x, yPosition);
+      doc.text(d.nombreProducto, tableColumns.producto.x, yPosition);
+      doc.text(d.cantidadProducto.toString(), tableColumns.cantidad.x, yPosition);
+      doc.text(`$${d.precioVenta.toFixed(2)}`, tableColumns.precio.x, yPosition);
+      doc.text(`$${d.subtotal.toFixed(2)}`, tableColumns.subtotal.x, yPosition);
+      yPosition += lineHeight;
+    });
+  
+    // Línea final de productos
+    doc.setDrawColor(colors.accent[0], colors.accent[1], colors.accent[2]);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 5;
+  
+    // Total
+    setStyle(styles.subtitle);
+    setColor(colors.success);
+    doc.text('Total:', pageWidth - margin - 70, yPosition);
+    doc.text(`$${this.total.toFixed(2)}`, pageWidth - margin - 35, yPosition);
+    yPosition += lineHeight * 2;
+  
+    // Pie de página
+    setStyle(styles.small);
+    setColor(colors.primary);
+    doc.text('¡Gracias por su compra!', pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += lineHeight;
+    setColor(colors.secondary);
+    doc.text('Conserve este recibo para cualquier aclaración', pageWidth / 2, yPosition, { align: 'center' });
+  
+    // Guardar el PDF
+    doc.save('recibo_venta.pdf');
+}
 }

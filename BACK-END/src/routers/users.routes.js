@@ -10,9 +10,9 @@ const router = Router();
 router
     .get('/', userController.getAllUsers)
     .get('/:id', userController.getOneUser)
-    .post('/', validateUsers,authenticateJWT, checkPermission('Crear Usuario'), userController.createNewUser)
-    .put('/:id', validateUsers, userController.updateOneUser)
-    .patch('/:id', userController.updateUserStatus)
-    .delete('/:id', userController.deleteOneUser); // Para protejer el metodo agrego lo siguiente: authenticateJWT
+    .post('/', validateUsers, authenticateJWT, checkPermission('Crear Usuario'), userController.createNewUser)
+    .put('/:id', validateUsers, authenticateJWT, checkPermission('Editar Usuario'), userController.updateOneUser)
+    .patch('/:id', authenticateJWT, checkPermission('Cambiar Estado Usuario'), userController.updateUserStatus)
+    .delete('/:id', authenticateJWT, checkPermission('Eliminar Usuario'), userController.deleteOneUser); // Para protejer el metodo agrego lo siguiente: authenticateJWT
 
 module.exports = router;

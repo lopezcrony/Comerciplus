@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 
 import { ReturnSaleModel } from './return-sale.model';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../Auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,16 @@ import { ToastrService } from 'ngx-toastr';
 export class ReturnSaleService {
   private apiUrl = `${environment.apiUrl}/devolucionVentas`
 
-  constructor(private http: HttpClient, private toastr: ToastrService) { }
+  constructor(private http: HttpClient, private authService: AuthService, private toastr: ToastrService) { }
 
+  private getHeaders(): HttpHeaders {
+    const token = this.authService.getToken(); 
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+  
   getReturnSale(): Observable<ReturnSaleModel[]> {
     return this.http.get<ReturnSaleModel[]>(this.apiUrl).pipe(
       catchError(this.handleError)
@@ -29,7 +38,7 @@ export class ReturnSaleService {
   }
 
   createReturnSale(returSale: ReturnSaleModel): Observable<ReturnSaleModel> {
-    return this.http.post<ReturnSaleModel>(this.apiUrl, returSale).pipe(
+    return this.http.post<ReturnSaleModel>(this.apiUrl, returSale, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
@@ -37,7 +46,7 @@ export class ReturnSaleService {
   updateStatusSale(id: number, status: boolean): Observable<ReturnSaleModel> {
     const body = { estado: status };
 
-    return this.http.patch<ReturnSaleModel>(`${this.apiUrl}/${id}`, body).pipe(
+    return this.http.patch<ReturnSaleModel>(`${this.apiUrl}/${id}`, body, { headers: this.getHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
