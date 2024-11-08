@@ -6,8 +6,8 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment'; 
 import { Shopping } from "../shoppings/shopping.model";
-import { Shoppingdetails } from '../shoppingdetails/shoppingDetail.model';
 import { AuthService } from '../../Auth/auth.service';
+import { Shoppingdetails } from '../shoppingdetails/shoppingsDetail.model';
 
 
 @Injectable({

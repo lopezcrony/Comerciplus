@@ -24,8 +24,8 @@ import { forkJoin } from 'rxjs';
     CrudModalDirective,
     RouterModule
   ],
-  templateUrl: './shopping.create.component.html',
-  styleUrls: ['./shoppings.component.css'],
+  templateUrl: './shoppingsDetails.create.component.html',
+  styleUrls: ['./shoppingsDetails.component.css'],
 })
 export class ShoppingsComponent implements OnInit {
   shoppingForm: FormGroup;
@@ -45,9 +45,9 @@ export class ShoppingsComponent implements OnInit {
   ) {
     this.shoppingForm = this.fb.group({
       shopping: this.fb.group({
-        idProveedor: ['', Validators.required],
-        fechaCompra: [null, Validators.required],
-        numeroFactura: ['', Validators.required],
+        idProveedor: ['',this.validationService.getValidatorsForField('shoppings','idProveedor')],
+        fechaCompra: [null,this.validationService.getValidatorsForField('shoppings','fechaCompra')],
+        numeroFactura: ['',this.validationService.getValidatorsForField('shoppings','numeroFactura')],
         valorCompra: [{ value: 0, disabled: true }],
       }),
       shoppingDetail: this.fb.array([])
@@ -90,10 +90,10 @@ export class ShoppingsComponent implements OnInit {
 
   createShoppingDetail(): FormGroup {
     return this.fb.group({
-      idProducto: ['', Validators.required],
-      codigoBarra: ['', Validators.required],
-      cantidadProducto: ['', [Validators.required, Validators.min(1)]],
-      precioCompraUnidad: ['', [Validators.required, Validators.min(0.01)]],
+      idProducto: ['',this.validationService.getValidatorsForField('shopping','idProducto')],
+      codigoBarra: ['',this.validationService.getValidatorsForField('shopping','codigoBarra')],
+      cantidadProducto: ['',this.validationService.getValidatorsForField('shopping','cantidadProducto')],
+      precioCompraUnidad: ['',this.validationService.getValidatorsForField('shopping','precioCompraUnidad')],
       subtotal: [{ value: 0, disabled: true }]
     });
   }
@@ -132,7 +132,7 @@ export class ShoppingsComponent implements OnInit {
   
   saveShopping() {
     if (this.shoppingForm.invalid) {
-      this.markFormFieldsAsTouched(this.shoppingForm);
+      this.markFormFieldsAsTouched();
       return;
     }
 
@@ -199,27 +199,20 @@ export class ShoppingsComponent implements OnInit {
     });
   }
 
-  markFormFieldsAsTouched(formGroup: FormGroup | FormArray) {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control instanceof FormGroup || control instanceof FormArray) {
-        this.markFormFieldsAsTouched(control);
-      } else {
-        control?.markAsTouched({ onlySelf: true });
-      }
-    });
+  markFormFieldsAsTouched() {
+    Object.values(this.shoppingForm.controls).forEach(c => c.markAsTouched());
   }
 
-  isFieldInvalid(formGroup: string, fieldName: string): boolean {
-    const field = this.shoppingForm.get(`${formGroup}.${fieldName}`);
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.shoppingForm.get(fieldName);
     return !!(field?.invalid && (field.touched || field.dirty));
   }
 
-  getErrorMessage(formGroup: string, fieldName: string): string {
-    const control = this.shoppingForm.get(`${formGroup}.${fieldName}`);
+  getErrorMessage(fieldName: string): string {
+    const control = this.shoppingForm.get(fieldName);
     if (control?.errors) {
       const errorKey = Object.keys(control.errors)[0];
-      return this.validationService.getErrorMessage('shopping', fieldName, errorKey);
+      return this.validationService.getErrorMessage('shoppings', fieldName, errorKey);
     }
     return '';
   }

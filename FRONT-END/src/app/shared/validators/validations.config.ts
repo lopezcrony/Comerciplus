@@ -11,6 +11,7 @@ import { creditsValidationConfig } from '../../modules/credits/credits.validatio
 import { returnProviderValidationConfig } from '../../modules/return-provider/return-provider.validations';
 import { returnSaleValidationConfig } from '../../modules/return-sale/retur-sale.validations';
 import { loginValidation } from '../../Auth/login/login.validation';
+import { shoppingValidation } from '../../modules/shoppingdetails/shopping.validations';
 
 export const validationsConfig: ModuleValidationConfig = {
   
@@ -23,6 +24,7 @@ export const validationsConfig: ModuleValidationConfig = {
 
   categories: categoriesValidationConfig,
   products: productsValidationConfig,
+  shoppings: shoppingValidation,
 
   loss: lossValidationConfig,
   returnProvider: returnProviderValidationConfig,

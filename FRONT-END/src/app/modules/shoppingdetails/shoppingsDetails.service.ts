@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment'; 
-import { Shoppingdetails } from "./shoppingDetail.model";
+import { Shoppingdetails } from "./shoppingsDetail.model";
 import { Observable, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../Auth/auth.service';

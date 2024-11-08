@@ -2,7 +2,7 @@
 <!-- aqui se llaman  las funciones definidas en el component.ts -->
 <app-crud [Module]="'Productos'" [items]="filteredProducts" [columns]="columns" [canDelete]="true" [canSeeDetail]="true"
     [canChangeStatus]="true" [showStateColumn]="true" [statusField]="'estadoProducto'" (create)="openCreateModal()"
-    (export)="exportProduct()" (edit)="openEditModal($event)" (delete)="confirmDelete($event)"
+    (edit)="openEditModal($event)" (delete)="confirmDelete($event)"
     (detail)="openShowModal($event)" (search)="searchProduct($event)" (statusChange)="changeProductStatus($event)">
 </app-crud>
 

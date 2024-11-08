@@ -45,8 +45,8 @@ const createShopping = async (shoppingData, shoppingDetails) => {
             const newShoppingDetail = await shoppingDetailRepository.createShoppingDetail(detail, { transaction });
 
             // Actualizar el valor total de la compra
-            const subtotal = detail.cantidadProducto * detail.precioCompraUnidad;
-            newShopping.valorCompra += subtotal;
+            // const subtotal = detail.cantidadProducto * detail.precioCompraUnidad;
+            // newShopping.valorCompra += subtotal;
 
             // Crea un código de barras
             const newBarCode = {
