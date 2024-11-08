@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:comerciplus/models/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:comerciplus/models/provider.dart';
 
 class ProviderService {
   final String _providersUrl = '${dotenv.env['API_URL']!}/proveedores';

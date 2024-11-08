@@ -1,7 +1,10 @@
 import 'package:comerciplus/models/provider.dart';
-import 'package:comerciplus/widgets/provider_card.dart';
+import 'package:comerciplus/services/purchase.dart';
+import 'package:comerciplus/widgets/infoCard.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../services/providers.dart';
+import '../widgets/appBar_Screens.dart';
 
 class ProvidersScreen extends StatefulWidget {
   const ProvidersScreen({super.key});
@@ -21,9 +24,16 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
     _futureProviders = ProviderService().getProviders();
   }
 
-  List<Provider> _filterAndSortProviders(List<Provider> providers) {
+  List<Provider> _filteredProviders(List<Provider> providers) {
     List<Provider> filteredProviders = providers
-        .where((provider) => provider.nombreProveedor.toLowerCase().contains(searchTerm.toLowerCase()))
+        .where((provider) =>
+            provider.nombreProveedor
+              .toLowerCase()
+              .contains(searchTerm.toLowerCase()) ||
+            provider.nitProveedor
+              .toLowerCase()
+              .contains(searchTerm.toLowerCase())
+            )
         .toList();
 
     filteredProviders.sort((a, b) {
@@ -40,6 +50,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const AppBarScreens(nameModule: 'Proveedores',),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -58,16 +69,6 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Directorio de Proveedores',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D3142),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                // Filtros en una fila
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -152,14 +153,39 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                       } else if (snapshot.hasError) {
                         return const Center(child: Text('Error al cargar proveedores.'));
                       } else if (snapshot.hasData) {
-                        final filteredProviders = _filterAndSortProviders(snapshot.data!);
+                        final filteredProviders = _filteredProviders(snapshot.data!);
                         return ListView.builder(
                           itemCount: filteredProviders.length,
                           itemBuilder: (context, index) {
                             final proveedor = filteredProviders[index];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
-                              child: ProviderCard(proveedor: proveedor),
+                              child: FutureBuilder(
+                                future: PurchaseService().getPurchaseByProvider(proveedor.idProveedor),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (snapshot.hasError) {
+                                    return const Center(child: Text('Error al cargar última compra.'));
+                                  } else if (snapshot.hasData) {
+                                    final purchase = snapshot.data;
+                                    return infoCard(
+                                      typeId: 'NIT',
+                                      id: proveedor.nitProveedor,
+                                      name: proveedor.nombreProveedor,
+                                      address: proveedor.direccionProveedor,
+                                      phone: proveedor.telefonoProveedor,
+                                      status: proveedor.estadoProveedor,
+                                      icon: Icons.calendar_today_outlined,
+                                      title: 'Última compra',
+                                        date: DateFormat('dd MMMM yyyy', 'es').format(purchase![0].fechaCompra),
+                                        value:  NumberFormat.currency(locale: 'es', symbol: '\$').format(purchase[0].valorCompra),
+                                    );
+                                  } else {
+                                    return const Center(child: Text('No hay proveedores disponibles.'));
+                                  }
+                                },
+                              ),
                             );
                           },
                         );

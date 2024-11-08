@@ -18,6 +18,15 @@ const getOneShopping = async (req, res) => {
     }
 };
 
+const getShoppingByProvider = async (req, res) => {
+    try {
+        const shopping = await shoppingService.getShoppingByProvider(req.params.id);
+        res.status(200).json(shopping);
+    } catch (error) {
+        res.status(500).json({ message: 'CONTROLLER: Error al obtener la compra.', error });
+    }
+}
+
 const createShopping = async (req, res) => {
     try {
         const { shopping, shoppingDetail } = req.body;
@@ -79,6 +88,7 @@ const updateShoppingStatus  = async (req, res) => {
 module.exports = {
     getAllShoppings,
     getOneShopping,
+    getShoppingByProvider,
     createShopping,
     deleteOneShopping,
     updateShoppingStatus,

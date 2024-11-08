@@ -9,6 +9,7 @@ const router = Router();
 router
     .get('/', creditController.getAllCredits)
     .get('/:id', creditController.getOneCredit)
+    .get('/cliente/:id', creditController.getCreditsByClient)
     .get('/historialcliente/:id', creditController.getCreditHistoryByClient)
     .post('/', authenticateJWT, checkPermission('Crear Crédito'), creditController.createCredit)
     .patch('/:id', creditController.updateTotalCredit)

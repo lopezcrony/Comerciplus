@@ -1,11 +1,13 @@
-// home.dart
+import 'package:flutter/material.dart';
 
 import 'package:comerciplus/widgets/appBar.dart';
-import 'package:flutter/material.dart';
-import 'package:comerciplus/screens/providers.dart';
 import 'package:comerciplus/screens/sales.dart';
 import 'package:comerciplus/widgets/summary_card.dart';
 import 'package:comerciplus/widgets/menu_card.dart';
+
+import 'package:comerciplus/screens/providers.dart';
+import 'package:comerciplus/screens/clients.dart';
+
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -118,7 +120,7 @@ class Home extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const ProvidersScreen()),
+                            builder: (context) => const ClientScreen()),
                       );
                     },
                   ),
