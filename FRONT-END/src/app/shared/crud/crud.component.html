@@ -89,7 +89,7 @@
             <div class="flex justify-center items-center">
               <p-button [rounded]="true" [label]="getStatus(item) ? 'Activo' : 'Inactivo'"
                 [styleClass]="getStatus(item) ? 'true-chip tipo-chip' : 'false-chip tipo-chip'"
-                (onClick)="confirmChangeStatus(item)" pTooltip="Cambiar Estado"></p-button>
+                (onClick)="confirmChangeStatus(item)" pTooltip="Cambiar Estado" tooltipPosition="left"></p-button>
             </div>
           </td>
 
@@ -107,19 +107,19 @@
               <!-- Botón para Editar -->
               <button *ngIf="canEdit" pButton pRipple icon="pi pi-pencil"
                 class="p-button-rounded p-button-info p-button-outlined p-button-sm mr-2" (click)="onEdit(item)"
-                pTooltip="Editar"></button>
+                pTooltip="Editar" tooltipPosition="left"></button>
               <!-- Botón para Eliminar -->
               <button *ngIf="canDelete" pButton pRipple icon="pi pi-trash"
                 class="p-button-rounded p-button-danger p-button-outlined p-button-sm mr-2" (click)="onDelete(item)"
-                pTooltip="Eliminar"></button>
+                pTooltip="Eliminar" tooltipPosition="left"></button>
               <!-- Botón para Ver el Detalle -->
               <button *ngIf="canSeeDetail" pButton pRipple icon="pi pi-eye"
                 class="p-button-rounded p-button-warning p-button-outlined p-button-sm mr-2" (click)="onDetail(item)"
-                pTooltip="Ver Detalle"></button>
+                pTooltip="Ver Detalle" tooltipPosition="left"></button>
               <!-- Botón para Anular -->
               <button *ngIf="canCancel && item[statusField] !== false" pButton pRipple icon="pi pi-times"
                 class="p-button-rounded p-button-danger p-button-outlined p-button-sm" (click)="onCancel(item)"
-                pTooltip="Anular"></button>
+                pTooltip="Anular" tooltipPosition="left"></button>
             </div>
           </td>
 
