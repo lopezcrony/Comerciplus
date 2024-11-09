@@ -1,12 +1,16 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
-import '../models/client.dart';
-import '../models/credits.dart';
-import '../services/clients.dart';
-import '../services/credits.dart';
 import '../widgets/infoCard.dart';
 import '../widgets/appBar_Screens.dart';
+import '../widgets/search.dart';
+
+import '../models/client.dart';
+import '../models/credits.dart';
+
+import '../services/clients.dart';
+import '../services/credits.dart';
+
 
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
@@ -26,6 +30,7 @@ class _ClientScreenState extends State<ClientScreen> {
     _futureClients = ClientService().getClients();
   }
 
+// Parámetros del buscador
   List<Client> _filteredClients(List<Client> clients) {
     List<Client> filteredClients = clients
         .where((client) =>
@@ -77,21 +82,34 @@ class _ClientScreenState extends State<ClientScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildFilters(),
+              SearchFilter(
+                onSearchChanged: (value) => setState(() => searchTerm = value),
+                onSortChanged: (value) {
+                  setState(() => sortBy = value!);
+                                },
+                sortBy: sortBy,
+                sortOptions: const [
+                  DropdownMenuItem(
+                    value: 'nombreCliente',
+                    child: Text('Por nombre', style: TextStyle(color: Color(0xFF2D3142))),
+                  ),
+                  DropdownMenuItem(
+                    value: 'estado',
+                    child: Text('Por estado', style: TextStyle(color: Color(0xFF2D3142))),
+                  ),
+                ],
+              ),
               const SizedBox(height: 24),
               Expanded(
                 child: FutureBuilder<List<Client>>(
                   future: _futureClients,
                   builder: (context, clientSnapshot) {
-                    if (clientSnapshot.connectionState ==
-                        ConnectionState.waiting) {
+                    if (clientSnapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (clientSnapshot.hasError) {
-                      return const Center(
-                          child: Text('Error al cargar clientes.'));
+                      return const Center(child: Text('Error al cargar clientes.'));
                     } else if (clientSnapshot.hasData) {
-                      final filteredClients =
-                          _filteredClients(clientSnapshot.data!);
+                      final filteredClients = _filteredClients(clientSnapshot.data!);
                       return ListView.builder(
                         itemCount: filteredClients.length,
                         itemBuilder: (context, index) {
@@ -99,36 +117,27 @@ class _ClientScreenState extends State<ClientScreen> {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: FutureBuilder<Credit>(
-                              future: CreditService()
-                                  .getCreditsByClient(client.idCliente),
+                              future: CreditService().getCreditsByClient(client.idCliente),
                               builder: (context, creditSnapshot) {
-                                if (creditSnapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
+                                if (creditSnapshot.connectionState == ConnectionState.waiting) {
+                                  return const Center(child: CircularProgressIndicator());
                                 } else if (creditSnapshot.hasError) {
-                                  return const Center(
-                                      child: Text('Error al cargar créditos.'));
+                                  return const Center(child: Text('Error al cargar créditos.'));
                                 } else if (creditSnapshot.hasData) {
                                   final credit = creditSnapshot.data!;
                                   return infoCard(
                                     typeId: 'CC',
                                     id: client.cedulaCliente,
-                                    name:
-                                        '${client.nombreCliente} ${client.apellidoCliente}',
+                                    name: '${client.nombreCliente} ${client.apellidoCliente}',
                                     address: client.direccionCliente,
                                     phone: client.telefonoCliente,
                                     status: client.estadoCliente,
                                     icon: Icons.credit_card_outlined,
                                     title: 'Deuda Actual',
-                                    value: NumberFormat.currency(
-                                            locale: 'es', symbol: '\$')
-                                        .format(credit.totalCredito),
+                                    value: NumberFormat.currency(locale: 'es', symbol: '\$').format(credit.totalCredito),
                                   );
                                 } else {
-                                  return const Center(
-                                      child:
-                                          Text('No hay créditos disponibles.'));
+                                  return const Center(child: Text('No hay créditos disponibles.'));
                                 }
                               },
                             ),
@@ -136,8 +145,7 @@ class _ClientScreenState extends State<ClientScreen> {
                         },
                       );
                     } else {
-                      return const Center(
-                          child: Text('No hay clientes disponibles.'));
+                      return const Center(child: Text('No hay clientes disponibles.'));
                     }
                   },
                 ),
@@ -145,84 +153,6 @@ class _ClientScreenState extends State<ClientScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildFilters() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Buscador de clientes
-          Expanded(
-            flex: 2,
-            child: TextField(
-              onChanged: (value) => setState(() => searchTerm = value),
-              decoration: InputDecoration(
-                hintText: 'Buscar cliente...',
-                hintStyle: TextStyle(color: Colors.grey[400]),
-                prefixIcon:
-                    Icon(Icons.search, color: Colors.grey[400], size: 20),
-                filled: true,
-                fillColor: const Color(0xFFF8F9FF),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              ),
-            ),
-          ),
-
-          const SizedBox(width: 16),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF8F9FF),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: sortBy,
-                  isExpanded: true,
-                  icon: const Icon(Icons.sort,
-                      color: Color(0xFF4F5B93), size: 20),
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'nombreCliente',
-                      child: Text('Por nombre',
-                          style: TextStyle(color: Color(0xFF2D3142))),
-                    ),
-                    DropdownMenuItem(
-                      value: 'estado',
-                      child: Text('Por estado',
-                          style: TextStyle(color: Color(0xFF2D3142))),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => sortBy = value);
-                    }
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
