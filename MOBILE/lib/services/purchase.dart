@@ -11,14 +11,16 @@ class PurchaseService {
     final response = await http.get(Uri.parse('$_purchasesUrl/proveedor/$id'));
     if (response.statusCode == 200) {
       List jsonResponse = jsonDecode(response.body);
-      
-      return jsonResponse
-          .map((purchase) => Purchase.fromJson(purchase))
-          .toList();
-      
+      if (jsonResponse.isEmpty) {
+        // Manejar el caso donde no hay datos
+        return [];
+      } else {
+        return jsonResponse
+            .map((purchase) => Purchase.fromJson(purchase))
+            .toList();
+      }
     } else {
       throw Exception('Error al obtener las compras');
     }
   }
-
 }

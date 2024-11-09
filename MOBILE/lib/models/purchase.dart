@@ -1,4 +1,4 @@
-class Purchase{
+class Purchase {
   final int idCompra;
   final int idProveedor;
   final DateTime fechaCompra;
@@ -21,12 +21,11 @@ class Purchase{
     return Purchase(
       idCompra: json['idCompra'],
       idProveedor: json['idProveedor'],
-      fechaCompra: DateTime.parse(json['fechaCompra']),
+      fechaCompra: json['fechaCompra'] != null ? DateTime.parse(json['fechaCompra']) : DateTime.now(),
       fechaRegistro: DateTime.parse(json['fechaRegistro']),
       numeroFactura: json['numeroFactura'],
-      valorCompra: json['valorCompra'],
+      valorCompra: (json['valorCompra'] ?? 0.0).toDouble(),
       estadoCompra: json['estadoCompra'],
     );
   }
-
 }

@@ -22,7 +22,7 @@ class MainApp extends
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Home()
+      home: Login()
     );
   }
 }
