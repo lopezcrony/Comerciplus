@@ -48,16 +48,8 @@ export class RolesComponent implements OnInit {
       idRol: [null],
       nombreRol: ['', this.validationService.getValidatorsForField('roles', 'nombreRol')],
       estadoRol: [true],
-      permissions: this.fb.array([], [this.atLeastOnePermissionValidator()])
+      permissions: this.fb.array([],)
     });
-  }
-
-  private atLeastOnePermissionValidator() {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const permissions = control as FormArray;
-      const hasSelectedPermission = permissions.controls.some(c => c.value === true);
-      return hasSelectedPermission ? null : { requirePermission: true };
-    };
   }
 
   ngOnInit() {
@@ -236,6 +228,11 @@ export class RolesComponent implements OnInit {
       .findIndex(p => p.idPermiso === permission.idPermiso);
   }
 
+    private hasSelectedPermissions(): boolean {
+    const permissionsArray = this.rolesForm.get('permissions') as FormArray;
+    return permissionsArray.controls.some(control => control.value === true);
+  }
+
   selectAll: boolean = false;
 
   toggleAllPermissions(event: any) {
@@ -249,28 +246,29 @@ export class RolesComponent implements OnInit {
   }
 
   saveRole() {
+    // Primero validamos si hay permisos seleccionados
+    if (!this.hasSelectedPermissions()) {
+      this.toastr.error('Debe seleccionar al menos un permiso', 'Error al guardar');
+      return; // Se detiene la ejecución aquí si no hay permisos
+    }
+
+    // Luego validamos el resto del formulario
     if (this.rolesForm.invalid) {
-      const permissionsArray = this.rolesForm.get('permissions') as FormArray;
-      
-      if (!permissionsArray.controls.some(control => control.value === true)) {
-        this.toastr.error('Debe seleccionar al menos un permiso', 'Error de validación');
-      }
-      
       Object.keys(this.rolesForm.controls).forEach(key => {
         const control = this.rolesForm.get(key);
         if (control) control.markAsTouched();
       });
       return;
     }
-  
+
+    // Si llegamos aquí, el formulario es válido y tiene permisos seleccionados
     const roleData = this.prepareRoleData();
     const request = this.isEditing
       ? this.roleService.updateRoles(roleData)
       : this.roleService.createRoles(roleData);
-  
+
     request.subscribe({
       next: (response) => {
-        console.log('Respuesta del servidor:', response);
         this.toastr.success('¡Rol guardado con éxito!', 'Éxito');
         this.loadRoles();
         this.closeModal();
