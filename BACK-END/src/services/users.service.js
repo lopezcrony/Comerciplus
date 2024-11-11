@@ -31,13 +31,25 @@ const createNewUser = async (userData) => {
     }
 };
 
+
 const updateOneUser = async (id, userData) => {
     try {
+        const user = await userRepository.getOneUser(id);
+        
+        if (!user) {
+            throw new Error('Usuario no encontrado');
+        }
+
         const result = await userRepository.updateOneUser(id, userData);
+        
         if (result[0] === 0) {
             throw new Error('Usuario no encontrado o no actualizado');
         }
-        return result;
+        
+        // Obtener el usuario actualizado sin la contraseña
+        const updatedUser = await userRepository.getOneUser(id);
+        return updatedUser;
+        
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
             throw new Error('El correo del usuario ya está registrado.');
