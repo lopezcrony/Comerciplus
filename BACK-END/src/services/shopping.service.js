@@ -21,16 +21,13 @@ const getOneShopping = async (id) => {
     }
 };
 
-// const createShopping = async (shoppingData) => {
-//     try {
-//         return await shoppingRepository.createShopping(shoppingData);
-//     } catch (error) {
-//         if (error.name === 'SequelizeUniqueConstraintError') {
-//             throw new Error('Ya existe una compra con ese numero de factura.');
-//         }
-//         throw error;
-//     }
-// };
+const getShoppingByProvider = async (id) => {
+    try {
+        return await shoppingRepository.findShoppingByProvider(id);
+    } catch (error) {
+        throw error;
+    }
+};
 
 const createShopping = async (shoppingData, shoppingDetails) => {
     const transaction = await sequelize.transaction();
@@ -148,6 +145,7 @@ const updateValorCompra = async (id, newValorCompra) => {
 module.exports = {
     getAllShoppings,
     getOneShopping,
+    getShoppingByProvider,
     createShopping,
     updateShoppingStatus,
     deleteOneShopping,

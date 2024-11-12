@@ -18,6 +18,14 @@ const getOneCredit = async (id) => {
     }
 };
 
+const getCreditsByClient = async (idClient) => {
+    try {
+        return await creditRepository.findCreditByClient({where: {idCliente: idClient}});
+    } catch (error) {
+        throw error;
+    }
+}
+
 const getCreditHistoryByClient = async (idClient) => {
     const credit = await creditRepository.findCreditByClient(idClient);
 
@@ -101,6 +109,7 @@ const deleteOneCredit = async (id) => {
 module.exports = {
     getAllCredits,
     getOneCredit,
+    getCreditsByClient,
     getCreditHistoryByClient,
     createCredit,
     updateTotalCredit,

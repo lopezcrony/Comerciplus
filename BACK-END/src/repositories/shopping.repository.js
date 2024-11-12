@@ -8,6 +8,12 @@ const findShoppingById = async (id = {}) => {
     return await Shopping.findByPk(id);
 };
 
+const findShoppingByProvider = async (id) => {
+    return await Shopping.findAll({
+        where: { idProveedor: id }
+    });
+}
+
 const createShopping = async (shoppingData, options) => {
     return await Shopping.create(shoppingData, options);
 };
@@ -37,6 +43,7 @@ const cancelShopping = async (id) => {
 module.exports = {
     findAllShoppings,
     findShoppingById,
+    findShoppingByProvider,
     createShopping,
     deleteShopping,
     updateValorShopping,

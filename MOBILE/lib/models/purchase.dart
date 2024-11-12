@@ -1,30 +1,30 @@
-class Shopping {
+class Purchase {
   final int idCompra;
   final int idProveedor;
   final DateTime fechaCompra;
-  final DateTime? fechaRegistro;
+  final DateTime fechaRegistro;
   final String numeroFactura;
-  final double? valorCompra;
+  final double valorCompra;
   final bool estadoCompra;
 
-  Shopping({
+  Purchase({
     required this.idCompra,
     required this.idProveedor,
     required this.fechaCompra,
-    this.fechaRegistro,
+    required this.fechaRegistro,
     required this.numeroFactura,
-    this.valorCompra,
+    required this.valorCompra,
     required this.estadoCompra,
   });
 
-  factory Shopping.fromJson(Map<String, dynamic> json) {
-    return Shopping(
+  factory Purchase.fromJson(Map<String, dynamic> json) {
+    return Purchase(
       idCompra: json['idCompra'],
       idProveedor: json['idProveedor'],
-      fechaCompra: DateTime.parse(json['fechaCompra']),
-      fechaRegistro: json['fechaRegistro'] != null ? DateTime.parse(json['fechaRegistro']) : null,
+      fechaCompra: json['fechaCompra'] != null ? DateTime.parse(json['fechaCompra']) : DateTime.now(),
+      fechaRegistro: DateTime.parse(json['fechaRegistro']),
       numeroFactura: json['numeroFactura'],
-      valorCompra: json['valorCompra']?.toDouble(),
+      valorCompra: (json['valorCompra'] ?? 0.0).toDouble(),
       estadoCompra: json['estadoCompra'],
     );
   }

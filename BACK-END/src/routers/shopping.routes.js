@@ -10,6 +10,7 @@ const router = Router();
 router
     .get('/', shoppingController.getAllShoppings)
     .get('/:id', shoppingController.getOneShopping)
+    .get('/proveedor/:id', shoppingController.getShoppingByProvider)
     .post('/', validateShopping, authenticateJWT, checkPermission('Crear Compra'), shoppingController.createShopping)
     .delete('/:id', shoppingController.deleteOneShopping)
     // .patch('/:id', shoppingController.updateShoppingStatus)

@@ -18,6 +18,15 @@ const getOneCredit = async (req, res) => {
     }
 };
 
+const getCreditsByClient = async (req, res) => {
+    try {
+        const idClient = req.params.id;
+        const credits = await creditService.getCreditsByClient(idClient);
+        res.status(200).json(credits);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al obtener los créditos del cliente', error: error.message });
+    }
+}
 const getCreditHistoryByClient = async (req, res) => {
     try {
         const idClient = req.params.id;
@@ -61,6 +70,7 @@ const deleteOneCredit = async (req, res) => {
 module.exports = {
     getAllCredits,
     getOneCredit,
+    getCreditsByClient,
     getCreditHistoryByClient,
     createCredit,
     updateTotalCredit,

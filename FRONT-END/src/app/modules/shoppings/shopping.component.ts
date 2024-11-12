@@ -149,7 +149,7 @@ export class ShoppinviewComponent implements OnInit {
   }
 
   downloadPDF() {
-    const doc = new jsPDF();
+    const doc = new jsPDF(); // aquí se pone el tamaño del pdf
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
     const margin = 12;

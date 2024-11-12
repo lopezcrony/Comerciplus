@@ -1,118 +1,151 @@
+/* Estilos globales que deberían ir en styles.css */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 /* Fondo */
 .min-h-screen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100%;
-    background: linear-gradient(to bottom right, #E3F9E5, #A8EDDF);
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom right, #E3F9E5, #A8EDDF);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
 
-  /* Tarjeta de login */
-  .tarjeta{
-    margin: 14.2px;
-  }
-  .bg-white {
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
-    padding: 50px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Encabezado */
-  .text-center h2 {
-    font-size: 2rem;
-    color: #1a202c;
-    margin-bottom: 10px;
-  }
-  
-  .text-gray-600 {
-    color: #718096;
-  }
-  
-  /* Inputs */
-  input {
-    padding: 12px;
-    width: 100%;
-    border: none;
-    font-size: 1rem;
-    color: #4a5568;
-    background-color: white;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  
-  /* Bordes visibles */
-  .flex {
-    display: flex;
-    align-items: center;
-    border: 1px solid #cbd5e0; /* Color del borde */
-    border-radius: 8px; /* Redondeado */
-    padding: 5px;
-  }
-  
-  input:focus {
-    outline: none;
-  }
-  
-  /* Iconos dentro de los inputs */
-  i {
-    font-size: 1.25rem;
-    color: #6b7280;
-  }
-  
-  /* Icono del ojo */
-  i[style="cursor: pointer"] {
-    background: none;
-    border: none;
-    padding: 0;
-  }
-  
-  i:hover {
-    color: #3182ce;
-  }
-  
-  /* Ocultar el icono del ojo nativo en el input de contraseña */
-  input::-ms-reveal,
-  input::-ms-clear,
-  input[type="password"]::-webkit-clear-button,
-  input[type="password"]::-webkit-reveal-button {
-    display: none;
-  }
-  
-  /* Botón de inicio de sesión */
-  button {
-    background-color: #48bb78;
-    color: white;
-    font-weight: bold;
-    padding: 12px;
-    width: 100%;
-    border: none;
-    border-radius: 8px;
-    transition: background-color 0.2s, transform 0.2s;
-  }
-  
-  button:hover {
-    background-color: #38a169;
-    transform: scale(1.05);
-  }
-  
-  /* Link de Olvidar Contraseña */
-  .text-right a {
-    color: #4299e1;
-    font-size: 0.875rem;
-  }
-  
-  .text-right a:hover {
-    text-decoration: underline;
-  }
+/* Tarjeta de login */
+.tarjeta {
+  margin: 0;
+  width: 100%;
+  max-width: 500px;
+  padding: 14.2px;
+}
 
-  /* Icono de la cesta completamente blanco */
+.bg-white {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 50px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Encabezado */
+.text-center h2 {
+  font-size: 2rem;
+  color: #1a202c;
+  margin-bottom: 10px;
+}
+
+.text-gray-600 {
+  color: #718096;
+}
+
+/* Inputs */
+input {
+  padding: 12px;
+  width: 100%;
+  border: none;
+  font-size: 1rem;
+  color: #4a5568;
+  background-color: white;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+/* Bordes visibles */
+.flex {
+  display: flex;
+  align-items: center;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+input:focus {
+  outline: none;
+}
+
+/* Iconos dentro de los inputs */
+i {
+  font-size: 1.25rem;
+  color: #6b7280;
+}
+
+/* Icono del ojo */
+i[style="cursor: pointer"] {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+i:hover {
+  color: #3182ce;
+}
+
+/* Ocultar el icono del ojo nativo en el input de contraseña */
+input::-ms-reveal,
+input::-ms-clear,
+input[type="password"]::-webkit-clear-button,
+input[type="password"]::-webkit-reveal-button {
+  display: none;
+}
+
+/* Botón de inicio de sesión */
+button {
+  background-color: #48bb78;
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+button:hover {
+  background-color: #38a169;
+  transform: scale(1.05);
+}
+
+/* Link de Olvidar Contraseña */
+.text-right a {
+  color: #4299e1;
+  font-size: 0.875rem;
+}
+
+.text-right a:hover {
+  text-decoration: underline;
+}
+
+/* Icono de la cesta completamente blanco */
 .icono-cesta {
-    color: white; /* Esto hace que el icono entero sea blanco */
-    font-size: 2rem; /* Ajusta el tamaño si es necesario */
-  }
+  color: white;
+  font-size: 2rem;
+}
 
- 
-  
-  
-  
+/* Estilos adicionales para el formulario */
+.space-y-6 {
+  margin-bottom: 1.5rem;
+}
+
+/* Estilos para mensajes de error */
+.p-error {
+  color: #e53e3e;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Estilos para campos inválidos */
+.error {
+  border-color: #e53e3e;
+}

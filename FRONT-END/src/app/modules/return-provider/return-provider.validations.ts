@@ -27,7 +27,7 @@ export const returnProviderValidationConfig: FieldValidation[] = [
     name: 'CodigoProducto',
     rules: [
       { type: 'required', message: 'El código de barras es obligatorio.' },
-      { type: 'pattern', value: 'onlyNumbers', message: 'El código de barras solo debe contener números.' },
+      { type: 'pattern', value: 'alfanumeric', message: 'El código de barras solo debe contener números.' },
     ],
   },
 ];
