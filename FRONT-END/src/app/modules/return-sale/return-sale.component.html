@@ -23,6 +23,7 @@
   <ng-template pTemplate="content">
     <form [formGroup]="returnSaleForm" style="overflow: visible;">
 
+      <!-- Código de Barras -->
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('CodigoProducto')}">
           <label for="CodigoProducto">Código de Barras</label>
@@ -32,6 +33,7 @@
           </small>
         </div>
 
+        <!-- Cantidad -->
         <div class="field" [ngClass]="{'error': isFieldInvalid('cantidad')}">
           <label for="cantidad">Cantidad</label>
           <input type="text" pInputText id="cantidad" formControlName="cantidad" required />
@@ -39,9 +41,9 @@
             {{ getErrorMessage('cantidad') }}
           </small>
         </div>
-
       </div>
 
+      <!-- Proveedor -->
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('idProveedor')}">
           <label for="proveedor">Proveedores</label>
@@ -50,7 +52,6 @@
               optionValue="idProveedor" placeholder="Seleccionar proveedor" [virtualScroll]="true"
               [virtualScrollItemSize]="38" styleClass="w-full">
             </p-dropdown>
-
           </div>
           <small class="p-error" *ngIf="isFieldInvalid('idProveedor')">
             {{ getErrorMessage('idProveedor') }}
@@ -58,37 +59,41 @@
         </div>
       </div>
 
+      <!-- Tipo de Reembolso -->
       <div class="field-group">
-        <div class="field" [ngClass]="{'error': isFieldInvalid('opcion')}">
-          <label for="opcion">Tipo reembolso</label>
+        <div class="field" [ngClass]="{'error': isFieldInvalid('tipoReembolso')}">
+          <label for="tipoReembolso">Tipo de Reembolso</label>
           <div class="p-inputgroup">
             <p-dropdown [options]="options" formControlName="tipoReembolso" optionLabel="label" optionValue="value"
               placeholder="Seleccionar tipo" [virtualScroll]="true" [virtualScrollItemSize]="38" styleClass="w-full"
               appendTo="body">
             </p-dropdown>
           </div>
-          <small class="p-error" *ngIf="isFieldInvalid('opcion')">
-            {{ getErrorMessage('opcion') }}
+          <small class="p-error" *ngIf="isFieldInvalid('tipoReembolso')">
+            {{ getErrorMessage('tipoReembolso') }}
           </small>
         </div>
       </div>
 
+      <!-- Motivo -->
       <div class="field-group">
-        <div class="field" [ngClass]="{'error': isFieldInvalid('opcion')}">
-          <label for="opcion">Motivo</label>
+        <div class="field" [ngClass]="{'error': isFieldInvalid('motivoDevolucion')}">
+          <label for="motivoDevolucion">Motivo</label>
           <div class="p-inputgroup">
             <p-dropdown [options]="motivos" formControlName="motivoDevolucion" optionLabel="label" optionValue="value"
               placeholder="Seleccionar motivo" [virtualScroll]="true" [virtualScrollItemSize]="38" styleClass="w-full"
               appendTo="body">
             </p-dropdown>
           </div>
-          <small class="p-error" *ngIf="isFieldInvalid('motivo')">
-            {{ getErrorMessage('motivo') }}
+          <small class="p-error" *ngIf="isFieldInvalid('motivoDevolucion')">
+            {{ getErrorMessage('motivoDevolucion') }}
           </small>
         </div>
       </div>
+      
     </form>
   </ng-template>
+
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text custom-cancel-btn"
       (click)="closeModal()"></button>
