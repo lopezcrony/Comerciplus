@@ -1,83 +1,65 @@
-// import 'package:flutter/material.dart';
-// import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
+import '../services/scanner_service.dart';
 
-// class ScannerScreen extends StatefulWidget {
-//   const ScannerScreen({super.key});
+class ScannerScreen extends StatefulWidget {
+  const ScannerScreen({super.key});
 
-//   @override
-//   _ScannerScreenState createState() => _ScannerScreenState();
-// }
+  @override
+  _ScannerScreenState createState() => _ScannerScreenState();
+}
 
-// class _ScannerScreenState extends State<ScannerScreen> {
-//   late CameraController _controller;
-//   late Future<void> _initializeControllerFuture;
-//   final bool _isScanning = false;
+class _ScannerScreenState extends State<ScannerScreen> {
+  final TextEditingController _controller = TextEditingController();
+  final ScannerService _scannerService = ScannerService(); // Instancia del servicio
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _initializeCamera();
-//   }
+  Future<void> _sendBarcode() async {
+    final barcode = _controller.text;
 
-//   Future<void> _initializeCamera() async {
-//     final cameras = await availableCameras();
-//     final firstCamera = cameras.first;
+    if (barcode.isEmpty) {
+      // Muestra un mensaje de error si no se ha ingresado un código
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor ingrese un código de barras')),
+      );
+      return;
+    }
 
-//     _controller = CameraController(
-//       firstCamera,
-//       ResolutionPreset.medium,
-//     );
+    try {
+      // Llamada al servicio para enviar el código
+      await _scannerService.sendBarcodeToBackend(barcode);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Código enviado exitosamente')),
+      );
+    } catch (e) {
+      // Manejo de errores
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al enviar el código: $e')),
+      );
+    }
+  }
 
-//     _initializeControllerFuture = _controller.initialize();
-//   }
-
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Scanner')),
-//       body: FutureBuilder<void>(
-//         future: _initializeControllerFuture,
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.done) {
-//             return Stack(
-//               alignment: Alignment.center,
-//               children: [
-//                 CameraPreview(_controller),
-//                 Container(
-//                   decoration: BoxDecoration(
-//                     border: Border.all(
-//                       color: Colors.green,
-//                       width: 2,
-//                     ),
-//                     borderRadius: BorderRadius.circular(12),
-//                   ),
-//                   width: 250,
-//                   height: 250,
-//                 ),
-//               ],
-//             );
-//           } else {
-//             return const Center(child: CircularProgressIndicator());
-//           }
-//         },
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () async {
-//           try {
-//             await _initializeControllerFuture;
-//             //final image = await _controller.takePicture();
-//             // Aquí iría la lógica para procesar el código de barras
-//           } catch (e) {
-//           }
-//         },
-//         child: Icon(_isScanning ? Icons.stop : Icons.camera_alt),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Barcode Input')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _controller,
+              decoration: const InputDecoration(labelText: 'Scan or Enter Barcode'),
+              onSubmitted: (value) {
+                _sendBarcode(); // Llamar al método cuando se ingrese el código
+              },
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _sendBarcode, // Llamar al método al hacer clic en el botón
+              child: const Text('Submit'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

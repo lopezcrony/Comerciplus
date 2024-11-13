@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { ValidationService } from '../../shared/validators/validations.service';
@@ -18,6 +18,7 @@ import { SaleService } from './sales.service';
 import { CreditDetailService } from '../detailCredit/creditDetail.service';
 import { BarcodesService } from '../barcodes/barcodes.service';
 import jsPDF from 'jspdf';
+import { ScannerSocketService } from '../scanner/scanner.service';
 
 @Component({
   selector: 'app-sales',
@@ -56,6 +57,8 @@ export class SalesComponent implements OnInit {
   filteredCredits: Credit[] = [];
   filteredBarcodes: any[] = [];
 
+  private barcodeSubscription!: Subscription;
+
   constructor(
     private fb: FormBuilder,
     private saleService: SaleService,
@@ -65,7 +68,8 @@ export class SalesComponent implements OnInit {
     private creditDetailService: CreditDetailService,
     private clientService: ClientService,
     private toastr: ToastrService,
-    private validationService: ValidationService
+    private validationService: ValidationService,
+    private scannerSocketService: ScannerSocketService
   ) {
     this.busquedaForm = this.fb.group({
       busqueda: ['']
@@ -89,6 +93,29 @@ export class SalesComponent implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
+  
+    // Agregar la suscripción al scanner
+    this.barcodeSubscription = this.scannerSocketService.getLatestBarcode()
+      .subscribe(barcodeData => {
+        if (barcodeData && barcodeData.barcode) {
+          // Mostrar el código de barras en el input
+          this.busquedaForm.patchValue({ busqueda: barcodeData.barcode });
+  
+          // Limpiar el input después de 1 segundo
+          setTimeout(() => {
+            this.busquedaForm.patchValue({ busqueda: '' });
+          }, 1000);
+  
+          // Usar el método existente searchByBarcode
+          this.searchByBarcode(barcodeData.barcode);
+        }
+      });
+  }  
+
+  ngOnDestroy() {
+    if (this.barcodeSubscription) {
+      this.barcodeSubscription.unsubscribe();
+    }
   };
 
   loadProducts() {

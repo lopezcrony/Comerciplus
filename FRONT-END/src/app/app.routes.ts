@@ -21,6 +21,7 @@ import { AuthGuard } from './Auth/auth.guard';
 import { LoadingComponent } from './shared/loading/loading.component';
 import { IndexComponent } from './modules/index/index.component';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
+import { ScannerComponent } from './modules/scanner/scanner.component';
 
 export const routes: Routes = [
   { path: 'index', component: IndexComponent},
@@ -37,18 +38,24 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent},
       { path: 'users', component: UsersComponent },
       { path: 'roles', component: RolesComponent },
+
       { path: 'providers', component: ProvidersComponent },
-      { path: 'clients', component: ClientsComponent },
-      { path: 'loss', component: LossComponent },
-      { path: 'sales', component: SalesComponent },
-      { path: 'returnProvider', component: ReturnProviderComponent },
-      { path: 'returnSale', component: ReturnSaleComponent },
-      { path: 'credits', component: CreditsComponent },
       { path: 'categories', component: CategoriesComponent },
       { path: 'products', component: ProductsComponent },
       { path: 'shoppings', component: ShoppingsComponent },
       { path: 'shoppingview', component: ShoppinviewComponent },
+
+      { path: 'sales', component: SalesComponent },
       { path: 'detailSales', component: DetailSaleComponent },
+      { path: 'clients', component: ClientsComponent },
+      { path: 'credits', component: CreditsComponent },
+
+      { path: 'loss', component: LossComponent },
+      { path: 'returnProvider', component: ReturnProviderComponent },
+      { path: 'returnSale', component: ReturnSaleComponent },
+
+      { path: 'scanner', component: ScannerComponent}
+      
       // { path: '', redirectTo: 'index', pathMatch: 'full' },
     ]
   },
