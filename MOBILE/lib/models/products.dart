@@ -1,7 +1,6 @@
 class Products {
   final int idProducto;
   final int idCategoria;
-  final String imagenProducto;
   final String nombreProducto;
   final int stock;
   final double precioVenta;
@@ -10,7 +9,6 @@ class Products {
   Products({
     required this.idProducto,
     required this.idCategoria,
-    required this.imagenProducto,
     required this.nombreProducto,
     required this.stock,
     required this.precioVenta,
@@ -22,7 +20,6 @@ class Products {
       idProducto: json['idProducto'],
       idCategoria: json['idCategoria'],
       precioVenta: json['precioVenta'],
-      imagenProducto: json['imagenProducto'],
       nombreProducto: json['nombreProducto'],
       stock: json['stock'],
       estadoProducto: json['estadoProducto'],
