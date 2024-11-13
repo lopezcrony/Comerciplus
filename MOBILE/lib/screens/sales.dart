@@ -27,17 +27,18 @@ class ResumenVentas extends StatefulWidget {
   _ResumenVentasState createState() => _ResumenVentasState();
 }
 
-class _ResumenVentasState extends State<ResumenVentas>
-    with SingleTickerProviderStateMixin {
+class _ResumenVentasState extends State<ResumenVentas> with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   Set<String> diasAbiertos = {};
   Map<String, List<Sales>> ventasPorDia = {};
+  Map<String, List<Sales>> ventasFiltradas = {};  // Agrega un mapa para las ventas filtradas
   late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _initializeData();
+    _searchController.addListener(_filterVentas);  // Añadimos un listener para el controlador de búsqueda
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -46,10 +47,12 @@ class _ResumenVentasState extends State<ResumenVentas>
 
   @override
   void dispose() {
+    _searchController.removeListener(_filterVentas);  // Removemos el listener al salir del estado
     _animationController.dispose();
     super.dispose();
   }
 
+  // Función para inicializar las ventas
   void _initializeData() async {
     try {
       // Obtiene la lista de ventas desde la API
@@ -65,14 +68,45 @@ class _ResumenVentasState extends State<ResumenVentas>
             Sales(
                 idVenta: venta.idVenta,
                 fechaVenta: venta.fechaVenta,
-                totalVenta: venta
-                    .totalVenta, // Puedes agregar los productos si tu API los proporciona
+                totalVenta: venta.totalVenta,
                 estadoVenta: venta.estadoVenta),
           );
         }
+        // Inicializamos las ventas filtradas con todas las ventas por defecto
+        ventasFiltradas = Map.from(ventasPorDia);
       });
     } catch (error) {
-      // Manejo de errores (puedes mostrar un mensaje de error en pantalla)
+      // Manejo de errores
+    }
+  }
+
+  // Función que se ejecuta cuando el texto del controlador de búsqueda cambia
+  void _filterVentas() {
+    String query = _searchController.text.toLowerCase();
+
+    if (query.isEmpty) {
+      // Si el campo de búsqueda está vacío, mostramos todas las ventas
+      setState(() {
+        ventasFiltradas = Map.from(ventasPorDia);
+      });
+    } else {
+      Map<String, List<Sales>> filteredVentas = {};
+
+      ventasPorDia.forEach((fecha, ventas) {
+        // Filtra las ventas por número de venta o fecha
+        List<Sales> filteredList = ventas.where((venta) {
+          return venta.idVenta.toString().contains(query) ||
+              DateFormat('yyyy-MM-dd').format(venta.fechaVenta).contains(query);
+        }).toList();
+
+        if (filteredList.isNotEmpty) {
+          filteredVentas[fecha] = filteredList;
+        }
+      });
+
+      setState(() {
+        ventasFiltradas = filteredVentas;
+      });
     }
   }
 
@@ -139,11 +173,11 @@ class _ResumenVentasState extends State<ResumenVentas>
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
-                  String fecha = ventasPorDia.keys.elementAt(index);
-                  List<Sales> ventas = ventasPorDia[fecha]!;
+                  String fecha = ventasFiltradas.keys.elementAt(index);
+                  List<Sales> ventas = ventasFiltradas[fecha]!;
                   return _buildDayCard(fecha, ventas);
                 },
-                childCount: ventasPorDia.length,
+                childCount: ventasFiltradas.length,
               ),
             ),
           ],
@@ -151,6 +185,10 @@ class _ResumenVentasState extends State<ResumenVentas>
       ),
     );
   }
+
+  // Tu código para _buildDayCard y demás widgets
+  
+
 
   Widget _buildDayCard(String fecha, List<Sales> ventas) {
     bool estaAbierto = diasAbiertos.contains(fecha);
