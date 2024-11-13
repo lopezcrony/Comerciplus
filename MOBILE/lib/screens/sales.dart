@@ -73,7 +73,6 @@ class _ResumenVentasState extends State<ResumenVentas>
       });
     } catch (error) {
       // Manejo de errores (puedes mostrar un mensaje de error en pantalla)
-      print("Error al cargar ventas: $error");
     }
   }
 
@@ -397,7 +396,6 @@ class _ResumenVentasState extends State<ResumenVentas>
   }
 
   void _mostrarDetallesVenta(Sales venta) {
-    print(venta.idVenta);
 
     showDialog(
       context: context,
@@ -406,13 +404,13 @@ class _ResumenVentasState extends State<ResumenVentas>
             .getDetailSales(), // Obtén todos los detalles de venta
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(
                 child: Text(
                     'Error al cargar los detalles de la venta: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No se encontraron detalles de ventas'));
+            return const Center(child: Text('No se encontraron detalles de ventas'));
           }
 
           // Filtra los detalles para mostrar solo aquellos que tienen el idVenta coincidente
@@ -420,7 +418,6 @@ class _ResumenVentasState extends State<ResumenVentas>
               .where((detalle) => detalle.idVenta == venta.idVenta)
               .toList();
 
-          print(detallesVenta);
 
           return Dialog(
             shape: RoundedRectangleBorder(
@@ -518,14 +515,14 @@ class _ResumenVentasState extends State<ResumenVentas>
                       builder: (context, productSnapshot) {
                         if (productSnapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         } else if (productSnapshot.hasError) {
                           return Center(
                               child: Text(
                                   'Error al cargar los productos: ${productSnapshot.error}'));
                         } else if (!productSnapshot.hasData ||
                             productSnapshot.data!.isEmpty) {
-                          return Center(
+                          return const Center(
                               child: Text('No se encontraron productos'));
                         }
 
