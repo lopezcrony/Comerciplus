@@ -14,6 +14,10 @@ import { ReturnSaleModel } from './return-sale.model';
 import { Barcode } from '../barcodes/barcode.model';
 import { BarcodesService } from '../barcodes/barcodes.service';
 
+interface SelectOption {
+  label: string;
+  value: string;
+}
 @Component({
   selector: 'app-return-sale',
   standalone: true,
@@ -40,14 +44,13 @@ export class ReturnSaleComponent implements OnInit {
     { field: 'valorDevolucion', header: 'Valor', type: 'currency' },
     { field: 'fechaDevolucion', header: 'Fecha', type: 'date' },
   ];
-
   returnSaleForm: FormGroup;
-  options = [
+  options: SelectOption[] = [
     { label: 'Dinero', value: 'Dinero' },
     { label: 'Producto', value: 'Producto' },
   ];
 
-  motivos = [
+  motivos: SelectOption[] = [
     { label: 'Caducidad', value: 'Caducidad' },
     { label: 'Equivocación', value: 'Equivocación' },
   ];
@@ -64,7 +67,7 @@ export class ReturnSaleComponent implements OnInit {
     private barcodeService: BarcodesService,
   ) {
     this.returnSaleForm = this.fb.group({
-      CodigoProducto: ['', validationService.getValidatorsForField('returnSale', 'CodigoProducto')],      
+      CodigoProducto: ['', validationService.getValidatorsForField('returnSale', 'CodigoProducto')],
       cantidad: ['', validationService.getValidatorsForField('returnSale', 'cantidad')],
       fechaDeBaja: new Date(),
       motivoDevolucion: ['', validationService.getValidatorsForField('returnSale', 'motivoDevolucion')],
@@ -74,23 +77,37 @@ export class ReturnSaleComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadProviders()
-    this.loadBardCode()
+    this.loadProviders();
+    this.loadBardCode();
+    this.returnSaleForm.get('tipoReembolso')?.valueChanges.subscribe((value) => {
+      this.updateMotivosOptions(value);
+    });    
   }
+
+  
+    // Escucha cambios en `tipoReembolso` para actualizar dinámicamente los motivos
+    updateMotivosOptions(tipoReembolso: string) {
+      this.motivos = tipoReembolso === 'Dinero'
+        ? [
+            { label: 'Caducidad', value: 'Caducidad' },
+            { label: 'Equivocación', value: 'Equivocación' }
+          ]
+        : [{ label: 'Caducidad', value: 'Caducidad' }];
+    }
+  
+
 
   loadReturnSale() {
     this.returnSaleService.getReturnSale().subscribe(data => {
       this.returnSale = data.map(repp => {
         const code = this.barcode.find(codes => codes.idCodigoBarra === repp.idCodigoBarra);
-  
         return { 
           ...repp, 
           codigoBarra: code ? code.codigoBarra : 'Codigo no encontrado'
         };
       });
       this.filteredReturnSale = this.returnSale;
-    },
-    );
+    });
   }
 
   loadProviders() {
@@ -101,8 +118,8 @@ export class ReturnSaleComponent implements OnInit {
 
   loadBardCode() {
     this.barcodeService.getAllBarcodes().subscribe(data => {
-      this.barcode = data; // Guardamos los códigos de barras
-      this.loadReturnSale(); // Ahora que los códigos están cargados, podemos cargar las pérdidas
+      this.barcode = data;
+      this.loadReturnSale();
     });
   }
 
@@ -193,17 +210,23 @@ export class ReturnSaleComponent implements OnInit {
   cancelSale(updatedSale: ReturnSaleModel) {
     // Mostrar mensaje de confirmación
     this.alertsService.confirm(
-    `¿Estás seguro de que deseas cancelar esta venta?`,
+    `¿Estás seguro de que deseas cancelar esta devolución?`,
       
       () => {
-        // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
-        updatedSale.estado = false; // Cambiamos el estado a "false"
-        
-        // Llama a la función que cambia el estado
+        updatedSale.estado = false;        
         this.changeSaleStatus(updatedSale);
+
+        this.returnSaleService.cancelSale(updatedSale.idDevolucionVenta).subscribe({
+          next: () => {
+            this.loadReturnSale();
+            this.toastr.success('Devolución anulada con éxito.', 'Éxito');
+          },
+          error: () => {
+            this.toastr.error('Error al anular la devolución.', 'Error');
+          }
+        });
+
         
-        // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
-        // this.disableField();
       },
       () => {
         this.toastr.info('Anulación cancelada', 'Información');

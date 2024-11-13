@@ -1,6 +1,7 @@
 export const validationPatterns = {
   onlyNumbers: /^[0-9]+$/,
   onlyLetters: /^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/,
+  alfanumeric:/^[0-9a-zA-Z]+$/,
 
   cedula: /^[0-9]{5,10}$/,
   phone: /^[0-9]{7,10}$/,

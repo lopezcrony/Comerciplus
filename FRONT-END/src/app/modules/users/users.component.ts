@@ -38,7 +38,7 @@ export class UsersComponent implements OnInit {
     { field: 'telefonoUsuario', header: 'Teléfono', type: 'text' },
     { field: 'correoUsuario', header: 'Correo', type: 'text' },
   ];
-  userForm: FormGroup;
+  userForm!: FormGroup;
   showModal = false;
   isEditing = false;
 
@@ -50,18 +50,22 @@ export class UsersComponent implements OnInit {
     private toastr: ToastrService,
     private validationService: ValidationService,
   ) {
+    this.initializeForm();
+  }
+
+  private initializeForm() {
     this.userForm = this.fb.group({
       idUsuario: [null],
-      idRol: ['', validationService.getValidatorsForField('users', 'idRol')],
-      cedulaUsuario: ['', validationService.getValidatorsForField('users', 'cedulaUsuario')],
-      nombreUsuario: ['', validationService.getValidatorsForField('users', 'nombreUsuario')],
-      apellidoUsuario: ['', validationService.getValidatorsForField('users', 'apellidoUsuario')],
-      telefonoUsuario: ['', validationService.getValidatorsForField('users', 'telefonoUsuario')],
-      correoUsuario: ['', validationService.getValidatorsForField('users', 'correoUsuario')],
-      claveUsuario: ['', this.isEditing ? [] : validationService.getValidatorsForField('users', 'claveUsuario')],
-      confirmarClave: ['', this.isEditing ? [] : validationService.getValidatorsForField('users', 'claveUsuario')]
+      idRol: ['', this.validationService.getValidatorsForField('users', 'idRol')],
+      cedulaUsuario: ['', this.validationService.getValidatorsForField('users', 'cedulaUsuario')],
+      nombreUsuario: ['', this.validationService.getValidatorsForField('users', 'nombreUsuario')],
+      apellidoUsuario: ['', this.validationService.getValidatorsForField('users', 'apellidoUsuario')],
+      telefonoUsuario: ['', this.validationService.getValidatorsForField('users', 'telefonoUsuario')],
+      correoUsuario: ['', this.validationService.getValidatorsForField('users', 'correoUsuario')],
+      claveUsuario: [''],
+      confirmarClave: ['']
     }, {
-      validators: this.isEditing ? [] : [this.passwordMatchValidator]
+      validators: this.passwordMatchValidator
     });
   }
 
@@ -92,27 +96,51 @@ export class UsersComponent implements OnInit {
 
   openCreateModal() {
     this.isEditing = false;
+    // Reset form with initial validators for new user
+    this.userForm.get('claveUsuario')?.setValidators(
+      this.validationService.getValidatorsForField('users', 'claveUsuario')
+    );
+    this.userForm.get('confirmarClave')?.setValidators(
+      this.validationService.getValidatorsForField('users', 'claveUsuario')
+    );
     this.userForm.reset({ estadoUsuario: true });
+    this.userForm.updateValueAndValidity();
     this.showModal = true;
   }
 
   openEditModal(user: User) {
     this.isEditing = true;
-    this.userForm.patchValue(user);
+    // Remove validators for password fields in edit mode
+    this.userForm.get('claveUsuario')?.clearValidators();
+    this.userForm.get('confirmarClave')?.clearValidators();
+    this.userForm.patchValue({
+      ...user,
+      claveUsuario: '',
+      confirmarClave: ''
+    });
+    this.userForm.get('claveUsuario')?.updateValueAndValidity();
+    this.userForm.get('confirmarClave')?.updateValueAndValidity();
     this.showModal = true;
   }
 
   cancelModalMessage() {
-    this.alertsService.menssageCancel()
+    this.alertsService.menssageCancel();
   }
 
   closeModal() {
     this.showModal = false;
+    this.userForm.reset();
   }
 
   passwordMatchValidator(g: FormGroup) {
-    return g.get('claveUsuario')?.value === g.get('confirmarClave')?.value
-      ? null : { 'mismatch': true };
+    const password = g.get('claveUsuario')?.value;
+    const confirmPassword = g.get('confirmarClave')?.value;
+    
+    // Solo validar si ambos campos tienen valor
+    if (password || confirmPassword) {
+      return password === confirmPassword ? null : { 'mismatch': true };
+    }
+    return null;
   }
 
   isFieldInvalid(fieldName: string): boolean {
@@ -134,7 +162,6 @@ export class UsersComponent implements OnInit {
   }
 
   saveUser() {
-
     if (this.userForm.invalid) {
       this.markFormFieldsAsTouched();
       return;
@@ -142,18 +169,19 @@ export class UsersComponent implements OnInit {
 
     const userData = { ...this.userForm.value };
 
-    // Si estamos editando, eliminamos el campo de contraseña
-    if (this.isEditing) {
-      delete userData.claveUsuario;
-      delete userData.confirmarClave;
-    } else {
-      // Si estamos creando, verificamos que las contraseñas coincidan
+    // Validar contraseñas solo si estamos creando o si se ingresó una nueva contraseña
+    if (!this.isEditing || userData.claveUsuario) {
       if (userData.claveUsuario !== userData.confirmarClave) {
         this.toastr.error('Las contraseñas no coinciden', 'Error');
         return;
       }
-      delete userData.confirmarClave;
     }
+
+    // Si estamos editando y no se ingresó nueva contraseña, la eliminamos
+    if (this.isEditing && !userData.claveUsuario) {
+      delete userData.claveUsuario;
+    }
+    delete userData.confirmarClave;
 
     const request = this.isEditing
       ? this.userService.updateUser(userData)
@@ -161,41 +189,54 @@ export class UsersComponent implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.toastr.success('¡Usuario guardado con éxito!', 'Éxito');
+        this.toastr.success(
+          this.isEditing 
+            ? '¡Usuario actualizado con éxito!' 
+            : '¡Usuario creado con éxito!',
+          'Éxito'
+        );
         this.loadData();
         this.closeModal();
       },
-      error: () => this.toastr.error('Error al guardar el usuario', 'Error')
+      error: (error) => {
+        this.toastr.error(
+          error.error?.message || 'Error al guardar el usuario',
+          'Error'
+        );
+      }
     });
-  };
+  }
 
   confirmDelete(user: User) {
     this.alertsService.confirm(
       `¿Estás seguro de eliminar a ${user.nombreUsuario} ${user.apellidoUsuario}?`,
-      () => this.userService.deleteUser(user.idUsuario).subscribe(() => {
-        this.toastr.success('Usuario eliminado exitosamente', 'Éxito');
-        this.loadData();
-
+      () => this.userService.deleteUser(user.idUsuario).subscribe({
+        next: () => {
+          this.toastr.success('Usuario eliminado exitosamente', 'Éxito');
+          this.loadData();
+        },
+        error: (error) => {
+          this.toastr.error(
+            error.error?.message || 'Error al eliminar el usuario',
+            'Error'
+          );
+        }
       })
-
     );
   }
 
   searchUser(query: string) {
     this.filteredUsers = this.users.filter(user => {
-      // Para buscar por el nombre del rol
       const roleUser = user as User & { nombreRol?: string };
-
-      const role = (roleUser.nombreRol || '').toLowerCase().includes(query);
-      const cedula = user.cedulaUsuario.includes(query);
+      const role = (roleUser.nombreRol || '').toLowerCase().includes(query.toLowerCase());
+      const cedula = user.cedulaUsuario.toLowerCase().includes(query.toLowerCase());
       const nombre = user.nombreUsuario.toLowerCase().includes(query.toLowerCase());
       const apellido = user.apellidoUsuario.toLowerCase().includes(query.toLowerCase());
-      const correo = user.correoUsuario.toLocaleLowerCase().includes(query);
+      const correo = user.correoUsuario.toLowerCase().includes(query.toLowerCase());
 
       return role || cedula || nombre || apellido || correo;
-    }
-    );
-  };
+    });
+  }
 
   changeUserStatus(updatedUser: User) {
     const estadoUsuario = updatedUser.estadoUsuario ?? false;
@@ -210,12 +251,16 @@ export class UsersComponent implements OnInit {
         });
         this.toastr.success('Estado del usuario actualizado con éxito', 'Éxito');
       },
-      error: () => {
-        this.toastr.error('Error al actualizar el estado del usuario', 'Error');
+      error: (error) => {
+        this.toastr.error(
+          error.error?.message || 'Error al actualizar el estado del usuario',
+          'Error'
+        );
       }
     });
-  };
+  }
 
-  exportUsers() { };
-
+  exportUsers() {
+    // Implementación del método de exportación
+  }
 }

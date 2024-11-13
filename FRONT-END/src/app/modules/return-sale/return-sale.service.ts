@@ -51,6 +51,12 @@ export class ReturnSaleService {
     );
   }
 
+  cancelSale(id: number): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${id}`,{}, { headers: this.getHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
 private handleError(error: HttpErrorResponse) {
     let errorMessage: string;
     if (error.error instanceof ErrorEvent) {

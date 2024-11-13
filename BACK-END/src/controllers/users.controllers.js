@@ -30,12 +30,12 @@ const createNewUser = async (req, res) => {
 
 const updateOneUser = async (req, res) => {
     try {
-        const updatedUser = await userService.updateOneUser(req.params.id, req.body);
+        const { claveUsuario, ...userData } = req.body;
+        
+        const updatedUser = await userService.updateOneUser(req.params.id, userData);
         res.status(200).json({ message: 'Usuario actualizado exitosamente', updatedUser });
     } catch (error) {
-
         res.status(500).json({ message: 'Error al actualizar el usuario', error: error.message });
-
     }
 };
 

@@ -95,7 +95,7 @@ class Home extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SalesHistoryScreen()),
+                            builder: (context) => ResumenVentas()),
                       );
                     },
                   ),
@@ -108,7 +108,7 @@ class Home extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SalesHistoryScreen()),
+                            builder: (context) => ResumenVentas()),
                       );
                     },
                   ),
