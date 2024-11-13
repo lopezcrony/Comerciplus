@@ -7,8 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/sales.dart';
 import '../models/sale.dart';
 
-import '../models//detailSale.dart';
-import '../services/detailSales.dart';
 
 // Definición de colores personalizados
 class AppColors {

@@ -58,13 +58,13 @@
             <td>
               <div class="quantity-controls">
                 <button pButton type="button" icon="pi pi-minus" (click)="cambiarCantidad(item, -1)"></button>
-                <p-inputNumber [(ngModel)]="item.cantidadProducto" [showButtons]="false" [size]="3"
-                  (onInput)="updateSubtotal(item)">
+                <p-inputNumber [(ngModel)]="item.cantidadProducto" [min]="1" [showButtons]="false" [size]="3" 
+                  (onInput)="onInputCantidad(item)">
                 </p-inputNumber>
                 <button pButton type="button" icon="pi pi-plus" (click)="cambiarCantidad(item, 1)"></button>
               </div>
             </td>
-            <td>{{ item.subtotal | currency }}</td>
+            <td>{{ item.subtotal | currency }}</td>            
             <td>
               <button pButton icon="pi pi-trash" class="p-button-danger p-button-sm boton-pequeno"
                 (click)="removeProductFromSale(item)">
