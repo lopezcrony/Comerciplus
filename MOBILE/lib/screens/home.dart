@@ -1,3 +1,4 @@
+import 'package:comerciplus/screens/purchase.dart';
 import 'package:flutter/material.dart';
 
 import 'package:comerciplus/widgets/appBar.dart';
@@ -7,7 +8,6 @@ import 'package:comerciplus/widgets/menu_card.dart';
 
 import 'package:comerciplus/screens/providers.dart';
 import 'package:comerciplus/screens/clients.dart';
-
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -107,7 +107,7 @@ class Home extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ResumenVentas()),
+                            builder: (context) => PurchaseScreen()),
                       );
                     },
                   ),
@@ -142,19 +142,20 @@ class Home extends StatelessWidget {
               ),
 
               //Botón flotante
-                Align(
+              Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: FloatingActionButton(
-                  onPressed: () {
-                    // Aquí va la lógica para abrir el escáner
-                  },
-                  backgroundColor: const Color.fromARGB(129, 221, 186, 221),
-                  child: const Icon(Icons.qr_code_2_outlined, color: Color.fromARGB(255, 145, 72, 145)),
+                    onPressed: () {
+                      // Aquí va la lógica para abrir el escáner
+                    },
+                    backgroundColor: const Color.fromARGB(129, 221, 186, 221),
+                    child: const Icon(Icons.qr_code_2_outlined,
+                        color: Color.fromARGB(255, 145, 72, 145)),
                   ),
                 ),
-                ),
+              ),
             ]),
           ),
         ));
