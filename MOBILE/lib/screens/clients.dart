@@ -91,11 +91,7 @@ class _ClientScreenState extends State<ClientScreen> {
                 sortOptions: const [
                   DropdownMenuItem(
                     value: 'nombreCliente',
-                    child: Text('Por nombre', style: TextStyle(color: Color(0xFF2D3142))),
-                  ),
-                  DropdownMenuItem(
-                    value: 'estado',
-                    child: Text('Por estado', style: TextStyle(color: Color(0xFF2D3142))),
+                    child: Text('Ordenar', style: TextStyle(color: Color(0xFF2D3142))),
                   ),
                 ],
               ),
