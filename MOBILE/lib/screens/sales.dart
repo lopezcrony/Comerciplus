@@ -179,148 +179,151 @@ class _ResumenVentasState extends State<ResumenVentas>
   }
 
   // Tu código para _buildDayCard y demás widgets
+Widget _buildDayCard(String fecha, List<Sales> ventas) {
+  bool estaAbierto = diasAbiertos.contains(fecha);
 
-  Widget _buildDayCard(String fecha, List<Sales> ventas) {
-    bool estaAbierto = diasAbiertos.contains(fecha);
-    double totalDelDia = ventas.fold(0, (sum, venta) => sum + venta.totalVenta);
+  // Filtrar ventas activas
+  List<Sales> ventasActivas = ventas.where((venta) => venta.estadoVenta).toList();
+  double totalDelDia = ventasActivas.fold(0, (sum, venta) => sum + venta.totalVenta);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Column(
-            children: [
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    if (estaAbierto) {
-                      diasAbiertos.remove(fecha);
-                      _animationController.reverse();
-                    } else {
-                      diasAbiertos.add(fecha);
-                      _animationController.forward();
-                    }
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: estaAbierto
-                        ? AppColors.secondary
-                        : AppColors.cardBackground,
-                    border: Border(
-                      bottom: BorderSide(
-                        color: estaAbierto
-                            ? AppColors.accent.withOpacity(0.2)
-                            : Colors.transparent,
-                        width: 1,
-                      ),
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    child: Container(
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () {
+                setState(() {
+                  if (estaAbierto) {
+                    diasAbiertos.remove(fecha);
+                    _animationController.reverse();
+                  } else {
+                    diasAbiertos.add(fecha);
+                    _animationController.forward();
+                  }
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: estaAbierto
+                      ? AppColors.secondary
+                      : AppColors.cardBackground,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: estaAbierto
+                          ? AppColors.accent.withOpacity(0.2)
+                          : Colors.transparent,
+                      width: 1,
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: AppColors.secondary,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Icon(
-                                  Icons.calendar_today,
-                                  size: 20,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                DateFormat('EEEE, d MMMM yyyy', 'es_ES')
-                                    .format(DateTime.parse(fecha)),
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.text,
-                                ),
-                              ),
-                            ],
-                          ),
-                          RotationTransition(
-                            turns: Tween(begin: 0.0, end: 0.5)
-                                .animate(_animationController),
-                            child: const Icon(
-                              Icons.keyboard_arrow_down,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: AppColors.secondary,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
                           children: [
-                            _buildStatistic(
-                              'Total del día',
-                              '\$${totalDelDia.toStringAsFixed(2)}',
-                              Icons.attach_money,
-                            ),
                             Container(
-                              height: 30,
-                              width: 1,
-                              color: AppColors.accent.withOpacity(0.2),
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.secondary,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.calendar_today,
+                                size: 20,
+                                color: AppColors.primary,
+                              ),
                             ),
-                            _buildStatistic(
-                              'Ventas realizadas',
-                              '${ventas.length}',
-                              Icons.shopping_cart,
+                            const SizedBox(width: 12),
+                            Text(
+                              DateFormat('EEEE, d MMMM yyyy', 'es_ES')
+                                  .format(DateTime.parse(fecha)),
+                              style: GoogleFonts.poppins(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.text,
+                              ),
                             ),
                           ],
                         ),
+                        RotationTransition(
+                          turns: Tween(begin: 0.0, end: 0.5)
+                              .animate(_animationController),
+                          child: const Icon(
+                            Icons.keyboard_arrow_down,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary,
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    ],
-                  ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildStatistic(
+                            'Total del día',
+                            '\$${totalDelDia.toStringAsFixed(2)}',
+                            Icons.attach_money,
+                          ),
+                          Container(
+                            height: 30,
+                            width: 1,
+                            color: AppColors.accent.withOpacity(0.2),
+                          ),
+                          _buildStatistic(
+                            'Ventas realizadas',
+                            '${ventasActivas.length}', // Solo las ventas activas
+                            Icons.shopping_cart,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              if (estaAbierto) ...[
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: ventas.length,
-                  itemBuilder: (context, index) {
-                    final venta = ventas[index];
-                    return _buildVentaItem(venta);
-                  },
-                ),
-              ],
+            ),
+            if (estaAbierto) ...[
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: ventas.length,
+                itemBuilder: (context, index) {
+                  final venta = ventas[index];
+                  return _buildVentaItem(venta);
+                },
+              ),
             ],
-          ),
+          ],
         ),
       ),
-    );
-  }
-
+    ),
+  );
+}
+ 
+ 
   Widget _buildStatistic(String label, String value, IconData icon) {
     return Row(
       children: [
@@ -350,78 +353,91 @@ class _ResumenVentasState extends State<ResumenVentas>
     );
   }
 
-  Widget _buildVentaItem(Sales venta) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.secondary.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(15),
+Widget _buildVentaItem(Sales venta) {
+  bool isActive = venta.estadoVenta; // Si 'estadoVenta' es false, la venta no está activa
+
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    decoration: BoxDecoration(
+      color: isActive ? AppColors.secondary.withOpacity(0.3) : Colors.grey.withOpacity(0.3), // Gris si no está activa
+      borderRadius: BorderRadius.circular(15),
+    ),
+    child: ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isActive ? AppColors.primary.withOpacity(0.1) : Colors.grey.withOpacity(0.2), // Gris si no está activa
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Icon(
+          Icons.receipt_outlined,
+          color: AppColors.primary,
+          size: 24,
+        ),
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: const Icon(
-            Icons.receipt_outlined,
-            color: AppColors.primary,
-            size: 24,
-          ),
-        ),
-        title: Text(
-          '#${venta.idVenta}',
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            color: AppColors.text,
-          ),
-        ),
-        subtitle: Text(
-          DateFormat('HH:mm').format(venta.fechaVenta),
-          style: const TextStyle(color: AppColors.textLight),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '\$${venta.totalVenta.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Text(
-                    'Ver detalle',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '#${venta.idVenta}',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: isActive ? AppColors.text : Colors.grey, // Texto gris si no está activo
             ),
-          ],
-        ),
-        onTap: () => _mostrarDetallesVenta(venta),
+          ),
+          if (!isActive) // Mostrar "Anulado" debajo del título si la venta no está activa
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                'Anulado',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.redAccent,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+        ],
       ),
-    );
-  }
+      subtitle: Text(
+        DateFormat('HH:mm').format(venta.fechaVenta),
+        style: const TextStyle(color: AppColors.textLight),
+      ),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            '\$${venta.totalVenta.toStringAsFixed(2)}',
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: isActive ? AppColors.primary.withOpacity(0.1) : Colors.grey.withOpacity(0.3), // Gris si no está activo
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Text(
+              'Ver detalle',
+              style: TextStyle(
+                fontSize: 10,
+                color: AppColors.primary,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+      onTap: () => _mostrarDetallesVenta(venta),
+    ),
+  );
+}
 
   void _mostrarDetallesVenta(Sales venta) {
     showDialog(

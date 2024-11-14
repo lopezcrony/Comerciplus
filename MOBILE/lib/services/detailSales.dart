@@ -11,7 +11,6 @@ class DetailSaleService {
     final response = await http.get(Uri.parse(_salesUrl));
     if (response.statusCode == 200) {
       List jsonResponse = jsonDecode(response.body);
-      print(jsonResponse);
       return jsonResponse.map((sales) => Detailsale.fromJson(sales)).toList();
     } else {
       throw Exception('Error al obtener el detalle de venta');
