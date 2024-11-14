@@ -8,6 +8,8 @@ import 'package:comerciplus/models/purchaseDetails.dart';
 import 'package:comerciplus/services/purchaseDetails.dart';
 
 class ShoppingListScreen extends StatefulWidget {
+  const ShoppingListScreen({super.key});
+
   @override
   _ShoppingListScreenState createState() => _ShoppingListScreenState();
 }
@@ -39,16 +41,16 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         future: purchases,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No hay compras disponibles.'));
+            return const Center(child: Text('No hay compras disponibles.'));
           } else {
             List<Purchase> purchasesData = snapshot.data!;
 
             return ListView.builder(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               itemCount: purchasesData.length,
               itemBuilder: (context, index) {
                 final purchase = purchasesData[index];
@@ -56,12 +58,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
-                  margin: EdgeInsets.only(bottom: 16.0),
+                  margin: const EdgeInsets.only(bottom: 16.0),
                   color: Colors.white,
                   child: InkWell(
                     onTap: () => _showPurchaseDetails(context, purchase),
                     child: Padding(
-                      padding: EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -107,11 +109,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Align(
                             alignment: Alignment.centerRight,
                             child: ElevatedButton.icon(
-                              icon: Icon(Icons.visibility, size: 18),
+                              icon: const Icon(Icons.visibility, size: 18),
                               label: Text('Ver Detalle',
                                   style: GoogleFonts.poppins()),
                               onPressed: () =>
