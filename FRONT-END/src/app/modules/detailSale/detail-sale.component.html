@@ -6,12 +6,18 @@
 [endDate]="endDates"
 [calendar]="false"
 [canDelete]="false"
-    [canExport]="true" [canEdit]="false" [canCreate]="false" [canCancel]="true"
-    
-     (cancel)="cancelSale($event)"
-    [canSeeDetail]="true" [canStatus]="true" [showStateColumn]="true" [statusField]="'estadoVenta'"
-    (detail)="openShowModal($event)" (search)="searchDetailSale($event)"
-    (export)="downloadPDF()">
+[canExport]="true" 
+[canEdit]="false" 
+[canCreate]="false" 
+[canCancel]="true"
+(cancel)="cancelSale($event)"
+[canSeeDetail]="true" 
+[canStatus]="true" 
+[showStateColumn]="true" 
+[statusField]="'estadoVenta'"
+(detail)="openShowModal($event)" 
+(search)="searchDetailSale($event)"
+(export)="downloadPDF()">
 </app-crud>
 
 

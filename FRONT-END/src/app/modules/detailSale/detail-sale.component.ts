@@ -154,17 +154,20 @@ export class DetailSaleComponent implements OnInit {
 
   searchDetailSale(query: string) {
     const lowerCaseQuery = query.toLowerCase();
-
     
-    // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
-
+    if (!query) {
+        this.filteredSale = [...this.Sales]; // Si no hay query, mostrar todos los resultados
+        return;
+    }
+    
     this.filteredSale = this.Sales.filter(detailSale =>
-      detailSale.totalVenta.toString().includes(lowerCaseQuery) ||
-      detailSale.fechaVenta && new Date(detailSale.fechaVenta).toLocaleDateString().includes(lowerCaseQuery) ||
-      detailSale.estadoVenta
-    );
-  }
+        detailSale.idVenta.toString().includes(lowerCaseQuery) ||
+        detailSale.totalVenta.toString().includes(lowerCaseQuery) ||
+        (detailSale.fechaVenta && new Date(detailSale.fechaVenta).toLocaleDateString().toLowerCase().includes(lowerCaseQuery)) ||
+        (detailSale.estadoVenta ? 'vigente' : 'anulado').includes(lowerCaseQuery)
 
+    );
+}
 
 // ----------------------------------------- Descarga de PDF ---------------------------------------------------
 

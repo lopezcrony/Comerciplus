@@ -14,6 +14,7 @@ import { BarcodesService } from '../barcodes/barcodes.service';
 import { Barcode } from '../barcodes/barcode.model';
 import { forkJoin } from 'rxjs';
 import { ProductsService } from '../products/products.service';
+import { Product } from '../products/products.model';
 
 @Component({
   selector: 'app-loss',
@@ -158,73 +159,26 @@ export class LossComponent implements OnInit {
   }
 
 
-
-
-  // changeSaleStatus(updatedSale: Loss) {
-  //   // Asegúrate de que el estado es un booleano (true o false)
-  //   const estadoVentas = updatedSale.estado !== undefined ? updatedSale.estado : false;
-  
-  //   // Llamar al servicio para actualizar el estadoVenta
-  //   this.lossService.updateStatusSale(updatedSale.idDevolucionVenta, estadoVentas).subscribe({
-  //     next: () => {
-  //       // Actualiza las listas Sales y filteredSale
-  //       [this.returnSale, this.filteredReturnSale].forEach(list => {
-  //         const index = list.findIndex(sale => sale.idDevolucionVenta === updatedSale.idDevolucionVenta);
-  //         if (index !== -1) {
-  //           // Actualiza solo el campo 'estadoVenta' en lugar de reemplazar todo el objeto
-  //           list[index] = { ...list[index], estado: estadoVentas };
-  //         }
-  //         console.log(estadoVentas)
-  //       });
-  //       this.toastr.success('Estado actualizado con éxito', 'Éxito');
-  //     },
-  //     error: () => {
-  //       this.toastr.error('Error al actualizar el estado', 'Error');
-  //     }
-  //   });
-  // }
-  
-  // cancelSale(updatedSale: Loss) {
-  //   // Mostrar mensaje de confirmación
-  //   this.confirmationService.confirm({
-  //     message: '¿Estás seguro de que deseas cancelar esta venta?',
-  //     header: 'Confirmación de Anulación',
-  //     icon: 'pi pi-exclamation-triangle',
-  //     accept: () => {
-  //       // Si se acepta, cambia el estado de la venta a "false" antes de llamar a changeSaleStatus
-  //       updatedSale.estado = false; // Cambiamos el estado a "false"
-        
-  //       // Llama a la función que cambia el estado
-  //       this.changeSaleStatus(updatedSale);
-        
-  //       // Deshabilitar el campo tras la cancelación (si tienes alguna lógica de deshabilitación)
-  //       // this.disableField();
-  //     },
-  //     reject: () => {
-  //       this.toastr.info('Anulación cancelada', 'Información');
-  //     }
-  //   });
-  // }
-
-
-
-
-
-
-
   searchLoss(query: string) {
     if (!query) {
       this.filteredLoss = [...this.loss]; // Si no hay query, mostrar todos los resultados
       return;
     }
     
-    this.filteredLoss = this.loss.filter(loss =>
-      // loss.CodigoProducto.toString().includes(query.toLowerCase()) ||
+    this.filteredLoss = this.loss.filter(loss =>{
+
+      const barCode = loss as unknown as Barcode & {codigoBarra?: string};
+      const code =(barCode.codigoBarra || '').toLowerCase().includes(query);
+      const productName = loss as unknown as Product & {nombreProducto?: string};
+      const product =(productName.nombreProducto || '').toLowerCase().includes(query);
       // loss.NombreProducto.toLowerCase().includes(query.toLowerCase()) ||
-      loss.motivo.toLowerCase().includes(query.toLowerCase()) ||
-      loss.cantidad.toString().includes(query) ||
-      loss.fechaDeBaja && new Date(loss.fechaDeBaja).toLocaleDateString().includes(query) // Para la fecha
-    );
+      const motivo=loss.motivo.toLowerCase().includes(query.toLowerCase());
+      const cantidad =loss.cantidad.toString().includes(query);
+      const fecha= loss.fechaDeBaja && new Date(loss.fechaDeBaja).toLocaleDateString().includes(query); // Para la fecha
+  
+      return code || motivo || product || cantidad || fecha
+    });
+  
   }
   
 
