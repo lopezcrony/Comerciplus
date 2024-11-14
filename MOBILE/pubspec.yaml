@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_dotenv: 5.2.1
+  path_provider: ^2.0.13
+  flutter_plugin_android_lifecycle: ^2.0.10
   flutter_svg: ^2.0.14
   google_fonts: ^6.2.1
   http: ^1.2.2

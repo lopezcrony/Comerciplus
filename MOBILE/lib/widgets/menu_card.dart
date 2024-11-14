@@ -1,6 +1,7 @@
 // widgets/menu_card.dart
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MenuCard extends StatefulWidget {
   final String title;
@@ -22,7 +23,8 @@ class MenuCard extends StatefulWidget {
   _MenuCardState createState() => _MenuCardState();
 }
 
-class _MenuCardState extends State<MenuCard> with SingleTickerProviderStateMixin {
+class _MenuCardState extends State<MenuCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -89,19 +91,20 @@ class _MenuCardState extends State<MenuCard> with SingleTickerProviderStateMixin
               const SizedBox(height: 12),
               Text(
                 widget.title,
-                style: const TextStyle(
-                  fontSize: 16,
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF2D3748),
+                  color: const Color(0xFF2D3142),
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 4),
               Text(
                 widget.subtitle,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
+                style: GoogleFonts.poppins(
+                  fontSize: 13, 
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[600]
                 ),
                 textAlign: TextAlign.center,
               ),

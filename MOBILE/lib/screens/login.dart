@@ -157,10 +157,10 @@ class _LoginScreenState extends State<Login>
                                   child: const Text(
                                     'ComerciPlus',
                                     style: TextStyle(
-                                      fontSize: 40,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
-                                      letterSpacing: 1.5,
+                                      letterSpacing: 1,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
