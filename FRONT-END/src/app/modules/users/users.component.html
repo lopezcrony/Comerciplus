@@ -25,14 +25,6 @@
 
       <div class="field-group">
 
-        <div class="field" [ngClass]="{'error': isFieldInvalid('cedulaUsuario')}">
-          <label for="cedulaUsuario">Cédula</label>
-          <input type="text" pInputText id="cedulaUsuario" formControlName="cedulaUsuario" required autofocus />
-          <small class="p-error" *ngIf="isFieldInvalid('cedulaUsuario')">
-            {{ getErrorMessage('cedulaUsuario') }}
-          </small>
-        </div>
-
         <div class="field" [ngClass]="{'error': isFieldInvalid('idRol')}">
           <label for="idRol">Rol</label>
           <p-dropdown [options]="filteredRoles" formControlName="idRol" optionLabel="nombreRol" optionValue="idRol"
@@ -41,6 +33,18 @@
             {{ getErrorMessage('idRol') }}
           </small>
         </div>
+
+        <div class="field" [ngClass]="{'error': isFieldInvalid('cedulaUsuario'), 'editing-mode': isEditing}">
+          <label for="cedulaUsuario">Cédula</label>
+          <input type="text" pInputText id="cedulaUsuario" formControlName="cedulaUsuario" required 
+                 [attr.autofocus]="!isEditing ? true : null" />
+          <small class="p-error" *ngIf="isFieldInvalid('cedulaUsuario')">
+            {{ getErrorMessage('cedulaUsuario') }} 
+          </small>
+        </div>
+        
+
+
       </div>
 
       <div class="field-group">
