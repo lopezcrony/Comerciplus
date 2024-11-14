@@ -39,7 +39,7 @@ class SearchFilter extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Buscar...',
                 hintStyle: TextStyle(color: Colors.grey[400]),
-                prefixIcon: Icon(Icons.search, color: Colors.grey[400], size: 20),
+                prefixIcon: const Icon(Icons.search, color: Colors.blueAccent, size: 20),
                 filled: true,
                 fillColor: const Color(0xFFF8F9FF),
                 border: OutlineInputBorder(
@@ -63,13 +63,37 @@ class SearchFilter extends StatelessWidget {
                 child: DropdownButton<String>(
                   value: sortBy,
                   isExpanded: true,
-                  icon: const Icon(Icons.sort, color: Color(0xFF4F5B93), size: 20),
+                  icon: const Icon(Icons.sort_by_alpha_rounded, color: Color(0xFF4F5B93), size: 20),
                   items: sortOptions,
                   onChanged: onSortChanged,
                 ),
               ),
             ),
           ),
+
+          // Expanded(
+          //   child: Container(
+          //     padding: const EdgeInsets.symmetric(horizontal: 12),
+          //     decoration: BoxDecoration(
+          //       color: const Color(0xFFF8F9FF),
+          //       borderRadius: BorderRadius.circular(12),
+          //     ),
+          //     child: GestureDetector(
+          //       onTap: onSortPressed,  // Ejecuta la acción al presionar
+          //       child: const Row(
+          //         children: [
+          //           Icon(Icons.sort_by_alpha_rounded, color: Color(0xFF4F5B93), size: 20),
+          //           SizedBox(width: 8),
+          //           Text(
+          //             'Ordenar por Nombre',
+          //             style: TextStyle(color: Color(0xFF2D3142)),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
+
         ],
       ),
     );

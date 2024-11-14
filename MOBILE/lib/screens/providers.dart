@@ -88,12 +88,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                 sortOptions: const [
                   DropdownMenuItem(
                     value: 'nombreProveedor',
-                    child: Text('Por nombre',
-                        style: TextStyle(color: Color(0xFF2D3142))),
-                  ),
-                  DropdownMenuItem(
-                    value: 'estadoProveedor',
-                    child: Text('Por estado',
+                    child: Text('Ordenar',
                         style: TextStyle(color: Color(0xFF2D3142))),
                   ),
                 ],

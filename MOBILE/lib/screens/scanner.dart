@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import '../services/scanner_service.dart';
+
 
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({super.key});
@@ -9,54 +11,104 @@ class ScannerScreen extends StatefulWidget {
 }
 
 class _ScannerScreenState extends State<ScannerScreen> {
-  final TextEditingController _controller = TextEditingController();
-  final ScannerService _scannerService = ScannerService(); // Instancia del servicio
+  final ScannerService _scannerService = ScannerService();
+  MobileScannerController cameraController = MobileScannerController();
+  bool isScannerActive = false;
+  String scannedBarcode = '';
+  bool showSuccessAlert = false;
+  bool showErrorAlert = false;
+  String errorMessage = '';
 
-  Future<void> _sendBarcode() async {
-    final barcode = _controller.text;
+  @override
+  void dispose() {
+    cameraController.dispose();
+    super.dispose();
+  }
 
-    if (barcode.isEmpty) {
-      // Muestra un mensaje de error si no se ha ingresado un código
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor ingrese un código de barras')),
-      );
-      return;
-    }
+  void _handleBarcodeScan(Barcode barcode) async {
+    setState(() {
+      scannedBarcode = barcode.rawValue ?? '';
+    });
 
     try {
-      // Llamada al servicio para enviar el código
-      await _scannerService.sendBarcodeToBackend(barcode);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Código enviado exitosamente')),
-      );
+      await _scannerService.sendBarcodeToBackend(scannedBarcode);
+      setState(() {
+        showSuccessAlert = true;
+      });
     } catch (e) {
-      // Manejo de errores
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al enviar el código: $e')),
-      );
+      setState(() {
+        showErrorAlert = true;
+        errorMessage = 'Error al enviar el código de barras: $e';
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Barcode Input')),
+      appBar: AppBar(
+        title: const Text('Barcode Scanner'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: _controller,
-              decoration: const InputDecoration(labelText: 'Scan or Enter Barcode'),
-              onSubmitted: (value) {
-                _sendBarcode(); // Llamar al método cuando se ingrese el código
-              },
-            ),
-            const SizedBox(height: 20),
+            if (isScannerActive)
+              MobileScanner(
+                  onDetect: (barcodeCapture) {
+                    final barcode = barcodeCapture.barcodes.first;
+                    _handleBarcodeScan(barcode);
+                  }),
+            if (!isScannerActive)
+              const Text('Presiona el botón para iniciar el escáner'),
+            const SizedBox(height: 16.0),
+            if (scannedBarcode.isNotEmpty)
+              Text('Código de barras escaneado: $scannedBarcode'),
+            const SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: _sendBarcode, // Llamar al método al hacer clic en el botón
-              child: const Text('Submit'),
+              onPressed: () {
+                setState(() {
+                  isScannerActive = !isScannerActive;
+                  if (isScannerActive) {
+                    cameraController.start();
+                  } else {
+                    cameraController.stop();
+                  }
+                });
+              },
+              child: Text(isScannerActive ? 'Detener Escáner' : 'Iniciar Escáner'),
             ),
+            if (showSuccessAlert)
+              AlertDialog(
+                title: const Text('Código de Barras Enviado'),
+                content: const Text('El código de barras se envió correctamente.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        showSuccessAlert = false;
+                      });
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            if (showErrorAlert)
+              AlertDialog(
+                title: const Text('Error'),
+                content: Text(errorMessage),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        showErrorAlert = false;
+                      });
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
           ],
         ),
       ),

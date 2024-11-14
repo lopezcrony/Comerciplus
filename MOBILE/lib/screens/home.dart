@@ -95,7 +95,7 @@ class Home extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ResumenVentas()),
+                            builder: (context) => const ResumenVentas()),
                       );
                     },
                   ),
@@ -108,7 +108,7 @@ class Home extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ResumenVentas()),
+                            builder: (context) => const ResumenVentas()),
                       );
                     },
                   ),
@@ -152,7 +152,7 @@ class Home extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ScannerScreen()),
+                            builder: (context) => const ScannerScreen()),
                       );
                   },
                   backgroundColor: const Color.fromARGB(129, 221, 186, 221),
