@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 class PurchaseDetails {
   final int idDetalleCompra;

@@ -136,175 +136,179 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
-void _showPurchaseDetails(BuildContext context, Purchase purchase) {
-  showDialog(
-    context: context,
-    builder: (context) => Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: FutureBuilder<List<PurchaseDetails>>(
-        future: PurchaseDetailsService().getPurchaseDetailsByPurchaseId(purchase.idCompra),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No hay detalles disponibles.'));
-          }
+  void _showPurchaseDetails(BuildContext context, Purchase purchase) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: FutureBuilder<List<PurchaseDetails>>(
+          future: PurchaseDetailsService()
+              .getPurchaseDetailsByPurchaseId(purchase.idCompra),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No hay detalles disponibles.'));
+            }
 
-          List<PurchaseDetails> details = snapshot.data!;
+            List<PurchaseDetails> details = snapshot.data!;
 
-          return SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              constraints: const BoxConstraints(maxWidth: 400),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.secondary,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(Icons.receipt_outlined, color: AppColors.primary),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Compra #${purchase.idCompra}',
-                            style: GoogleFonts.poppins(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.text,
-                            ),
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close, color: AppColors.text),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.secondary,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            return SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _buildDetalleRow(
-                          Icons.calendar_today,
-                          'Fecha Compra',
-                          DateFormat('dd/MM/yyyy HH:mm').format(purchase.fechaCompra),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.secondary,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(Icons.receipt_outlined,
+                                  color: AppColors.primary),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Compra #${purchase.idCompra}',
+                              style: GoogleFonts.poppins(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.text,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 12),
-                        _buildDetalleRow(
-                          Icons.receipt,
-                          'Número Factura',
-                          purchase.numeroFactura.toString(),
-                        ),
-                        const SizedBox(height: 12),
-                        _buildDetalleRow(
-                          Icons.attach_money,
-                          'Total',
-                          Text('\$${purchase.valorCompra.toStringAsFixed(2)}') as String
-                        ),
-                        const SizedBox(height: 12),
-                        _buildDetalleRow(
-                          Icons.check_circle_outline,
-                          'Estado',
-                          purchase.estadoCompra ? 'Activa' : 'Inactiva',
+                        IconButton(
+                          icon: const Icon(Icons.close, color: AppColors.text),
+                          onPressed: () => Navigator.of(context).pop(),
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Productos',
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.text,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.secondary,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: details.length,
-                      itemBuilder: (context, index) {
-                        final item = details[index];
-                        return ListTile(
-                          leading: const Icon(Icons.shopping_cart),
-                          title: Text(
-                            'Producto ID: ${item.idProducto}',
-                            style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                    const SizedBox(height: 24),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildDetalleRow(
+                            Icons.calendar_today,
+                            'Fecha Compra',
+                            DateFormat('dd/MM/yyyy HH:mm')
+                                .format(purchase.fechaCompra),
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Código de Barra: ${item.codigoBarra}',
-                                style: GoogleFonts.poppins(),
-                              ),
-                              Text(
-                                'Cantidad: ${item.cantidadProducto}',
-                                style: GoogleFonts.poppins(),
-                              ),
-                              Text(
-                                'Precio unitario: \$${item.precioCompraUnidad.toStringAsFixed(2)}',
-                                style: GoogleFonts.poppins(),
-                              ),
-                              Text(
-                                'Subtotal:'
-                                ' \$${item.subtotal.toStringAsFixed(2)}' as String,
-                                style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-                              ),
-                            ],
+                          const SizedBox(height: 12),
+                          _buildDetalleRow(
+                            Icons.receipt,
+                            'Número Factura',
+                            purchase.numeroFactura.toString(),
                           ),
-                        );
-                      },
+                          const SizedBox(height: 12),
+                          _buildDetalleRow(
+                            Icons.attach_money,
+                            'Total',
+                            '\$${purchase.valorCompra.toStringAsFixed(2)}',
+                          ),
+                          const SizedBox(height: 12),
+                          _buildDetalleRow(
+                            Icons.check_circle_outline,
+                            'Estado',
+                            purchase.estadoCompra ? 'Activa' : 'Inactiva',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    Text(
+                      'Productos',
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.text,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: details.length,
+                        itemBuilder: (context, index) {
+                          final item = details[index];
+                          return ListTile(
+                            leading: const Icon(Icons.shopping_cart),
+                            title: Text(
+                              'Producto ID: ${item.idProducto}',
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Código de Barra: ${item.codigoBarra}',
+                                  style: GoogleFonts.poppins(),
+                                ),
+                                Text(
+                                  'Cantidad: ${item.cantidadProducto}',
+                                  style: GoogleFonts.poppins(),
+                                ),
+                                Text(
+                                  'Precio unitario: \$${item.precioCompraUnidad.toStringAsFixed(2)}',
+                                  style: GoogleFonts.poppins(),
+                                ),
+                                Text(
+                                  'Subtotal: \$${item.subtotal.toStringAsFixed(2)}',
+                                  style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
-    ),
-  );
-}
-
-Widget _buildDetalleRow(IconData icon, String title, String value) {
-  return Row(
-    children: [
-      Icon(icon, color: AppColors.primary),
-      const SizedBox(width: 8),
-      Expanded(
-        child: Text(
-          '$title: $value',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            );
+          },
         ),
       ),
-    ],
-  );
-}
+    );
+  }
+
+  Widget _buildDetalleRow(IconData icon, String title, String value) {
+    return Row(
+      children: [
+        Icon(icon, color: AppColors.primary),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            '$title: $value',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+          ),
+        ),
+      ],
+    );
+  }
 }
