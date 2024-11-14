@@ -1,14 +1,14 @@
 import 'package:comerciplus/screens/scanner.dart';
 import 'package:flutter/material.dart';
-
 import 'package:comerciplus/widgets/appBar.dart';
 import 'package:comerciplus/screens/sales.dart';
 import 'package:comerciplus/widgets/summary_card.dart';
 import 'package:comerciplus/widgets/menu_card.dart';
-
 import 'package:comerciplus/screens/providers.dart';
 import 'package:comerciplus/screens/clients.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../widgets/scanner_button.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -16,12 +16,26 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFFF5F7FA),
-        appBar: const CustomAppBar(),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      backgroundColor: const Color(0xFFF5F7FA),
+      appBar: const CustomAppBar(),
+
+      // Botpón flotante para escanear
+      floatingActionButton: AnimatedScannerButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ScannerScreen()),
+          );
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
+      // Informe del día
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               // Resumen rápido del día
               Container(
                 margin: const EdgeInsets.all(16),
@@ -32,19 +46,19 @@ class Home extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Resumen del Día',
-                      style: TextStyle(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 16),
-                    Row(
+                    const SizedBox(height: 16),
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SummaryCard(
@@ -68,14 +82,6 @@ class Home extends StatelessWidget {
               // Menú principal
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Menú Principal',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D3748),
-                  ),
-                ),
               ),
               const SizedBox(height: 12),
               GridView.count(
@@ -138,30 +144,12 @@ class Home extends StatelessWidget {
                       );
                     },
                   ),
-                  // Agregar más MenuCards aquí
                 ],
               ),
-
-              //Botón flotante
-                Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: FloatingActionButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ScannerScreen()),
-                      );
-                  },
-                  backgroundColor: const Color.fromARGB(129, 221, 186, 221),
-                  child: const Icon(Icons.qr_code_2_outlined, color: Color.fromARGB(255, 145, 72, 145)),
-                  ),
-                ),
-                ),
-            ]),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

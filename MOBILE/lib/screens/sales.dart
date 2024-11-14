@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../services/sales.dart';
 import '../models/sale.dart';
+import '../widgets/appBar_Screens.dart';
 
 // Definición de colores personalizados
 class AppColors {
@@ -27,18 +28,21 @@ class ResumenVentas extends StatefulWidget {
   _ResumenVentasState createState() => _ResumenVentasState();
 }
 
-class _ResumenVentasState extends State<ResumenVentas> with SingleTickerProviderStateMixin {
+class _ResumenVentasState extends State<ResumenVentas>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   Set<String> diasAbiertos = {};
   Map<String, List<Sales>> ventasPorDia = {};
-  Map<String, List<Sales>> ventasFiltradas = {};  // Agrega un mapa para las ventas filtradas
+  Map<String, List<Sales>> ventasFiltradas =
+      {}; // Agrega un mapa para las ventas filtradas
   late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
     _initializeData();
-    _searchController.addListener(_filterVentas);  // Añadimos un listener para el controlador de búsqueda
+    _searchController.addListener(
+        _filterVentas); // Añadimos un listener para el controlador de búsqueda
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -47,7 +51,8 @@ class _ResumenVentasState extends State<ResumenVentas> with SingleTickerProvider
 
   @override
   void dispose() {
-    _searchController.removeListener(_filterVentas);  // Removemos el listener al salir del estado
+    _searchController.removeListener(
+        _filterVentas); // Removemos el listener al salir del estado
     _animationController.dispose();
     super.dispose();
   }
@@ -118,25 +123,11 @@ class _ResumenVentasState extends State<ResumenVentas> with SingleTickerProvider
         scaffoldBackgroundColor: AppColors.background,
       ),
       child: Scaffold(
+        appBar: const AppBarScreens(
+          nameModule: 'Resumen de Ventas',
+        ),
         body: CustomScrollView(
           slivers: [
-            SliverAppBar(
-              expandedHeight: 120.0,
-              floating: true,
-              pinned: true,
-              elevation: 0,
-              backgroundColor: AppColors.background,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  'Resumen de Ventas',
-                  style: GoogleFonts.poppins(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                centerTitle: true,
-              ),
-            ),
             SliverToBoxAdapter(
               child: Padding(
                 padding:
@@ -170,6 +161,7 @@ class _ResumenVentasState extends State<ResumenVentas> with SingleTickerProvider
                 ),
               ),
             ),
+            
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -187,8 +179,6 @@ class _ResumenVentasState extends State<ResumenVentas> with SingleTickerProvider
   }
 
   // Tu código para _buildDayCard y demás widgets
-  
-
 
   Widget _buildDayCard(String fecha, List<Sales> ventas) {
     bool estaAbierto = diasAbiertos.contains(fecha);
@@ -434,7 +424,6 @@ class _ResumenVentasState extends State<ResumenVentas> with SingleTickerProvider
   }
 
   void _mostrarDetallesVenta(Sales venta) {
-
     showDialog(
       context: context,
       builder: (context) => FutureBuilder<List<Detailsale>>(
@@ -448,14 +437,14 @@ class _ResumenVentasState extends State<ResumenVentas> with SingleTickerProvider
                 child: Text(
                     'Error al cargar los detalles de la venta: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No se encontraron detalles de ventas'));
+            return const Center(
+                child: Text('No se encontraron detalles de ventas'));
           }
 
           // Filtra los detalles para mostrar solo aquellos que tienen el idVenta coincidente
           final detallesVenta = snapshot.data!
               .where((detalle) => detalle.idVenta == venta.idVenta)
               .toList();
-
 
           return Dialog(
             shape: RoundedRectangleBorder(
@@ -553,7 +542,8 @@ class _ResumenVentasState extends State<ResumenVentas> with SingleTickerProvider
                       builder: (context, productSnapshot) {
                         if (productSnapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else if (productSnapshot.hasError) {
                           return Center(
                               child: Text(

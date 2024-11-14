@@ -1,116 +1,198 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../services/scanner_service.dart';
-
 
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({super.key});
 
   @override
-  _ScannerScreenState createState() => _ScannerScreenState();
+  State<ScannerScreen> createState() => _ScannerScreenState();
 }
 
 class _ScannerScreenState extends State<ScannerScreen> {
   final ScannerService _scannerService = ScannerService();
-  MobileScannerController cameraController = MobileScannerController();
-  bool isScannerActive = false;
-  String scannedBarcode = '';
-  bool showSuccessAlert = false;
-  bool showErrorAlert = false;
-  String errorMessage = '';
+  late MobileScannerController _cameraController;
+  bool _isScanning = true;
+  String _lastScannedCode = '';
+  bool _isProcessing = false;
+  DateTime? _lastScanTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _cameraController = MobileScannerController(
+      facing: CameraFacing.back,
+      formats: [BarcodeFormat.all],
+    );
+    _initializeScanner();
+  }
+
+  Future<void> _initializeScanner() async {
+    try {
+      await _cameraController.start();
+    } catch (e) {
+      _showError('Error al iniciar la cámara: $e');
+    }
+  }
 
   @override
   void dispose() {
-    cameraController.dispose();
+    _cameraController.dispose();
     super.dispose();
   }
 
-  void _handleBarcodeScan(Barcode barcode) async {
+  void _resetScanner() {
     setState(() {
-      scannedBarcode = barcode.rawValue ?? '';
+      _lastScannedCode = '';
+      _isProcessing = false;
+      _lastScanTime = null;
+    });
+  }
+
+  Future<void> _handleBarcodeScan(Barcode barcode) async {
+    if (_isProcessing) return;
+
+    final code = barcode.rawValue;
+    if (code == null || code.isEmpty) return;
+
+    // Verificar si ha pasado suficiente tiempo desde el último escaneo
+    final now = DateTime.now();
+    if (_lastScanTime != null) {
+      final difference = now.difference(_lastScanTime!);
+      if (difference.inSeconds < 2) return; // Esperar 2 segundos entre escaneos
+    }
+
+    setState(() {
+      _isProcessing = true;
+      _lastScannedCode = code;
+      _lastScanTime = now;
     });
 
     try {
-      await _scannerService.sendBarcodeToBackend(scannedBarcode);
-      setState(() {
-        showSuccessAlert = true;
-      });
+      await _scannerService.sendBarcodeToBackend(code);
+      _showSuccess('Código escaneado: $code');
     } catch (e) {
+      _showError('Error: $e');
+    } finally {
       setState(() {
-        showErrorAlert = true;
-        errorMessage = 'Error al enviar el código de barras: $e';
+        _isProcessing = false;
       });
     }
+  }
+
+  void _showSuccess(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Barcode Scanner'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (isScannerActive)
-              MobileScanner(
-                  onDetect: (barcodeCapture) {
-                    final barcode = barcodeCapture.barcodes.first;
-                    _handleBarcodeScan(barcode);
-                  }),
-            if (!isScannerActive)
-              const Text('Presiona el botón para iniciar el escáner'),
-            const SizedBox(height: 16.0),
-            if (scannedBarcode.isNotEmpty)
-              Text('Código de barras escaneado: $scannedBarcode'),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  isScannerActive = !isScannerActive;
-                  if (isScannerActive) {
-                    cameraController.start();
-                  } else {
-                    cameraController.stop();
-                  }
-                });
-              },
-              child: Text(isScannerActive ? 'Detener Escáner' : 'Iniciar Escáner'),
-            ),
-            if (showSuccessAlert)
-              AlertDialog(
-                title: const Text('Código de Barras Enviado'),
-                content: const Text('El código de barras se envió correctamente.'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        showSuccessAlert = false;
-                      });
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              ),
-            if (showErrorAlert)
-              AlertDialog(
-                title: const Text('Error'),
-                content: Text(errorMessage),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        showErrorAlert = false;
-                      });
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
-              ),
-          ],
+        title: Text(
+          'Escáner',
+          style: GoogleFonts.poppins(
+            color: const Color(0xFF2D3142),
+            fontWeight: FontWeight.w600,
+          ),
         ),
+        actions: [
+          // Botón para resetear el escáner
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _resetScanner,
+            tooltip: 'Resetear escáner',
+          ),
+          IconButton(
+            icon: Icon(_isScanning ? Icons.pause : Icons.play_arrow),
+            onPressed: () {
+              setState(() {
+                _isScanning = !_isScanning;
+                if (_isScanning) {
+                  _cameraController.start();
+                } else {
+                  _cameraController.stop();
+                }
+              });
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.flip_camera_ios),
+            onPressed: () => _cameraController.switchCamera(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.flashlight_on),
+            onPressed: () => _cameraController.toggleTorch(),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: MobileScanner(
+                controller: _cameraController,
+                onDetect: (capture) {
+                  final List<Barcode> barcodes = capture.barcodes;
+                  if (barcodes.isNotEmpty) {
+                    _handleBarcodeScan(barcodes.first);
+                  }
+                },
+                overlay: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.green,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    width: 300,
+                    height: 150,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (_lastScannedCode.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Último código: $_lastScannedCode',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: _resetScanner,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Escanear nuevo código'),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
