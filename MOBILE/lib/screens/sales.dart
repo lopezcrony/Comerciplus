@@ -387,8 +387,8 @@ Widget _buildVentaItem(Sales venta) {
             ),
           ),
           if (!isActive) // Mostrar "Anulado" debajo del título si la venta no está activa
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
+            const Padding(
+              padding: EdgeInsets.only(top: 4),
               child: Text(
                 'Anulado',
                 style: TextStyle(

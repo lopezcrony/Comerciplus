@@ -1,4 +1,3 @@
-import 'package:comerciplus/models/purchase.dart';
 import 'package:comerciplus/screens/purchase.dart';
 import 'package:comerciplus/screens/scanner.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +115,7 @@ class Home extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ShoppingListScreen()),
+                            builder: (context) => const ShoppingListScreen()),
                       );
                     },
                   ),
