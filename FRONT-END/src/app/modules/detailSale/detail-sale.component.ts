@@ -27,6 +27,9 @@ import jsPDF from 'jspdf';
 })
 export class DetailSaleComponent implements OnInit {
 
+  startDates: Date = new Date();
+  endDates: Date = new Date();
+
   Sales: Sale[] = [];
   filteredSale: Sale[] = [];
 
@@ -152,6 +155,7 @@ export class DetailSaleComponent implements OnInit {
   searchDetailSale(query: string) {
     const lowerCaseQuery = query.toLowerCase();
 
+    
     // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
 
     this.filteredSale = this.Sales.filter(detailSale =>

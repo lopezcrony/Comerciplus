@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { CalendarModule } from 'primeng/calendar';
 
 import { SHARED_IMPORTS } from '../shared-imports';
 import { AlertsService } from '../alerts/alerts.service';
@@ -10,6 +11,7 @@ import { ProductsService } from '../../modules/products/products.service';
   standalone: true,
   imports: [
     CommonModule,
+    CalendarModule,
     ...SHARED_IMPORTS,
   ],
   templateUrl: './crud.component.html',
@@ -34,12 +36,16 @@ export class CRUDComponent {
   @Input() creditColumn: boolean = false;
   @Input() actions: boolean = true;
   @Input() SelectChangeStatus: boolean=false;
+  @Input() calendar:boolean=false;
 
   // Datos de entrada para la tabla
   @Input() Module: string = '';
   @Input() items: any[] = [];
   @Input() columns: { field: string, header: string, type: string }[] = [];
   @Input() statusField: string = 'estado';
+  @Input() startDate: Date= new Date;
+  @Input() endDate: Date= new Date;
+
 
   // Funciones del CRUD
   @Output() create = new EventEmitter<void>();
@@ -109,7 +115,14 @@ export class CRUDComponent {
   getSelectStatus(item: any): string {
     return item[this.statusField]; 
   }
+
+  getDateStart(item: any): Date {
+    return this.startDate
+  }
   
+  getDateEnd(item: any): Date {
+    return this.endDate
+  }
 
   confirmChangeStatus(item: any) {
     this.alertsService.confirm(
