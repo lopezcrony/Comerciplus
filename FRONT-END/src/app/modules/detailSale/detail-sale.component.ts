@@ -219,7 +219,10 @@ downloadPDF() {
     };
   };
 
+  // Filtrar ventas que estén en estadoVenta === true
   const salesByDate: SalesByDate = this.Sales.reduce((acc: SalesByDate, sale) => {
+    if (!sale.estadoVenta) return acc; // Ignorar ventas con estadoVenta false
+    
     const saleDate = new Date(sale.fechaVenta).toLocaleDateString();
     const details = this.detailSale.filter(d => d.idVenta === sale.idVenta);
     
