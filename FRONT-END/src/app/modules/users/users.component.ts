@@ -18,6 +18,7 @@ import { forkJoin } from 'rxjs';
   selector: 'app-users',
   standalone: true,
   templateUrl: './users.component.html',
+  styleUrls: ['./users.component.css'],
   imports: [
     ...SHARED_IMPORTS,
     CRUDComponent,

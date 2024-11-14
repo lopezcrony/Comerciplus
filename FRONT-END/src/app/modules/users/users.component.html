@@ -27,11 +27,14 @@
 
         <div class="field" [ngClass]="{'error': isFieldInvalid('cedulaUsuario')}">
           <label for="cedulaUsuario">Cédula</label>
-          <input type="text" pInputText id="cedulaUsuario" formControlName="cedulaUsuario" required autofocus />
+          <input type="text" pInputText id="cedulaUsuario" formControlName="cedulaUsuario" required autofocus 
+                 readonly />
           <small class="p-error" *ngIf="isFieldInvalid('cedulaUsuario')">
-            {{ getErrorMessage('cedulaUsuario') }}
+            {{ getErrorMessage('cedulaUsuario') }} 
           </small>
         </div>
+        
+        
 
         <div class="field" [ngClass]="{'error': isFieldInvalid('idRol')}">
           <label for="idRol">Rol</label>
