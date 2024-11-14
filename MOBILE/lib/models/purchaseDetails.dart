@@ -1,8 +1,10 @@
+import 'dart:ffi';
+
 class PurchaseDetails {
   final int idDetalleCompra;
   final int idCompra;
   final int idProducto;
-  final int codigoBarra;
+  final String codigoBarra;
   final int cantidadProducto;
   final double precioCompraUnidad;
   final double subtotal;
@@ -21,10 +23,10 @@ class PurchaseDetails {
     return PurchaseDetails(
       idDetalleCompra: json['idDetalleCompra'],
       idCompra: json['idCompra'],
-      idProducto: json['idProducto'],
-      codigoBarra: json['codigoBarra'], 
-      cantidadProducto: json['cantidadProducto'],
-      precioCompraUnidad: (json['precioCompraUnidad'] ?? 0.0).toDouble(),
+      idProducto: json['idProducto'],  // Convertir a int
+      codigoBarra: json['codigoBarra'],
+      cantidadProducto: json['cantidadProducto'] as int,  // Convertir a int
+      precioCompraUnidad: (json['precioCompraUnidad'] ?? 0.0).toDouble(),  // Convertir a double
       subtotal: (json['subtotal'] ?? 0.0).toDouble(),
     );
   }
