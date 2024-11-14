@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class infoCard extends StatelessWidget {
   final String typeId, id, name, address, phone, title, value;
@@ -55,11 +56,10 @@ class infoCard extends StatelessWidget {
                     children: [
                       Text(
                         name,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2D3142),
-                        ),
+                        style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF2D3142)),
                       ),
                       const SizedBox(width: 12),
                       _buildIdentifier(typeId, id),
@@ -77,7 +77,7 @@ class infoCard extends StatelessWidget {
                   ),
                   child: Text(
                     status ? 'Activo' : 'Inactivo',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: status
                           ? const Color(0xFF2E7D32)
                           : const Color(0xFFC62828),
@@ -140,16 +140,16 @@ class infoCard extends StatelessWidget {
         children: [
           Text(
             '$label: ',
-            style: const TextStyle(
-              color: Color(0xFF4F5B93),
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF4F5B93),
               fontWeight: FontWeight.w500,
               fontSize: 13,
             ),
           ),
           Text(
             value,
-            style: const TextStyle(
-              color: Color(0xFF2D3142),
+            style: GoogleFonts.poppins(
+              color: const Color(0xFF2D3142),
               fontWeight: FontWeight.w600,
               fontSize: 13,
             ),
@@ -179,9 +179,9 @@ class infoCard extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                style: const TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 15,
-                  color: Color(0xFF4A4A4A),
+                  color: const Color(0xFF4A4A4A),
                 ),
               ),
             ),
@@ -191,9 +191,10 @@ class infoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCreditRow({required IconData icon, required String value}) {
+Widget _buildCreditRow({required IconData icon, required String value}) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      width: 300,
+      padding: const EdgeInsets.all(11),
       decoration: BoxDecoration(
         color: const Color(0xFFF8F9FF),
         borderRadius: BorderRadius.circular(12),
@@ -208,19 +209,19 @@ class infoCard extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 '$title: ',
-                style: const TextStyle(
-                  color: Color(0xFF4F5B93),
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF4F5B93),
                   fontSize: 12,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          if (date != null) 
+          if (date != null)
             Text(
               date!,
-              style: const TextStyle(
-                color: Color(0xFF2D3142),
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF2D3142),
                 fontWeight: FontWeight.w600,
                 fontSize: 14,
               ),
@@ -228,8 +229,8 @@ class infoCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
-              color: Color.fromARGB(255, 86, 187, 77),
+            style: GoogleFonts.poppins(
+              color: const Color.fromARGB(255, 86, 187, 77),
               fontWeight: FontWeight.w600,
               fontSize: 14,
             ),

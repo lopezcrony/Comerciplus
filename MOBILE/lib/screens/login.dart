@@ -1,6 +1,7 @@
 import 'package:comerciplus/screens/home.dart';
 import 'package:comerciplus/services/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:comerciplus/screens/recover_password.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -156,10 +157,10 @@ class _LoginScreenState extends State<Login>
                                   child: const Text(
                                     'ComerciPlus',
                                     style: TextStyle(
-                                      fontSize: 40,
+                                      fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
-                                      letterSpacing: 1.5,
+                                      letterSpacing: 1,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
@@ -316,21 +317,23 @@ class _LoginScreenState extends State<Login>
                                 ),
                                 const SizedBox(height: 16),
 
-                                // Botón de recuperar contraseña
-                                MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      // Implementar recuperación de contraseña
-                                    },
-                                    child: Text(
-                                      '¿Olvidaste tu contraseña?',
-                                      style: TextStyle(
-                                        color: Colors.blue.shade700,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                      textAlign: TextAlign.center,
+                                // Botón de recuperar contraseña integrado
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RecoverPassword()),
+                                    );
+                                  },
+                                  child: Text(
+                                    '¿Olvidaste tu contraseña?',
+                                    style: TextStyle(
+                                      color: Colors.blue.shade700,
+                                      fontWeight: FontWeight.w500,
                                     ),
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               ],

@@ -266,6 +266,16 @@ export class SalesComponent implements OnInit {
     }
   }
 
+  onInputCantidad(item: any) {
+  // Si el usuario introduce manualmente un 0, se elimina el producto
+  if (item.cantidadProducto == 0) {
+    this.removeProductFromSale(item);
+    this.toastr.warning('La cantidad no puede ser inferior a 1','Producto eliminado');
+  } else {
+    this.updateSubtotal(item);
+  }
+}
+
   updateSubtotal(item: any): void {
     item.subtotal = item.cantidadProducto * item.precioVenta;
     this.updateTotal();

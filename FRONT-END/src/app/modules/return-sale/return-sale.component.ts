@@ -237,18 +237,27 @@ export class ReturnSaleComponent implements OnInit {
   
 
   searchReturnSale(query: string) {
-    const lowerCaseQuery = query.toLowerCase();
+    if (!query) {
+      this.filteredReturnSale = [...this.returnSale]; // Si no hay query, mostrar todos los resultados
+      return;
+    }
 
     // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
 
-    this.filteredReturnSale = this.returnSale.filter(returSale =>
-      // returSale.CodigoProducto.toString().includes(lowerCaseQuery) ||
-      returSale.tipoReembolso.toLowerCase().includes(lowerCaseQuery) ||
-      returSale.cantidad.toString().includes(lowerCaseQuery) ||
-      returSale.motivoDevolucion.toLowerCase().includes(lowerCaseQuery) ||
-      // returSale.NombreProducto.toLowerCase().includes(lowerCaseQuery) ||
-      returSale.fechaDevolucion && new Date(returSale.fechaDevolucion).toLocaleDateString().includes(lowerCaseQuery) ||
-      returSale.valorDevolucion.toString().includes(lowerCaseQuery)
+    this.filteredReturnSale = this.returnSale.filter(returSale =>{
+      const barCode = returSale as unknown as Barcode & {codigoBarra?: string};
+      const code =(barCode.codigoBarra || '').toLowerCase().includes(query);
+
+     const reembolso= returSale.tipoReembolso.toLowerCase().includes(query.toLowerCase());
+    const cantidad =returSale.cantidad.toString().includes(query.toLowerCase());
+    const motivo =  returSale.motivoDevolucion.toLowerCase().includes(query.toLowerCase()) ;
+    const fecha=  returSale.fechaDevolucion && new Date(returSale.fechaDevolucion).toLocaleDateString().includes(query.toLowerCase());
+    const valor=  returSale.valorDevolucion.toString().includes(query.toLowerCase())
+
+    const estado = (returSale.estado ? 'vigente' : 'anulado').includes(query.toLowerCase())
+    
+      return code || reembolso || cantidad || motivo ||fecha || valor || estado 
+    }
     );
   }
 

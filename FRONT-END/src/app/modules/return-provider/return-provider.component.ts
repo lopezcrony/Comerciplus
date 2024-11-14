@@ -16,6 +16,7 @@ import { BarcodesService } from '../barcodes/barcodes.service';
 import { Barcode } from '../barcodes/barcode.model'
 import { returnProviderModel } from './return-provider.model';
 import { ProductsService } from '../products/products.service';
+import { Product } from '../products/products.model';
 
 @Component({
   selector: 'app-return-provider',
@@ -173,28 +174,43 @@ export class ReturnProviderComponent implements OnInit {
 
   }
 
-
+  estadoDict: { [key: string]: string } = {
+    '1': 'por notificar',
+    '2': 'notificado',
+    '3': 'en proceso',
+    '4': 'finalizado'
+  };
+  
   searchreturnProvider(query: string) {
     const lowerCaseQuery = query.toLowerCase();
-
-    // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
-
-    this.filteredReturnProvider = this.returnProvider.filter(returnProviders =>
-      // returnProviders.CodigoProducto.toString().includes(lowerCaseQuery) ||
-      // returnProviders.NombreProveedor.toLowerCase().includes(lowerCaseQuery) ||  
-      returnProviders.cantidad.toString().includes(lowerCaseQuery) ||
-      returnProviders.motivoDevolucion.toLowerCase().includes(lowerCaseQuery) ||
-      returnProviders.estado.toLowerCase().includes(lowerCaseQuery)
-    );
-
-    this.filterCode = this.code.filter(code =>
-      code.codigoBarra.toString().includes(lowerCaseQuery)
-    )
-
-    this.filterProvider = this.providers.filter(code =>
-      code.nombreProveedor.toLowerCase().includes(lowerCaseQuery)
-    )
+    if (!query) {
+      this.filteredReturnProvider = [...this.returnProvider]; 
+      return;
+    }
+  
+    this.filteredReturnProvider = this.returnProvider.filter(returnProviders => {
+      const barCode = returnProviders as unknown as Barcode & {codigoBarra?: string};
+      const code = (barCode.codigoBarra || '').toLowerCase().includes(lowerCaseQuery);
+      const productName = returnProviders as unknown as Product & {nombreProducto?: string};
+      const product = (productName.nombreProducto || '').toLowerCase().includes(lowerCaseQuery);
+      const ProviderName = returnProviders as unknown as Proveedor & {nombreProveedor?: string};
+      const provider = (ProviderName.nombreProveedor || '').toLowerCase().includes(lowerCaseQuery);
+  
+      const cantidad = returnProviders.cantidad.toString().includes(lowerCaseQuery);
+      const motivo = returnProviders.motivoDevolucion.toLowerCase().includes(lowerCaseQuery);
+      const fecha = returnProviders.fecha && new Date(returnProviders.fecha).toLocaleDateString().includes(lowerCaseQuery);
+  
+     // Obtener el nombre del estado desde el diccionario 
+     const estado = returnProviders.estado.toString();
+      // Asegúrate de convertir el estado a string // Verificación adicional del estado 
+      if (!this.estadoDict.hasOwnProperty(estado)) { console.error(`Estado no encontrado en el diccionario: ${estado}`); return false; } const estadoTexto = this.estadoDict[estado] || ''; // Compara el nombre del estado con la query 
+      const estadoMatch = estadoTexto.toLowerCase().includes(lowerCaseQuery); // Log para verificar el estado traducido y el estadoMatch 
+      
+  
+      return code || product || provider || cantidad || motivo || fecha || estadoMatch;
+    });
   }
+  
 
   changeReturnProviderStatus(updatedReturnProvider: returnProviderModel) {
     const estado = updatedReturnProvider.estado;
