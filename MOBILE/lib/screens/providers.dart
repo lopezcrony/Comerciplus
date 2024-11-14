@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../widgets/appBar_Screens.dart';
@@ -22,7 +21,7 @@ class ProvidersScreen extends StatefulWidget {
 class _ProvidersScreenState extends State<ProvidersScreen> {
   late Future<List<Provider>> _futureProviders;
   String searchTerm = '';
-  String sortBy = 'nombreProveedor';
+  bool isAscending = true;
 
   @override
   void initState() {
@@ -32,6 +31,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
 
   // Filtrar y ordenar proveedores
   List<Provider> _filteredProviders(List<Provider> providers) {
+    // Primero filtrar
     List<Provider> filteredProviders = providers
         .where((provider) =>
             provider.nombreProveedor
@@ -42,17 +42,10 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                 .contains(searchTerm.toLowerCase()))
         .toList();
 
-    filteredProviders.sort((a, b) {
-      if (sortBy == 'nombreProveedor') {
-        return a.nombreProveedor.compareTo(b.nombreProveedor);
-      } else {
-        return (a.estadoProveedor == b.estadoProveedor)
-            ? 0
-            : a.estadoProveedor
-                ? -1
-                : 1;
-      }
-    });
+    // Luego ordenar
+    filteredProviders.sort((a, b) => isAscending
+        ? a.nombreProveedor.compareTo(b.nombreProveedor)
+        : b.nombreProveedor.compareTo(a.nombreProveedor));
 
     return filteredProviders;
   }
@@ -82,19 +75,14 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
               // Componente de búsqueda y filtro
               SearchFilter(
                 onSearchChanged: (value) => setState(() => searchTerm = value),
-                onSortChanged: (value) {
-                  setState(() => sortBy = value!);
+                onSortPressed: () {
+                  setState(() {
+                    isAscending = !isAscending;
+                  });
                 },
-                sortBy: sortBy,
-                sortOptions: [
-                  DropdownMenuItem(
-                    value: 'nombreProveedor',
-                    child: Text('Ordenar',
-                        style: GoogleFonts.poppins(color: const Color(0xFF2D3142))),
-                  ),
-                ],
+                isAscending: isAscending,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 10),
 
               // Lista de Proveedores
               Expanded(
@@ -107,8 +95,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                       return const Center(
                           child: Text('Error al cargar proveedores.'));
                     } else if (snapshot.hasData) {
-                      final filteredProviders =
-                          _filteredProviders(snapshot.data!);
+                      final filteredProviders = _filteredProviders(snapshot.data!);
                       return ListView.builder(
                         itemCount: filteredProviders.length,
                         itemBuilder: (context, index) {
@@ -147,7 +134,6 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                                           .format(purchase.valorCompra),
                                     );
                                   } else {
-                                    // Mostrar la tarjeta del proveedor con datos predeterminados si no hay compras
                                     return infoCard(
                                       typeId: 'NIT',
                                       id: proveedor.nitProveedor,

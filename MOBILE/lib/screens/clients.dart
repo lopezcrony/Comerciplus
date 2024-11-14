@@ -1,4 +1,3 @@
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +11,6 @@ import '../models/credits.dart';
 import '../services/clients.dart';
 import '../services/credits.dart';
 
-
 class ClientScreen extends StatefulWidget {
   const ClientScreen({super.key});
 
@@ -24,6 +22,7 @@ class _ClientScreenState extends State<ClientScreen> {
   late Future<List<Client>> _futureClients;
   String searchTerm = '';
   String sortBy = 'nombreCliente';
+  bool isAscending = true;
 
   @override
   void initState() {
@@ -46,17 +45,9 @@ class _ClientScreenState extends State<ClientScreen> {
                 .contains(searchTerm.toLowerCase()))
         .toList();
 
-    filteredClients.sort((a, b) {
-      if (sortBy == 'nombreCliente') {
-        return a.nombreCliente.compareTo(b.nombreCliente);
-      } else {
-        return (a.estadoCliente == b.estadoCliente)
-            ? 0
-            : a.estadoCliente
-                ? -1
-                : 1;
-      }
-    });
+    filteredClients.sort((a, b) => isAscending
+        ? a.nombreCliente.compareTo(b.nombreCliente)
+        : b.nombreCliente.compareTo(a.nombreCliente));
 
     return filteredClients;
   }
@@ -85,28 +76,27 @@ class _ClientScreenState extends State<ClientScreen> {
             children: [
               SearchFilter(
                 onSearchChanged: (value) => setState(() => searchTerm = value),
-                onSortChanged: (value) {
-                  setState(() => sortBy = value!);
-                                },
-                sortBy: sortBy,
-                sortOptions: [
-                  DropdownMenuItem(
-                    value: 'nombreCliente',
-                    child: Text('Ordenar', style: GoogleFonts.poppins(color: const Color(0xFF2D3142))),
-                  ),
-                ],
+                onSortPressed: () {
+                  setState(() {
+                    isAscending = !isAscending;
+                  });
+                },
+                isAscending: isAscending,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 10),
               Expanded(
                 child: FutureBuilder<List<Client>>(
                   future: _futureClients,
                   builder: (context, clientSnapshot) {
-                    if (clientSnapshot.connectionState == ConnectionState.waiting) {
+                    if (clientSnapshot.connectionState ==
+                        ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (clientSnapshot.hasError) {
-                      return const Center(child: Text('Error al cargar clientes.'));
+                      return const Center(
+                          child: Text('Error al cargar clientes.'));
                     } else if (clientSnapshot.hasData) {
-                      final filteredClients = _filteredClients(clientSnapshot.data!);
+                      final filteredClients =
+                          _filteredClients(clientSnapshot.data!);
                       return ListView.builder(
                         itemCount: filteredClients.length,
                         itemBuilder: (context, index) {
@@ -114,27 +104,36 @@ class _ClientScreenState extends State<ClientScreen> {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: FutureBuilder<Credit>(
-                              future: CreditService().getCreditsByClient(client.idCliente),
+                              future: CreditService()
+                                  .getCreditsByClient(client.idCliente),
                               builder: (context, creditSnapshot) {
-                                if (creditSnapshot.connectionState == ConnectionState.waiting) {
-                                  return const Center(child: CircularProgressIndicator());
+                                if (creditSnapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
                                 } else if (creditSnapshot.hasError) {
-                                  return const Center(child: Text('Error al cargar créditos.'));
+                                  return const Center(
+                                      child: Text('Error al cargar créditos.'));
                                 } else if (creditSnapshot.hasData) {
                                   final credit = creditSnapshot.data!;
                                   return infoCard(
                                     typeId: 'CC',
                                     id: client.cedulaCliente,
-                                    name: '${client.nombreCliente} ${client.apellidoCliente}',
+                                    name:
+                                        '${client.nombreCliente} ${client.apellidoCliente}',
                                     address: client.direccionCliente,
                                     phone: client.telefonoCliente,
                                     status: client.estadoCliente,
                                     icon: Icons.credit_card_outlined,
                                     title: 'Deuda Actual',
-                                    value: NumberFormat.currency(locale: 'es', symbol: '\$').format(credit.totalCredito),
+                                    value: NumberFormat.currency(
+                                            locale: 'es', symbol: '\$')
+                                        .format(credit.totalCredito),
                                   );
                                 } else {
-                                  return const Center(child: Text('No hay créditos disponibles.'));
+                                  return const Center(
+                                      child:
+                                          Text('No hay créditos disponibles.'));
                                 }
                               },
                             ),
@@ -142,7 +141,8 @@ class _ClientScreenState extends State<ClientScreen> {
                         },
                       );
                     } else {
-                      return const Center(child: Text('No hay clientes disponibles.'));
+                      return const Center(
+                          child: Text('No hay clientes disponibles.'));
                     }
                   },
                 ),

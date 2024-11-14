@@ -191,9 +191,10 @@ class infoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCreditRow({required IconData icon, required String value}) {
+Widget _buildCreditRow({required IconData icon, required String value}) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      width: 300,
+      padding: const EdgeInsets.all(11),
       decoration: BoxDecoration(
         color: const Color(0xFFF8F9FF),
         borderRadius: BorderRadius.circular(12),
