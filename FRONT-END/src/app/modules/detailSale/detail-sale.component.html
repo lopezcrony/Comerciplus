@@ -1,8 +1,12 @@
 <!-- PLANTILLA CRUD -->
-<app-crud [Module]="'Resumen de Ventas'" [items]="filteredSale" [columns]="colums" [canDelete]="false"
-    [canExport]="false" [canEdit]="false" [canCreate]="false" [canCancel]="true" (cancel)="cancelSale($event)"
+<app-crud [Module]="'Resumen de Ventas'" 
+[items]="filteredSale" 
+[columns]="colums" 
+[canDelete]="false"
+    [canExport]="true" [canEdit]="false" [canCreate]="false" [canCancel]="true" (cancel)="cancelSale($event)"
     [canSeeDetail]="true" [canStatus]="true" [showStateColumn]="true" [statusField]="'estadoVenta'"
-    (detail)="openShowModal($event)" (search)="searchDetailSale($event)">
+    (detail)="openShowModal($event)" (search)="searchDetailSale($event)"
+    (export)="downloadPDF()">
 </app-crud>
 
 
