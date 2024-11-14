@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../widgets/appBar_Screens.dart';
@@ -85,11 +86,11 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                   setState(() => sortBy = value!);
                 },
                 sortBy: sortBy,
-                sortOptions: const [
+                sortOptions: [
                   DropdownMenuItem(
                     value: 'nombreProveedor',
                     child: Text('Ordenar',
-                        style: TextStyle(color: Color(0xFF2D3142))),
+                        style: GoogleFonts.poppins(color: const Color(0xFF2D3142))),
                   ),
                 ],
               ),
@@ -156,7 +157,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
                                       status: proveedor.estadoProveedor,
                                       icon: Icons.calendar_today_outlined,
                                       title: 'Última compra',
-                                      date: 'Sin compras registradas',
+                                      date: 'Sin compras',
                                       value: '0,0 \$',
                                     );
                                   }

@@ -1,3 +1,4 @@
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
@@ -88,10 +89,10 @@ class _ClientScreenState extends State<ClientScreen> {
                   setState(() => sortBy = value!);
                                 },
                 sortBy: sortBy,
-                sortOptions: const [
+                sortOptions: [
                   DropdownMenuItem(
                     value: 'nombreCliente',
-                    child: Text('Ordenar', style: TextStyle(color: Color(0xFF2D3142))),
+                    child: Text('Ordenar', style: GoogleFonts.poppins(color: const Color(0xFF2D3142))),
                   ),
                 ],
               ),

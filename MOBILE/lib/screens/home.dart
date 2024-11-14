@@ -8,6 +8,7 @@ import 'package:comerciplus/widgets/menu_card.dart';
 
 import 'package:comerciplus/screens/providers.dart';
 import 'package:comerciplus/screens/clients.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class Home extends StatelessWidget {
@@ -32,19 +33,19 @@ class Home extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Resumen del Día',
-                      style: TextStyle(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 16),
-                    Row(
+                    const SizedBox(height: 16),
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SummaryCard(
@@ -68,14 +69,6 @@ class Home extends StatelessWidget {
               // Menú principal
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Menú Principal',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D3748),
-                  ),
-                ),
               ),
               const SizedBox(height: 12),
               GridView.count(

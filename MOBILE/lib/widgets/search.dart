@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SearchFilter extends StatelessWidget {
   final ValueChanged<String> onSearchChanged;
@@ -38,7 +39,7 @@ class SearchFilter extends StatelessWidget {
               onChanged: onSearchChanged,
               decoration: InputDecoration(
                 hintText: 'Buscar...',
-                hintStyle: TextStyle(color: Colors.grey[400]),
+                hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
                 prefixIcon: const Icon(Icons.search, color: Colors.blueAccent, size: 20),
                 filled: true,
                 fillColor: const Color(0xFFF8F9FF),

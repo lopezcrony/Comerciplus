@@ -1,6 +1,7 @@
 // widgets/summary_card.dart
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SummaryCard extends StatelessWidget {
   final String title;
@@ -29,7 +30,7 @@ class SummaryCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.white70,
               fontSize: 14,
             ),
@@ -37,10 +38,9 @@ class SummaryCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 24,
-              fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 4),
@@ -54,7 +54,7 @@ class SummaryCard extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 change,
-                style: const TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.white70,
                   fontSize: 12,
                 ),
