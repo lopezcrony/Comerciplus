@@ -1,3 +1,6 @@
+<a routerLink="/sales" routerLinkActive="active">
+    <i class="pi pi-angle-left" style="font-size: 1.5rem;color: gray;"></i>
+</a>
 <!-- PLANTILLA CRUD -->
 <app-crud [Module]="'Resumen de Ventas'" 
 [items]="filteredSale" 
@@ -19,7 +22,6 @@
 (search)="searchDetailSale($event)"
 (export)="downloadPDF()">
 </app-crud>
-
 
 <!-- modal para ver detalle producto inicio -->
 <p-dialog [(visible)]="detailModalVisible" [style]="{width: '500px'}" [header]="'Detalle de Venta'" [modal]="true"

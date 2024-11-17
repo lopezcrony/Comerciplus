@@ -40,6 +40,9 @@ export class SalesComponent implements OnInit {
   minDate: Date = new Date();
 
   total: number = 0;
+  montoRecibido: number = 0;
+  cambio: number = 0;
+  
   selectedClient: any = null;
   imprimirRecibo: boolean = false;
   showCreditModal: boolean = false;
@@ -93,24 +96,24 @@ export class SalesComponent implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
-  
+
     // Agregar la suscripción al scanner
     this.barcodeSubscription = this.scannerSocketService.getLatestBarcode()
       .subscribe(barcodeData => {
         if (barcodeData && barcodeData.barcode) {
           // Mostrar el código de barras en el input
           this.busquedaForm.patchValue({ busqueda: barcodeData.barcode });
-  
+
           // Limpiar el input después de 1 segundo
           setTimeout(() => {
             this.busquedaForm.patchValue({ busqueda: '' });
           }, 1000);
-  
+
           // Usar el método existente searchByBarcode
           this.searchByBarcode(barcodeData.barcode);
         }
       });
-  }  
+  }
 
   ngOnDestroy() {
     if (this.barcodeSubscription) {
@@ -130,7 +133,7 @@ export class SalesComponent implements OnInit {
     const query = event.query.toLowerCase();
     this.searchText = query; // Guardamos el texto de búsqueda
     const isBarcode = /^[0-9]+$/.test(query);
-  
+
     if (isBarcode) {
       setTimeout(() => {
         this.searchByBarcode(query);
@@ -139,16 +142,16 @@ export class SalesComponent implements OnInit {
       let exactMatches = this.products.filter(p =>
         p.nombreProducto.toLowerCase() === query
       );
-  
+
       let partialMatches = this.products.filter(p =>
         p.nombreProducto.toLowerCase().includes(query) && p.nombreProducto.toLowerCase() !== query
       );
-  
+
       this.filteredProducts = [...exactMatches, ...partialMatches];
-  
+
       if (this.filteredProducts.length > 0) {
         this.selectedProduct = this.filteredProducts[0];
-        
+
         setTimeout(() => {
           if (searchInput && searchInput.panelVisible) {
             searchInput.selectItem(this.filteredProducts[0]);
@@ -197,7 +200,7 @@ export class SalesComponent implements OnInit {
     this.selectedProduct = event;
     this.busquedaForm.get('busqueda')?.setValue(this.searchText);
     setTimeout(() => {
-      this.clear(); 
+      this.clear();
     }, 100);
   }
 
@@ -206,7 +209,7 @@ export class SalesComponent implements OnInit {
     this.selectedProduct = null;
     this.busquedaForm.get('busqueda')?.setValue('');
   }
-  
+
   getImageUrl(productId: any): string {
     return this.productService.getImageUrl(productId);
   }
@@ -267,14 +270,14 @@ export class SalesComponent implements OnInit {
   }
 
   onInputCantidad(item: any) {
-  // Si el usuario introduce manualmente un 0, se elimina el producto
-  if (item.cantidadProducto == 0) {
-    this.removeProductFromSale(item);
-    this.toastr.warning('La cantidad no puede ser inferior a 1','Producto eliminado');
-  } else {
-    this.updateSubtotal(item);
+    // Si el usuario introduce manualmente un 0, se elimina el producto
+    if (item.cantidadProducto == 0) {
+      this.removeProductFromSale(item);
+      this.toastr.warning('La cantidad no puede ser inferior a 1', 'Producto eliminado');
+    } else {
+      this.updateSubtotal(item);
+    }
   }
-}
 
   updateSubtotal(item: any): void {
     item.subtotal = item.cantidadProducto * item.precioVenta;
@@ -292,6 +295,18 @@ export class SalesComponent implements OnInit {
   }
 
   // --------------------------------------FINALIZAR VENTA-------------------------------------------
+  calcularCambio() {
+    if (this.montoRecibido && this.total) {
+      this.cambio = this.montoRecibido - this.total;
+    } else {
+      this.cambio = 0;
+    }
+  }
+
+  isPagoValido(): boolean {
+    return this.montoRecibido >= this.total;
+  }
+
   createSale(callback: (success: boolean) => void) {
     if (this.detailSale.length === 0) {
       this.toastr.error('No hay productos en la venta', 'Error');
@@ -299,34 +314,37 @@ export class SalesComponent implements OnInit {
       return;
     }
 
-    const saleData = { fechaVenta: new Date() };
-    const saleDetail = this.detailSale;
+    if (this.isPagoValido()) {
+      const saleData = { fechaVenta: new Date() };
+      const saleDetail = this.detailSale;
 
-    this.saleService.createSale(saleData, saleDetail).subscribe({
-      next: (response) => {
-        this.idSale = response.newSale.idVenta;
-        this.loadProducts();
-        callback(true);
-      },
-      error: (error) => {
-        this.toastr.error('No se pudo registrar la venta', 'Error');
-        callback(false);
-      }
-    });
+      this.saleService.createSale(saleData, saleDetail).subscribe({
+        next: (response) => {
+          this.idSale = response.newSale.idVenta;
+          this.loadProducts();
+          callback(true);
+        },
+        error: (error) => {
+          this.toastr.error('No se pudo registrar la venta', 'Error');
+          callback(false);
+        }
+      });
+    }
+
   }
 
   finalizeSale() {
     this.createSale((completed) => {
       if (!completed) return;
-      
+
       this.toastr.success('Venta registrada', 'Éxito');
-      
+
       if (this.imprimirRecibo) this.downloadPDF(); // Llama a la función de descarga del PDF si el switch está activado
-      
+
       this.resetForm();
     });
   }
-  
+
   cancelSale() {
     this.resetForm();
     this.toastr.success('Venta Cancelada', 'Info');
@@ -483,7 +501,7 @@ export class SalesComponent implements OnInit {
       accent: [41, 128, 185],     // Azul claro para detalles
       success: [46, 204, 113]     // Verde para el total
     };
-  
+
     // Configuración de estilos
     const styles = {
       title: { fontSize: 20, fontStyle: 'bold' },
@@ -491,7 +509,7 @@ export class SalesComponent implements OnInit {
       normal: { fontSize: 10, fontStyle: 'normal' },
       small: { fontSize: 8, fontStyle: 'normal' }
     };
-  
+
     // Función helper para cambiar estilos
     const setStyle = (style: { fontSize: any; fontStyle: any; }) => {
       doc.setFontSize(style.fontSize);
@@ -502,17 +520,17 @@ export class SalesComponent implements OnInit {
     const setColor = (color: number[]) => {
       doc.setTextColor(color[0], color[1], color[2]);
     };
-  
+
     // Franja de color en la parte superior
     doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
     doc.rect(0, 0, pageWidth, 15, 'F');
-    
+
     // Encabezado
     setStyle(styles.title);
     setColor([255, 255, 255]);
     doc.text('RECIBO DE VENTA', pageWidth / 2, yPosition, { align: 'center' });
     yPosition += lineHeight + 6;
-  
+
     // Información de la venta
     setStyle(styles.subtitle);
     const fecha = new Date().toLocaleDateString('es-ES', {
@@ -520,7 +538,7 @@ export class SalesComponent implements OnInit {
       month: '2-digit',
       year: 'numeric'
     });
-    
+
     // Información del negocio
     setStyle(styles.normal);
     setColor(colors.primary);
@@ -532,7 +550,7 @@ export class SalesComponent implements OnInit {
     yPosition += lineHeight;
     doc.text('Tel: (123) 456-7890', margin, yPosition);
     yPosition += lineHeight * 2;
-  
+
     // Tabla de productos
     const tableColumns = {
       item: { x: margin, width: 15 },
@@ -541,11 +559,11 @@ export class SalesComponent implements OnInit {
       precio: { x: margin + 110, width: 35 },
       subtotal: { x: margin + 145, width: 35 }
     };
-  
+
     // Encabezados de tabla con fondo
     doc.setFillColor(colors.accent[0], colors.accent[1], colors.accent[2]);
     doc.rect(margin, yPosition - 5, pageWidth - (margin * 2), lineHeight + 3, 'F');
-    
+
     setStyle(styles.subtitle);
     setColor([255, 255, 255]); // Texto blanco para los encabezados
     doc.text('N°', tableColumns.item.x, yPosition);
@@ -554,14 +572,14 @@ export class SalesComponent implements OnInit {
     doc.text('Precio', tableColumns.precio.x, yPosition);
     doc.text('Subtotal', tableColumns.subtotal.x, yPosition);
     yPosition += lineHeight;
-  
+
     // Línea después de encabezados
     doc.setDrawColor(colors.accent[0], colors.accent[1], colors.accent[2]);
     doc.setLineWidth(0.5);
     doc.line(margin, yPosition - 3, pageWidth - margin, yPosition - 3);
 
     yPosition += 5;
-  
+
     // Productos
     setStyle(styles.normal);
     setColor(colors.secondary);
@@ -583,7 +601,7 @@ export class SalesComponent implements OnInit {
         setStyle(styles.normal);
         setColor(colors.secondary);
       }
-  
+
       doc.text(`${index + 1}`, tableColumns.item.x, yPosition);
       doc.text(d.nombreProducto, tableColumns.producto.x, yPosition);
       doc.text(d.cantidadProducto.toString(), tableColumns.cantidad.x, yPosition);
@@ -591,19 +609,19 @@ export class SalesComponent implements OnInit {
       doc.text(`$${d.subtotal.toFixed(2)}`, tableColumns.subtotal.x, yPosition);
       yPosition += lineHeight;
     });
-  
+
     // Línea final de productos
     doc.setDrawColor(colors.accent[0], colors.accent[1], colors.accent[2]);
     doc.line(margin, yPosition, pageWidth - margin, yPosition);
     yPosition += 5;
-  
+
     // Total
     setStyle(styles.subtitle);
     setColor(colors.success);
     doc.text('Total:', pageWidth - margin - 70, yPosition);
     doc.text(`$${this.total.toFixed(2)}`, pageWidth - margin - 35, yPosition);
     yPosition += lineHeight * 2;
-  
+
     // Pie de página
     setStyle(styles.small);
     setColor(colors.primary);
@@ -611,8 +629,8 @@ export class SalesComponent implements OnInit {
     yPosition += lineHeight;
     setColor(colors.secondary);
     doc.text('Conserve este recibo para cualquier aclaración', pageWidth / 2, yPosition, { align: 'center' });
-  
+
     // Guardar el PDF
     doc.save('recibo_venta.pdf');
-}
+  }
 }

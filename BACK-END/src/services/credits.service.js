@@ -59,9 +59,8 @@ const getCreditHistoryByClient = async (idClient) => {
             totalAcumulado += item.monto;
         } else if (item.tipo === 'Abono' && item.estadoAbono !== false) {
             totalAcumulado -= item.monto;
-        } else if (item.estadoAbono === false) {
-            totalAcumulado == credit.totalCredito;
-        }
+        } 
+        
         return {
             ...item,
             saldo: totalAcumulado
