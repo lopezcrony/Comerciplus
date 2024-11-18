@@ -201,13 +201,9 @@ export class ReturnProviderComponent implements OnInit {
       const fecha = returnProviders.fecha && new Date(returnProviders.fecha).toLocaleDateString().includes(lowerCaseQuery);
   
      // Obtener el nombre del estado desde el diccionario 
-     const estado = returnProviders.estado.toString();
-      // Asegúrate de convertir el estado a string // Verificación adicional del estado 
-      if (!this.estadoDict.hasOwnProperty(estado)) { console.error(`Estado no encontrado en el diccionario: ${estado}`); return false; } const estadoTexto = this.estadoDict[estado] || ''; // Compara el nombre del estado con la query 
-      const estadoMatch = estadoTexto.toLowerCase().includes(lowerCaseQuery); // Log para verificar el estado traducido y el estadoMatch 
-      
+    
   
-      return code || product || provider || cantidad || motivo || fecha || estadoMatch;
+      return code || product || provider || cantidad || motivo || fecha 
     });
   }
   
