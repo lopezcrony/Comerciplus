@@ -35,8 +35,8 @@ export class IndexComponent {
     { title: 'Ventas', description: 'Registrar y gestionar ventas', icon: 'pi pi-dollar', color: '#28a745', link: '/sales' },
     { title: 'Compras', description: 'Gestionar pedidos y proveedores', icon: 'pi pi-shopping-cart', color: '#ffc107', link: '/shoppingview' },
     { title: 'Categorías', description: 'Organizar productos por categorías', icon: 'pi pi-tags', color: '#17a2b8', link: '/categories' },
-    { title: 'Devoluciones', description: 'Gestionar devoluciones y reembolsos', icon: 'pi pi-refresh', color: '#dc3545', link: '/devoluciones' },
-    { title: 'Configuración', description: 'Ajustes del sistema', icon: 'pi pi-cog', color: '#6c757d', link: '/configuracion' }
+    { title: 'Devoluciones', description: 'Gestionar devoluciones y reembolsos', icon: 'pi pi-refresh', color: '#7B1FA2', link: '/devoluciones' },
+    { title: 'Dashboard', description: 'Ajustes del sistema', icon: 'pi pi-chart-bar', color: '#C62828', link: '/dashboard' }
   ];
 
 }
