@@ -20,7 +20,7 @@ const getOneCredit = async (id) => {
 
 const getCreditsByClient = async (idClient) => {
     try {
-        return await creditRepository.findCreditByClient({where: {idCliente: idClient}});
+        return await creditRepository.findCreditByClient(idClient);
     } catch (error) {
         throw error;
     }
@@ -59,9 +59,8 @@ const getCreditHistoryByClient = async (idClient) => {
             totalAcumulado += item.monto;
         } else if (item.tipo === 'Abono' && item.estadoAbono !== false) {
             totalAcumulado -= item.monto;
-        } else if (item.estadoAbono === false) {
-            totalAcumulado == credit.totalCredito;
-        }
+        } 
+        
         return {
             ...item,
             saldo: totalAcumulado

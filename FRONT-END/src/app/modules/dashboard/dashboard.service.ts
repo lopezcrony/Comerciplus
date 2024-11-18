@@ -10,11 +10,23 @@ import { environment } from '../../../environments/environment';
 })
 export class DashboardService {
 
-  private apiUrl = `${environment.apiUrl}/dashboard`;
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
   getDailyReport(): Observable<Blob> {
-    return this.http.get(`${this.apiUrl}/informe-diario`, { responseType: 'blob' });
+    return this.http.get(`${this.apiUrl}/dashboard/informe-diario`, { responseType: 'blob' });
+  }
+
+  getSales(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/ventas`);
+  }
+
+  getDetailsSale(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/detalleVenta`);
+  }
+
+  getProducts(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/productos`);
   }
 }

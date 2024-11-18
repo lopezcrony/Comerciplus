@@ -1,10 +1,20 @@
 <div class="card">
   <div class="venta-productos-container">
     <div class="carrito-venta">
-      <div class="flex items-center gap-2 mb-3">
-        <h1 class="texto-pequeno m-0">Módulo de Ventas </h1>
-      </div>
 
+      <!-- Header con título y botón de historial -->
+      <div class="flex justify-between items-center mb-3">
+        <div class="flex items-center gap-2">
+          <h1 class="texto-pequeno m-0">Módulo de Ventas</h1>
+        </div>
+        <button pButton pRipple 
+                label="Historial de Ventas" 
+                icon="pi pi-history"
+                class="p-button-secondary p-button-sm boton-pequeno p-button-outlined"
+                routerLink="/detailSales">
+        </button>
+      </div>
+      
       <!-- Busqueda por nombre de producto y código de barras -->
       <form [formGroup]="busquedaForm" class="mb-3">
         <div class="barcode-container m-1">
@@ -58,13 +68,13 @@
             <td>
               <div class="quantity-controls">
                 <button pButton type="button" icon="pi pi-minus" (click)="cambiarCantidad(item, -1)"></button>
-                <p-inputNumber [(ngModel)]="item.cantidadProducto" [min]="1" [showButtons]="false" [size]="3" 
+                <p-inputNumber [(ngModel)]="item.cantidadProducto" [min]="1" [showButtons]="false" [size]="3"
                   (onInput)="onInputCantidad(item)">
                 </p-inputNumber>
                 <button pButton type="button" icon="pi pi-plus" (click)="cambiarCantidad(item, 1)"></button>
               </div>
             </td>
-            <td>{{ item.subtotal | currency }}</td>            
+            <td>{{ item.subtotal | currency }}</td>
             <td>
               <button pButton icon="pi pi-trash" class="p-button-danger p-button-sm boton-pequeno"
                 (click)="removeProductFromSale(item)">
@@ -75,9 +85,8 @@
       </p-table>
     </div>
 
-    <!-- Detalles de venta -->
+    <!-- Detalle de venta -->
     <div class="detalle-venta">
-
       <!-- Switch para imprimir recibo -->
       <div class="flex align-items-center justify-content-between mb-4 p-3 bg-gray-50 rounded-lg">
         <div class="flex align-items-center gap-2">
@@ -90,10 +99,27 @@
       </div>
 
       <!-- Total -->
-      <div class="mb-4 p-4 bg-blue-50 rounded-lg">
-        <div class="text-sm text-blue-600 mb-1">Total a Pagar</div>
-        <div class="text-2xl font-bold text-blue-700">
+      <div class="mb-4 p-4 bg-green-50 rounded-lg">
+        <div class="text-sm text-green-600 mb-1">Total a Pagar</div>
+        <div class="text-2xl font-bold text-green-700">
           {{ total | currency:'USD':'symbol':'1.2-2' }}
+        </div>
+      </div>
+
+      <!-- Sección de pago en efectivo -->
+      <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+        <div class="mb-3">
+          <label class="text-sm text-gray-600">Monto Recibido</label>
+          <p-inputNumber [(ngModel)]="montoRecibido" [min]="0" [showButtons]="false" mode="decimal" currency="USD"
+            (onInput)="calcularCambio()" class="w-full">
+          </p-inputNumber>
+        </div>
+
+        <div class="mt-3">
+          <div class="text-sm text-gray-600 mb-1">Cambio a Devolver</div>
+          <div class="text-xl font-bold" [ngClass]="{'text-blue-600': cambio >= 0, 'text-red-600': cambio < 0}">
+            {{ cambio | currency:'USD':'symbol':'1.2-2' }}
+          </div>
         </div>
       </div>
 
@@ -104,19 +130,14 @@
         </button>
 
         <button pButton label="Pago de Contado" icon="pi pi-check-circle" (click)="finalizeSale()"
-          class="p-button-success p-button-sm w-full mb-2 boton-pequeno" [style]="{'background': 'rgb(22 163 74)'}">
+          class="p-button-success p-button-sm w-full mb-2 boton-pequeno" [disabled]="!isPagoValido()"
+          [style]="{'background': 'rgb(22 163 74)'}">
         </button>
 
         <button pButton label="Cancelar" icon="pi pi-times-circle" (click)="cancelSale()"
-          class="p-button-danger p-button-sm w-full boton-pequeno mb-10">
+          class="p-button-danger p-button-sm w-full boton-pequeno">
         </button>
       </div>
-
-      <!-- Botón de Historial de Ventas -->
-      <button pButton pRipple label="Ver el Historial de Ventas" icon="pi pi-history"
-        class="p-button-secondary p-button-sm boton-pequeno p-button-outlined mt-20 w-full" routerLink="/detailSales">
-      </button>
-
     </div>
 
   </div>
@@ -219,8 +240,9 @@
 
         <div class="p-field mb-2">
           <label for="montoCredito" class="block mb-1 texto-pequeno">Monto a Acreditar</label>
-          <p-inputNumber id="montoCredito" formControlName="montoCredito" mode="currency" currency="USD" locale="en-US"
-            placeholder="Monto a acreditar" [max]="total" [style]="{'width':'100%'}" styleClass="texto-pequeno">
+          <p-inputNumber id="montoCredito" formControlName="montoCredito" mode="decimal" currency="COP" locale="en-CO"
+            placeholder="Monto a acreditar" [min]="50" [max]="total" [style]="{'width':'100%'}"
+            styleClass="texto-pequeno">
           </p-inputNumber>
         </div>
 

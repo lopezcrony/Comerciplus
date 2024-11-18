@@ -34,7 +34,7 @@
       </div>
       <div class="field">
         <label for="montoAbonado">Monto a abonar</label>
-        <p-inputNumber id="montoAbonado" formControlName="montoAbonado" mode="decimal" currency="USD" locale="en-US" [min]="0" [max]="installmentForm.get('totalCredito')?.value"></p-inputNumber>
+        <p-inputNumber id="montoAbonado" formControlName="montoAbonado" mode="decimal" currency="USD" locale="en-US" [min]="1" [max]="installmentForm.get('totalCredito')?.value"></p-inputNumber>
         <small class="p-error" *ngIf="isFieldInvalid('montoAbonado')">
           {{ getErrorMessage('montoAbonado') }}
         </small>
@@ -50,10 +50,8 @@
 
 <!-- MODAL PARA VER EL HISTORIAL DE CRÉDITO DEL USUARIO -->
 
-<p-dialog [(visible)]="showHistoryModal" [style]="{width: '80vw'}" [modal]="true" [resizable]="false" [draggable]="false">
-  <ng-template pTemplate="header">
-    Historial de Crédito
-  </ng-template>
+<p-dialog [(visible)]="showHistoryModal" [style]="{width: '80vw'}" [header]="'Historial de Crédito'" [modal]="true" [resizable]="false" [draggable]="false">
+
   <ng-template pTemplate="content">
     <p-table [value]="historyItems" [paginator]="true" [rows]="10">
       <ng-template pTemplate="header">
