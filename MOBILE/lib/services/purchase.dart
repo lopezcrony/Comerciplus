@@ -28,7 +28,6 @@ class PurchaseService {
 
   Future<List<Purchase>> getPurchases() async {
     try {
-      // Realizamos la solicitud GET
       final response = await http.get(Uri.parse(_purchasesUrl));
 
 
@@ -37,7 +36,7 @@ class PurchaseService {
         return jsonResponse
             .map((purchase) => Purchase.fromJson(purchase))
             .toList();
-      } else {  
+      } else {
         throw Exception('Error al obtener las compras');
       }
     } catch (error) {

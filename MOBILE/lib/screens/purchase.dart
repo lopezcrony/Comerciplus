@@ -16,12 +16,38 @@ class ShoppingListScreen extends StatefulWidget {
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
   late Future<List<Purchase>> purchases;
+  final TextEditingController _searchController = TextEditingController();
+  List<Purchase> _filteredPurchases = [];
+  List<Purchase> _allPurchases = [];
 
   @override
   void initState() {
     super.initState();
-    purchases = PurchaseService()
-        .getPurchases(); // Llamamos al servicio para cargar las compras
+    purchases = PurchaseService().getPurchases();
+    purchases.then((value) {
+      setState(() {
+        _allPurchases  = value;
+        _filteredPurchases  = _allPurchases;
+      });
+    });
+  }
+
+  void _filterPurchases(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        _filteredPurchases = _allPurchases;
+      } else {
+        _filteredPurchases = _allPurchases.where((purchase) {
+          final idMatch =
+              purchase.idCompra.toString().contains(query.toLowerCase());
+          final dateMatch = DateFormat('dd/MM/yyyy')
+              .format(purchase.fechaRegistro)
+              .toLowerCase()
+              .contains(query.toLowerCase());
+          return idMatch || dateMatch;
+        }).toList();
+      }
+    });
   }
 
   @override
@@ -37,28 +63,51 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: FutureBuilder<List<Purchase>>(
-        future: purchases,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No hay compras disponibles.'));
-          } else {
-            List<Purchase> purchasesData = snapshot.data!;
-
-            return ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemCount: purchasesData.length,
-              itemBuilder: (context, index) {
-                final purchase = purchasesData[index];
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: TextField(
+                controller: _searchController,
+                style: const TextStyle(color: AppColors.text),
+                decoration: InputDecoration(
+                  hintText: 'Buscar por número o fecha...',
+                  hintStyle: const TextStyle(color: AppColors.textLight),
+                  prefixIcon: const Icon(Icons.search, color: AppColors.accent),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide:
+                        const BorderSide(color: AppColors.accent, width: 2),
+                  ),
+                  filled: true,
+                  fillColor: AppColors.cardBackground,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                ),
+                onChanged: _filterPurchases,
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final purchase = _filteredPurchases[index];
                 return Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
-                  margin: const EdgeInsets.only(bottom: 16.0),
+                  margin: const EdgeInsets.only(
+                      bottom: 16.0, left: 16.0, right: 16.0),
                   color: Colors.white,
                   child: InkWell(
                     onTap: () => _showPurchaseDetails(context, purchase),
@@ -112,16 +161,25 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                           const SizedBox(height: 8),
                           Align(
                             alignment: Alignment.centerRight,
-                            child: ElevatedButton.icon(
-                              icon: const Icon(Icons.visibility, size: 18),
-                              label: Text('Ver Detalle',
-                                  style: GoogleFonts.poppins()),
+                            child: TextButton(
                               onPressed: () =>
                                   _showPurchaseDetails(context, purchase),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.transparent,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18)),
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                elevation: 2,
+                                shadowColor:
+                                    const Color.fromARGB(255, 221, 220, 220)
+                                        .withOpacity(0.2),
+                              ),
+                              child: Text(
+                                'Ver Detalle',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.blue,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
                           ),
@@ -131,9 +189,10 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                   ),
                 );
               },
-            );
-          }
-        },
+              childCount: _filteredPurchases.length,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -245,50 +304,57 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.secondary,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: details.length,
-                        itemBuilder: (context, index) {
-                          final item = details[index];
-                          return ListTile(
-                            leading: const Icon(Icons.shopping_cart),
-                            title: Text(
-                              'Producto ID: ${item.idProducto}',
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Código de Barra: ${item.codigoBarra}',
-                                  style: GoogleFonts.poppins(),
+                    ...details
+                        .map((item) => Card(
+                              margin: const EdgeInsets.only(bottom: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.shopping_cart,
+                                            color: AppColors.primary),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Producto ID: ${item.idProducto}',
+                                          style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'Código de Barra: ${item.codigoBarra}',
+                                      style: GoogleFonts.poppins(),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Cantidad: ${item.cantidadProducto}',
+                                      style: GoogleFonts.poppins(),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Precio unitario: \$${item.precioCompraUnidad.toStringAsFixed(2)}',
+                                      style: GoogleFonts.poppins(),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Subtotal: \$${item.subtotal.toStringAsFixed(2)}',
+                                      style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  'Cantidad: ${item.cantidadProducto}',
-                                  style: GoogleFonts.poppins(),
-                                ),
-                                Text(
-                                  'Precio unitario: \$${item.precioCompraUnidad.toStringAsFixed(2)}',
-                                  style: GoogleFonts.poppins(),
-                                ),
-                                Text(
-                                  'Subtotal: \$${item.subtotal.toStringAsFixed(2)}',
-                                  style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                              ),
+                            ))
+                        .toList(),
                   ],
                 ),
               ),
@@ -299,16 +365,18 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     );
   }
 
-  Widget _buildDetalleRow(IconData icon, String title, String value) {
+  Widget _buildDetalleRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, color: AppColors.primary),
+        Icon(icon, size: 18, color: AppColors.primary),
         const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            '$title: $value',
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-          ),
+        Text(
+          '$label: ',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+        ),
+        Text(
+          value,
+          style: GoogleFonts.poppins(),
         ),
       ],
     );

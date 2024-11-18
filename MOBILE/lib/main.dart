@@ -1,3 +1,4 @@
+import 'package:comerciplus/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,7 +26,7 @@ class MainApp extends
           Theme.of(context).textTheme,
         ),
       ),
-      home: const Login()
+      home: const Home()
     );
   }
 }
