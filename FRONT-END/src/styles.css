@@ -14,9 +14,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* Estilos globales*/
-html, body {
+body {
   background-color: #f4f4f4;
 }
 

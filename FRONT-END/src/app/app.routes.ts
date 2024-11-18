@@ -22,6 +22,8 @@ import { LoadingComponent } from './shared/loading/loading.component';
 import { IndexComponent } from './modules/index/index.component';
 import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { ScannerComponent } from './modules/scanner/scanner.component';
+import { RoleGuard } from './Auth/role.guard';
+import { NotFoundComponent } from './shared/notFound/notFound.component';
 
 export const routes: Routes = [
   { path: 'index', component: IndexComponent},
@@ -35,9 +37,9 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent},
-      { path: 'users', component: UsersComponent },
-      { path: 'roles', component: RolesComponent },
+      { path: 'dashboard', component: DashboardComponent, canActivate: [RoleGuard], data: { roles: ['Administrador']}},
+      { path: 'users', component: UsersComponent, canActivate: [RoleGuard], data: { roles: ['Administrador']} },
+      { path: 'roles', component: RolesComponent, canActivate: [RoleGuard], data: { roles: ['Administrador']} },
 
       { path: 'providers', component: ProvidersComponent },
       { path: 'categories', component: CategoriesComponent },
@@ -59,4 +61,5 @@ export const routes: Routes = [
       // { path: '', redirectTo: 'index', pathMatch: 'full' },
     ]
   },
+  { path: '**', component: NotFoundComponent }
 ];

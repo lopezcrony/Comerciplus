@@ -1,14 +1,12 @@
 <nav class="sidebar" [ngClass]="{'open': isSidebarVisible, 'collapsed': !isSidebarVisible}">
   <div class="mt-5">
     <ul>
-      <!-- <li class="item" routerLink="/index" routerLinkActive="active">
-        <i class="bi bi-house mr-2" style="color:#C62828;"></i><a>Inicio</a>
-      </li> -->
-
-      <li class="item" routerLink="/dashboard" routerLinkActive="active">
+      <!-- Dashboard - solo para administradores -->
+      <li *ngIf="hasRole(['Administrador'])" class="item" routerLink="/dashboard" routerLinkActive="active">
         <i class="pi pi-chart-bar mr-2" style="color:#C62828;"></i><a>Dashboard</a>
       </li>
 
+      <!-- Menú de Compras -->
       <li>
         <a (click)="toggleSubmenu('Shoppings')" class="menu-link">
           <i class="pi pi-shop mr-2" style="color:#3F51B5;"></i>Compras
@@ -30,9 +28,9 @@
             <i class="bi bi-basket2 mr-2" style="color:crimson;"></i><a>Compras</a>
           </li>
         </ul>
-
       </li>
 
+      <!-- Menú de Ventas -->
       <li>
         <a (click)="toggleSubmenu('Sales')" class="menu-link">
           <i class="bi bi-coin mr-3" style="color:#29af2f;"></i>Ventas
@@ -47,14 +45,13 @@
           <li class="item" routerLink="/sales" routerLinkActive="active" (click)="closeSidebar()">
             <i class="bi bi-cash-coin mr-2" style="color:springgreen;"></i><a>Ventas</a>
           </li>
-          <!-- <li class="item" routerLink="/detailSales" routerLinkActive="active" (click)="closeSidebar()"><i
-              class="bi bi-cash-coin mr-2" style="color:springgreen;"></i><a>Resumen de venta</a></li> -->
           <li class="item" routerLink="/credits" routerLinkActive="active" (click)="closeSidebar()">
             <i class="bi bi-credit-card mr-2" style="color:yellowgreen;"></i><a>Créditos</a>
           </li>
         </ul>
       </li>
 
+      <!-- Menú de Devoluciones -->
       <li>
         <a (click)="toggleSubmenu('Returns')" class="menu-link">
           <i class="pi pi-sync mr-2" style="color:#7B1FA2;"></i>Devoluciones
@@ -75,7 +72,8 @@
         </ul>
       </li>
 
-      <li>
+      <!-- Menú de Configuración - solo para administradores -->
+      <li *ngIf="hasRole(['Administrador'])">
         <a (click)="toggleSubmenu('config')" class="menu-link">
           <i class="bi bi-gear mr-2" style="color:darkcyan;"></i>Configuración
           <i class="bi"
