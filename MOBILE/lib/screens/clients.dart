@@ -102,42 +102,47 @@ class _ClientScreenState extends State<ClientScreen> {
                         itemBuilder: (context, index) {
                           final client = filteredClients[index];
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
-                            child: FutureBuilder<Credit>(
-                              future: CreditService()
-                                  .getCreditsByClient(client.idCliente),
-                              builder: (context, creditSnapshot) {
-                                if (creditSnapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                } else if (creditSnapshot.hasError) {
-                                  return const Center(
-                                      child: Text('Error al cargar créditos.'));
-                                } else if (creditSnapshot.hasData) {
-                                  final credit = creditSnapshot.data!;
-                                  return infoCard(
-                                    typeId: 'CC',
-                                    id: client.cedulaCliente,
-                                    name:
-                                        '${client.nombreCliente} ${client.apellidoCliente}',
-                                    address: client.direccionCliente,
-                                    phone: client.telefonoCliente,
-                                    status: client.estadoCliente,
-                                    icon: Icons.credit_card_outlined,
-                                    title: 'Deuda Actual',
-                                    value: NumberFormat.currency(
-                                            locale: 'es', symbol: '\$')
-                                        .format(credit.totalCredito),
-                                  );
-                                } else {
-                                  return const Center(
-                                      child:
-                                          Text('No hay créditos disponibles.'));
-                                }
-                              },
-                            ),
-                          );
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: FutureBuilder<List<Credit>>(
+                                future: CreditService()
+                                    .getCreditsByClient(client.idCliente),
+                                builder: (context, creditSnapshot) {
+                                  if (creditSnapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  } else if (creditSnapshot.hasError) {
+                                    return Center(
+                                        child: Text(
+                                            'Error al cargar créditos: ${creditSnapshot.error}'));
+                                  } else if (creditSnapshot.hasData) {
+                                    final credits = creditSnapshot.data!;
+                                    if (credits.isEmpty) {
+                                      return const Center(
+                                          child: Text(
+                                              'No hay créditos disponibles.'));
+                                    }
+                                    return infoCard(
+                                      typeId: 'CC',
+                                      id: client.cedulaCliente,
+                                      name:
+                                          '${client.nombreCliente} ${client.apellidoCliente}',
+                                      address: client.direccionCliente,
+                                      phone: client.telefonoCliente,
+                                      status: client.estadoCliente,
+                                      icon: Icons.credit_card_outlined,
+                                      title: 'Deuda Actual',
+                                      value: NumberFormat.currency(
+                                              locale: 'es', symbol: '\$')
+                                          .format(credits[0].totalCredito),
+                                    );
+                                  } else {
+                                    return const Center(
+                                        child: Text(
+                                            'No hay créditos disponibles.'));
+                                  }
+                                },
+                              ));
                         },
                       );
                     } else {

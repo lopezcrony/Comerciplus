@@ -9,7 +9,7 @@ const findCreditById = async (id) => {
 };
 
 const findCreditByClient = async (id) => {
-    return await Credit.findOne({
+    return await Credit.findAll({
         where: { idCliente: id }
     });
 };
