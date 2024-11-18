@@ -99,6 +99,7 @@ export class ShoppingsComponent implements OnInit {
   }
 
   addShoppingDetail() {
+    
     this.shoppingDetailArray.push(this.createShoppingDetail());
   }
 
@@ -129,6 +130,31 @@ export class ShoppingsComponent implements OnInit {
     // Actualiza el valor de compra en el control correspondiente
     this.shoppingForm.get('shopping.valorCompra')?.setValue(valorCompra);
   }
+
+
+  validateNumberInput(event: any, field: string): void {
+    const value = event.target.value;
+    if (value < 1) {
+      // Evita valores negativos o cero para cantidadProducto y precioCompraUnidad
+      event.target.value = '';
+      this.shoppingForm.get(field)?.setValue(null); // Resetea el campo si el valor es inválido
+    }
+  }
+
+  validateNumberCodeBarInput(event: any, field: string): void {
+    const value = event.target.value;
+    if ( value < 0 ) {
+      // Evita valores negativos o cero para cantidadProducto y precioCompraUnidad
+      event.target.value = '';
+      this.shoppingForm.get(field)?.setValue(null); // Resetea el campo si el valor es inválido
+    }
+  }
+
+
+  markFormFieldsAsTouched() {
+    Object.values(this.shoppingForm.controls).forEach(c => c.markAsTouched());
+  }
+
   
   saveShopping() {
     if (this.shoppingForm.invalid) {
@@ -157,7 +183,7 @@ export class ShoppingsComponent implements OnInit {
         this.resetForm();
       },
       error: (error) => {
-        this.toastr.error(`El numero de factura ya existe`, 'Error');
+        this.toastr.error(`Error en el formulario`, 'Error');
       }
     });
   }
@@ -197,10 +223,6 @@ export class ShoppingsComponent implements OnInit {
 
       return idProveedor || numeroFactura;
     });
-  }
-
-  markFormFieldsAsTouched() {
-    Object.values(this.shoppingForm.controls).forEach(c => c.markAsTouched());
   }
 
   isFieldInvalid(fieldName: string): boolean {

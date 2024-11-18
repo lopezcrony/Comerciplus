@@ -11,7 +11,7 @@
     <div formGroupName="shopping">
         <div class="field-group">
             <div class="field" [ngClass]="{'error': isFieldInvalid('idProveedor')}">
-                <label for="proveedor">Proveedor</label>
+                <label for="proveedor">Proveedor<span style="color: red;">*</span></label>
                 <div class="p-inputgroup">
                     <p-dropdown [options]="providers" formControlName="idProveedor" optionLabel="nombreProveedor"
                         optionValue="idProveedor" placeholder="Seleccionar proveedor" [virtualScroll]="false"
@@ -24,7 +24,7 @@
             </div>
 
             <div class="field" [ngClass]="{'error': isFieldInvalid('fechaCompra')}">
-                <label for="fechaCompra">Fecha Compra</label>
+                <label for="fechaCompra">Fecha Compra<span style="color: red;">*</span></label>
                 <input type="date" pInputText id="fechaCompra" formControlName="fechaCompra" required autofocus />
                 <small class="p-error" *ngIf="isFieldInvalid('fechaCompra')">
                     {{ getErrorMessage( 'fechaCompra') }}
@@ -42,7 +42,7 @@
 
         <div class="field-group mb-5">
             <div class="field" [ngClass]="{'error': isFieldInvalid( 'numeroFactura')}">
-                <label for="numeroFactura">Número Factura</label>
+                <label for="numeroFactura">Número Factura<span style="color: red;">*</span></label>
                 <input type="text" pInputText id="numeroFactura" formControlName="numeroFactura" required autofocus />
                 <small class="p-error" *ngIf="isFieldInvalid( 'numeroFactura')">
                     {{ getErrorMessage( 'numeroFactura') }}
@@ -66,7 +66,7 @@
     <div formArrayName="shoppingDetail" class="details-container">
         <div *ngFor="let detail of shoppingDetailArray.controls; let i = index" [formGroupName]="i" class="details-row">
             <div class="field" [ngClass]="{'error': isFieldInvalid('idProducto')}">
-                <label for="producto">Producto</label>
+                <label for="producto">Producto<span style="color: red;">*</span></label>
                 <div class="p-inputgroup">
                     <p-autoComplete formControlName="idProducto" [suggestions]="filteredProducts"
                         (completeMethod)="searchProduct($event)" field="nombreProducto"
@@ -78,22 +78,22 @@
                 </small>
             </div>
             <div class="field" [ngClass]="{'error': isFieldInvalid( 'codigoBarra')}">
-                <label for="codigoBarra">Código de Barra:</label>
-                <input type="text" formControlName="codigoBarra" pInputText>
+                <label for="codigoBarra">Código de Barra<span style="color: red;">*</span></label>
+                <input type="number" formControlName="codigoBarra" (input)="validateNumberCodeBarInput($event, 'codigoBarra')" pInputText>
                 <small class="p-error" *ngIf="isFieldInvalid( 'codigoBarra')">
                     {{ getErrorMessage( 'codigoBarra') }}
                 </small>
             </div>
             <div class="field" [ngClass]="{'error': isFieldInvalid( 'cantidadProducto')}">
-                <label for="cantidadProducto">Cantidad:</label>
-                <input type="number" formControlName="cantidadProducto" (input)="calculateSubtotal(i)" pInputText>
+                <label for="cantidadProducto">Cantidad<span style="color: red;">*</span></label>
+                <input type="number" formControlName="cantidadProducto" (input)="calculateSubtotal(i)" (input)="validateNumberInput($event, 'cantidadProducto')"  pInputText>
                 <small class="p-error" *ngIf="isFieldInvalid( 'cantidadProducto')">
                     {{ getErrorMessage( 'cantidadProducto') }}
                 </small>
             </div>
             <div class="field" [ngClass]="{'error': isFieldInvalid( 'precioCompraUnidad')}">
-                <label for="precioCompraUnidad">Precio x Unidad:</label>
-                <input type="number" formControlName="precioCompraUnidad" (input)="calculateSubtotal(i)" pInputText>
+                <label for="precioCompraUnidad">Precio x Unidad<span style="color: red;">*</span></label>
+                <input type="number" formControlName="precioCompraUnidad" (input)="calculateSubtotal(i)" (input)="validateNumberInput($event, 'precioCompraUnidad')" pInputText>
                 <small class="p-error" *ngIf="isFieldInvalid( 'precioCompraUnidad')">
                     {{ getErrorMessage( 'precioCompraUnidad') }}
                 </small>
@@ -106,7 +106,7 @@
                 <button type="button" (click)="addShoppingDetail()"class="p-button p-button-secondary mr-3" pTooltip="Agregar producto">
                     <i class="pi pi-plus"></i>
                 </button>
-                <button type="button" (click)="removeShoppingDetail(i)" class="p-button p-button-danger mt-5 "pTooltip="Eliminar producto">
+                <button type="button" *ngIf="shoppingDetailArray.length > 1" (click)="removeShoppingDetail(i)" class="p-button p-button-danger mt-5 "pTooltip="Eliminar producto">
                     <i class="pi pi-trash"></i>
                 </button>
             </div>

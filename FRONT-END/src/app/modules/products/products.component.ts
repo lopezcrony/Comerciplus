@@ -12,6 +12,15 @@ import { ValidationService } from '../../shared/validators/validations.service';
 import { Product } from "../products/products.model";
 import { ProductsService } from "../products/products.service";
 import { CategoriesService } from '../categories/categories.service';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
+import { FileUploadModule } from 'primeng/fileupload';
+import { MessageModule } from 'primeng/message';
+import { ChipModule } from 'primeng/chip';
+import { InplaceModule } from 'primeng/inplace';
+import { TagModule } from 'primeng/tag';
 import { Categorie } from '../categories/categories.model';
 
 @Component({
@@ -21,6 +30,15 @@ import { Categorie } from '../categories/categories.model';
     ...SHARED_IMPORTS,
     CRUDComponent,
     CrudModalDirective,
+    DialogModule,
+    InputTextModule,
+    DropdownModule,
+    ButtonModule,
+    FileUploadModule,
+    MessageModule,
+    ChipModule,
+    InplaceModule,
+    TagModule
   ],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss']
