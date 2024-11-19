@@ -58,20 +58,19 @@ class _LoginScreenState extends State<Login>
 
   // Método para autenticar al usuario. Recibe el correo y la contraseña y lo manda al service de auth
   Future<void> userAuthentication(String email, String password) async {
-    setState(() => _isLoading = true);
-    try {
-      await _authService.userAuthentication(email, password);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Home()),
-      );
-    } catch (error) {
-      _showError('Error al iniciar sesión. Por favor, intenta nuevamente.');
-    } finally {
-      setState(() => _isLoading = false);
-    }
+  setState(() => _isLoading = true);
+  try {
+    final user = await _authService.userAuthentication(email, password);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const Home()),
+    );
+  } catch (error) {
+    _showError('Error al iniciar sesión. Por favor, intenta nuevamente.');
+  } finally {
+    setState(() => _isLoading = false);
   }
-
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(

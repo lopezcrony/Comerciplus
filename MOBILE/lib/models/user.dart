@@ -5,30 +5,47 @@ class User {
   final String apellidoUsuario;
   final String telefonoUsuario;
   final String correoUsuario;
-  final String claveUsuario;
-  final bool estadoUsuario;
+  final String? claveUsuario;
+  final bool? estadoUsuario;
+  final int? idRol;
 
   User({
     required this.idUsuario,
-    required this.cedulaUsuario,
+    this.cedulaUsuario = '',
     required this.nombreUsuario,
     required this.apellidoUsuario,
-    required this.telefonoUsuario,
+    this.telefonoUsuario = '',
     required this.correoUsuario,
-    required this.claveUsuario,
-    required this.estadoUsuario,
+    this.claveUsuario,
+    this.estadoUsuario,
+    this.idRol,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      idUsuario: json['idUsuario'],
-      cedulaUsuario: json['cedulaUsuario'],
-      nombreUsuario: json['nombreUsuario'],
-      apellidoUsuario: json['apellidoUsuario'],
-      telefonoUsuario: json['telefonoUsuario'],
-      correoUsuario: json['correoUsuario'],
-      claveUsuario: json['claveUsuario'],
-      estadoUsuario: json['estadoUsuario'],
+      idUsuario: json['idUsuario'] as int,
+      cedulaUsuario: json['cedulaUsuario']?.toString() ?? '',
+      nombreUsuario: json['nombreUsuario']?.toString() ?? '',
+      apellidoUsuario: json['apellidoUsuario']?.toString() ?? '',
+      telefonoUsuario: json['telefonoUsuario']?.toString() ?? '',
+      correoUsuario: json['correoUsuario'] as String,
+      claveUsuario: json['claveUsuario']?.toString(),
+      estadoUsuario: json['estadoUsuario'] as bool?,
+      idRol: json['idRol'] as int?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'idUsuario': idUsuario,
+      'cedulaUsuario': cedulaUsuario,
+      'nombreUsuario': nombreUsuario,
+      'apellidoUsuario': apellidoUsuario,
+      'telefonoUsuario': telefonoUsuario,
+      'correoUsuario': correoUsuario,
+      if (claveUsuario != null) 'claveUsuario': claveUsuario,
+      if (estadoUsuario != null) 'estadoUsuario': estadoUsuario,
+      if (idRol != null) 'idRol': idRol,
+    };
   }
 }
