@@ -42,7 +42,7 @@ export class SalesComponent implements OnInit {
   total: number = 0;
   montoRecibido: number = 0;
   cambio: number = 0;
-  
+
   selectedClient: any = null;
   imprimirRecibo: boolean = false;
   showCreditModal: boolean = false;
@@ -314,22 +314,20 @@ export class SalesComponent implements OnInit {
       return;
     }
 
-    if (this.isPagoValido()) {
-      const saleData = { fechaVenta: new Date() };
-      const saleDetail = this.detailSale;
+    const saleData = { fechaVenta: new Date() };
+    const saleDetail = this.detailSale;
 
-      this.saleService.createSale(saleData, saleDetail).subscribe({
-        next: (response) => {
-          this.idSale = response.newSale.idVenta;
-          this.loadProducts();
-          callback(true);
-        },
-        error: (error) => {
-          this.toastr.error('No se pudo registrar la venta', 'Error');
-          callback(false);
-        }
-      });
-    }
+    this.saleService.createSale(saleData, saleDetail).subscribe({
+      next: (response) => {
+        this.idSale = response.newSale.idVenta;
+        this.loadProducts();
+        callback(true);
+      },
+      error: (error) => {
+        this.toastr.error('No se pudo registrar la venta', 'Error');
+        callback(false);
+      }
+    });
 
   }
 
@@ -404,6 +402,7 @@ export class SalesComponent implements OnInit {
       error: (error) => {
         this.toastr.error(`No se pudo asignar el crédito: ${error.message}`, 'Error');
         // Aquí se debería eliminar la venta creada
+        console.log(creditDetail)
       }
     });
   }

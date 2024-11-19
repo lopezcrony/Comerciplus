@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:comerciplus/models/purchaseDetails.dart';
 import 'package:comerciplus/services/purchaseDetails.dart';
 
+import '../widgets/appBar_Screens.dart';
+
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({super.key});
 
@@ -54,14 +56,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.secondary,
-      appBar: AppBar(
-        title: Center(
-          child: Text('Mis Compras',
-              style: GoogleFonts.poppins(
-                  color: AppColors.text, fontWeight: FontWeight.w600)),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
+      appBar: const AppBarScreens(
+        nameModule: 'Compras',
       ),
       body: CustomScrollView(
         slivers: [

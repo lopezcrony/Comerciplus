@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../screens/user.profile.dart'; // Import the user profile screen
+import '../screens/config.dart'; 
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -109,7 +109,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const UserProfileScreen(),
+                    builder: (context) => const SettingsScreen(),
+                    // builder: (context) => const UserProfileScreen(),
                   ),
                 );
               },

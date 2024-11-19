@@ -32,8 +32,8 @@ const getCreditHistoryByClient = async (idClient) => {
     if (!credit) {
         throw new Error('Crédito no encontrado para ese cliente');
     }
-    const creditDetail = await creditDeatilRepository.getAllDetailCredit(credit.idCredito);
-    const installments = await installmentRepository.getInstallmentsByCredit(credit.idCredito);
+    const creditDetail = await creditDeatilRepository.getAllDetailCredit(credit[0].idCredito);
+    const installments = await installmentRepository.getInstallmentsByCredit(credit[0].idCredito);
 
     // Se combinan las tablas de abonos y detalle de crédito y se ordenan por fecha
     const historyItems = [

@@ -238,6 +238,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     key: _formKey,
                     child: ListView(
                       children: [
+                        
                         Center(
                           child: CircleAvatar(
                             radius: 60,
@@ -252,6 +253,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 20),
                         _buildReadOnlyField('Cédula', _user!.cedulaUsuario),
                         const SizedBox(height: 10),
@@ -335,26 +337,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                          ),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: _handleLogout,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red.shade400,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Text(
-                            'Cerrar Sesión',
-                            style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
+                          ),                       
                       ],
                     ),
                   ),

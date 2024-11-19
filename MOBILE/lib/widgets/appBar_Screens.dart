@@ -6,7 +6,6 @@ class AppBarScreens extends StatelessWidget implements PreferredSizeWidget {
 
   const AppBarScreens({super.key, required this.nameModule});
 
-
   @override
   Widget build(BuildContext context) {
     return AppBar(

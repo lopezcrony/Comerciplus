@@ -26,7 +26,7 @@ class MainApp extends
           Theme.of(context).textTheme,
         ),
       ),
-      home: const Login()
+      home: const Home()
     );
   }
 }
