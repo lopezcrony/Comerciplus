@@ -70,29 +70,29 @@
                         placeholder="Buscar" [forceSelection]="true" styleClass="w-full">
                     </p-autoComplete>
                 </div>
-                <small class="p-error" *ngIf="isFieldInvalid( 'idProducto')">
-                    {{ getErrorMessage( 'idProducto') }}
+                <small class="p-error" *ngIf="isFieldInvalid('idProducto')">
+                    {{ getErrorMessage('idProducto') }}
                 </small>
             </div>
-            <div class="field" [ngClass]="{'error': isFieldInvalid( 'codigoBarra')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid('codigoBarra')}">
                 <label for="codigoBarra">Código de Barra<span style="color: red;">*</span></label>
-                <input type="number" formControlName="codigoBarra" (input)="validateNumberCodeBarInput($event, 'codigoBarra')" pInputText>
-                <small class="p-error" *ngIf="isFieldInvalid( 'codigoBarra')">
-                    {{ getErrorMessage( 'codigoBarra') }}
+                <input type="text" formControlName="codigoBarra" (input)="validateNumberCodeBarInput($event, 'codigoBarra')" pInputText>
+                <small class="p-error" *ngIf="isFieldInvalid('codigoBarra')">
+                    {{ getErrorMessage('codigoBarra') }}
                 </small>
             </div>
-            <div class="field" [ngClass]="{'error': isFieldInvalid( 'cantidadProducto')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid('cantidadProducto')}">
                 <label for="cantidadProducto">Cantidad<span style="color: red;">*</span></label>
-                <input type="number" formControlName="cantidadProducto" (input)="calculateSubtotal(i)" (input)="validateNumberInput($event, 'cantidadProducto')"  pInputText>
-                <small class="p-error" *ngIf="isFieldInvalid( 'cantidadProducto')">
-                    {{ getErrorMessage( 'cantidadProducto') }}
+                <input type="number" formControlName="cantidadProducto" (input)="validateNumberInput($event, 'cantidadProducto'); calculateSubtotal(i)" pInputText>
+                <small class="p-error" *ngIf="isFieldInvalid('cantidadProducto')">
+                    {{ getErrorMessage('cantidadProducto') }}
                 </small>
             </div>
-            <div class="field" [ngClass]="{'error': isFieldInvalid( 'precioCompraUnidad')}">
+            <div class="field" [ngClass]="{'error': isFieldInvalid('precioCompraUnidad')}">
                 <label for="precioCompraUnidad">Precio x Unidad<span style="color: red;">*</span></label>
-                <input type="number" formControlName="precioCompraUnidad" (input)="calculateSubtotal(i)" (input)="validateNumberInput($event, 'precioCompraUnidad')" pInputText>
-                <small class="p-error" *ngIf="isFieldInvalid( 'precioCompraUnidad')">
-                    {{ getErrorMessage( 'precioCompraUnidad') }}
+                <input type="number" formControlName="precioCompraUnidad" (input)="validateNumberInput($event, 'precioCompraUnidad'); calculateSubtotal(i)" pInputText>
+                <small class="p-error" *ngIf="isFieldInvalid('precioCompraUnidad')">
+                    {{ getErrorMessage('precioCompraUnidad') }}
                 </small>
             </div>
             <div class="field">
@@ -100,15 +100,18 @@
                 <input type="text" formControlName="subtotal" pInputText readonly>
             </div>
             <div class="field">
-                <button type="button" (click)="addShoppingDetail()"class="p-button p-button-secondary mr-3" pTooltip="Agregar producto">
+                <button type="button" (click)="addShoppingDetail()" class="p-button p-button-secondary mr-3" pTooltip="Agregar producto">
                     <i class="pi pi-plus"></i>
                 </button>
-                <button type="button" *ngIf="shoppingDetailArray.length > 1" (click)="removeShoppingDetail(i)" class="p-button p-button-danger mt-5 "pTooltip="Eliminar producto">
+                <button type="button" (click)="removeShoppingDetail(i)" class="p-button p-button-danger mt-5" pTooltip="Eliminar producto">
                     <i class="pi pi-trash"></i>
                 </button>
             </div>
         </div>
     </div>
+    
+
+
 
     
     <button type="submit" class="p-button p-button-success mt-3">Guardar Compra</button>
