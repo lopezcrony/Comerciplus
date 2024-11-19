@@ -24,9 +24,6 @@
           <i class="pi pi-key input-icon"></i>
           <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="claveUsuario"
             placeholder="Contraseña">
-          <button type="button" class="password-toggle" (click)="toggleShowPassword()">
-            <i class="fas" [class.fa-eye]="showPassword" [class.fa-eye-slash]="!showPassword"></i>
-          </button>
         </div>
         <div class="error-message" *ngIf="isFieldInvalid('claveUsuario')">
           {{ getErrorMessage('claveUsuario') }}
