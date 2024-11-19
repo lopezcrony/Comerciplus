@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { AuthService } from '../../Auth/auth.service';
+import { RolesService } from '../../modules/roles/roles.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
@@ -39,10 +42,37 @@ export class SidebarComponent implements OnInit {
   @Output() sidebarClosed = new EventEmitter<void>();
 
   private activeSubmenu: string | null = null;
+  userRole$ = new BehaviorSubject<string>('');
+
+  constructor(
+    private authService: AuthService,
+    private rolesService: RolesService
+  ) {
+    this.loadUserRole();
+  }
 
   ngOnInit() {
     // Recupera el estado del submenú del almacenamiento local al inicializar
     this.activeSubmenu = localStorage.getItem('activeSubmenu');
+  }
+
+  private loadUserRole() {
+    const roleId = this.authService.getUserRoleId();
+    if (roleId) {
+      this.rolesService.getOneRole(roleId).subscribe(
+        role => {
+          this.userRole$.next(role.nombreRol);
+        },
+        error => {
+          console.error('Error al cargar el rol:', error);
+          this.userRole$.next('');
+        }
+      );
+    }
+  }
+
+  hasRole(roles: string[]): boolean {
+    return roles.includes(this.userRole$.value);
   }
 
   isSubmenuOpen(submenu: string): boolean {

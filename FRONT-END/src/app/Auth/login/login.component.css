@@ -1,151 +1,210 @@
-/* Estilos globales que deberían ir en styles.css */
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Fondo */
-.min-h-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-15px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+:host {
+  display: block;
   min-height: 100vh;
-  height: 100vh;
   width: 100vw;
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom right, #E3F9E5, #A8EDDF);
+  background: linear-gradient(135deg, #E3F2FD 0%, #FFFFFF 50%, #E3F2FD 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
 }
 
-/* Tarjeta de login */
-.tarjeta {
+:host ::ng-deep * {
   margin: 0;
-  width: 100%;
-  max-width: 500px;
-  padding: 14.2px;
-}
-
-.bg-white {
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 15px;
-  padding: 50px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  padding: 0;
   box-sizing: border-box;
 }
 
-/* Encabezado */
-.text-center h2 {
-  font-size: 2rem;
-  color: #1a202c;
-  margin-bottom: 10px;
-}
-
-.text-gray-600 {
-  color: #718096;
-}
-
-/* Inputs */
-input {
-  padding: 12px;
+.login-container {
+  min-height: 97vh;
   width: 100%;
-  border: none;
-  font-size: 1rem;
-  color: #4a5568;
-  background-color: white;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-/* Bordes visibles */
-.flex {
   display: flex;
   align-items: center;
-  border: 1px solid #cbd5e0;
-  border-radius: 8px;
-  padding: 5px;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 1.5s ease-in-out;
 }
 
-input:focus {
+.login-card {
+  flex: 1;
+  max-width: 440px;
+  padding: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.7s ease-in-out;
+}
+
+.logo-container {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 24px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+  animation: scaleIn 1.2s ease-out;
+}
+
+.animated-logo {
+  animation: bounce 2s infinite;
+}
+
+.logo-icon {
+  font-size: 50px;
+  color: #2196F3;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 30px;
+  background: linear-gradient(45deg, #42A5F5, #1976D2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.input-group {
+  margin-bottom: 16px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 16px 12px 48px;
+  border: 1px solid #E0E0E0;
+  border-radius: 12px;
+  background: #FFFFFF;
+  transition: all 0.3s;
+  font-size: 16px;
+}
+
+.form-control:focus {
+  border-color: #2196F3;
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+  background: white;
   outline: none;
 }
 
-/* Iconos dentro de los inputs */
-i {
-  font-size: 1.25rem;
-  color: #6b7280;
+.input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #989fa5;
 }
 
-/* Icono del ojo */
-i[style="cursor: pointer"] {
+.input-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #757575;
+  cursor: pointer;
   background: none;
   border: none;
   padding: 0;
 }
 
-i:hover {
-  color: #3182ce;
-}
-
-/* Ocultar el icono del ojo nativo en el input de contraseña */
-input::-ms-reveal,
-input::-ms-clear,
-input[type="password"]::-webkit-clear-button,
-input[type="password"]::-webkit-reveal-button {
-  display: none;
-}
-
-/* Botón de inicio de sesión */
-button {
-  background-color: #48bb78;
-  color: white;
-  font-weight: bold;
-  padding: 12px;
+.submit-button {
   width: 100%;
-  border: none;
-  border-radius: 8px;
-  transition: background-color 0.2s, transform 0.2s;
-}
-
-button:hover {
-  background-color: #38a169;
-  transform: scale(1.05);
-}
-
-/* Link de Olvidar Contraseña */
-.text-right a {
-  color: #4299e1;
-  font-size: 0.875rem;
-}
-
-.text-right a:hover {
-  text-decoration: underline;
-}
-
-/* Icono de la cesta completamente blanco */
-.icono-cesta {
+  padding: 12px;
+  background: #2196F3;
   color: white;
-  font-size: 2rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
 }
 
-/* Estilos adicionales para el formulario */
-.space-y-6 {
-  margin-bottom: 1.5rem;
+.submit-button:hover {
+  background: linear-gradient(45deg, #1976D2, #42A5F5);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(33, 150, 243, 0.4);
 }
 
-/* Estilos para mensajes de error */
-.p-error {
-  color: #e53e3e;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-  display: block;
+.submit-button:disabled {
+  background: #BDBDBD;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Estilos para campos inválidos */
-.error {
-  border-color: #e53e3e;
+.forgot-password {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.forgot-password a {
+  color: #2196F3;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.forgot-password a:hover {
+  color: #1976D2;
+}
+
+.error-message {
+  color: #EF5350;
+  font-size: 14px;
+  margin-top: 4px;
 }

@@ -20,7 +20,7 @@ const getOneCredit = async (id) => {
 
 const getCreditsByClient = async (idClient) => {
     try {
-        return await creditRepository.findCreditByClient({where: {idCliente: idClient}});
+        return await creditRepository.findCreditByClient(idClient);
     } catch (error) {
         throw error;
     }

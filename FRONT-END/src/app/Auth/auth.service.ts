@@ -40,6 +40,15 @@ export class AuthService {
     return user ? JSON.parse(user).id : null;
   }
 
+  getUserRoleId(): number | null {
+    const userData = localStorage.getItem(this.userKey);
+    if (userData) {
+      const user = JSON.parse(userData);
+      return user.idRol;
+    }
+    return null;
+  }
+
   isAuthenticated(): boolean {
     const token = this.getToken();
     if (!token) {

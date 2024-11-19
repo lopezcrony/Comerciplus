@@ -15,7 +15,7 @@
         <form [formGroup]="productForm">
 
             <div class="field" [ngClass]="{'error': isFieldInvalid('nombreProducto')}">
-                <label for="nombreProducto">Nombre Producto</label>
+                <label for="nombreProducto">Nombre Producto<span style="color: red;">*</span></label>
                 <input type="text" pInputText id="nombreProducto" formControlName="nombreProducto" required autofocus />
                 <small class="p-error" *ngIf="isFieldInvalid('nombreProducto')">
                     {{ getErrorMessage('nombreProducto') }}
@@ -25,7 +25,7 @@
 
             <div class="field-group">
                 <div class="field" [ngClass]="{'error': isFieldInvalid('idCategoria')}">
-                    <label for="categoria">Categoría</label>
+                    <label for="categoria">Categoría<span style="color: red;">*</span></label>
                     <div class="p-inputgroup">
                         <p-dropdown [options]="filteredCategories" formControlName="idCategoria" optionLabel="nombreCategoria"
                             optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="false"
@@ -50,7 +50,7 @@
                         <!-- pa mostrar los campos al frenta -->
                         <div class="field-group">
                             <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
-                                <label for="nombreCategoria">Nombre categoria</label>
+                                <label for="nombreCategoria">Nombre categoria<span style="color: red;">*</span></label>
                                 <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria"
                                     required autofocus />
                                 <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
@@ -81,13 +81,15 @@
 
             <div class="field-group">
                 <div class="field" [ngClass]="{'error': isFieldInvalid('precioVenta')}">
-                    <label for="precioVenta">Precio venta</label>
+                    <label for="precioVenta">Precio venta<span style="color: red;">*</span></label>
                     <input type="number" pInputText id="precioVenta" formControlName="precioVenta" required autofocus />
                     <small class="p-error" *ngIf="isFieldInvalid('precioVenta')">
                         {{ getErrorMessage('precioVenta') }}
                     </small>
                 </div>
-
+                <p-chip *ngIf="" 
+        label="Compra: 10000"
+        styleClass="mr-2"></p-chip>
                 <!-- <div class="field">
                     <label for="stock">Stock</label>
                     <input type="number" pInputText id="stock" formControlName="stock"/>
@@ -171,8 +173,4 @@
 
     </ng-template>
 </p-dialog>
-
-
-
-
 <!-- modal para ver detalle producto fin -->

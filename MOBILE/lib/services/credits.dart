@@ -7,16 +7,14 @@ import '../models/credits.dart';
 class CreditService{
   final String _creditsUrl = '${dotenv.env['API_URL']!}/creditos';
 
-  Future<Credit> getCreditsByClient(int idClient) async {
+  Future<List<Credit>> getCreditsByClient(int idClient) async {
   final response = await http.get(Uri.parse('$_creditsUrl/cliente/$idClient'));
   if (response.statusCode == 200) {
     var jsonResponse = jsonDecode(response.body);
-    if (jsonResponse == null) {
-      // Manejar el caso donde no hay datos
-      return Credit(idCredito: 0, idCliente: idClient, totalCredito: 0.0);
-    } else {
-      return Credit.fromJson(jsonResponse);
-    }
+    List<Credit> credits = (jsonResponse as List)
+        .map((item) => Credit.fromJson(item))
+        .toList();
+    return credits;
   } else {
     throw Exception('Error al obtener el crédito');
   }
