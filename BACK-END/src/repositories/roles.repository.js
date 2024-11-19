@@ -1,5 +1,5 @@
-const Roles = require('./src/models/roles.model');
-const Permissions = require('./src/models/permissions.model');
+const Roles = require('../models/roles.model');
+const Permissions = require('../models/permissions.model');
 
 const findAllRoles = async () => {
   return await Roles.findAll({
