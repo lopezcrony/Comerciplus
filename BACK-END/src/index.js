@@ -46,7 +46,7 @@ class Server {
 
     middlewares() {
         //CORS
-        this.app.use(cors({ origin: '*' }));
+        this.app.use(cors({origin: '*'}));
         //Parseo a json
         this.app.use(express.json());
         //file uploads-carga de archivos

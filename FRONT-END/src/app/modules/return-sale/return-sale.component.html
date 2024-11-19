@@ -26,7 +26,7 @@
       <!-- Código de Barras -->
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('CodigoProducto')}">
-          <label for="CodigoProducto">Código de Barras</label>
+          <label for="CodigoProducto">Código de Barras<span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="CodigoProducto" formControlName="CodigoProducto" required />
           <small class="p-error" *ngIf="isFieldInvalid('CodigoProducto')">
             {{ getErrorMessage('CodigoProducto') }}
@@ -35,7 +35,7 @@
 
         <!-- Cantidad -->
         <div class="field" [ngClass]="{'error': isFieldInvalid('cantidad')}">
-          <label for="cantidad">Cantidad</label>
+          <label for="cantidad">Cantidad<span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="cantidad" formControlName="cantidad" required />
           <small class="p-error" *ngIf="isFieldInvalid('cantidad')">
             {{ getErrorMessage('cantidad') }}
@@ -46,7 +46,7 @@
       <!-- Proveedor -->
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('idProveedor')}">
-          <label for="proveedor">Proveedores</label>
+          <label for="proveedor">Proveedores<span style="color: #E24C4C;">*</span></label>
           <div class="p-inputgroup">
             <p-dropdown [options]="providers" formControlName="idProveedor" optionLabel="nombreProveedor"
               optionValue="idProveedor" placeholder="Seleccionar proveedor" [virtualScroll]="true"
@@ -62,7 +62,7 @@
       <!-- Tipo de Reembolso -->
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('tipoReembolso')}">
-          <label for="tipoReembolso">Tipo de Reembolso</label>
+          <label for="tipoReembolso">Tipo de Reembolso<span style="color: #E24C4C;">*</span></label>
           <div class="p-inputgroup">
             <p-dropdown [options]="options" formControlName="tipoReembolso" optionLabel="label" optionValue="value"
               placeholder="Seleccionar tipo" [virtualScroll]="true" [virtualScrollItemSize]="38" styleClass="w-full"
@@ -78,7 +78,7 @@
       <!-- Motivo -->
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('motivoDevolucion')}">
-          <label for="motivoDevolucion">Motivo</label>
+          <label for="motivoDevolucion">Motivo<span style="color: #E24C4C;">*</span></label>
           <div class="p-inputgroup">
             <p-dropdown [options]="motivos" formControlName="motivoDevolucion" optionLabel="label" optionValue="value"
               placeholder="Seleccionar motivo" [virtualScroll]="true" [virtualScrollItemSize]="38" styleClass="w-full"
