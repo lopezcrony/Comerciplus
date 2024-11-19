@@ -5,92 +5,85 @@ import '../widgets/appBar_Screens.dart';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
-  @override
+    @override
   State<SettingsScreen> createState() => _SettingsScreenState();
+
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
-
       appBar: const AppBarScreens(
         nameModule: 'Configuración',
       ),
       body: Container(
-        
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF2196F3),
+              Colors.white,
+            ],
+            stops: [0.0, 0.3],
+          ),
+        ),
         child: Column(
           children: [
-            const SizedBox(height: 32),
-            // Avatar Section with new design
+            const SizedBox(height: 20),
+            // Avatar Section
             Center(
               child: Container(
-                width: 130,
-                height: 130,
+                width: 120,
+                height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Color(0xFF64FFDA), // Accent color
-                      Color(0xFF00B4D8),
-                    ],
-                  ),
+                  color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF64FFDA).withOpacity(0.3),
-                      blurRadius: 20,
-                      spreadRadius: 2,
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(3), // Border width
-                child: Container(
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFF0A192F), // Dark background
-                  ),
-                  child: const Icon(
+                child: const CircleAvatar(
+                  radius: 60,
+                  backgroundColor: Color(0xFFE3F2FD),
+                  child: Icon(
                     Icons.person,
-                    size: 65,
-                    color: Color(0xFF64FFDA), // Accent color
+                    size: 60,
+                    color: Color(0xFF1976D2),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 24),
-            // User Name with new style
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: const Color(0xFF64FFDA).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Text(
-                'Usuario',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF64FFDA),
-                  letterSpacing: 0.5,
-                ),
+            const SizedBox(height: 20),
+            // User Name
+            const Text(
+              'Usuario',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
-            const SizedBox(height: 48),
-            // Options List with new design
+            const SizedBox(height: 40),
+            // Options List
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
                     _buildOptionTile(
                       context,
-                      icon: Icons.edit_rounded,
+                      icon: Icons.edit,
                       title: 'Editar Perfil',
                       onTap: () {
-                        Navigator.push(
+                        // Implementar navegación a editar perfil
+                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const UserProfileScreen(),
@@ -98,10 +91,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 15),
                     _buildOptionTile(
                       context,
-                      icon: Icons.logout_rounded,
+                      icon: Icons.logout,
                       title: 'Cerrar Sesión',
                       isDestructive: true,
                       onTap: () {
@@ -127,57 +120,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF112240),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDestructive 
-              ? const Color(0xFFFF6B6B).withOpacity(0.3) 
-              : const Color(0xFF64FFDA).withOpacity(0.3),
-          width: 1,
-        ),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
-            color: isDestructive 
-                ? const Color(0xFFFF6B6B).withOpacity(0.1)
-                : const Color(0xFF64FFDA).withOpacity(0.1),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: isDestructive 
-                ? const Color(0xFFFF6B6B).withOpacity(0.1)
-                : const Color(0xFF64FFDA).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(
-            icon,
-            color: isDestructive ? const Color(0xFFFF6B6B) : const Color(0xFF64FFDA),
-            size: 24,
-          ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        leading: Icon(
+          icon,
+          color: isDestructive ? Colors.red : const Color(0xFF2196F3),
+          size: 28,
         ),
         title: Text(
           title,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: isDestructive ? const Color(0xFFFF6B6B) : Colors.white,
-            letterSpacing: 0.3,
+            color: isDestructive ? Colors.red : Colors.black87,
           ),
         ),
         trailing: Icon(
-          Icons.chevron_right_rounded,
-          color: isDestructive ? const Color(0xFFFF6B6B) : const Color(0xFF64FFDA),
-          size: 24,
+          Icons.chevron_right,
+          color: isDestructive ? Colors.red : Colors.grey,
         ),
         onTap: onTap,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(15),
         ),
       ),
     );
@@ -188,50 +162,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: const Color(0xFF112240),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(
-              color: const Color(0xFFFF6B6B).withOpacity(0.3),
-              width: 1,
-            ),
-          ),
-          title: const Text(
-            'Cerrar Sesión',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          content: const Text(
-            '¿Estás seguro que deseas cerrar sesión?',
-            style: TextStyle(
-              color: Colors.white70,
-              fontSize: 16,
-            ),
-          ),
+          title: const Text('Cerrar Sesión'),
+          content: const Text('¿Estás seguro que deseas cerrar sesión?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                'Cancelar',
-                style: TextStyle(
-                  color: Color(0xFF64FFDA),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              child: const Text('Cancelar'),
             ),
             TextButton(
               onPressed: () {
+                // Implementar lógica de cierre de sesión
                 Navigator.of(context).pop();
               },
               child: const Text(
                 'Cerrar Sesión',
-                style: TextStyle(
-                  color: Color(0xFFFF6B6B),
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(color: Colors.red),
               ),
             ),
           ],
