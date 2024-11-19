@@ -5,14 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node main.js",
-    "dev": "nodemon main.js",
-    "build": "npm install bcrypt && npm install"
+    "start": "node main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "chart.js": "^3.9.1",
     "chartjs-node-canvas": "^4.1.6",
     "cors": "^2.8.5",
