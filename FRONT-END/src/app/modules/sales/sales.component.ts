@@ -96,6 +96,7 @@ export class SalesComponent implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
+    this.loadSaleFromLocalStorage();
 
     // Agregar la suscripción al scanner
     this.barcodeSubscription = this.scannerSocketService.getLatestBarcode()
@@ -107,7 +108,7 @@ export class SalesComponent implements OnInit {
           // Limpiar el input después de 1 segundo
           setTimeout(() => {
             this.busquedaForm.patchValue({ busqueda: '' });
-          }, 1000);
+          }, 5000);
 
           // Usar el método existente searchByBarcode
           this.searchByBarcode(barcodeData.barcode);
@@ -215,6 +216,30 @@ export class SalesComponent implements OnInit {
   }
 
   // --------------------------------------AGREGAR PRODUCTO A VENTA-------------------------------------------
+
+  loadSaleFromLocalStorage() {
+    const savedDetailSale = localStorage.getItem('detailSale');
+    const savedTotal = localStorage.getItem('total');
+  
+    if (savedDetailSale) {
+      this.detailSale = JSON.parse(savedDetailSale);
+    }
+  
+    if (savedTotal) {
+      this.total = parseFloat(savedTotal);
+      this.creditForm.get('totalVenta')?.setValue(this.total);
+    }
+  
+    console.log('Venta restaurada desde localStorage', 'Info');
+  }
+
+  saveSaleToLocalStorage() {
+    console.log('Guardando en localStorage:', this.detailSale, this.total); // Verifica datos
+    localStorage.setItem('detailSale', JSON.stringify(this.detailSale));
+    localStorage.setItem('total', this.total.toString());
+  }
+
+
   getProductName(idProducto: number): string {
     const product = this.products.find(p => p.idProducto === idProducto);
     return product!.nombreProducto;
@@ -252,6 +277,7 @@ export class SalesComponent implements OnInit {
         this.detailSale.push(newDetail);
       }
       this.updateTotal();
+      this.saveSaleToLocalStorage();
     }
     this.busquedaForm.get('busqueda')?.setValue('');
   }
@@ -265,6 +291,7 @@ export class SalesComponent implements OnInit {
       } else {
         item.subtotal = item.cantidadProducto * product.precioVenta;
         this.updateTotal();
+        this.saveSaleToLocalStorage();
       }
     }
   }
@@ -276,6 +303,7 @@ export class SalesComponent implements OnInit {
       this.toastr.warning('La cantidad no puede ser inferior a 1', 'Producto eliminado');
     } else {
       this.updateSubtotal(item);
+      this.saveSaleToLocalStorage();
     }
   }
 
@@ -287,6 +315,7 @@ export class SalesComponent implements OnInit {
   removeProductFromSale(item: DetailSale) {
     this.detailSale = this.detailSale.filter(i => i !== item);
     this.updateTotal();
+    this.saveSaleToLocalStorage();
   }
 
   updateTotal(): void {
@@ -295,6 +324,10 @@ export class SalesComponent implements OnInit {
   }
 
   // --------------------------------------FINALIZAR VENTA-------------------------------------------
+  
+  
+
+
   calcularCambio() {
     if (this.montoRecibido && this.total) {
       this.cambio = this.montoRecibido - this.total;
@@ -331,6 +364,11 @@ export class SalesComponent implements OnInit {
 
   }
 
+  clearLocalStorage() {
+    localStorage.removeItem('detailSale');
+    localStorage.removeItem('total');
+  }  
+
   finalizeSale() {
     this.createSale((completed) => {
       if (!completed) return;
@@ -338,12 +376,14 @@ export class SalesComponent implements OnInit {
       this.toastr.success('Venta registrada', 'Éxito');
 
       if (this.imprimirRecibo) this.downloadPDF(); // Llama a la función de descarga del PDF si el switch está activado
-
+      
+      this.clearLocalStorage();
       this.resetForm();
     });
   }
 
   cancelSale() {
+    this.clearLocalStorage();
     this.resetForm();
     this.toastr.success('Venta Cancelada', 'Info');
   };
