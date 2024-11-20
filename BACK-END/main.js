@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { connectToDatabase, sequelize } = require('./src/config/db');
-const Server = require('./src/index');
+const Server = require('./index');
 const seedPermissions = require('./src/seeders/permissions.seed');
 const seedRoleAndUser = require('./src/seeders/defaultRoleAndUser');
 
