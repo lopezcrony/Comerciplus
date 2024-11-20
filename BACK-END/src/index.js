@@ -63,36 +63,36 @@ class Server {
     };
 
     routers() {
-        this.app.use('/dashboard', require('./src/routers/dashboard.routes.js'));
+        this.app.use('/dashboard', require('./routers/dashboard.routes.js'));
 
-        this.app.use('/roles', require('./src/routers/roles.routes.js'));
-        this.app.use('/permisos', require('./src/routers/permissions.routes.js'));
-        this.app.use('/usuarios', require('./src/routers/users.routes.js'));
+        this.app.use('/roles', require('./routers/roles.routes.js'));
+        this.app.use('/permisos', require('./routers/permissions.routes.js'));
+        this.app.use('/usuarios', require('./routers/users.routes.js'));
 
-        this.app.use('/compras', require('./src/routers/shopping.routes.js'));
-        this.app.use('/detallecompras', require('./src/routers/shoppingdetails.routes.js'));
-        this.app.use('/proveedores', require('./src/routers/providers.routes.js'));
-        this.app.use('/categorias', require('./src/routers/categories.routes.js'));
-        this.app.use('/productos', require('./src/routers/products.routes.js'));
-        this.app.use('/codigo_barra', require('./src/routers/Barcode.routes.js'));
+        this.app.use('/compras', require('./routers/shopping.routes.js'));
+        this.app.use('/detallecompras', require('./routers/shoppingdetails.routes.js'));
+        this.app.use('/proveedores', require('./routers/providers.routes.js'));
+        this.app.use('/categorias', require('./routers/categories.routes.js'));
+        this.app.use('/productos', require('./routers/products.routes.js'));
+        this.app.use('/codigo_barra', require('./routers/Barcode.routes.js'));
 
-        this.app.use('/ventas', require('./src/routers/sales.routes.js'));
-        this.app.use('/detalleVenta', require('./src/routers/detailSales.routes.js'));
-        this.app.use('/devolucionLocal', require('./src/routers/returnProvider.routes.js'));
-        this.app.use('/devolucionVentas', require('./src/routers/returnSales.routes.js'));
-        this.app.use('/perdida', require('./src/routers/returnLoss.routes.js'));
+        this.app.use('/ventas', require('./routers/sales.routes.js'));
+        this.app.use('/detalleVenta', require('./routers/detailSales.routes.js'));
+        this.app.use('/devolucionLocal', require('./routers/returnProvider.routes.js'));
+        this.app.use('/devolucionVentas', require('./routers/returnSales.routes.js'));
+        this.app.use('/perdida', require('./routers/returnLoss.routes.js'));
 
-        this.app.use('/clientes', require('./src/routers/clients.routes.js'));
-        this.app.use('/creditos', require('./src/routers/credits.routes.js'));
-        this.app.use('/detallecredito', require('./src/routers/detailCredit.routes.js'));
-        this.app.use('/abonos', require('./src/routers/installments.routes.js'));
+        this.app.use('/clientes', require('./routers/clients.routes.js'));
+        this.app.use('/creditos', require('./routers/credits.routes.js'));
+        this.app.use('/detallecredito', require('./routers/detailCredit.routes.js'));
+        this.app.use('/abonos', require('./routers/installments.routes.js'));
 
-        this.app.use('/login', require('./src/routers/auth.routes.js'));
-        this.app.use('/recover', require('./src/routers/recover.routes.js'));
-        this.app.use('/restore', require('./src/routers/restore.routes.js'));
+        this.app.use('/login', require('./routers/auth.routes.js'));
+        this.app.use('/recover', require('./routers/recover.routes.js'));
+        this.app.use('/restore', require('./routers/restore.routes.js'));
 
-        this.app.use('/uploads', require('./src/routers/uploads.js'));
-        this.app.use('/escaner', require('./src/routers/scanner.routes.js'));
+        this.app.use('/uploads', require('./routers/uploads.js'));
+        this.app.use('/escaner', require('./routers/scanner.routes.js'));
     };
 
     start() {
