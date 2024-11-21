@@ -1,7 +1,7 @@
 const { sequelize } = require('../config/db');
 const returnSalesRepository = require('../repositories/returnSales.repository');
 const returnProviderRepository = require('../repositories/returnProvider.repository');
-const barCodeRepository = require('../repositories/barcode.repository');
+const barCodeRepository = require('../repositories/barcodes.repository');
 const productRepository = require('../repositories/products.repository');
 const providersRepository = require('../repositories/providers.repository');
 

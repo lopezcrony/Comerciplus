@@ -1,6 +1,6 @@
 const { sequelize } = require('../config/db');
 const ReturnLossRepository = require('../repositories/returnLoss.repository');
-const barCodeRepository = require('../repositories/barcode.repository');
+const barCodeRepository = require('../repositories/barcodes.repository');
 const productRepository = require ('../repositories/products.repository');
 
 const getAllReturnLoss = async () => {
