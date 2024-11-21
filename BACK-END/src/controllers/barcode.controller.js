@@ -1,4 +1,4 @@
-const barcodeService = require('../services/barcode.service')
+const barcodeService = require('../services/barcodes.service')
 
 const getAllBarcodesByProduct = async (req, res) => {
     try {
