@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const BarcodeController = require("../controllers/barcode.controllers");
+const BarcodeController = require("../controllers/barcode.controller");
 const router = Router();
 
 router
