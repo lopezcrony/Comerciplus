@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
+  "engines": {
+    "node": "20.10.0"
+  },
   "scripts": {
+    "build": "npm install -g node-gyp && npm rebuild bcrypt",
     "test": "jest",
     "start": "node main.js"
   },
