@@ -72,7 +72,7 @@ export class ProductsComponent implements OnInit {
   selectedFile: File | null = null;
   selectedProduct!: any;
 
-  baseUrl = 'http://localhost:3006/uploads';
+  baseUrl = 'https://comerciplus-dggj.onrender.com/uploads';
 
   newCategory = { name: '', description: '' };
 
