@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/user.dart';
 import '../services/user.service.dart';
-import '../services/auth.dart';
-import 'login.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -15,21 +13,21 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   User? _user;
   final UserService _userService = UserService();
-  final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-
   bool _isEditing = false;
+  
   late TextEditingController _nombreController;
   late TextEditingController _apellidoController;
   late TextEditingController _telefonoController;
   late TextEditingController _correoController;
+  late TextEditingController _claveController;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserProfile();
     _initializeControllers();
+    _fetchUserProfile();
   }
 
   void _initializeControllers() {
@@ -37,6 +35,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     _apellidoController = TextEditingController();
     _telefonoController = TextEditingController();
     _correoController = TextEditingController();
+    _claveController = TextEditingController();
   }
 
   @override
@@ -45,20 +44,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     _apellidoController.dispose();
     _telefonoController.dispose();
     _correoController.dispose();
+    _claveController.dispose();
     super.dispose();
   }
 
-  void _fetchUserProfile() async {
+  Future<void> _fetchUserProfile() async {
     setState(() => _isLoading = true);
     try {
       final user = await _userService.getUserProfile();
-      setState(() {
-        _user = user;
-        _nombreController.text = user.nombreUsuario;
-        _apellidoController.text = user.apellidoUsuario;
-        _telefonoController.text = user.telefonoUsuario;
-        _correoController.text = user.correoUsuario;
-      });
+      if (mounted) {
+        setState(() {
+          _user = user;
+          _nombreController.text = user.nombreUsuario;
+          _apellidoController.text = user.apellidoUsuario;
+          _telefonoController.text = user.telefonoUsuario;
+          _correoController.text = user.correoUsuario;
+          _claveController.text = user.claveUsuario ?? '';
+        });
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -78,12 +81,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   void _toggleEdit() {
     setState(() {
       _isEditing = !_isEditing;
-      if (!_isEditing) {
-        // Restaurar valores originales si se cancela la edición
+      if (!_isEditing && _user != null) {
+        // Restore original values when canceling edit
         _nombreController.text = _user!.nombreUsuario;
         _apellidoController.text = _user!.apellidoUsuario;
         _telefonoController.text = _user!.telefonoUsuario;
         _correoController.text = _user!.correoUsuario;
+        _claveController.text = _user!.claveUsuario ?? '';
       }
     });
   }
@@ -94,31 +98,34 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final updatedUser = User(
-        idUsuario: _user!.idUsuario,
-        cedulaUsuario: _user!.cedulaUsuario,
-        nombreUsuario: _nombreController.text.trim(),
-        apellidoUsuario: _apellidoController.text.trim(),
-        telefonoUsuario: _telefonoController.text.trim(),
-        correoUsuario: _correoController.text.trim(),
-        claveUsuario: _user!.claveUsuario,
-        estadoUsuario: _user!.estadoUsuario,
-      );
-
-      final result = await _userService.updateUserProfile(updatedUser);
-      
-      if (mounted) {
-        setState(() {
-          _user = result;
-          _isEditing = false;
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Perfil actualizado exitosamente'),
-            backgroundColor: Colors.green,
-          ),
+      if (_user != null) {
+        final updatedUser = User(
+          idUsuario: _user!.idUsuario,
+          cedulaUsuario: _user!.cedulaUsuario,
+          nombreUsuario: _nombreController.text.trim(),
+          apellidoUsuario: _apellidoController.text.trim(),
+          telefonoUsuario: _telefonoController.text.trim(),
+          correoUsuario: _correoController.text.trim(),
+          claveUsuario: _claveController.text.isNotEmpty ? _claveController.text.trim() : null,
+          estadoUsuario: _user!.estadoUsuario,
+          idRol: _user!.idRol,
         );
+
+        final result = await _userService.updateUserProfile(updatedUser);
+        
+        if (mounted) {
+          setState(() {
+            _user = result;
+            _isEditing = false;
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Perfil actualizado exitosamente'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -132,65 +139,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
-      }
-    }
-  }
-
-  Future<void> _handleLogout() async {
-    final shouldLogout = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          '¿Cerrar sesión?',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        content: Text(
-          '¿Está seguro que desea cerrar sesión?',
-          style: GoogleFonts.poppins(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(
-              'Cancelar',
-              style: GoogleFonts.poppins(
-                color: Colors.grey,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(
-              'Cerrar sesión',
-              style: GoogleFonts.poppins(
-                color: Colors.red,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    if (shouldLogout == true) {
-      try {
-        await _authService.logout();
-        if (mounted) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const Login()),
-            (Route<dynamic> route) => false,
-          );
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Error al cerrar sesión'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
       }
     }
   }
@@ -217,28 +165,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
+          IconButton(
+            icon: Icon(_isEditing ? Icons.save : Icons.edit),
+            onPressed: _isEditing ? _saveProfile : _toggleEdit,
+          ),
           if (_isEditing)
             IconButton(
               icon: const Icon(Icons.close),
               onPressed: _toggleEdit,
             ),
-          IconButton(
-            icon: Icon(_isEditing ? Icons.edit_off : Icons.edit),
-            onPressed: _toggleEdit,
-          ),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _user == null
               ? const Center(child: Text('No se pudo cargar el perfil'))
-              : Padding(
+              : SingleChildScrollView(
                   padding: const EdgeInsets.all(16.0),
                   child: Form(
                     key: _formKey,
-                    child: ListView(
+                    child: Column(
                       children: [
-                        
                         Center(
                           child: CircleAvatar(
                             radius: 60,
@@ -253,7 +200,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 20),
                         _buildReadOnlyField('Cédula', _user!.cedulaUsuario),
                         const SizedBox(height: 10),
@@ -309,6 +255,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             return null;
                           },
                         ),
+                        const SizedBox(height: 10),
+                        if (_isEditing)
+                          _buildEditableField(
+                            'Nueva Contraseña',
+                            _claveController,
+                            true,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value != null && value.isNotEmpty && value.length < 6) {
+                                return 'La contraseña debe tener al menos 6 caracteres';
+                              }
+                              return null;
+                            },
+                          ),
                         const SizedBox(height: 24),
                         if (_isEditing)
                           ElevatedButton(
@@ -337,7 +297,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                          ),                       
+                          ),
                       ],
                     ),
                   ),
@@ -366,10 +326,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     bool isEditable, {
     TextInputType? keyboardType,
     String? Function(String?)? validator,
+    bool obscureText = false,
   }) {
     return TextFormField(
       controller: controller,
+      enabled: isEditable,
       readOnly: !isEditable,
+      obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
       decoration: InputDecoration(
@@ -379,9 +342,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
         filled: !isEditable,
         fillColor: !isEditable ? Colors.grey.shade200 : null,
-        suffixIcon: !isEditable 
-          ? const Icon(Icons.lock_outline, color: Colors.grey)
-          : null,
+        suffixIcon: obscureText
+            ? Icon(Icons.visibility_off, color: isEditable ? Colors.blue : Colors.grey)
+            : (!isEditable ? const Icon(Icons.lock_outline, color: Colors.grey) : null),
       ),
     );
   }

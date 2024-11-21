@@ -11,10 +11,10 @@ class User {
 
   User({
     required this.idUsuario,
-    this.cedulaUsuario = '',
+    required this.cedulaUsuario,
     required this.nombreUsuario,
     required this.apellidoUsuario,
-    this.telefonoUsuario = '',
+    required this.telefonoUsuario,
     required this.correoUsuario,
     this.claveUsuario,
     this.estadoUsuario,
@@ -28,7 +28,7 @@ class User {
       nombreUsuario: json['nombreUsuario']?.toString() ?? '',
       apellidoUsuario: json['apellidoUsuario']?.toString() ?? '',
       telefonoUsuario: json['telefonoUsuario']?.toString() ?? '',
-      correoUsuario: json['correoUsuario'] as String,
+      correoUsuario: json['correoUsuario']?.toString() ?? '',
       claveUsuario: json['claveUsuario']?.toString(),
       estadoUsuario: json['estadoUsuario'] as bool?,
       idRol: json['idRol'] as int?,
@@ -43,9 +43,28 @@ class User {
       'apellidoUsuario': apellidoUsuario,
       'telefonoUsuario': telefonoUsuario,
       'correoUsuario': correoUsuario,
-      if (claveUsuario != null) 'claveUsuario': claveUsuario,
-      if (estadoUsuario != null) 'estadoUsuario': estadoUsuario,
-      if (idRol != null) 'idRol': idRol,
+      if (claveUsuario != null && claveUsuario!.isNotEmpty) 
+        'claveUsuario': claveUsuario,
     };
+  }
+
+  User copyWith({
+    String? nombreUsuario,
+    String? apellidoUsuario,
+    String? telefonoUsuario,
+    String? correoUsuario,
+    String? claveUsuario,
+  }) {
+    return User(
+      idUsuario: idUsuario,
+      cedulaUsuario: cedulaUsuario,
+      nombreUsuario: nombreUsuario ?? this.nombreUsuario,
+      apellidoUsuario: apellidoUsuario ?? this.apellidoUsuario,
+      telefonoUsuario: telefonoUsuario ?? this.telefonoUsuario,
+      correoUsuario: correoUsuario ?? this.correoUsuario,
+      claveUsuario: claveUsuario ?? this.claveUsuario,
+      estadoUsuario: estadoUsuario,
+      idRol: idRol,
+    );
   }
 }

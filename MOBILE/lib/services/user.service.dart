@@ -1,11 +1,13 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:logging/logging.dart';
 import '../models/user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
   final String baseUrl = '${dotenv.env['API_URL']!}/usuarios';
+  final _logger = Logger('UserService');
 
   Future<User> getUserProfile() async {
     final prefs = await SharedPreferences.getInstance();
@@ -16,18 +18,24 @@ class UserService {
       throw Exception('No se encontró sesión activa');
     }
 
-    final response = await http.get(
-      Uri.parse('$baseUrl/$idUsuario'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/$idUsuario'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      return User.fromJson(data);
-    } else {
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        return User.fromJson(data);
+      } else {
+        final errorData = json.decode(response.body);
+        throw Exception(errorData['message'] ?? 'Error al obtener el perfil de usuario');
+      }
+    } catch (e) {
+      _logger.severe('Error getting user profile: $e');
       throw Exception('Error al obtener el perfil de usuario');
     }
   }
@@ -42,23 +50,27 @@ class UserService {
     }
 
     try {
+      final Map<String, dynamic> updateData = {
+        'nombreUsuario': user.nombreUsuario,
+        'apellidoUsuario': user.apellidoUsuario,
+        'telefonoUsuario': user.telefonoUsuario,
+        'correoUsuario': user.correoUsuario,
+        if (user.claveUsuario != null && user.claveUsuario!.isNotEmpty)
+          'claveUsuario': user.claveUsuario,
+      };
+
+      _logger.info('Sending update request for user $idUsuario');
+      
       final response = await http.put(
         Uri.parse('$baseUrl/$idUsuario'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-        body: json.encode({
-          'nombreUsuario': user.nombreUsuario,
-          'apellidoUsuario': user.apellidoUsuario,
-          'telefonoUsuario': user.telefonoUsuario,
-          'correoUsuario': user.correoUsuario,
-          'idUsuario': user.idUsuario,
-          'cedulaUsuario': user.cedulaUsuario,
-          'estadoUsuario': user.estadoUsuario,
-          'idRol': user.idRol,
-        }),
+        body: json.encode(updateData),
       );
+
+      _logger.info('Update response status: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -68,7 +80,8 @@ class UserService {
         throw Exception(errorData['message'] ?? 'Error al actualizar el perfil de usuario');
       }
     } catch (e) {
-      throw Exception('Error de conexión: $e');
+      _logger.severe('Error updating user profile: $e');
+      throw Exception('Error al actualizar el perfil de usuario');
     }
   }
 }
