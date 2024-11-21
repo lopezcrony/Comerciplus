@@ -22,10 +22,11 @@ const startServer = async () => {
     const server = new Server();
     await server.start();
 
+    return server.app; // Export the app for testing
   } catch (error) {
     console.error('No se pudo inicializar el servidor:', error);
     process.exit(1);
   }
 };
 
-startServer();
+module.exports = startServer(); // Export the promise that resolves to the app
