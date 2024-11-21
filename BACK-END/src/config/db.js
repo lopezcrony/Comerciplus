@@ -15,12 +15,14 @@ const sequelize = new Sequelize(
             ssl: {
                 require: true,
                 ca: fs.readFileSync('src/config/aiven-ca.pem').toString(),
+                rejectUnauthorized: true
             },
             connectTimeout: 120000
         },
         define: {
             timestamps: false // Opcional: evita timestamps automáticos si no los usas
-        }
+        },
+        
     }
 );
 
@@ -54,8 +56,10 @@ const connectToDatabase = async () => {
         await sequelize.authenticate();
         console.log(`\nConexión establecida a la base de datos "${process.env.DB_NAME}".`);
     } catch (error) {
-        console.error('No se pudo conectar a la base de datos:', error.message);
-        throw error; // Para manejar errores en el nivel superior
+        console.error('Error de conexión completo:', error);
+        console.error('Mensaje de error:', error.message);
+        console.error('Código de error:', error.code);
+        throw error;
     }
     return sequelize;
 };

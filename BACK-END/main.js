@@ -3,7 +3,6 @@ const { connectToDatabase, sequelize } = require('./src/config/db');
 const Server = require('./src/index');
 const seedPermissions = require('./src/seeders/permissions.seed');
 const seedRoleAndUser = require('./src/seeders/defaultRoleAndUser');
-
 const startServer = async () => {
   try {
     // Conectar a la base de datos
@@ -14,7 +13,6 @@ const startServer = async () => {
     
     // Cargar los permisos predefinidos
     await seedPermissions();
-    
     // Cargar el rol y usuario predefinidos
     await seedRoleAndUser();
 
