@@ -47,7 +47,7 @@ class Server {
 
     middlewares() {
         //CORS
-        this.app.use(cors({origin: '*'}));
+        this.app.use(cors({ origin: '*' }));
         //Parseo a json
         this.app.use(express.json());
         //file uploads-carga de archivos
@@ -64,7 +64,6 @@ class Server {
     };
 
     routers() {
-        this.app.use('/dashboard', require('./routers/dashboard.routes.js'));
 
         this.app.use('/roles', require('./routers/roles.routes.js'));
         this.app.use('/permisos', require('./routers/permissions.routes.js'));
@@ -75,7 +74,7 @@ class Server {
         this.app.use('/proveedores', require('./routers/providers.routes.js'));
         this.app.use('/categorias', require('./routers/categories.routes.js'));
         this.app.use('/productos', require('./routers/products.routes.js'));
-        this.app.use('/codigo_barra', require('./routers/Barcode.routes.js'));
+        this.app.use('/codigo_barra', require('./routers/barcode.routes.js'));
 
         this.app.use('/ventas', require('./routers/sales.routes.js'));
         this.app.use('/detalleVenta', require('./routers/detailSales.routes.js'));

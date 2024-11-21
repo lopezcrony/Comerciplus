@@ -1,5 +1,5 @@
 const shoppingDetailRepository = require('../repositories/shoppingdetails.repository');
-const barcodeRepository = require('../repositories/Barcode.repository');
+const barcodeRepository = require('../repositories/barcode.repository');
 const productRepository = require('../repositories/products.repository');
 const shoppingRepository = require('../repositories/shopping.repository');
 const { sequelize } = require('../config/db');
