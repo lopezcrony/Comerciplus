@@ -36,7 +36,7 @@
 
         <div class="field"
           [ngClass]="{'error': isFieldInvalid('nombreProveedor')}">
-          <label for="nombreProveedor">Nombre  <span style="color: #E24C4C;">*</span></label>
+          <label for="nombreProveedor">Empresa <span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="nombreProveedor" formControlName="nombreProveedor" required autofocus />
           <small class="p-error"
             *ngIf="isFieldInvalid('nombreProveedor')">
