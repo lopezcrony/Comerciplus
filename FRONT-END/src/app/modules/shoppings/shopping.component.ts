@@ -236,10 +236,10 @@ downloadPurchasePDF() {
   };
 
   const styles = {
-    title: { fontSize: 16, fontStyle: 'bold' },
-    subtitle: { fontSize: 12, fontStyle: 'bold' },
-    normal: { fontSize: 9, fontStyle: 'normal' },
-    bold: { fontSize: 9, fontStyle: 'bold' },
+    title: { fontSize: 16, fontStyle: 'bold' },   
+    subtitle: { fontSize: 12, fontStyle: 'bold' }, 
+    normal: { fontSize: 9, fontStyle: 'normal' },  
+    bold: { fontSize: 9, fontStyle: 'bold' },  
     small: { fontSize: 8, fontStyle: 'normal' }
   };
 
@@ -255,7 +255,7 @@ downloadPurchasePDF() {
 
   // Franja de color en la parte superior (más delgada)
   doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
-  doc.rect(0, 0, pageWidth, 15, 'F');
+  doc.rect(0, 0, pageWidth, 15, 'F'); 
 
   // Título del reporte
   setStyle(styles.title);
@@ -345,7 +345,7 @@ downloadPurchasePDF() {
   // Agrupar y mostrar las compras por fecha
   Object.entries(purchasesByDate).forEach(([date, products]) => {
     // Calcular la altura dinámica del contenedor basado en la cantidad de productos
-    const containerHeightDynamic = Object.keys(products).length * lineHeight * 3 + 40; // Ajustado para incluir el total
+    const containerHeightDynamic = Object.keys(products).length * lineHeight * 3 + 20; // Ajustado para incluir el total
 
     if (yPosition + containerHeightDynamic > pageHeight - margin * 3) {
       doc.addPage();
