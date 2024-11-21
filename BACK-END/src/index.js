@@ -74,7 +74,7 @@ class Server {
         this.app.use('/proveedores', require('./routers/providers.routes.js'));
         this.app.use('/categorias', require('./routers/categories.routes.js'));
         this.app.use('/productos', require('./routers/products.routes.js'));
-        this.app.use('/codigo_barra', require('./routers/barcode.routes.js'));
+        this.app.use('/codigo_barra', require('./routers/barcodes.routes.js'));
 
         this.app.use('/ventas', require('./routers/sales.routes.js'));
         this.app.use('/detalleVenta', require('./routers/detailSales.routes.js'));
