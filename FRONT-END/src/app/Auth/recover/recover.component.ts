@@ -40,7 +40,7 @@ export class RecoverComponent {
       return;
     }
 
-    this.http.post('http://localhost:3006/recover', { correoUsuario: this.correoUsuario }).subscribe({
+    this.http.post('https://comerciplus-dggj.onrender.com/recover', { correoUsuario: this.correoUsuario }).subscribe({
       next: ( ) => {
         this.toastr.success('Se han enviado instrucciones para restablecer tu contraseña a tu correo electrónico');
         this.router.navigate(['/']);
