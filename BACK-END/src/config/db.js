@@ -8,7 +8,7 @@ const sequelize = new Sequelize(
     process.env.DB_PASSWORD,
     {
         host: process.env.DB_HOST,
-        port: process.env.PORT,
+        port: process.env.DB_PORT,
         dialect: process.env.DB_DIALECT,
         logging: false,
         dialectOptions: {
@@ -28,7 +28,7 @@ const createDatabaseIfNotExists = async () => {
     try {
         // Crea una conexión temporal a MySQL
         const tempSequelize = new Sequelize(
-            `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.PORT}`,
+            `mysql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}`,
             { dialect: 'mysql', logging: false }
         );
 

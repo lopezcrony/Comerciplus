@@ -14,7 +14,7 @@ class Server {
     constructor() {
         this.app = express();
         this.host = process.env.DB_HOST || 'localhost';
-        this.port = process.env.PORT || 3000;
+        this.port = process.env.DB_PORT || 3000;
         // Crear servidor HTTP
         this.httpServer = createServer(this.app);
         // Configurar Socket.IO
