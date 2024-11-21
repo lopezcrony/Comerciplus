@@ -13,6 +13,7 @@ class Server {
 
     constructor() {
         this.app = express();
+        this.host = process.env.DB_HOST || 'localhost';
         this.port = process.env.PORT || 3000;
         // Crear servidor HTTP
         this.httpServer = createServer(this.app);
@@ -99,7 +100,7 @@ class Server {
         return new Promise((resolve, reject) => {
             try {
                 this.httpServer.listen(this.port, () => {
-                    console.log(`\nhttp://localhost:${this.port}`);
+                    console.log(`\nhttp://${this.host}:${this.port}`);
                     resolve();
                 });
             } catch (error) {
