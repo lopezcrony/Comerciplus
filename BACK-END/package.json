@@ -15,7 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "chart.js": "^3.9.1",
     "chartjs-node-canvas": "^4.1.6",
     "client": "^0.0.1",
