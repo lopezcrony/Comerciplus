@@ -37,6 +37,8 @@ export class ShoppinviewComponent implements OnInit {
   shoppingdetails: any[] = [];
   viewModal = false;
   selectedShopping: Shopping | undefined;
+  startDates: Date = new Date();
+  endDates: Date = new Date(); 
 
   constructor(
     private fb: FormBuilder,
@@ -86,6 +88,18 @@ export class ShoppinviewComponent implements OnInit {
 
   ngOnInit() {
     this.loadAllData();
+  }
+
+  setStartDate(date: Date) 
+  { 
+    console.log(this.startDates)
+    this.startDates = date; 
+  } 
+  
+  setEndDate(date: Date) 
+  { 
+    console.log(this.endDates)
+    this.endDates = date;
   }
 
   openShopping() {
