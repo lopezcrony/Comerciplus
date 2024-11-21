@@ -12,7 +12,7 @@
     <form [formGroup]="clientForm">
 
       <div class="field" [ngClass]="{'error': isFieldInvalid('cedulaCliente')}">
-        <label for="cedulaCliente">Cédula<span style="color: #E24C4C;">*</span></label>
+        <label for="cedulaCliente">Cédula <span style="color: #E24C4C;">*</span></label>
         <input type="text" pInputText id="cedulaCliente" formControlName="cedulaCliente" maxlength="15" autofocus />
         <small class="p-error" *ngIf="isFieldInvalid('cedulaCliente')">
           {{ getErrorMessage('cedulaCliente') }}
@@ -21,7 +21,7 @@
 
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCliente')}">
-          <label for="nombreCliente">Nombre<span style="color: #E24C4C;">*</span></label>
+          <label for="nombreCliente">Nombre <span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="nombreCliente" formControlName="nombreCliente" />
           <small class="p-error" *ngIf="isFieldInvalid('nombreCliente')">
             {{ getErrorMessage('nombreCliente') }}
@@ -29,7 +29,7 @@
         </div>
 
         <div class="field" [ngClass]="{'error': isFieldInvalid('apellidoCliente')}">
-          <label for="apellidoCliente">Apellido<span style="color: #E24C4C;">*</span></label>
+          <label for="apellidoCliente">Apellido <span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="apellidoCliente" formControlName="apellidoCliente" />
           <small class="p-error" *ngIf="isFieldInvalid('apellidoCliente')">
             {{ getErrorMessage('apellidoCliente') }}
@@ -39,7 +39,7 @@
 
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('direccionCliente')}">
-          <label for="direccionCliente">Dirección<span style="color: #E24C4C;">*</span></label>
+          <label for="direccionCliente">Dirección <span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="direccionCliente" formControlName="direccionCliente" />
           <small class="p-error" *ngIf="isFieldInvalid('direccionCliente')">
             {{ getErrorMessage('direccionCliente') }}
@@ -47,7 +47,7 @@
         </div>
 
         <div class="field" [ngClass]="{'error': isFieldInvalid('telefonoCliente')}">
-          <label for="telefonoCliente">Teléfono<span style="color: #E24C4C;">*</span></label>
+          <label for="telefonoCliente">Teléfono <span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="telefonoCliente" formControlName="telefonoCliente" minlength="7"
             maxlength="10" />
           <small class="p-error" *ngIf="isFieldInvalid('telefonoCliente')">
