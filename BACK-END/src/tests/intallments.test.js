@@ -1,13 +1,12 @@
 const request = require('supertest');
-const app = require('../../main'); // Import the app promise
+const app = require('../../main');
 
-jest.setTimeout(20000); // Increased timeout to 20 seconds
+jest.setTimeout(20000);
 
 describe('GET /abonos', () => {
     let server;
 
     beforeAll(async () => {
-        // Wait for the app to be fully initialized
         server = await app;
     });
 
@@ -19,7 +18,4 @@ describe('GET /abonos', () => {
         expect(res.body).toBeInstanceOf(Array);
     });
 
-    afterAll(async () => {
-        // Close the server if needed
-    });
 });
