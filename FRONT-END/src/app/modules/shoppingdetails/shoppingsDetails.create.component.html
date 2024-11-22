@@ -103,12 +103,14 @@
                 <button type="button" (click)="addShoppingDetail()" class="p-button p-button-secondary mr-3" pTooltip="Agregar producto">
                     <i class="pi pi-plus"></i>
                 </button>
-                <button type="button" (click)="removeShoppingDetail(i)" class="p-button p-button-danger mt-5" pTooltip="Eliminar producto">
+                <!-- Agregar la condición aquí para mostrar el botón de eliminar solo si hay más de un detalle -->
+                <button type="button" *ngIf="shoppingDetailArray.length > 1" (click)="removeShoppingDetail(i)" class="p-button p-button-danger mt-5" pTooltip="Eliminar producto">
                     <i class="pi pi-trash"></i>
                 </button>
             </div>
         </div>
     </div>
+    
     
 
 
