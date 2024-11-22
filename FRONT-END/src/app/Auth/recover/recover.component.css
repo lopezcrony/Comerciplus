@@ -1,6 +1,7 @@
 :host {
     display: block;
     height: 100%;
+    background: linear-gradient(to bottom right, #E3F9E5, #A8EDDF);
   }
   
   .contenedor {
@@ -8,7 +9,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #e2e8f0;
+    background-color: #f0e2ea;
   }
   
   .caja-recuperacion {

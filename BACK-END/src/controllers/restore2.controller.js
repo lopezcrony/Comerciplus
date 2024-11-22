@@ -1,5 +1,5 @@
 const User = require("../models/users.model");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
 
 exports.resetPasswordWithToken = async (req, res) => {

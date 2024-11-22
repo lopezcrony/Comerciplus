@@ -21,7 +21,7 @@
       
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('CodigoProducto')}">
-          <label for="CodigoProducto">Codigo Barra</label>
+          <label for="CodigoProducto">Codigo Barra<span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="CodigoProducto" formControlName="CodigoProducto" required />
           <small class="p-error" *ngIf="isFieldInvalid('CodigoProducto')">
             {{ getErrorMessage('CodigoProducto') }}
@@ -29,7 +29,7 @@
         </div>
 
         <div class="field" [ngClass]="{'error': isFieldInvalid('cantidad')}">
-          <label for="cantidad">cantidad</label>
+          <label for="cantidad">cantidad<span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="cantidad" formControlName="cantidad" required />
           <small class="p-error" *ngIf="isFieldInvalid('cantidad')">
             {{ getErrorMessage('cantidad') }}
@@ -38,7 +38,7 @@
       </div>
         
         <div class="field" [ngClass]="{'error': isFieldInvalid('motivo')}">
-          <label for="motivo">Motivo</label>
+          <label for="motivo">Motivo<span style="color: #E24C4C;">*</span></label>
           <input type="text" pInputText id="motivo" formControlName="motivo" required />
           <small class="p-error" *ngIf="isFieldInvalid('motivo')">
             {{ getErrorMessage('motivo') }}

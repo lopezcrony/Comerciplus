@@ -28,7 +28,9 @@ import jsPDF from 'jspdf';
 export class DetailSaleComponent implements OnInit {
 
   startDates: Date = new Date();
-  endDates: Date = new Date();
+  endDates: Date = new Date(); 
+  
+  
 
   Sales: Sale[] = [];
   filteredSale: Sale[] = [];
@@ -79,6 +81,18 @@ export class DetailSaleComponent implements OnInit {
       this.filteredDetailSale = data;
     },
     );
+  }
+
+  setStartDate(date: Date) 
+  { 
+    console.log(this.startDates)
+    this.startDates = date; 
+  } 
+  
+  setEndDate(date: Date) 
+  { 
+    console.log(this.endDates)
+    this.endDates = date;
   }
 
   loadProducts() {
@@ -172,156 +186,220 @@ export class DetailSaleComponent implements OnInit {
 // ----------------------------------------- Descarga de PDF ---------------------------------------------------
 
 downloadPDF() {
+  // Si las fechas no están definidas, usar la fecha actual
+  if (!this.startDates) {
+    this.startDates = new Date();
+  }
+  if (!this.endDates) {
+    this.endDates = new Date();
+  }
+
+  // Validación de fechas
+  if (this.startDates > this.endDates) {
+    this.toastr.error('La fecha de inicio no puede ser mayor que la fecha de fin. Por favor, corrige las fechas.');
+    return;
+  }
+
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
   const pageHeight = doc.internal.pageSize.height;
-  const margin = 15;
-  const cardPadding = 10;
-  const lineHeight = 7;
+  const margin = 12;
+  const lineHeight = 6;
+  const columnWidth = (pageWidth - 2 * margin) / 3;
+  let yPosition = margin;
 
-  // Colores y estilos
+  // Colores corporativos
   const colors = {
-    primary: [63, 131, 248],
-    secondary: [31, 41, 55],
-    accent: [239, 68, 68],
-    background: [249, 250, 251],
-    text: [75, 85, 99],
-    textLight: [156, 163, 175],
-    cardBg: [255, 255, 255]
+    primary: [0, 83, 156],
+    secondary: [100, 100, 100],
+    accent: [41, 128, 185],
+    success: [46, 204, 113],
+    container: [240, 240, 240]
   };
 
-  const setStyle = (fontSize: number, fontStyle: string) => {
-    doc.setFontSize(fontSize);
-    doc.setFont('helvetica', fontStyle);
+  const styles = {
+    title: { fontSize: 16, fontStyle: 'bold' },   
+    subtitle: { fontSize: 12, fontStyle: 'bold' }, 
+    normal: { fontSize: 9, fontStyle: 'normal' },  
+    bold: { fontSize: 9, fontStyle: 'bold' },  
+    small: { fontSize: 8, fontStyle: 'normal' }
+  };
+
+  // Funciones helper
+  const setStyle = (style: { fontSize: any; fontStyle: any; }) => {
+    doc.setFontSize(style.fontSize);
+    doc.setFont('helvetica', style.fontStyle);
   };
 
   const setColor = (color: number[]) => {
     doc.setTextColor(color[0], color[1], color[2]);
   };
 
-  const drawCard = (x: number, y: number, width: number, height: number) => {
-    doc.setFillColor(colors.cardBg[0], colors.cardBg[1], colors.cardBg[2]);
-    doc.setDrawColor(colors.textLight[0], colors.textLight[1], colors.textLight[2]);
-    doc.roundedRect(x, y, width, height, 3, 3, 'FD');
-  };
+  // Franja de color en la parte superior (más delgada)
+  doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+  doc.rect(0, 0, pageWidth, 15, 'F'); 
 
-  const drawDivider = (x: number, y: number, width: number) => {
-    doc.setDrawColor(colors.textLight[0], colors.textLight[1], colors.textLight[2]);
-    doc.setLineWidth(0.1);
-    doc.line(x, y, x + width, y);
-  };
+  // Título del reporte
+  setStyle(styles.title);
+  setColor([255, 255, 255]);
+  doc.text('REPORTE DE VENTAS', pageWidth / 2, yPosition, { align: 'center' });
+  yPosition += lineHeight + 6;
 
-  type ProductSalesData = {
-    cantidad: number;
-    subtotal: number;
-  };
+  // Información del negocio y fecha
+  setStyle(styles.normal);
+  setColor(colors.primary);
+  doc.text('Tienda Santa Clara', margin, yPosition);
 
+  const fecha = new Date().toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+  setColor(colors.secondary);
+  doc.text(`Fecha de generación: ${fecha}`, pageWidth - margin - 50, yPosition);
+  yPosition += lineHeight * 1.5; // Reducido el espaciado
+
+  // Resumen general
+  let totalVentas = 0;
+  this.Sales.forEach(sale => totalVentas += sale.totalVenta);
+
+  setColor(colors.accent);
+  setStyle(styles.subtitle);
+  doc.text('Resumen General', margin, yPosition);
+  yPosition += lineHeight;
+
+  setStyle(styles.normal);
+  setColor(colors.secondary);
+  doc.text(`Total de Ventas: ${this.Sales.length}`, margin, yPosition);
+  doc.text(`Valor Total: $${totalVentas.toFixed(2)}`, pageWidth - margin - 50, yPosition);
+  yPosition += lineHeight * 1.5; // Reducido el espaciado
+
+  // Encabezado de la lista de ventas
+  doc.setFillColor(colors.accent[0], colors.accent[1], colors.accent[2]);
+  doc.rect(margin, yPosition - 6, pageWidth - (margin * 2), lineHeight + 2, 'F');
+
+  setStyle(styles.subtitle);
+  setColor([255, 255, 255]);
+  doc.text('DETALLE DE VENTAS', pageWidth / 2, yPosition, { align: 'center' });
+  yPosition += lineHeight;
+
+  // Definir el tipo SalesByDate
   type SalesByDate = {
     [date: string]: {
-      [productName: string]: ProductSalesData;
-    };
+      [productName: string]: { cantidad: number, subtotal: number }
+    }
   };
 
-  // Filtrar ventas que estén en estadoVenta === true
+  // Filtrar ventas por el rango de fechas y asegurarse de incluir el día de hoy
   const salesByDate: SalesByDate = this.Sales.reduce((acc: SalesByDate, sale) => {
-    if (!sale.estadoVenta) return acc; // Ignorar ventas con estadoVenta false
-    
-    const saleDate = new Date(sale.fechaVenta).toLocaleDateString();
+    const saleDate = new Date(sale.fechaVenta);
+    saleDate.setHours(0, 0, 0, 0); // Ajustar horas para evitar problemas de comparación
+    this.startDates.setHours(0, 0, 0, 0);
+    this.endDates.setHours(23, 59, 59, 999); // Incluir todo el día hasta las 23:59:59
+
+    if (!sale.estadoVenta || saleDate < this.startDates || saleDate > this.endDates) return acc;
+
+    const saleDateString = saleDate.toLocaleDateString();
     const details = this.detailSale.filter(d => d.idVenta === sale.idVenta);
-    
+
     details.forEach(detail => {
       const product = this.products.find(p => p.idProducto === detail.idProducto);
       if (!product) return;
 
-      if (!acc[saleDate]) acc[saleDate] = {};
+      if (!acc[saleDateString]) acc[saleDateString] = {};
 
-      if (!acc[saleDate][product.nombreProducto]) {
-        acc[saleDate][product.nombreProducto] = { 
+      if (!acc[saleDateString][product.nombreProducto]) {
+        acc[saleDateString][product.nombreProducto] = { 
           cantidad: 0, 
           subtotal: 0 
         };
       }
 
-      acc[saleDate][product.nombreProducto].cantidad += detail.cantidadProducto;
-      acc[saleDate][product.nombreProducto].subtotal += detail.subtotal;
+      acc[saleDateString][product.nombreProducto].cantidad += detail.cantidadProducto;
+      acc[saleDateString][product.nombreProducto].subtotal += detail.subtotal;
     });
 
     return acc;
   }, {} as SalesByDate);
 
-  let yPosition = margin;
-
-  // Encabezado más angosto
-  doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
-  doc.rect(0, 0, pageWidth, 30, 'F');  // Reducido de 40 a 30
-  
-  setStyle(26, 'bold');
-  setColor([255, 255, 255]);
-  doc.text('Tienda Santa Clara', pageWidth / 2, yPosition + 12, { align: 'center' });
-  
-  setStyle(14, 'normal');
-  doc.text('Informe de Ventas', pageWidth / 2, yPosition + 20, { align: 'center' });
-
-  yPosition = 45;
-
   Object.entries(salesByDate).forEach(([date, products]) => {
-    if (yPosition > pageHeight - 60) {
+    // Calcular la altura dinámica del contenedor basado en la cantidad de productos
+    const containerHeightDynamic = Object.keys(products).length * lineHeight * 2 + 30; // Ajustado para incluir el total
+
+    if (yPosition + containerHeightDynamic > pageHeight - margin * 3) {
       doc.addPage();
       yPosition = margin;
     }
 
-    const dateCardHeight = 25;
-    drawCard(margin, yPosition, pageWidth - 2 * margin, dateCardHeight);
-    
-    setStyle(16, 'bold');
+    // Dibujar el contenedor con altura dinámica
+    doc.setFillColor(colors.container[0], colors.container[1], colors.container[2]);
+    doc.rect(margin + 4, yPosition, pageWidth - (margin * 2) - 8, containerHeightDynamic, 'F');
+
+    // Contenido de la venta
+    setStyle(styles.subtitle);
     setColor(colors.primary);
-    doc.text(`Ventas del ${date}`, margin + cardPadding, yPosition + 16);
+    doc.text(`Ventas del ${date}`, margin + 9, yPosition + lineHeight);
 
-    yPosition += dateCardHeight + 10;
+    // Ajuste dinámico de la posición `y`
+    let yOffset = yPosition + lineHeight * 2;
 
-    const productCount = Object.keys(products).length;
-    const productsCardHeight = productCount * lineHeight + 40;
-    
-    drawCard(margin, yPosition, pageWidth - 2 * margin, productsCardHeight);
+    // Mostrar encabezado de la tabla
+    setStyle(styles.bold);
+    setColor(colors.secondary);
+    doc.text('Producto', margin + 9, yOffset);
+    doc.text('Cantidad', margin + columnWidth + 9, yOffset);
+    doc.text('Subtotal', margin + columnWidth * 2 + 9, yOffset);
+    yOffset += lineHeight;
 
-    setColor(colors.textLight);
-    setStyle(11, 'bold');
-    const headers = ['Producto', 'Cantidad', 'Subtotal'];
-    const colWidths = [90, 40, 40];
-    let xPos = margin + cardPadding;
-    
-    headers.forEach((header, index) => {
-      doc.text(header, xPos, yPosition + 15);
-      xPos += colWidths[index];
-    });
-
-    drawDivider(margin + cardPadding, yPosition + 18, pageWidth - 2 * (margin + cardPadding));
-
-    yPosition += 25;
-    setStyle(10, 'normal');
-    setColor(colors.text);
-    
+    // Iterar sobre los productos vendidos
     Object.entries(products).forEach(([productName, info]) => {
-      doc.text(productName, margin + cardPadding, yPosition);
-      doc.text(info.cantidad.toString(), margin + cardPadding + colWidths[0], yPosition, { align: 'right' });
-      doc.text(`$${info.subtotal.toFixed(2)}`, margin + cardPadding + colWidths[0] + colWidths[1], yPosition, { align: 'right' });
-      yPosition += lineHeight;
+      // Mostrar producto, cantidad y subtotal en una tabla
+      setStyle(styles.normal);
+      setColor(colors.secondary);
+      doc.text(productName, margin + 9, yOffset);
+      doc.text(info.cantidad.toString(), margin + columnWidth + 9, yOffset);
+      doc.text(`$${info.subtotal.toFixed(2)}`, margin + columnWidth * 2 + 9, yOffset);
+
+      // Incrementar la posición `yOffset` para el siguiente producto
+      yOffset += lineHeight;
     });
 
-    // Línea divisoria y ajuste del "Total del día" unos píxeles más arriba
-    drawDivider(margin + cardPadding, yPosition - 2, pageWidth - 2 * (margin + cardPadding));
-    yPosition += 10;  // Reducido de 15 a 10
-    
+    // Calcular y mostrar el total de las ventas del día dentro del recuadro gris
     const totalDia = Object.values(products).reduce((sum, p) => sum + p.subtotal, 0);
-    setStyle(12, 'bold');
-    setColor(colors.primary);
-    doc.text(`Total del día: $${totalDia.toFixed(2)}`, pageWidth - margin - cardPadding, yPosition, { align: 'right' });
+    setStyle(styles.bold);
+    setColor(colors.success);
+    doc.text(`Total del día: $${totalDia.toFixed(2)}`, pageWidth - margin - 55, yOffset);
 
-    yPosition += 30;
+    yPosition = yOffset + lineHeight + 4; // Ajustar `yPosition` para el siguiente contenedor
   });
 
+  // Pie de página
+  yPosition = pageHeight - margin * 3;
+  setStyle(styles.small);
+  setColor(colors.secondary);
+  doc.text('Reporte generado automáticamente - Tienda Santa Clara', pageWidth / 2, yPosition, { align: 'center' });
+
+  // Guardar el PDF
   doc.save('informe_ventas.pdf');
 }
 
 
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

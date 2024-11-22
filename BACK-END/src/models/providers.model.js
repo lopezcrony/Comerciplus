@@ -18,6 +18,10 @@ const Proveedor = sequelize.define('Proveedor', {
   },
   nombreProveedor: {
     type: DataTypes.STRING(100),
+    unique: {
+      name: 'unique_nombreProveedor', // Nombre del índice existente
+      msg: 'El nombre del proveedor debe ser único.'
+  },
     allowNull: false
   },
   direccionProveedor: {

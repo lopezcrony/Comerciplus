@@ -8,7 +8,7 @@ const permissionsRoles = require('./permissionsRoles.model');
 // ------------------ PRODUCTOS ------------------
 const categories = require('./categories.model');
 const products = require('./products.model');
-const barcode = require('./Barcode.model');
+const barcode = require('./barcodes.model');
 // ------------------ COMPRAS ------------------
 const provider = require('./providers.model');
 const shopping = require('./shopping.model');

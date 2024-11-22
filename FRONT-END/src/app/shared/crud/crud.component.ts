@@ -35,16 +35,17 @@ export class CRUDComponent {
   @Input() showStateColumn: boolean = false;
   @Input() creditColumn: boolean = false;
   @Input() actions: boolean = true;
-  @Input() SelectChangeStatus: boolean=false;
-  @Input() calendar:boolean=false;
+  @Input() SelectChangeStatus: boolean = false;
+  @Input() calendar: boolean = false;
 
   // Datos de entrada para la tabla
   @Input() Module: string = '';
   @Input() items: any[] = [];
   @Input() columns: { field: string, header: string, type: string }[] = [];
   @Input() statusField: string = 'estado';
-  @Input() startDate: Date= new Date;
-  @Input() endDate: Date= new Date;
+
+
+
 
 
   // Funciones del CRUD
@@ -59,13 +60,19 @@ export class CRUDComponent {
   @Output() search = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<any>();
   @Output() changeStatusProvider = new EventEmitter<any>();
-
+  @Output() calendarField1 = new EventEmitter<Date>();
+  @Output() calendarField2 = new EventEmitter<Date>();
   // Parámetro de búsqueda
   searchQuery = '';
 
+  calendarField1Value: Date = new Date(); // Inicializando aquí 
+  calendarField2Value: Date = new Date();  
+
   constructor(
-    private alertsService: AlertsService, 
-    private productService: ProductsService) {}
+    private alertsService: AlertsService,
+    private productService: ProductsService
+    
+  ) { }
 
   onCreate() {
     this.create.emit();
@@ -95,10 +102,10 @@ export class CRUDComponent {
     this.detail.emit(item);
   }
 
-  onInstallment(item: any){
+  onInstallment(item: any) {
     this.installment.emit(item);
   }
-  
+
   onSearch() {
     this.search.emit(this.searchQuery);
   }
@@ -113,16 +120,14 @@ export class CRUDComponent {
   }
 
   getSelectStatus(item: any): string {
-    return item[this.statusField]; 
+    return item[this.statusField];
   }
 
-  getDateStart(item: any): Date {
-    return this.startDate
-  }
-  
-  getDateEnd(item: any): Date {
-    return this.endDate
-  }
+  getDateStart(event: any) 
+  { this.calendarField1.emit(this.calendarField1Value); } 
+
+  getDateEnd(event: any) 
+  { this.calendarField2.emit(this.calendarField2Value); }
 
   confirmChangeStatus(item: any) {
     this.alertsService.confirm(

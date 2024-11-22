@@ -21,7 +21,7 @@
   
   <form [formGroup]="rolesForm" class="role-form">
     <div class="field mb-4" [ngClass]="{'error': isFieldInvalid('nombreRol')}">
-      <label for="nombreRol">Nombre del Nuevo Rol</label>
+      <label for="nombreRol">Nombre del Nuevo Rol<span style="color: #E24C4C;">*</span></label>
       <input type="text" pInputText id="nombreRol" formControlName="nombreRol" autofocus />
       <small class="p-error" *ngIf="isFieldInvalid('nombreRol')">
           {{ getErrorMessage('nombreRol') }}

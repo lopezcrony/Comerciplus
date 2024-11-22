@@ -13,7 +13,8 @@ class Server {
 
     constructor() {
         this.app = express();
-        this.port = process.env.PORT || 3000;
+        this.host = process.env.DB_HOST || 'localhost';
+        this.port = process.env.DB_PORT || 3000;
         // Crear servidor HTTP
         this.httpServer = createServer(this.app);
         // Configurar Socket.IO
@@ -46,7 +47,7 @@ class Server {
 
     middlewares() {
         //CORS
-        this.app.use(cors());
+        this.app.use(cors({ origin: '*' }));
         //Parseo a json
         this.app.use(express.json());
         //file uploads-carga de archivos
@@ -63,7 +64,6 @@ class Server {
     };
 
     routers() {
-        this.app.use('/dashboard', require('./routers/dashboard.routes.js'));
 
         this.app.use('/roles', require('./routers/roles.routes.js'));
         this.app.use('/permisos', require('./routers/permissions.routes.js'));
@@ -74,7 +74,7 @@ class Server {
         this.app.use('/proveedores', require('./routers/providers.routes.js'));
         this.app.use('/categorias', require('./routers/categories.routes.js'));
         this.app.use('/productos', require('./routers/products.routes.js'));
-        this.app.use('/codigo_barra', require('./routers/Barcode.routes.js'));
+        this.app.use('/codigo_barra', require('./routers/barcodes.routes.js'));
 
         this.app.use('/ventas', require('./routers/sales.routes.js'));
         this.app.use('/detalleVenta', require('./routers/detailSales.routes.js'));
@@ -99,7 +99,7 @@ class Server {
         return new Promise((resolve, reject) => {
             try {
                 this.httpServer.listen(this.port, () => {
-                    console.log(`\nhttp://localhost:${this.port}`);
+                    console.log(`\nhttp://${this.host}:${this.port}`);
                     resolve();
                 });
             } catch (error) {

@@ -137,7 +137,7 @@ export class CategoriesComponent implements OnInit {
         this.closeModal();
       },
       error: (error) => {
-        this.toastr.error(`Ya existe una categoria con ese nombre`,'Error')
+        this.toastr.error(error,'Error')
       }
     });
   }

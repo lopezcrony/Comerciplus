@@ -15,6 +15,9 @@ import { ShoppingsService } from './shoppings.service';
 import { ProvidersService } from '../providers/providers.service';
 import { Shopping } from './shopping.model';
 import { jsPDF } from 'jspdf';
+import { ShoppingdetailsService } from '../shoppingdetails/shoppingsDetails.service';
+import { Shoppingdetails } from '../shoppingdetails/shoppingsDetail.model';
+import { Product } from '../products/products.model';
 
 @Component({
   selector: 'app-shoppinview',
@@ -29,7 +32,7 @@ import { jsPDF } from 'jspdf';
 export class ShoppinviewComponent implements OnInit {
 
   shoppingForm: FormGroup;
-  shoppings: Shopping[] = [];
+
   filteredProducts: any[] = [];
   filteredShoppings: Shopping[] = [];
   providers: any[] = [];
@@ -37,6 +40,15 @@ export class ShoppinviewComponent implements OnInit {
   shoppingdetails: any[] = [];
   viewModal = false;
   selectedShopping: Shopping | undefined;
+
+
+  // ----pdf
+  startDates: Date = new Date();
+  endDates: Date = new Date();
+  shoppingdetailspdf: Shoppingdetails[] = [];
+  productspdf: Product[] = [];
+  shoppings: Shopping[] = [];
+
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +58,8 @@ export class ShoppinviewComponent implements OnInit {
     private productService: ProductsService,
     private toastr: ToastrService,
     private ValidationService: ValidationService,
-    private alertsService: AlertsService
+    private alertsService: AlertsService,
+    private shoppingDetailservice: ShoppingdetailsService
   ) {
     this.shoppingForm = this.fb.group({
       idProveedor: ['', Validators.required],
@@ -86,201 +99,313 @@ export class ShoppinviewComponent implements OnInit {
 
   ngOnInit() {
     this.loadAllData();
+    this.loadProducts()
+    this.loadShoppings()
+    this.loadDetailShoppings()
+
+    //  console.log('Productos:', this.productspdf); console.log('Detalles de Compra:', this.shoppingdetailspdf); console.log('Compras:', this.shoppings);
   }
 
-  openShopping() {
-    this.router.navigate(['/shoppings']); // Navega a la ruta del componente ShoppinviewComponent
+
+  loadProducts() {
+    this.productService.getAllProducts().subscribe(
+      data => { this.productspdf = data; 
+      console.log(this.productspdf);
+
+      });
+      
+  }
+  loadDetailShoppings() {
+    this.shoppingDetailservice.getAllShoppingDetails().subscribe(
+      data => { this.shoppingdetailspdf = data; 
+        console.log('detalle',this.shoppingdetailspdf);
+        
+      });
+  }
+  loadShoppings() {
+    this.shoppingService.getAllShoppings().subscribe(
+      data => { this.shoppings = data; 
+        console.log('compra',this.shoppings);
+        
+      });
   }
 
-  openShowModal(shopping: Shopping) {
-    // Asigna el producto seleccionado a una variable para usar en la vista
-    this.selectedShopping = shopping;
-    // Muestra la modal
-    this.viewModal = true;
 
-    this.shoppingService.getShoppingdetailsByShopping(shopping.idCompra).subscribe({
-      next: (data) => {
-        this.shoppingdetails = data.map(detail => {
-          const product = this.products.find(p => p.idProducto === detail.idProducto);
-          return { ...detail, nombreProducto: product ? product.nombreProducto : 'Desconocido' };
-        });
-      },
-      error: (err) => {
-        this.toastr.error('Error al cargar los detalles de compra.');
+setStartDate(date: Date)
+{
+  console.log(this.startDates)
+  this.startDates = date;
+}
+
+setEndDate(date: Date)
+{
+  console.log(this.endDates)
+  this.endDates = date;
+}
+
+openShopping() {
+  this.router.navigate(['/shoppings']); // Navega a la ruta del componente ShoppinviewComponent
+}
+
+openShowModal(shopping: Shopping) {
+  // Asigna el producto seleccionado a una variable para usar en la vista
+  this.selectedShopping = shopping;
+  // Muestra la modal
+  this.viewModal = true;
+
+  this.shoppingService.getShoppingdetailsByShopping(shopping.idCompra).subscribe({
+    next: (data) => {
+      this.shoppingdetails = data.map(detail => {
+        const product = this.products.find(p => p.idProducto === detail.idProducto);
+        return { ...detail, nombreProducto: product ? product.nombreProducto : 'Desconocido' };
+      });
+    },
+    error: (err) => {
+      this.toastr.error('Error al cargar los detalles de compra.');
+    }
+  });
+}
+
+cancelShopping(shopping: Shopping) {
+
+  this.alertsService.confirm(
+    `¿Estás seguro de anular esta compra?`,
+    () => {
+      this.shoppingService.cancelShopping(shopping.idCompra).subscribe({
+        next: () => {
+          this.loadAllData();
+          this.toastr.success('Compra anulada con éxito.', 'Éxito');
+        },
+        error: () => {
+          this.toastr.error('Error al anular la compra.', 'Error');
+        }
+      });
+    }
+  );
+}
+
+searchShopping(query: string) {
+  let lowerQuery = query.toLowerCase();
+
+  // Intenta convertir la consulta a un número
+  let numericQuery = parseFloat(query);
+
+  this.filteredShoppings = this.shoppings.filter(shopping => {
+    const proveedor = shopping as Shopping & { nombreProveedor?: string };
+
+    let idProveedor = !isNaN(numericQuery) && shopping.idProveedor != null && Number(shopping.idProveedor) === numericQuery;
+    // Comparación numérica para el stock
+    let numeroFactura = !isNaN(numericQuery) && shopping.numeroFactura != null && Number(shopping.numeroFactura) === numericQuery;
+
+    // Retorna verdadero si hay coincidencia en nombreProducto o stock
+    const matchproveedor = (proveedor.nombreProveedor || '').toLowerCase().includes(lowerQuery);
+    return idProveedor || numeroFactura || matchproveedor;
+  });
+}
+
+downloadPurchasePDF() {
+  // Si las fechas no están definidas, usar la fecha actual
+  if (!this.startDates) {
+    this.startDates = new Date();
+  }
+  if (!this.endDates) {
+    this.endDates = new Date();
+  }
+
+  // Validación de fechas
+  if (this.startDates > this.endDates) {
+    this.toastr.error('La fecha de inicio no puede ser mayor que la fecha de fin. Por favor, corrige las fechas.');
+    return;
+  }
+
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
+  const margin = 12;
+  const lineHeight = 6;
+  const columnWidth = (pageWidth - 2 * margin) / 4;
+  let yPosition = margin;
+
+  // Colores corporativos
+  const colors = {
+    primary: [0, 83, 156],
+    secondary: [100, 100, 100],
+    accent: [41, 128, 185],
+    success: [46, 204, 113],
+    container: [240, 240, 240]
+  };
+
+  const styles = {
+    title: { fontSize: 16, fontStyle: 'bold' },   
+    subtitle: { fontSize: 12, fontStyle: 'bold' }, 
+    normal: { fontSize: 9, fontStyle: 'normal' },  
+    bold: { fontSize: 9, fontStyle: 'bold' },  
+    small: { fontSize: 8, fontStyle: 'normal' }
+  };
+
+  // Funciones helper
+  const setStyle = (style: { fontSize: any; fontStyle: any; }) => {
+    doc.setFontSize(style.fontSize);
+    doc.setFont('helvetica', style.fontStyle);
+  };
+
+  const setColor = (color: number[]) => {
+    doc.setTextColor(color[0], color[1], color[2]);
+  };
+
+  // Franja de color en la parte superior (más delgada)
+  doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
+  doc.rect(0, 0, pageWidth, 15, 'F'); 
+
+  // Título del reporte
+  setStyle(styles.title);
+  setColor([255, 255, 255]);
+  doc.text('REPORTE DE COMPRAS', pageWidth / 2, yPosition, { align: 'center' });
+  yPosition += lineHeight + 6;
+
+  // Información del negocio y fecha
+  setStyle(styles.normal);
+  setColor(colors.primary);
+  doc.text('Tienda Santa Clara', margin, yPosition);
+
+  const fecha = new Date().toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+  setColor(colors.secondary);
+  doc.text(`Fecha de generación: ${fecha}`, pageWidth - margin - 50, yPosition);
+  yPosition += lineHeight * 1.5; // Reducido el espaciado
+
+  // Resumen general
+  let totalCompras = 0;
+  this.shoppings.forEach(compra => totalCompras += compra.valorCompra ?? 0);
+
+  setColor(colors.accent);
+  setStyle(styles.subtitle);
+  doc.text('Resumen General', margin, yPosition);
+  yPosition += lineHeight;
+
+  setStyle(styles.normal);
+  setColor(colors.secondary);
+  doc.text(`Total de Compras: ${this.shoppings.length}`, margin, yPosition);
+  doc.text(`Valor Total: $${totalCompras.toFixed(2)}`, pageWidth - margin - 50, yPosition);
+  yPosition += lineHeight * 1.5; // Reducido el espaciado
+
+  // Encabezado de la lista de compras
+  doc.setFillColor(colors.accent[0], colors.accent[1], colors.accent[2]);
+  doc.rect(margin, yPosition - 6, pageWidth - (margin * 2), lineHeight + 2, 'F');
+
+  setStyle(styles.subtitle);
+  setColor([255, 255, 255]);
+  doc.text('DETALLE DE COMPRAS', pageWidth / 2, yPosition, { align: 'center' });
+  yPosition += lineHeight;
+
+  // Definir el tipo PurchasesByDate
+  type PurchasesByDate = {
+    [date: string]: {
+      [productName: string]: { cantidad: number, precioUnidad: number, subtotal: number }
+    }
+  };
+
+  // Filtrar compras por el rango de fechas y asegurarse de incluir el día de hoy
+  const purchasesByDate: PurchasesByDate = this.shoppings.reduce((acc: PurchasesByDate, compra) => {
+    const purchaseDate = new Date(compra.fechaCompra);
+    purchaseDate.setHours(0, 0, 0, 0); // Ajustar horas para evitar problemas de comparación
+    this.startDates.setHours(0, 0, 0, 0);
+    this.endDates.setHours(23, 59, 59, 999); // Incluir todo el día hasta las 23:59:59
+
+    if (!compra.estadoCompra || purchaseDate < this.startDates || purchaseDate > this.endDates) return acc;
+
+    const purchaseDateString = purchaseDate.toLocaleDateString();
+    const details = this.shoppingdetailspdf.filter(d => d.idCompra === compra.idCompra);
+
+    if (!acc[purchaseDateString]) acc[purchaseDateString] = {};
+
+    details.forEach(detail => {
+      const product = this.productspdf.find(p => p.idProducto === detail.idProducto);
+      if (!product) return;
+
+      if (!acc[purchaseDateString][product.nombreProducto]) {
+        acc[purchaseDateString][product.nombreProducto] = {
+          cantidad: 0,
+          precioUnidad: 0,
+          subtotal: 0
+        };
       }
+
+      acc[purchaseDateString][product.nombreProducto].cantidad += detail.cantidadProducto;
+      acc[purchaseDateString][product.nombreProducto].precioUnidad = detail.precioCompraUnidad;
+      acc[purchaseDateString][product.nombreProducto].subtotal += detail.subtotal;
     });
-  }
 
-  cancelShopping(shopping: Shopping) {
+    return acc;
+  }, {} as PurchasesByDate);
 
-    this.alertsService.confirm(
-      `¿Estás seguro de anular esta compra?`,
-      () => {
-        this.shoppingService.cancelShopping(shopping.idCompra).subscribe({
-          next: () => {
-            this.loadAllData();
-            this.toastr.success('Compra anulada con éxito.', 'Éxito');
-          },
-          error: () => {
-            this.toastr.error('Error al anular la compra.', 'Error');
-          }
-        });
-      }
-    );
-  }
+  // Agrupar y mostrar las compras por fecha
+  Object.entries(purchasesByDate).forEach(([date, products]) => {
+    // Calcular la altura dinámica del contenedor basado en la cantidad de productos
+    const containerHeightDynamic = Object.keys(products).length * lineHeight * 3 + 20; // Ajustado para incluir el total
 
-  searchShopping(query: string) {
-    let lowerQuery = query.toLowerCase();
+    if (yPosition + containerHeightDynamic > pageHeight - margin * 3) {
+      doc.addPage();
+      yPosition = margin;
+    }
 
-    // Intenta convertir la consulta a un número
-    let numericQuery = parseFloat(query);
+    // Dibujar el contenedor con altura dinámica
+    doc.setFillColor(colors.container[0], colors.container[1], colors.container[2]);
+    doc.rect(margin + 4, yPosition, pageWidth - (margin * 2) - 8, containerHeightDynamic, 'F');
 
-    this.filteredShoppings = this.shoppings.filter(shopping => {
-      const proveedor = shopping as Shopping & { nombreProveedor?: string };
-
-      let idProveedor = !isNaN(numericQuery) && shopping.idProveedor != null && Number(shopping.idProveedor) === numericQuery;
-      // Comparación numérica para el stock
-      let numeroFactura = !isNaN(numericQuery) && shopping.numeroFactura != null && Number(shopping.numeroFactura) === numericQuery;
-
-      // Retorna verdadero si hay coincidencia en nombreProducto o stock
-      const matchproveedor = (proveedor.nombreProveedor || '').toLowerCase().includes(lowerQuery);
-      return idProveedor || numeroFactura || matchproveedor;
-    });
-  }
-
-  downloadPDF() {
-    const doc = new jsPDF(); // aquí se pone el tamaño del pdf
-    const pageWidth = doc.internal.pageSize.width;
-    const pageHeight = doc.internal.pageSize.height;
-    const margin = 12;
-    const lineHeight = 6;
-    const containerHeight = 27; 
-    let yPosition = margin;
-
-    // Colores corporativos
-    const colors = {
-      primary: [0, 83, 156],
-      secondary: [100, 100, 100],
-      accent: [41, 128, 185],
-      success: [46, 204, 113],
-      container: [240, 240, 240]
-    };
-
-    const styles = {
-      title: { fontSize: 16, fontStyle: 'bold' },   
-      subtitle: { fontSize: 12, fontStyle: 'bold' }, 
-      normal: { fontSize: 9, fontStyle: 'normal' },  
-      small: { fontSize: 8, fontStyle: 'normal' }
-    };
-
-    // Funciones helper
-    const setStyle = (style: { fontSize: any; fontStyle: any; }) => {
-      doc.setFontSize(style.fontSize);
-      doc.setFont('helvetica', style.fontStyle);
-    };
-
-    const setColor = (color: number[]) => {
-      doc.setTextColor(color[0], color[1], color[2]);
-    };
-
-    // Franja de color en la parte superior (más delgada)
-    doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
-    doc.rect(0, 0, pageWidth, 15, 'F'); 
-
-    // Título del reporte
-    setStyle(styles.title);
-    setColor([255, 255, 255]);
-    doc.text('REPORTE DE COMPRAS', pageWidth / 2, yPosition, { align: 'center' });
-    yPosition += lineHeight + 6;
-
-    // Información del negocio y fecha
-    setStyle(styles.normal);
+    // Contenido de la compra
+    setStyle(styles.subtitle);
     setColor(colors.primary);
-    doc.text('Tienda Santa Clara', margin, yPosition);
+    doc.text(`Compras del ${date}`, margin + 9, yPosition + lineHeight);
 
-    const fecha = new Date().toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+    // Ajuste dinámico de la posición `y`
+    let yOffset = yPosition + lineHeight * 2;
+
+    // Mostrar encabezado de la tabla
+    setStyle(styles.bold);
     setColor(colors.secondary);
-    doc.text(`Fecha de generación: ${fecha}`, pageWidth - margin - 50, yPosition);
-    yPosition += lineHeight * 1.5; // Reducido el espaciado
+    doc.text('Producto', margin + 9, yOffset);
+    doc.text('Cantidad', margin + columnWidth + 9, yOffset);
+    doc.text('Precio Unidad', margin + columnWidth * 2 + 9, yOffset);
+    doc.text('Subtotal', margin + columnWidth * 3 + 9, yOffset);
+    yOffset += lineHeight;
 
-    // Resumen general
-    let totalCompras = 0;
-    this.shoppings.forEach(compra => totalCompras += compra.valorCompra ?? 0);
-
-    setColor(colors.accent);
-    setStyle(styles.subtitle);
-    doc.text('Resumen General', margin, yPosition);
-    yPosition += lineHeight;
-
-    setStyle(styles.normal);
-    setColor(colors.secondary);
-    doc.text(`Total de Compras: ${this.shoppings.length}`, margin, yPosition);
-    doc.text(`Valor Total: $${totalCompras.toFixed(2)}`, pageWidth - margin - 50, yPosition);
-    yPosition += lineHeight * 1.5; // Reducido el espaciado
-
-    // Encabezado de la lista de compras
-    doc.setFillColor(colors.accent[0], colors.accent[1], colors.accent[2]);
-    doc.rect(margin, yPosition - 6, pageWidth - (margin * 2), lineHeight + 2, 'F');
-
-    setStyle(styles.subtitle);
-    setColor([255, 255, 255]);
-    doc.text('DETALLE DE COMPRAS', pageWidth / 2, yPosition, { align: 'center' });
-    yPosition += lineHeight ; 
-
-    // Lista de compras
-    this.shoppings.forEach((compra, index) => {
-      if (yPosition + containerHeight > pageHeight - margin * 3) {
-        doc.addPage();
-        yPosition = margin;
-      }
-
-      // Dibujar el contenedor con altura fija
-      doc.setFillColor(colors.container[0], colors.container[1], colors.container[2]);
-      doc.rect(margin, yPosition, pageWidth - (margin * 2), containerHeight, 'F');
-
-      // Contenido de la compra
-      setStyle(styles.subtitle);
-      setColor(colors.primary);
-      doc.text(`Compra #${compra.numeroFactura}`, margin + 5, yPosition + lineHeight);
-
+    // Iterar sobre los productos comprados
+    Object.entries(products).forEach(([productName, info]) => {
+      // Mostrar producto, cantidad, precio unidad y subtotal en una tabla
       setStyle(styles.normal);
       setColor(colors.secondary);
+      doc.text(productName, margin + 9, yOffset);
+      doc.text(info.cantidad.toString(), margin + columnWidth + 9, yOffset);
+      doc.text(`$${info.precioUnidad.toFixed(2)}`, margin + columnWidth * 2 + 9, yOffset);
+      doc.text(`$${info.subtotal.toFixed(2)}`, margin + columnWidth * 3 + 9, yOffset);
 
-      // Detalles de la compra en dos columnas
-      const col2 = pageWidth / 2 + margin;
-
-      // Columna 1
-      doc.text(`Proveedor:`, margin + 5, yPosition + lineHeight * 2);
-      doc.text(`Fecha:`, margin + 5, yPosition + lineHeight * 3);
-
-      // Columna 2
-      doc.text(`N° Factura:`, col2, yPosition + lineHeight * 2);
-      doc.text(`Valor:`, col2, yPosition + lineHeight * 3);
-
-      // Valores de la columna 1
-      setColor(colors.secondary);
-      doc.text(compra.idProveedor.toString(), margin + 30, yPosition + lineHeight * 2);
-      doc.text(new Date(compra.fechaCompra).toLocaleDateString(), margin + 30, yPosition + lineHeight * 3);
-
-      // Valores de la columna 2
-      doc.text(compra.numeroFactura.toString(), col2 + 40, yPosition + lineHeight * 2);
-      setColor(colors.success);
-      doc.text(`$${(compra.valorCompra ?? 0).toFixed(1)}`, col2 + 40, yPosition + lineHeight * 3);
-
-      yPosition += containerHeight + 4; // Espacio entre contenedores
+      // Incrementar la posición `yOffset` para el siguiente producto
+      yOffset += lineHeight;
     });
 
-    // Pie de página
-    yPosition = pageHeight - margin * 3;
-    setStyle(styles.small);
-    setColor(colors.secondary);
-    doc.text('Reporte generado automáticamente - Tienda Santa Clara', pageWidth / 2, yPosition, { align: 'center' });
-  
-    // Guardar el PDF
-    doc.save('reporte_compras.pdf');
-  }
+    // Calcular y mostrar el total de las compras del día dentro del recuadro gris
+    const totalDia = Object.values(products).reduce((sum, p) => sum + p.subtotal, 0);
+    setStyle(styles.bold);
+    setColor(colors.success);
+    doc.text(`Total del día: $${totalDia.toFixed(2)}`, pageWidth - margin - 55, yOffset);
+
+    yPosition = yOffset + lineHeight * 2 + 4; // Ajustar `yPosition` para el siguiente contenedor
+  });
+
+  // Pie de página
+  yPosition = pageHeight - margin * 3;
+  setStyle(styles.small);
+  setColor(colors.secondary);
+  doc.text('Reporte generado automáticamente - Tienda Santa Clara', pageWidth / 2, yPosition, { align: 'center' });
+
+  // Guardar el PDF
+  doc.save('informe_compras.pdf');
+}
+
+
+
 }

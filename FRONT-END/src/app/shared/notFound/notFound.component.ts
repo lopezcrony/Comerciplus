@@ -67,23 +67,7 @@ import { CommonModule } from '@angular/common';
       margin-top: 1.5rem;
     }
 
-    .home-button ::ng-deep .p-button {
-      background: white !important;
-      border-color: white !important;
-      color: #1a237e !important;
-      transition: all 0.3s ease;
-    }
-
-    .home-button ::ng-deep .p-button:hover {
-      background: #f5f5f5 !important;
-      border-color: #f5f5f5 !important;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .home-button ::ng-deep .p-button .p-button-icon {
-      color: #1a237e !important;
-    }
+    
 
     .astronaut {
       position: relative;
@@ -162,14 +146,7 @@ import { CommonModule } from '@angular/common';
       <h1 class="error-code">404</h1>
       <p class="error-message">¡Ups! Parece que te has perdido en el espacio</p>
       
-      <p-button 
-        label="Volver a Tierra" 
-        icon="pi pi-home" 
-        routerLink="/" 
-        [style]="{'font-size': '1rem', 'height': '1rem', 'padding': '1.5rem'}"
-        styleClass="p-button-rounded p-button-lg" 
-        class="home-button">
-     </p-button>
+      
 
     </div>
   `

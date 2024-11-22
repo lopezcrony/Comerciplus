@@ -175,7 +175,7 @@ export class ReturnSaleComponent implements OnInit {
         if (error.status === 500) {
           this.toastr.error('No se puede agregar', 'Error');
         } else {
-          this.toastr.error('Ocurrió un error al agregar la devolucion.', 'Error');
+          this.toastr.error('Ocurrió un error al agregar la devolucion, revise el stock.', 'Error');
         }
       }
     });

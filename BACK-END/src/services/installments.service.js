@@ -13,11 +13,11 @@ const getInstallmentsByCredit = async (idCredit) => {
 const createInstallment = async (installmentData) => {
     const transaction = await sequelize.transaction();
     try {
-        // Registra un abono
-        const newInstallment = await installmentRepository.registerInstallment(installmentData, { transaction });
-
         // Busca el crédito y valida si existe
         const credit = await creditRepository.findCreditById(installmentData.idCredito, { transaction });
+
+        // Registra un abono
+        const newInstallment = await installmentRepository.registerInstallment(installmentData, { transaction });
 
         // Actualiza el valor total crédito
         const newTotalCredit = credit.totalCredito - newInstallment.montoAbonado;

@@ -1,18 +1,15 @@
-
-
-
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-recover',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './recover.component.html',
   styleUrls: ['./recover.component.css']
 })
@@ -43,7 +40,7 @@ export class RecoverComponent {
       return;
     }
 
-    this.http.post('http://localhost:3006/recover', { correoUsuario: this.correoUsuario }).subscribe({
+    this.http.post('https://comerciplus-dggj.onrender.com/recover', { correoUsuario: this.correoUsuario }).subscribe({
       next: ( ) => {
         this.toastr.success('Se han enviado instrucciones para restablecer tu contraseña a tu correo electrónico');
         this.router.navigate(['/']);

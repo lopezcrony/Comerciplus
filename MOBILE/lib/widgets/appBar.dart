@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../screens/config.dart'; 
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -38,19 +39,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(width: 12),
           Text(
             'ComerciPlus',
-
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF2D3142),
             ),
-
-            // style: TextStyle(
-            //   color: Color(0xFF2D3748),
-            //   fontWeight: FontWeight.w600,
-            //   fontSize: 20,
-            //   letterSpacing: 1.0, // Increased letter spacing
-            // ),
           ),
         ],
       ),
@@ -112,7 +105,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 size: 28,
               ),
               onPressed: () {
-                // Perfil del administrador
+                // Navigate to User Profile Screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsScreen(),
+                    // builder: (context) => const UserProfileScreen(),
+                  ),
+                );
               },
             ),
           ),

@@ -45,7 +45,7 @@
   width: 100vw;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #E3F2FD 0%, #FFFFFF 50%, #E3F2FD 100%);
+  background: linear-gradient(to bottom right, #E3F9E5, #A8EDDF);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden;
   position: fixed;
