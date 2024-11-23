@@ -60,7 +60,7 @@ class _LoginScreenState extends State<Login>
   Future<void> userAuthentication(String email, String password) async {
   setState(() => _isLoading = true);
   try {
-    final user = await _authService.userAuthentication(email, password);
+    await _authService.userAuthentication(email, password);
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const Home()),
