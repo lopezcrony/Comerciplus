@@ -1,12 +1,12 @@
-import 'package:comerciplus/models/purchase.dart';
-import 'package:comerciplus/screens/sales.dart';
-import 'package:comerciplus/services/purchase.dart';
-import 'package:flutter/material.dart';
+import 'package:comerciplus/screens/purchaseDetails.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:comerciplus/models/purchaseDetails.dart';
-import 'package:comerciplus/services/purchaseDetails.dart';
 
+import 'package:comerciplus/models/purchase.dart';
+import 'package:comerciplus/services/purchase.dart';
+
+import '../shared/AppColors.dart';
 import '../widgets/appBar_Screens.dart';
 
 class ShoppingListScreen extends StatefulWidget {
@@ -21,6 +21,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Purchase> _filteredPurchases = [];
   List<Purchase> _allPurchases = [];
+  Map<String, List<Purchase>> purchasesByDay = {};
+
 
   @override
   void initState() {
@@ -28,10 +30,31 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     purchases = PurchaseService().getPurchases();
     purchases.then((value) {
       setState(() {
-        _allPurchases  = value;
-        _filteredPurchases  = _allPurchases;
+        _allPurchases = value;
+        _filteredPurchases = _allPurchases;
       });
     });
+  }
+
+  void _initializeData() async {
+    try {
+      // Obtiene la lista de compras desde la API
+      purchases = PurchaseService().getPurchases();
+
+      // Organiza las compras por fecha
+      setState(() {
+      purchasesByDay = {};
+      for (var p in _allPurchases) {
+        String fecha = DateFormat('yyyy-MM-dd').format(p.fechaRegistro);
+        purchasesByDay.putIfAbsent(fecha, () => []);
+        purchasesByDay[fecha]!.add(p);
+      }
+      // Inicializamos las compras filtradas con todas las compras por defecto
+      _filteredPurchases = _allPurchases;
+      });
+    } catch (error) {
+      // Manejo de errores
+    }
   }
 
   void _filterPurchases(String query) {
@@ -55,11 +78,11 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.secondary,
       appBar: const AppBarScreens(
         nameModule: 'Compras',
       ),
-      body: CustomScrollView(
+      body: 
+      CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
@@ -94,6 +117,54 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
               ),
             ),
           ),
+          
+    
+            SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+              String fecha = purchasesByDay.keys.elementAt(index);
+              List<Purchase> compras = purchasesByDay[fecha]!;
+
+              return Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+                margin: const EdgeInsets.only(
+                  bottom: 16.0, left: 16.0, right: 16.0),
+                color: Colors.white,
+                child: ExpansionTile(
+                title: Text(
+                  DateFormat('dd MMMM yyyy', 'es').format(DateTime.parse(fecha)),
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.text),
+                ),
+                children: compras.map((purchase) {
+                  return ListTile(
+                  title: Text(
+                    'Compra ${purchase.idCompra}',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.text),
+                  ),
+                  subtitle: Text(
+                    '\$${purchase.valorCompra.toStringAsFixed(2)}',
+                    style: GoogleFonts.poppins(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600),
+                  ),
+                  onTap: () => showPurchaseDetailsDialog(context, purchase),
+                  );
+                }).toList(),
+                ),
+              );
+              },
+              childCount: purchasesByDay.length,
+            ),
+            ),
+
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -106,7 +177,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       bottom: 16.0, left: 16.0, right: 16.0),
                   color: Colors.white,
                   child: InkWell(
-                    onTap: () => _showPurchaseDetails(context, purchase),
+                    onTap: () => showPurchaseDetailsDialog(context, purchase),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -133,8 +204,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                   size: 16, color: AppColors.primary),
                               const SizedBox(width: 4),
                               Text(
-                                DateFormat('dd/MM/yyyy')
-                                    .format(purchase.fechaRegistro),
+                                DateFormat('dd MMMM yyyy', 'es')
+                                          .format(purchase.fechaRegistro),
                                 style: GoogleFonts.poppins(
                                     color: AppColors.text.withOpacity(0.7)),
                               ),
@@ -159,7 +230,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: () =>
-                                  _showPurchaseDetails(context, purchase),
+                                  showPurchaseDetailsDialog(context, purchase),
                               style: TextButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 shape: RoundedRectangleBorder(
@@ -190,191 +261,6 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  void _showPurchaseDetails(BuildContext context, Purchase purchase) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: FutureBuilder<List<PurchaseDetails>>(
-          future: PurchaseDetailsService()
-              .getPurchaseDetailsByPurchaseId(purchase.idCompra),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No hay detalles disponibles.'));
-            }
-
-            List<PurchaseDetails> details = snapshot.data!;
-
-            return SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                constraints: const BoxConstraints(maxWidth: 400),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: AppColors.secondary,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(Icons.receipt_outlined,
-                                  color: AppColors.primary),
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              'Compra #${purchase.idCompra}',
-                              style: GoogleFonts.poppins(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.text,
-                              ),
-                            ),
-                          ],
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close, color: AppColors.text),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.secondary,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildDetalleRow(
-                            Icons.calendar_today,
-                            'Fecha Compra',
-                            DateFormat('dd/MM/yyyy HH:mm')
-                                .format(purchase.fechaCompra),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildDetalleRow(
-                            Icons.receipt,
-                            'Número Factura',
-                            purchase.numeroFactura.toString(),
-                          ),
-                          const SizedBox(height: 12),
-                          _buildDetalleRow(
-                            Icons.attach_money,
-                            'Total',
-                            '\$${purchase.valorCompra.toStringAsFixed(2)}',
-                          ),
-                          const SizedBox(height: 12),
-                          _buildDetalleRow(
-                            Icons.check_circle_outline,
-                            'Estado',
-                            purchase.estadoCompra ? 'Activa' : 'Inactiva',
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'Productos',
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.text,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ...details
-                        .map((item) => Card(
-                              margin: const EdgeInsets.only(bottom: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.shopping_cart,
-                                            color: AppColors.primary),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          'Producto ID: ${item.idProducto}',
-                                          style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Código de Barra: ${item.codigoBarra}',
-                                      style: GoogleFonts.poppins(),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Cantidad: ${item.cantidadProducto}',
-                                      style: GoogleFonts.poppins(),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Precio unitario: \$${item.precioCompraUnidad.toStringAsFixed(2)}',
-                                      style: GoogleFonts.poppins(),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Subtotal: \$${item.subtotal.toStringAsFixed(2)}',
-                                      style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetalleRow(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: AppColors.primary),
-        const SizedBox(width: 8),
-        Text(
-          '$label: ',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.poppins(),
-        ),
-      ],
     );
   }
 }

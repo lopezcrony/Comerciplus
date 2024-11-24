@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'screens/login.dart';
+import 'shared/AppColors.dart';
 
 void main() async {
   await dotenv.load(fileName: "assets/.env");
@@ -12,20 +13,22 @@ void main() async {
   runApp(const MainApp());
 }
 
-class MainApp extends
- StatelessWidget {
+class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        textTheme: GoogleFonts.poppinsTextTheme(
-          Theme.of(context).textTheme,
+    {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          scaffoldBackgroundColor: AppColors.background,
+          textTheme: GoogleFonts.poppinsTextTheme(
+            Theme.of(context).textTheme,
+          ),
         ),
-      ),
-      home: const Login()
-    );
+        home: const Login(),
+      );
+    }
   }
 }

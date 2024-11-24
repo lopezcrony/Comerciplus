@@ -56,113 +56,100 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
       appBar: const AppBarScreens(
         nameModule: 'Proveedores',
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFF8F9FF),
-              Color(0xFFF0F3FF),
-              Colors.white,
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Componente de búsqueda y filtro
-              SearchFilter(
-                onSearchChanged: (value) => setState(() => searchTerm = value),
-                onSortPressed: () {
-                  setState(() {
-                    isAscending = !isAscending;
-                  });
-                },
-                isAscending: isAscending,
-              ),
-              const SizedBox(height: 10),
-
-              // Lista de Proveedores
-              Expanded(
-                child: FutureBuilder<List<Provider>>(
-                  future: _futureProviders,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return const Center(
-                          child: Text('Error al cargar proveedores.'));
-                    } else if (snapshot.hasData) {
-                      final filteredProviders = _filteredProviders(snapshot.data!);
-                      return ListView.builder(
-                        itemCount: filteredProviders.length,
-                        itemBuilder: (context, index) {
-                          final proveedor = filteredProviders[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
-                            child: FutureBuilder<List<Purchase>>(
-                              future: PurchaseService()
-                                  .getPurchaseByProvider(proveedor.idProveedor),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                } else if (snapshot.hasError) {
-                                  return const Center(
-                                      child: Text(
-                                          'Error al cargar última compra.'));
-                                } else if (snapshot.hasData) {
-                                  final purchases = snapshot.data!;
-                                  if (purchases.isNotEmpty) {
-                                    final purchase = purchases[0];
-                                    return infoCard(
-                                      typeId: 'NIT',
-                                      id: proveedor.nitProveedor,
-                                      name: proveedor.nombreProveedor,
-                                      address: proveedor.direccionProveedor,
-                                      phone: proveedor.telefonoProveedor,
-                                      status: proveedor.estadoProveedor,
-                                      icon: Icons.calendar_today_outlined,
-                                      title: 'Última compra',
-                                      date: DateFormat('dd MMMM yyyy', 'es')
-                                          .format(purchase.fechaCompra),
-                                      value: NumberFormat.currency(
-                                              locale: 'es', symbol: '\$')
-                                          .format(purchase.valorCompra),
-                                    );
-                                  } else {
-                                    return infoCard(
-                                      typeId: 'NIT',
-                                      id: proveedor.nitProveedor,
-                                      name: proveedor.nombreProveedor,
-                                      address: proveedor.direccionProveedor,
-                                      phone: proveedor.telefonoProveedor,
-                                      status: proveedor.estadoProveedor,
-                                      icon: Icons.calendar_today_outlined,
-                                      title: 'Última compra',
-                                      date: 'Sin compras',
-                                      value: '0,0 \$',
-                                    );
-                                  }
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Componente de búsqueda y filtro
+            SearchFilter(
+              onSearchChanged: (value) => setState(() => searchTerm = value),
+              onSortPressed: () {
+                setState(() {
+                  isAscending = !isAscending;
+                });
+              },
+              isAscending: isAscending,
+            ),
+            const SizedBox(height: 10),
+      
+            // Lista de Proveedores
+            Expanded(
+              child: FutureBuilder<List<Provider>>(
+                future: _futureProviders,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                        child: Text('Error al cargar proveedores.'));
+                  } else if (snapshot.hasData) {
+                    final filteredProviders = _filteredProviders(snapshot.data!);
+                    return ListView.builder(
+                      itemCount: filteredProviders.length,
+                      itemBuilder: (context, index) {
+                        final proveedor = filteredProviders[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: FutureBuilder<List<Purchase>>(
+                            future: PurchaseService()
+                                .getPurchaseByProvider(proveedor.idProveedor),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return const Center(
+                                    child: Text(
+                                        'Error al cargar última compra.'));
+                              } else if (snapshot.hasData) {
+                                final purchases = snapshot.data!;
+                                if (purchases.isNotEmpty) {
+                                  final purchase = purchases[0];
+                                  return InfoCard(
+                                    typeId: 'NIT',
+                                    id: proveedor.nitProveedor,
+                                    name: proveedor.nombreProveedor,
+                                    address: proveedor.direccionProveedor,
+                                    phone: proveedor.telefonoProveedor,
+                                    status: proveedor.estadoProveedor,
+                                    icon: Icons.calendar_today_outlined,
+                                    title: 'Última compra',
+                                    date: DateFormat('dd MMMM yyyy', 'es')
+                                        .format(purchase.fechaCompra),
+                                    value: NumberFormat.currency(
+                                            locale: 'es', symbol: '\$')
+                                        .format(purchase.valorCompra),
+                                  );
+                                } else {
+                                  return InfoCard(
+                                    typeId: 'NIT',
+                                    id: proveedor.nitProveedor,
+                                    name: proveedor.nombreProveedor,
+                                    address: proveedor.direccionProveedor,
+                                    phone: proveedor.telefonoProveedor,
+                                    status: proveedor.estadoProveedor,
+                                    icon: Icons.calendar_today_outlined,
+                                    title: 'Última compra',
+                                    date: 'Sin compras',
+                                    value: '0,0 \$',
+                                  );
                                 }
-                                return const SizedBox.shrink();
-                              },
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      return const Center(
-                          child: Text('No hay proveedores disponibles.'));
-                    }
-                  },
-                ),
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
+                        child: Text('No hay proveedores disponibles.'));
+                  }
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

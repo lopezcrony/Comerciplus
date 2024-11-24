@@ -1,3 +1,4 @@
+import 'package:comerciplus/shared/AppColors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,18 +10,7 @@ class AppBarScreens extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      flexibleSpace: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFF8F9FF),
-              Color(0xFFF0F3FF),
-            ],
-          ),
-        ),
-      ),
+      backgroundColor: AppColors.background,
       title: Row(
         children: [
           const SizedBox(width: 10),

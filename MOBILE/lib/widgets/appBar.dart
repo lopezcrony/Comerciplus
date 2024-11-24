@@ -1,6 +1,7 @@
+import 'package:comerciplus/shared/AppColors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../screens/config.dart'; 
+import '../screens/config.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -9,19 +10,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.white,
-      flexibleSpace: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFF8F9FF),
-              Color(0xFFF0F3FF),
-            ],
-          ),
-        ),
-      ),
+      backgroundColor: AppColors.background,
       title: Row(
         children: [
           Container(
@@ -50,74 +39,34 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: IconButton(
-            icon: Stack(
-              children: [
-                const Icon(
-                  Icons.notifications_outlined,
-                  color: Color(0xFF2D3748),
-                  size: 32,
-                ),
-                Positioned(
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    constraints: const BoxConstraints(
-                      minWidth: 15,
-                      minHeight: 15,
-                    ),
-                    child: const Text(
-                      '3',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            onPressed: () {
-              // Implementar notificaciones
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Container(
+            margin: const EdgeInsets.only(right: 30, top: 7),
             decoration: BoxDecoration(
               border: Border.all(
-                color: const Color(0xFF2D3748).withOpacity(0.2),
-                width: 2,
+          color: const Color(0xFF2D3748).withOpacity(0.2),
+          width: 2,
               ),
               shape: BoxShape.circle,
             ),
             child: IconButton(
               icon: const Icon(
-                Icons.person_outline,
-                color: Color(0xFF2D3748),
-                size: 28,
+          Icons.person_outline,
+          color: Color(0xFF2D3748),
+          size: 28,
               ),
               onPressed: () {
-                // Navigate to User Profile Screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SettingsScreen(),
-                    // builder: (context) => const UserProfileScreen(),
-                  ),
-                );
+          // Navigate to User Profile Screen
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const SettingsScreen(),
+              // builder: (context) => const UserProfileScreen(),
+            ),
+          );
               },
             ),
           ),
         ),
-        const SizedBox(width: 8),
       ],
     );
   }

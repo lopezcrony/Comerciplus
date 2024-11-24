@@ -9,6 +9,7 @@ import 'package:comerciplus/screens/providers.dart';
 import 'package:comerciplus/screens/clients.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../shared/AppColors.dart';
 import '../widgets/scanner_button.dart';
 
 class Home extends StatelessWidget {
@@ -17,9 +18,9 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FA),
+      backgroundColor: AppColors.background,
       appBar: const CustomAppBar(),
-
+      
       // Botpón flotante para escanear
       floatingActionButton: AnimatedScannerButton(
         onPressed: () {
