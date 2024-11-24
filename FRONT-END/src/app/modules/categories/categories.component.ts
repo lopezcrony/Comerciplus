@@ -172,17 +172,15 @@ export class CategoriesComponent implements OnInit {
   }
 
   searchCategorie(query: string) {
-    const lowerCaseQuery = query.toLowerCase();
-
-    // Define el estado que estás buscando. Aquí asumo que buscas "true" en la query.
-    const isSearchingForTrue = lowerCaseQuery === 'true';
-
+    const normalizedQuery = query.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const isSearchingForTrue = normalizedQuery === 'true';
     this.filteredCategories = this.categories.filter(categorie =>
-      categorie.nombreCategoria?.toLowerCase().includes(lowerCaseQuery) ||
-      categorie.descripcionCategoria?.toLowerCase().includes(lowerCaseQuery) ||
+      categorie.nombreCategoria?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(normalizedQuery) ||
+      categorie.descripcionCategoria?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes(normalizedQuery) ||
       categorie.estadoCategoria === isSearchingForTrue
     );
   }
+  
 
   exportCategorie() { }
 

@@ -49,21 +49,21 @@
                     <form [formGroup]="categorieForm">
                         <!-- pa mostrar los campos al frenta -->
                         <div class="field-group">
-                            <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCategoria')}">
+                            <div class="field" [ngClass]="{'error': isFieldInvalidCategori('nombreCategoria')}">
                                 <label for="nombreCategoria">Nombre categoria <span style="color: #E24C4C;">*</span></label>
                                 <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria"
                                     required autofocus />
-                                <small class="p-error" *ngIf="isFieldInvalid('nombreCategoria')">
-                                    {{ getErrorMessage('nombreCategoria') }}
+                                <small class="p-error" *ngIf="isFieldInvalidCategori('nombreCategoria')">
+                                    {{ getErrorMessageCategori('nombreCategoria') }}
                                 </small>
                             </div>
 
-                            <div class="field" [ngClass]="{'error': isFieldInvalid('descripcionCategoria')}">
+                            <div class="field" [ngClass]="{'error': isFieldInvalidCategori('descripcionCategoria')}">
                                 <label for="descripcionCategoria">Descripcion</label>
                                 <input type="text" pInputText id="descripcionCategoria"
                                     formControlName="descripcionCategoria" />
-                                <small class="p-error" *ngIf="isFieldInvalid('descripcionCategoria')">
-                                    {{ getErrorMessage('descripcionCategoria') }}
+                                <small class="p-error" *ngIf="isFieldInvalidCategori('descripcionCategoria')">
+                                    {{ getErrorMessageCategori('descripcionCategoria') }}
                                 </small>
                             </div>
                         </div>
