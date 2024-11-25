@@ -18,6 +18,7 @@ import { jsPDF } from 'jspdf';
 import { ShoppingdetailsService } from '../shoppingdetails/shoppingsDetails.service';
 import { Shoppingdetails } from '../shoppingdetails/shoppingsDetail.model';
 import { Product } from '../products/products.model';
+import { Proveedor } from '../providers/providers.model';
 
 @Component({
   selector: 'app-shoppinview',
@@ -47,6 +48,7 @@ export class ShoppinviewComponent implements OnInit {
   endDates: Date = new Date();
   shoppingdetailspdf: Shoppingdetails[] = [];
   productspdf: Product[] = [];
+  provider: Proveedor[] = [];
   shoppings: Shopping[] = [];
 
 
@@ -99,6 +101,7 @@ export class ShoppinviewComponent implements OnInit {
 
   ngOnInit() {
     this.loadAllData();
+    this.loadProviders()
     this.loadProducts()
     this.loadShoppings()
     this.loadDetailShoppings()
@@ -107,39 +110,48 @@ export class ShoppinviewComponent implements OnInit {
   }
 
 
+  getNameProvider(id: number) {
+    const provider = this.providers.find(c => c.idProveedor === id);
+    return provider?.nombreProveedor || 'Proveedor no encontrado';
+  }
+
   loadProducts() {
     this.productService.getAllProducts().subscribe(
       data => { this.productspdf = data; 
-      console.log(this.productspdf);
-
       });
       
   }
+
+
+  loadProviders() {
+    this.providerService.getAllProviders().subscribe(
+      data => { this.provider = data; 
+      });
+      
+  }
+
+
   loadDetailShoppings() {
     this.shoppingDetailservice.getAllShoppingDetails().subscribe(
       data => { this.shoppingdetailspdf = data; 
-        console.log('detalle',this.shoppingdetailspdf);
-        
       });
   }
+  
+
   loadShoppings() {
     this.shoppingService.getAllShoppings().subscribe(
-      data => { this.shoppings = data; 
-        console.log('compra',this.shoppings);
-        
+      data => { this.shoppings = data;
       });
   }
 
 
 setStartDate(date: Date)
 {
-  console.log(this.startDates)
   this.startDates = date;
 }
 
 setEndDate(date: Date)
 {
-  console.log(this.endDates)
   this.endDates = date;
 }
 
@@ -185,23 +197,28 @@ cancelShopping(shopping: Shopping) {
 }
 
 searchShopping(query: string) {
-  let lowerQuery = query.toLowerCase();
+  if (!query.trim()) {
+    this.filteredShoppings = this.shoppings;
+    return;
+  }
 
-  // Intenta convertir la consulta a un número
-  let numericQuery = parseFloat(query);
+  const normalizedQuery = query.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  const numericQuery = parseFloat(query);
 
   this.filteredShoppings = this.shoppings.filter(shopping => {
-    const proveedor = shopping as Shopping & { nombreProveedor?: string };
+    const provider = shopping as Shopping & { nombreProveedor?: string };
+    const providerName = provider.nombreProveedor || this.getNameProvider(shopping.idProveedor) || '';
+    const normalizedProviderName = providerName.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
-    let idProveedor = !isNaN(numericQuery) && shopping.idProveedor != null && Number(shopping.idProveedor) === numericQuery;
-    // Comparación numérica para el stock
-    let numeroFactura = !isNaN(numericQuery) && shopping.numeroFactura != null && Number(shopping.numeroFactura) === numericQuery;
+    const numeroFactura = !isNaN(numericQuery) && 
+                          shopping.numeroFactura != null && 
+                          shopping.numeroFactura.toString().includes(query);
+    const matchProvider = normalizedProviderName.includes(normalizedQuery);
 
-    // Retorna verdadero si hay coincidencia en nombreProducto o stock
-    const matchproveedor = (proveedor.nombreProveedor || '').toLowerCase().includes(lowerQuery);
-    return idProveedor || numeroFactura || matchproveedor;
+    return numeroFactura || matchProvider;
   });
 }
+
 
 downloadPurchasePDF() {
   // Si las fechas no están definidas, usar la fecha actual
@@ -405,7 +422,4 @@ downloadPurchasePDF() {
   // Guardar el PDF
   doc.save('informe_compras.pdf');
 }
-
-
-
 }

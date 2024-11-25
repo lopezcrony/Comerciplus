@@ -20,21 +20,31 @@
                 </small>
             </div>
 
-            <div class="field" [ngClass]="{'error': isFieldInvalid('fechaCompra')}">
+            <!-- <div class="field" [ngClass]="{'error': isFieldInvalid('fechaCompra')}">
                 <label for="fechaCompra">Fecha Compra <span style="color: #E24C4C;">*</span></label>
                 <input type="date" pInputText id="fechaCompra" formControlName="fechaCompra" required autofocus />
-                <small class="p-error" *ngIf="isFieldInvalid('fechaCompra')">
-                    {{ getErrorMessage( 'fechaCompra') }}
+                <small class="p-error" *ngIf="shoppingForm.get('fechaCompra')?.hasError('fechaPosterior')">
+                    La fecha no puede ser posterior a la actual.
+                </small>
+                
+            </div> -->
+
+            <div class="field" [ngClass]="{'error': isFieldInvalid('fechaCompra')}">
+                <label for="fechaCompra" class="p-d-block">
+                    Fecha Compra <span style="color: #E24C4C;">*</span>
+                </label>
+                <input type="date" id="fechaCompra" formControlName="fechaCompra" class="p-inputtext p-d-block"
+                    style="width: 100%; height: 2.6rem;" required autofocus />
+                <small class="p-error" *ngIf="shoppingForm.get('fechaCompra')?.hasError('fechaPosterior')">
+                    La fecha no puede ser posterior a la actual.
                 </small>
             </div>
 
-            <!-- <div class="field" [ngClass]="{'error': isFieldInvalid( 'fechaCompra')}">
-                <label for="fechaCompra" class="p-d-block">Fecha Compra</label>
-                <p-calendar formControlName="fechaCompra" id="fechaCompra" [showIcon]="true" dateFormat="dd/mm/yy" required></p-calendar>
-                <small class="p-error" *ngIf="isFieldInvalid( 'fechaCompra')">
-                    {{ getErrorMessage( 'fechaCompra') }}
-                </small>
-            </div> -->
+
+
+
+
+
         </div>
 
         <div class="field-group mb-5">
@@ -66,8 +76,8 @@
                 <label for="producto">Producto <span style="color: #E24C4C;">*</span></label>
                 <div class="p-inputgroup">
                     <p-autoComplete formControlName="idProducto" [suggestions]="filteredProducts"
-                        (completeMethod)="searchProduct($event)" field="nombreProducto"
-                        placeholder="Buscar" [forceSelection]="true" styleClass="w-full">
+                        (completeMethod)="searchProduct($event)" field="nombreProducto" placeholder="Buscar"
+                        [forceSelection]="true" styleClass="w-full">
                     </p-autoComplete>
                 </div>
                 <small class="p-error" *ngIf="isFieldInvalid('idProducto')">
@@ -76,21 +86,24 @@
             </div>
             <div class="field" [ngClass]="{'error': isFieldInvalid('codigoBarra')}">
                 <label for="codigoBarra">Código de Barra <span style="color: #E24C4C;">*</span></label>
-                <input type="text" formControlName="codigoBarra" (input)="validateNumberCodeBarInput($event, 'codigoBarra')" pInputText>
+                <input type="text" formControlName="codigoBarra"
+                    (input)="validateNumberCodeBarInput($event, 'codigoBarra')" pInputText>
                 <small class="p-error" *ngIf="isFieldInvalid('codigoBarra')">
                     {{ getErrorMessage('codigoBarra') }}
                 </small>
             </div>
             <div class="field" [ngClass]="{'error': isFieldInvalid('cantidadProducto')}">
                 <label for="cantidadProducto">Cantidad <span style="color: #E24C4C;">*</span></label>
-                <input type="number" formControlName="cantidadProducto" (input)="validateNumberInput($event, 'cantidadProducto'); calculateSubtotal(i)" pInputText>
+                <input type="number" formControlName="cantidadProducto"
+                    (input)="validateNumberInput($event, 'cantidadProducto'); calculateSubtotal(i)" pInputText>
                 <small class="p-error" *ngIf="isFieldInvalid('cantidadProducto')">
                     {{ getErrorMessage('cantidadProducto') }}
                 </small>
             </div>
             <div class="field" [ngClass]="{'error': isFieldInvalid('precioCompraUnidad')}">
                 <label for="precioCompraUnidad">Precio x Unidad <span style="color: #E24C4C;">*</span></label>
-                <input type="number" formControlName="precioCompraUnidad" (input)="validateNumberInput($event, 'precioCompraUnidad'); calculateSubtotal(i)" pInputText>
+                <input type="number" formControlName="precioCompraUnidad"
+                    (input)="validateNumberInput($event, 'precioCompraUnidad'); calculateSubtotal(i)" pInputText>
                 <small class="p-error" *ngIf="isFieldInvalid('precioCompraUnidad')">
                     {{ getErrorMessage('precioCompraUnidad') }}
                 </small>
@@ -100,21 +113,23 @@
                 <input type="text" formControlName="subtotal" pInputText readonly>
             </div>
             <div class="field">
-                <button type="button" (click)="addShoppingDetail()" class="p-button p-button-secondary mr-3" pTooltip="Agregar producto">
+                <button type="button" (click)="addShoppingDetail()" class="p-button p-button-secondary mr-3"
+                    pTooltip="Agregar producto">
                     <i class="pi pi-plus"></i>
                 </button>
                 <!-- Agregar la condición aquí para mostrar el botón de eliminar solo si hay más de un detalle -->
-                <button type="button" *ngIf="shoppingDetailArray.length > 1" (click)="removeShoppingDetail(i)" class="p-button p-button-danger mt-5" pTooltip="Eliminar producto">
+                <button type="button" *ngIf="shoppingDetailArray.length > 1" (click)="removeShoppingDetail(i)"
+                    class="p-button p-button-danger mt-5" pTooltip="Eliminar producto">
                     <i class="pi pi-trash"></i>
                 </button>
             </div>
         </div>
     </div>
-    
-    
 
 
 
-    
+
+
+
     <button type="submit" class="p-button p-button-success mt-3">Guardar Compra</button>
 </form>

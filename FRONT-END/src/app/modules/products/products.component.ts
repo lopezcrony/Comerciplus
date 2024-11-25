@@ -107,8 +107,7 @@ export class ProductsComponent implements OnInit {
     forkJoin({
       categories: this.categorieService.getAllCategories(),
       products: this.productService.getAllProducts()
-    }).subscribe({
-      next: ({ categories, products }) => {
+    }).subscribe({next: ({ categories, products }) => {
         this.categories = categories;
         this.filteredCategories = categories.filter(category => category.estadoCategoria === true);
         this.products = products.map(product => {
@@ -212,6 +211,20 @@ export class ProductsComponent implements OnInit {
     });
   };
 
+  isFieldInvalidCategori(fieldName: string): boolean {
+    const field = this.categorieForm.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  }
+
+  getErrorMessageCategori(fieldName: string): string {
+    const control = this.categorieForm.get(fieldName);
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('categories', fieldName, errorKey);
+    }
+    return '';
+  }
+
   saveProduct() {
     // Si es edición, deshabilita los campos que no deben ser modificados.
     if (this.isEditing) {
@@ -280,23 +293,20 @@ export class ProductsComponent implements OnInit {
   exportProduct() { }
 
   searchProduct(query: string) {
-    let lowerCaseQuery = query.toLowerCase();
-    let lowerQuery = query.toLowerCase();
-    // Intenta convertir la consulta a un número
-    let numericQuery = parseFloat(query);
-
+    let normalizedQuery = query.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  
     this.filteredProducts = this.products.filter(product => {
-      let nombreProductoMatch = product.nombreProducto?.toLowerCase().includes(lowerCaseQuery);
-      const categoriaproduct= product as Product & { nombreCategoria?: string };
-
-      // Comparación numérica para el stock
+      let normalizedNombreProducto = product.nombreProducto?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      const categoriaproduct = product as Product & { nombreCategoria?: string };
+      let normalizedCategoria = (categoriaproduct.nombreCategoria || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      let numericQuery = parseFloat(query);
+      let nombreProductoMatch = normalizedNombreProducto?.includes(normalizedQuery);
+      let matchcategoriaproduct = normalizedCategoria.includes(normalizedQuery);
       let stockMatch = !isNaN(numericQuery) && product.stock != null && Number(product.stock) === numericQuery;
-      // Retorna verdadero si hay coincidencia en nombreProducto o stock
-      const matchcategoriaproduct = (categoriaproduct.nombreCategoria || '').toLowerCase().includes(lowerQuery);
       return nombreProductoMatch || stockMatch || matchcategoriaproduct;
-
     });
   }
+  
 
   changeProductStatus(updatedProduct: Product) {
     const estadoProducto = updatedProduct.estadoProducto ?? false;
