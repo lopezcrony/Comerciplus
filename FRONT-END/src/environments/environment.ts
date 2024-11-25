@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    // apiUrl: 'http://localhost:3006',
+    // apiUrl: 'http://mysql-457bf77-comerciplus1.e.aivencloud.com' // API Local
     apiUrl:'https://comerciplus-dggj.onrender.com'
   };
   

@@ -120,6 +120,7 @@ export class CreditsComponent implements OnInit {
   private markFormFieldsAsTouched() {
     Object.values(this.installmentForm.controls).forEach(control => control.markAsTouched());
   }
+
   calculateRemainingBalance(): number {
     const totalCredito = this.installmentForm.get('totalCredito')?.value || 0;
     const montoAbonado = this.installmentForm.get('montoAbonado')?.value || 0;
@@ -150,7 +151,6 @@ export class CreditsComponent implements OnInit {
     const lowerQuery = query.toLowerCase();
   
     this.filteredCredits = this.credits.filter(credit => {
-      // Asegúrate de que 'credit' tiene 'nombreCliente'
       const creditWithClientName = credit as Credit & { nombreCliente?: string };
       const creditWithClientId = credit as Credit & { cedulaCliente?: string };
   
@@ -202,9 +202,5 @@ export class CreditsComponent implements OnInit {
       `¿Estás seguro de anular el abono?`,
       () => this.cancelInstallment(installment.idAbono)
     );
-  }
-
-  exportCredits() {
-    // Implementar lógica de exportación
   }
 }

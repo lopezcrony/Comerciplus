@@ -30,8 +30,8 @@ const createClient = async (ClientData) => {
 
         return newClient;
     } catch (error) {
-        if (error.name === 'SequelizeUniqueConstraintError') {
-            throw new Error('Ya existe un cliente con esa información.');
+        if (error.message.includes('cedulaCliente')) {
+            throw new Error('Ya existe un cliente con esa cédula.');
         }
         throw error;
     }
@@ -41,11 +41,11 @@ const updateClient = async (id, ClientData) => {
     try {
         const result = await clientRepository.updateClient(id, ClientData);
         if (!result) {
-            throw new Error('SERVICE: No se pudo actualizar la información del cliente.');
+            throw new Error('No se pudo actualizar la información del cliente.');
         }
     } catch (error) {
-        if (error.name === 'SequelizeUniqueConstraintError') {
-            throw new Error('La cédula del cliente ya está registrada.');
+        if (error.message.includes('cedulaCliente')) {
+            throw new Error('Ya existe un cliente con esa cédula.');
         }
         throw error;
     }
@@ -55,14 +55,13 @@ const updateClientStatus  = async (id, status) => {
     try {
         const result = await clientRepository.updateClientStatus(id, status);
         if (!result) {
-            throw new Error('SERVICE: No se pudo actualizar el estado del cliente');
+            throw new Error('No se pudo actualizar el estado del cliente');
         }
         return result;
     } catch (error) {
-        throw new Error('SERVICE: Error al cambiar el estado del cliente: ' + error.message);
+        throw new Error('Error al cambiar el estado del cliente: ' + error.message);
     }
 }
-
 
 
 const deleteOneClient = async (id) => {

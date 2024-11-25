@@ -1,7 +1,5 @@
-// src/app/validations/validation.service.ts
-
 import { Injectable } from '@angular/core';
-import { ValidatorFn, Validators, AbstractControl } from '@angular/forms';
+import { ValidatorFn, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { validationsConfig } from './validations.config';
 import { validationPatterns } from './validation.patterns';
 import {
@@ -19,17 +17,6 @@ export class ValidationService {
   private patterns: ValidationPatterns = validationPatterns;
 
   constructor() { }
-
-
-  // funcion para validar fechas
-    dateValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const value = control.value;
-      const isValidDate = !isNaN(Date.parse(value));
-      return isValidDate ? null : { invalidDate: { value: control.value } };
-    };
-  }
-  // fin funcion para validar fechas
 
   getValidatorsForField(module: string, fieldName: string): ValidatorFn[] {
     const fieldConfig = this.getFieldConfig(module, fieldName);
@@ -66,8 +53,12 @@ export class ValidationService {
         return Validators.pattern(pattern);
       case 'min':
         return Validators.min(rule.value);
+      case 'max':
+        return Validators.max(rule.value);
       case 'custom':
-        return rule.validator || (() => null);
+        return (control: AbstractControl): ValidationErrors | null => {
+          return rule.validator ? rule.validator(control) : null;
+        };
       default:
         return () => null;
     }

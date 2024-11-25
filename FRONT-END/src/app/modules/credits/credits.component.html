@@ -15,7 +15,6 @@
   [actions]="false" 
   (installment)="openModal($event)" 
   (detail)="openHistoryModal($event)"
-  (export)="exportCredits()" 
   (search)="searchCredits($event)">
 </app-crud>
 
@@ -34,7 +33,7 @@
       </div>
       <div class="field">
         <label for="montoAbonado">Monto a abonar</label>
-        <p-inputNumber id="montoAbonado" formControlName="montoAbonado" mode="decimal" currency="USD" locale="en-US" [min]="1" [max]="installmentForm.get('totalCredito')?.value"></p-inputNumber>
+        <p-inputNumber id="montoAbonado" formControlName="montoAbonado" mode="decimal" currency="USD" locale="en-US" [min]="50"></p-inputNumber>
         <small class="p-error" *ngIf="isFieldInvalid('montoAbonado')">
           {{ getErrorMessage('montoAbonado') }}
         </small>
