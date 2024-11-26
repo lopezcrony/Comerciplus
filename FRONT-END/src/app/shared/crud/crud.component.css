@@ -1,3 +1,5 @@
+@import "primeicons/primeicons.css";
+
 .container-crud {
   display: flex;
   justify-content: space-between;
@@ -126,3 +128,36 @@
   background-color: rgba(108, 117, 125, 0.15);
   color: #6c757d;
 }
+
+/* -----------------Modal para la descarga de informes -------------------------------- */
+
+/* Contenedor para los campos */
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Campo de calendario alineado debajo del título */
+.calendar-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Evitar que el calendario se abra automáticamente */
+.p-dialog .p-calendar .p-inputtext:focus {
+  outline: none;
+}
+
+.p-calendar-overlay {
+  display: none !important;
+}
+
+.p-calendar .p-inputtext:hover + .p-calendar-overlay {
+  display: block !important;
+}
+
+
+
+
