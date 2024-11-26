@@ -235,6 +235,9 @@ downloadPurchasePDF() {
     return;
   }
 
+  // Ordenar las compras por fecha, de más nueva a más antigua
+  const sortedShoppings = this.shoppings.sort((a, b) => new Date(b.fechaCompra).getTime() - new Date(a.fechaCompra).getTime());
+
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
   const pageHeight = doc.internal.pageSize.height;
@@ -253,10 +256,10 @@ downloadPurchasePDF() {
   };
 
   const styles = {
-    title: { fontSize: 16, fontStyle: 'bold' },   
-    subtitle: { fontSize: 12, fontStyle: 'bold' }, 
-    normal: { fontSize: 9, fontStyle: 'normal' },  
-    bold: { fontSize: 9, fontStyle: 'bold' },  
+    title: { fontSize: 16, fontStyle: 'bold' },
+    subtitle: { fontSize: 12, fontStyle: 'bold' },
+    normal: { fontSize: 9, fontStyle: 'normal' },
+    bold: { fontSize: 9, fontStyle: 'bold' },
     small: { fontSize: 8, fontStyle: 'normal' }
   };
 
@@ -272,7 +275,7 @@ downloadPurchasePDF() {
 
   // Franja de color en la parte superior (más delgada)
   doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
-  doc.rect(0, 0, pageWidth, 15, 'F'); 
+  doc.rect(0, 0, pageWidth, 15, 'F');
 
   // Título del reporte
   setStyle(styles.title);
@@ -296,7 +299,7 @@ downloadPurchasePDF() {
 
   // Resumen general
   let totalCompras = 0;
-  this.shoppings.forEach(compra => totalCompras += compra.valorCompra ?? 0);
+  sortedShoppings.forEach(compra => totalCompras += compra.valorCompra ?? 0);
 
   setColor(colors.accent);
   setStyle(styles.subtitle);
@@ -305,7 +308,7 @@ downloadPurchasePDF() {
 
   setStyle(styles.normal);
   setColor(colors.secondary);
-  doc.text(`Total de Compras: ${this.shoppings.length}`, margin, yPosition);
+  doc.text(`Total de Compras: ${sortedShoppings.length}`, margin, yPosition);
   doc.text(`Valor Total: $${totalCompras.toFixed(2)}`, pageWidth - margin - 50, yPosition);
   yPosition += lineHeight * 1.5; // Reducido el espaciado
 
@@ -326,7 +329,7 @@ downloadPurchasePDF() {
   };
 
   // Filtrar compras por el rango de fechas y asegurarse de incluir el día de hoy
-  const purchasesByDate: PurchasesByDate = this.shoppings.reduce((acc: PurchasesByDate, compra) => {
+  const purchasesByDate: PurchasesByDate = sortedShoppings.reduce((acc: PurchasesByDate, compra) => {
     const purchaseDate = new Date(compra.fechaCompra);
     purchaseDate.setHours(0, 0, 0, 0); // Ajustar horas para evitar problemas de comparación
     this.startDates.setHours(0, 0, 0, 0);
@@ -422,4 +425,6 @@ downloadPurchasePDF() {
   // Guardar el PDF
   doc.save('informe_compras.pdf');
 }
+
+
 }
