@@ -265,6 +265,17 @@ export class ShoppingsComponent implements OnInit {
     return !!(field?.invalid && (field.touched || field.dirty));
   }
 
+  isFieldEmpty(fieldName: string): boolean {
+    const field = this.shoppingForm.get(fieldName);
+    return !field?.value; // Retorna true si el valor es null, undefined o una cadena vacía
+  }
+
+  isFieldEmptyDetail(fieldName: string): boolean {
+    const field = this.shoppingDetailArray.get(fieldName);
+    return !field?.value; // Retorna true si el valor es null, undefined o una cadena vacía
+  }
+
+
   getErrorMessage(fieldName: string): string {
     const control = this.shoppingForm.get(fieldName);
     if (control?.errors) {

@@ -8,7 +8,9 @@
     <div formGroupName="shopping">
         <div class="field-group">
             <div class="field" [ngClass]="{'error': isFieldInvalid('idProveedor')}">
-                <label for="proveedor">Proveedor <span style="color: #E24C4C;">*</span></label>
+                <label for="proveedor">Proveedor
+                    <span *ngIf="isFieldEmpty('idProveedor')" class="required">*</span>
+                </label>
                 <div class="p-inputgroup">
                     <p-dropdown [options]="providers" formControlName="idProveedor" optionLabel="nombreProveedor"
                         optionValue="idProveedor" placeholder="Seleccionar proveedor" [virtualScroll]="false"
@@ -31,7 +33,8 @@
 
             <div class="field" [ngClass]="{'error': isFieldInvalid('fechaCompra')}">
                 <label for="fechaCompra" class="p-d-block">
-                    Fecha Compra <span style="color: #E24C4C;">*</span>
+                    Fecha Compra 
+                    <span *ngIf="isFieldEmpty('fechaCompra')" class="required">*</span>
                 </label>
                 <input type="date" id="fechaCompra" formControlName="fechaCompra" class="p-inputtext p-d-block"
                     style="width: 100%; height: 2.6rem;" required autofocus />
@@ -49,7 +52,9 @@
 
         <div class="field-group mb-5">
             <div class="field" [ngClass]="{'error': isFieldInvalid( 'numeroFactura')}">
-                <label for="numeroFactura">Número Factura <span style="color: #E24C4C;">*</span></label>
+                <label for="numeroFactura">Número Factura 
+                    <span *ngIf="isFieldEmpty('numeroFactura')" class="required">*</span>
+                </label>
                 <input type="text" pInputText id="numeroFactura" formControlName="numeroFactura" required autofocus />
                 <small class="p-error" *ngIf="isFieldInvalid( 'numeroFactura')">
                     {{ getErrorMessage( 'numeroFactura') }}

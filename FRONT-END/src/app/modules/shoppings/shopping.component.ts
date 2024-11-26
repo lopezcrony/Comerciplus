@@ -100,20 +100,21 @@ export class ShoppinviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadAllData();
     this.loadProviders()
-    this.loadProducts()
     this.loadShoppings()
+    this.loadAllData();
+    this.loadProducts()
     this.loadDetailShoppings()
 
     //  console.log('Productos:', this.productspdf); console.log('Detalles de Compra:', this.shoppingdetailspdf); console.log('Compras:', this.shoppings);
   }
 
 
-  getNameProvider(id: number) {
-    const provider = this.providers.find(c => c.idProveedor === id);
+  getNameProvider(id: number): string {
+    const provider = this.providers.find(p => p.idProveedor === id);
     return provider?.nombreProveedor || 'Proveedor no encontrado';
   }
+  
 
   loadProducts() {
     this.productService.getAllProducts().subscribe(
@@ -139,10 +140,15 @@ export class ShoppinviewComponent implements OnInit {
   
 
   loadShoppings() {
-    this.shoppingService.getAllShoppings().subscribe(
-      data => { this.shoppings = data;
-      });
+    this.shoppingService.getAllShoppings().subscribe(data => {
+      this.shoppings = data.map(shopping => ({
+        ...shopping,
+        nombreProveedor: this.getNameProvider(shopping.idProveedor) // Agregar nombre del proveedor
+      }));
+      this.filteredShoppings = [...this.shoppings]; // Inicializar la lista filtrada
+    });
   }
+  
 
 
 setStartDate(date: Date)
@@ -214,10 +220,10 @@ searchShopping(query: string) {
                           shopping.numeroFactura != null && 
                           shopping.numeroFactura.toString().includes(query);
     const matchProvider = normalizedProviderName.includes(normalizedQuery);
-
     return numeroFactura || matchProvider;
   });
 }
+
 
 
 downloadPurchasePDF() {
