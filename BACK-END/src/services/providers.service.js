@@ -20,8 +20,10 @@ const createProvider = async (providerData) => {
     try {
         return await providerRepository.createProvider(providerData);
     } catch (error) {
-        if (error.name === 'SequelizeUniqueConstraintError') {
-            throw new Error('Ya existe un proveedor con esa información.');
+        if (error.message.includes('NIT')) {
+            throw new Error('Ya existe un proveedor con ese NIT.');
+        } else if (error.message.includes('nombreProveedor')) {
+            throw new Error('Ya existe un proveedor con ese nombre.');
         }
         throw error;
     }

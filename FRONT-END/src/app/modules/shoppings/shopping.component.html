@@ -11,8 +11,9 @@
  [canSeeDetail]="true"
  [canStatus]="true" 
  [canCancel]="true"
- [calendar]="true"
-
+ [canExport]="false"
+ [PDF]="true"
+ 
  (calendarField1)="setStartDate($event)"
  (calendarField2)="setEndDate($event)"
  (create)="openShopping()"

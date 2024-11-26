@@ -14,25 +14,18 @@ const createClient = async (clientData) => {
 
 const updateClient = async (id, clientData) => {
     const client = await findClientById(id);
-    if (client) {
-        return await client.update(clientData);
-    }
+    if (client) { return await client.update(clientData); }
     throw new Error('Cliente no encontrado');
 };
 
 const updateClientStatus = async (id, status) => {
-
     const client = await findClientById(id);
-    if (client) {
-        return await client.update({estadoCliente : status});
-    }
+    if (client) { return await client.update({ estadoCliente : status }); }
     throw new Error('REPOSITORY: Cliente no encontrado');
 };
 
 const deleteClient = async (id) => {
-    const result = await Client.destroy({
-        where: { idCliente: id }
-    });
+    const result = await Client.destroy({ where: { idCliente: id } });
     return result;
 };
 

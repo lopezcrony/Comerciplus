@@ -59,8 +59,8 @@ private handleError(error: HttpErrorResponse) {
       errorMessage = `Error: ${error.error.message}`;
     } else {
       // Error del lado del servidor
-      errorMessage = `Error: ${error.error.message}`;
+      errorMessage = `Error: ${error.message}`;
     }
-    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
+    return throwError(() => new Error(errorMessage));
   }
 }
