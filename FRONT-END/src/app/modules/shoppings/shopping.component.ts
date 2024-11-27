@@ -254,12 +254,13 @@ downloadPurchasePDF() {
 
   // Colores corporativos
   const colors = {
-    primary: [0, 83, 156],
-    secondary: [100, 100, 100],
-    accent: [41, 128, 185],
-    success: [46, 204, 113],
-    container: [240, 240, 240]
-  };
+    primary: [0, 0, 0],        // Negro (texto principal)
+    secondary: [128, 128, 128], // Gris medio (subtítulos, líneas)
+    accent: [192, 192, 192],    // Gris claro (detalles o fondos)
+    success: [64, 64, 64],      // Gris oscuro (enfatizar información)
+    container: [255, 255, 255]  // Blanco (fondos)
+};
+
 
   const styles = {
     title: { fontSize: 16, fontStyle: 'bold' },
