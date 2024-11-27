@@ -29,7 +29,8 @@ p-dropdown {
     width: 100%;
 }
 
-input[pInputText], p-calendar {
+input[pInputText],
+p-calendar {
     width: 100%;
 }
 
@@ -47,11 +48,21 @@ input[pInputText], p-calendar {
     background-color: #4caf50;
     border: none;
 }
+
 .divider {
-    height: 4px; /* Más grosor */
-    background-color: #ccc; /* Color de la línea */
-    margin: 40px 0; /* Más espacio arriba y abajo */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombreado suave */
-    border-radius: 2px; /* Esquinas redondeadas para suavizar la línea */
-  }
-  
+    height: 4px;
+    /* Más grosor */
+    background-color: #ccc;
+    /* Color de la línea */
+    margin: 40px 0;
+    /* Más espacio arriba y abajo */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombreado suave */
+    border-radius: 2px;
+    /* Esquinas redondeadas para suavizar la línea */
+}
+
+.required {
+    color: #E24C4C;
+    margin-left: 5px;
+}

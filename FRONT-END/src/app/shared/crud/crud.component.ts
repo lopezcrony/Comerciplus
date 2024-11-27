@@ -5,6 +5,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { SHARED_IMPORTS } from '../shared-imports';
 import { AlertsService } from '../alerts/alerts.service';
 import { ProductsService } from '../../modules/products/products.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-crud',
@@ -13,11 +14,12 @@ import { ProductsService } from '../../modules/products/products.service';
     CommonModule,
     CalendarModule,
     ...SHARED_IMPORTS,
+    
   ],
   templateUrl: './crud.component.html',
   styleUrl: './crud.component.css'
 })
-export class CRUDComponent {
+export class CRUDComponent{
 
   // Configuraciones de la tabla y permisos
   @Input() canSeeDetail: boolean = true;
@@ -29,6 +31,8 @@ export class CRUDComponent {
   @Input() canEdit: boolean = true;
   @Input() canChangeStatus: boolean = false;
   @Input() canStatus: boolean = false;
+  @Input() PDF: boolean = false;
+
 
   @Input() img: boolean = false;
   @Input() canInstallment: boolean = false;
@@ -43,10 +47,6 @@ export class CRUDComponent {
   @Input() items: any[] = [];
   @Input() columns: { field: string, header: string, type: string }[] = [];
   @Input() statusField: string = 'estado';
-
-
-
-
 
   // Funciones del CRUD
   @Output() create = new EventEmitter<void>();
@@ -67,19 +67,32 @@ export class CRUDComponent {
 
   calendarField1Value: Date = new Date(); // Inicializando aquí 
   calendarField2Value: Date = new Date();  
+  displayModal = false;
 
   constructor(
     private alertsService: AlertsService,
-    private productService: ProductsService
-    
+    private productService: ProductsService,
+    private toastr: ToastrService,
   ) { }
 
+  showModal() { this.displayModal = true; }
+
+  
   onCreate() {
     this.create.emit();
   }
 
   onExport() {
     this.export.emit();
+  }
+
+  onExportDate() {
+    if (!this.calendarField1Value || !this.calendarField2Value) {
+      this.toastr.error('Por favor selecciona ambas fechas.');
+      return;
+    }
+    this.export.emit();
+    this.displayModal = false;
   }
 
   onEdit(item: any) {
@@ -123,12 +136,18 @@ export class CRUDComponent {
     return item[this.statusField];
   }
 
-  getDateStart(event: any) 
-  { this.calendarField1.emit(this.calendarField1Value); } 
-
-  getDateEnd(event: any) 
-  { this.calendarField2.emit(this.calendarField2Value); }
-
+  getDateStart(event: any) { 
+    if (this.calendarField1Value) {
+      this.calendarField1.emit(this.calendarField1Value);
+    }
+  }
+  
+  getDateEnd(event: any) { 
+    if (this.calendarField2Value) {
+      this.calendarField2.emit(this.calendarField2Value);
+    }
+  }
+  
   confirmChangeStatus(item: any) {
     this.alertsService.confirm(
       `¿Estás seguro de cambiar el estado?`,

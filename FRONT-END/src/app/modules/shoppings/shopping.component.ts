@@ -100,20 +100,21 @@ export class ShoppinviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadAllData();
     this.loadProviders()
-    this.loadProducts()
     this.loadShoppings()
+    this.loadAllData();
+    this.loadProducts()
     this.loadDetailShoppings()
 
     //  console.log('Productos:', this.productspdf); console.log('Detalles de Compra:', this.shoppingdetailspdf); console.log('Compras:', this.shoppings);
   }
 
 
-  getNameProvider(id: number) {
-    const provider = this.providers.find(c => c.idProveedor === id);
+  getNameProvider(id: number): string {
+    const provider = this.providers.find(p => p.idProveedor === id);
     return provider?.nombreProveedor || 'Proveedor no encontrado';
   }
+  
 
   loadProducts() {
     this.productService.getAllProducts().subscribe(
@@ -139,10 +140,15 @@ export class ShoppinviewComponent implements OnInit {
   
 
   loadShoppings() {
-    this.shoppingService.getAllShoppings().subscribe(
-      data => { this.shoppings = data;
-      });
+    this.shoppingService.getAllShoppings().subscribe(data => {
+      this.shoppings = data.map(shopping => ({
+        ...shopping,
+        nombreProveedor: this.getNameProvider(shopping.idProveedor) // Agregar nombre del proveedor
+      }));
+      this.filteredShoppings = [...this.shoppings]; // Inicializar la lista filtrada
+    });
   }
+  
 
 
 setStartDate(date: Date)
@@ -214,10 +220,10 @@ searchShopping(query: string) {
                           shopping.numeroFactura != null && 
                           shopping.numeroFactura.toString().includes(query);
     const matchProvider = normalizedProviderName.includes(normalizedQuery);
-
     return numeroFactura || matchProvider;
   });
 }
+
 
 
 downloadPurchasePDF() {
@@ -234,6 +240,9 @@ downloadPurchasePDF() {
     this.toastr.error('La fecha de inicio no puede ser mayor que la fecha de fin. Por favor, corrige las fechas.');
     return;
   }
+
+  // Ordenar las compras por fecha, de más nueva a más antigua
+  const sortedShoppings = this.shoppings.sort((a, b) => new Date(b.fechaCompra).getTime() - new Date(a.fechaCompra).getTime());
 
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
@@ -253,10 +262,10 @@ downloadPurchasePDF() {
   };
 
   const styles = {
-    title: { fontSize: 16, fontStyle: 'bold' },   
-    subtitle: { fontSize: 12, fontStyle: 'bold' }, 
-    normal: { fontSize: 9, fontStyle: 'normal' },  
-    bold: { fontSize: 9, fontStyle: 'bold' },  
+    title: { fontSize: 16, fontStyle: 'bold' },
+    subtitle: { fontSize: 12, fontStyle: 'bold' },
+    normal: { fontSize: 9, fontStyle: 'normal' },
+    bold: { fontSize: 9, fontStyle: 'bold' },
     small: { fontSize: 8, fontStyle: 'normal' }
   };
 
@@ -272,7 +281,7 @@ downloadPurchasePDF() {
 
   // Franja de color en la parte superior (más delgada)
   doc.setFillColor(colors.primary[0], colors.primary[1], colors.primary[2]);
-  doc.rect(0, 0, pageWidth, 15, 'F'); 
+  doc.rect(0, 0, pageWidth, 15, 'F');
 
   // Título del reporte
   setStyle(styles.title);
@@ -296,7 +305,7 @@ downloadPurchasePDF() {
 
   // Resumen general
   let totalCompras = 0;
-  this.shoppings.forEach(compra => totalCompras += compra.valorCompra ?? 0);
+  sortedShoppings.forEach(compra => totalCompras += compra.valorCompra ?? 0);
 
   setColor(colors.accent);
   setStyle(styles.subtitle);
@@ -305,7 +314,7 @@ downloadPurchasePDF() {
 
   setStyle(styles.normal);
   setColor(colors.secondary);
-  doc.text(`Total de Compras: ${this.shoppings.length}`, margin, yPosition);
+  doc.text(`Total de Compras: ${sortedShoppings.length}`, margin, yPosition);
   doc.text(`Valor Total: $${totalCompras.toFixed(2)}`, pageWidth - margin - 50, yPosition);
   yPosition += lineHeight * 1.5; // Reducido el espaciado
 
@@ -326,7 +335,7 @@ downloadPurchasePDF() {
   };
 
   // Filtrar compras por el rango de fechas y asegurarse de incluir el día de hoy
-  const purchasesByDate: PurchasesByDate = this.shoppings.reduce((acc: PurchasesByDate, compra) => {
+  const purchasesByDate: PurchasesByDate = sortedShoppings.reduce((acc: PurchasesByDate, compra) => {
     const purchaseDate = new Date(compra.fechaCompra);
     purchaseDate.setHours(0, 0, 0, 0); // Ajustar horas para evitar problemas de comparación
     this.startDates.setHours(0, 0, 0, 0);
@@ -422,4 +431,6 @@ downloadPurchasePDF() {
   // Guardar el PDF
   doc.save('informe_compras.pdf');
 }
+
+
 }

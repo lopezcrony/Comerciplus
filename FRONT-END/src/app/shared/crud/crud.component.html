@@ -5,13 +5,66 @@
         class="p-button-success p-button-rounded p-button-outlined" (click)="onCreate()"></button>
       <button *ngIf="canExport" pButton pRipple label="Descargar" icon="pi pi-download"
         class="p-button-help p-button-rounded p-button-outlined" (click)="onExport()"></button>
-<div *ngIf="calendar">
-  <p-calendar [(ngModel)]="calendarField1Value" [showIcon]="true" [dateFormat]="'dd/mm/yy'" (onSelect)="getDateStart($event)" placeholder="Fecha de inicio"></p-calendar>
-  <p-calendar [(ngModel)]="calendarField2Value" [showIcon]="true" [dateFormat]="'dd/mm/yy'" (onSelect)="getDateEnd($event)" placeholder="Fecha de fin"></p-calendar>
-</div>
 
+      <button *ngIf="PDF" pButton pRipple label="Informe" icon="pi pi-file-pdf"
+        class="p-button-primary p-button-rounded p-button-outlined" (click)="showModal()"></button>
 
-       
+        <p-dialog header="Seleccionar rango de fechas" [(visible)]="displayModal" [modal]="true" [closable]="true"
+        [style]="{'width': '425px', 'max-width': '425px'}" styleClass="custom-date-range-modal">
+        <ng-template pTemplate="header">
+          <div class="modal-header">
+            <span class="text-xl font-bold w-full">Seleccionar rango de fechas</span>
+            <small class="text-color-secondary w-full block">Elige el período de tiempo para descargar el informe.</small>
+          </div>
+        </ng-template>
+      
+        <div class="calendar-container">
+          <div class="calendar-field">
+            <label for="startDate" class="font-semibold">Inicio</label>
+            <p-calendar 
+  id="startDate" 
+  [(ngModel)]="calendarField1Value" 
+  (ngModelChange)="getDateStart($event)"
+  [iconDisplay]="'input'" 
+    [showIcon]="true" 
+    inputId="icondisplay"
+
+  [dateFormat]="'dd/mm/yy'"
+  placeholder="Selecciona fecha de fin" 
+  [readonlyInput]="true" 
+  [appendTo]="'body'"
+  inputStyleClass="w-full border-1 border-solid border-purple-300 hover:border-purple-500 ">
+</p-calendar>
+          </div>
+          <div class="calendar-field">
+            <label for="endDate" class="font-semibold">Fin</label>
+            <p-calendar 
+  id="endDate" 
+  [(ngModel)]="calendarField2Value" 
+  (ngModelChange)="getDateEnd($event)"
+  [iconDisplay]="'input'" 
+    [showIcon]="true" 
+    inputId="icondisplay"
+
+  [dateFormat]="'dd/mm/yy'"
+  placeholder="Selecciona fecha de fin" 
+  [readonlyInput]="true" 
+  [appendTo]="'body'"
+  inputStyleClass="w-full border-1 border-solid border-purple-300 hover:border-purple-500 " 
+  ></p-calendar>
+          </div>
+        </div>
+      
+        <ng-template pTemplate="footer">
+          <button pButton label="Descargar" (click)="onExportDate()"
+            class="p-button-help p-button-rounded p-button-outlined"
+            [disabled]="!calendarField1Value || !calendarField2Value"></button>
+        </ng-template>
+      </p-dialog>
+      
+
+     
+
 
     </div>
 
@@ -51,25 +104,27 @@
       <ng-template pTemplate="body" let-item>
         <tr [ngClass]="{'anulado-row': item[statusField] === false}">
 
-          <td *ngFor="let col of columns" [style]="{'word-wrap': 'break-word', 'white-space': 'normal', 'text-align': 'center'}">
-                  
+          <td *ngFor="let col of columns"
+            [style]="{'word-wrap': 'break-word', 'white-space': 'normal', 'text-align': 'center'}">
+
             <ng-container [ngSwitch]="col.type">
               <!-- Para formato de fecha -->
               <span *ngSwitchCase="'date'">{{ item[col.field] | date: 'shortDate' }}</span>
 
               <!-- Para formato de fecha y hora-->
               <span *ngSwitchCase="'dateTime'">{{ item[col.field] | date: 'short' }}</span>
-      
+
               <!-- Para formato de moneda -->
               <span *ngSwitchCase="'currency'">{{ item[col.field] | currency }}</span>
-      
+
               <!-- Mostrar imagen si es tipo image -->
-              <img *ngSwitchCase="'image'" [src]="getImageUrl(item.idProducto)" alt="{{item[col.field]}}" class="w-18 h-12 object-cover" />
-      
+              <img *ngSwitchCase="'image'" [src]="getImageUrl(item.idProducto)" alt="{{item[col.field]}}"
+                class="w-18 h-12 object-cover" />
+
               <!-- Mostrar texto normal  -->
               <span *ngSwitchDefault>{{ item[col.field] }}</span>
             </ng-container>
-      
+
           </td>
 
           <td *ngIf="SelectChangeStatus" [style]="{'text-align': 'center'}">

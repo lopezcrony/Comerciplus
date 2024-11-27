@@ -157,6 +157,10 @@ export class ProductsComponent implements OnInit {
     return !!(field?.invalid && (field.touched || field.dirty));
   };
 
+  isFieldEmpty(fieldName: string): boolean {
+    const field = this.productForm.get(fieldName);
+    return !field?.value; // Retorna true si el valor es null, undefined o una cadena vacía
+  }
   getErrorMessage(fieldName: string): string {
     const control = this.productForm.get(fieldName);
     if (control?.errors) {
