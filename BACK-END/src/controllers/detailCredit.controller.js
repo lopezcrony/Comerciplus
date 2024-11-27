@@ -9,7 +9,7 @@ const getAllDetailCredit = async (req, res) => {
         }
         return res.status(200).json(detailCredit);
     } catch (error) {
-        return res.status(500).json({ message: 'CONTROLLER: Error al obtener el detalle del crédito.', error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -18,7 +18,7 @@ const addSaleToCredit = async (req, res) => {
         const newDetailCredit = await detailCreditService.addSaleToCredit(req.body);
         res.status(200).json({ message: 'Venta asociada con éxito.', newDetailCredit });
     } catch (error) {
-        res.status(500).json({ message: 'Error al asociar la venta al crédito.', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -29,7 +29,7 @@ const deleteDetailCredit = async (req, res) => {
         res.status(200).json({ message: 'Eliminación exitosa.' });
 
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER:', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

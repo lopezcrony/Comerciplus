@@ -6,7 +6,7 @@ const GetAllReturnLoss = async (request, response) => {
         const sales = await returnLossService.getAllReturnLoss();
         response.json(sales);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener las pérdidas', error: error.message });
+        response.status(500).json({ message: error.message });
     }
 };
 
@@ -15,7 +15,7 @@ const GetOneReturnLoss = async (req, res) => {
         const sales = await returnLossService.getOneReturnLoss(req.params.id);
         res.status(200).json(sales);
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener la venta', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -25,7 +25,7 @@ const CreateNewReturnLoss = async (req, res) => {
         res.status(201).json({ message: 'Devolución de venta creada exitosamente.', newSale });
 
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear la venta.', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 }
 

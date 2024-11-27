@@ -10,6 +10,9 @@ const getAllProviders = async () => {
 
 const getOneProvider = async (id) => {
     try {
+        if(!providerRepository.findProviderById(id)){
+            throw new Error('No se encontró el proveedor');
+        }
         return await providerRepository.findProviderById(id);
     } catch (error) {
         throw error;
@@ -20,7 +23,7 @@ const createProvider = async (providerData) => {
     try {
         return await providerRepository.createProvider(providerData);
     } catch (error) {
-        if (error.message.includes('NIT')) {
+        if (error.message.includes('nit')) {
             throw new Error('Ya existe un proveedor con ese NIT.');
         } else if (error.message.includes('nombreProveedor')) {
             throw new Error('Ya existe un proveedor con ese nombre.');
@@ -31,6 +34,9 @@ const createProvider = async (providerData) => {
 
 const updateProvider = async (id, providerData) => {
     try {
+        if(!providerRepository.findProviderById(id)){
+            throw new Error('No se encontró el proveedor');
+        }
         return await providerRepository.updateProvider(id, providerData);
     } catch (error) {
         if (error.name === 'SequelizeUniqueConstraintError') {
