@@ -240,9 +240,7 @@ export class ProductsComponent implements OnInit {
         this.loadData();
         this.closeModal();
       },
-      error: (error) => {
-        this.toastr.error(`Ya existe un producto con este nombre`,'Error');
-      }
+      error: (error) => { this.toastr.error(error, 'Error'); }
     });
   }
   

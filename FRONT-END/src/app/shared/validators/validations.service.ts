@@ -30,7 +30,9 @@ export class ValidationService {
     if (!fieldConfig) return '';
 
     const rule = fieldConfig.rules.find(
-      (r) => r.type === errorKey || (r.type === 'pattern' && errorKey === 'pattern')
+      (r) => r.type === errorKey ||
+        (r.type === 'pattern' && errorKey === 'pattern') ||
+        (r.type === 'custom' && errorKey === 'exceedsMaxCredit')
     );
 
     return rule ? rule.message : '';

@@ -7,6 +7,7 @@
     <!-- Formulario de Compra (Shoppings) -->
     <div formGroupName="shopping">
         <div class="field-group">
+            
             <div class="field" [ngClass]="{'error': isFieldInvalid('idProveedor')}">
                 <label for="proveedor">Proveedor
                     <span *ngIf="isFieldEmpty('idProveedor')" class="required">*</span>
@@ -42,11 +43,6 @@
                     La fecha no puede ser posterior a la actual.
                 </small>
             </div>
-
-
-
-
-
 
         </div>
 
@@ -130,11 +126,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
 
     <button type="submit" class="p-button p-button-success mt-3">Guardar Compra</button>
 </form>
