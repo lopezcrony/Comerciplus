@@ -1,18 +1,21 @@
-require("dotenv").config();
 const { connectToDatabase, sequelize } = require('./src/config/db');
 const Server = require('./src/index');
 const seedPermissions = require('./src/seeders/permissions.seed');
 const seedRoleAndUser = require('./src/seeders/defaultRoleAndUser');
+const models = require('./src/models');
+
 const startServer = async () => {
   try {
     // Conectar a la base de datos
     await connectToDatabase();
-    
+
     // Sincronizar modelos
+    models;
     await sequelize.sync({ alter: true });
-    
+
     // Cargar los permisos predefinidos
     await seedPermissions();
+
     // Cargar el rol y usuario predefinidos
     await seedRoleAndUser();
 
@@ -27,4 +30,4 @@ const startServer = async () => {
   }
 };
 
-module.exports = startServer(); // Export the promise that resolves to the app
+module.exports = startServer();

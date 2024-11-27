@@ -1,4 +1,5 @@
-const { Roles, Permissions } = require('../models/associationpermissions');
+const Roles = require('../models/roles.model');
+const Permissions = require('../models/permissions.model');
 
 const getAllRoles = async () => {
   try {

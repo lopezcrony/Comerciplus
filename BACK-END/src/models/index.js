@@ -1,5 +1,3 @@
-const sequelize = require('../config/db');
-
 // ------------------ ACCESO ------------------
 const roles = require('./roles.model');
 const users = require('./users.model');
@@ -16,65 +14,52 @@ const shoppingdetails = require('./shoppingdetails.model');
 // ------------------ CRÉDITOS ------------------
 const client = require('./clients.model');
 const credit = require('./credits.model');
-const creditDetail= require('./creditDetail.model');
+const creditDetail = require('./creditDetail.model');
 const installment = require('./installments.model');
 // ------------------ VENTAS ------------------
 const sales = require('./sales.model')
-const detailSale = require ('./detailSale.model');
+const detailSale = require('./detailSale.model');
 // ------------------ DEVOLUCIONES ------------------
 const returnLoss = require('./returnLoss.model');
 const returnSale = require('./returnSales.model');
 const returnProvider = require('./returnProvider.model');
 
+// Asociaciones
+roles.belongsToMany(permissions, {
+  through: permissionsRoles,
+  foreignKey: 'idRol',
+  otherKey: 'idPermiso'
+});
 
-const models = {
-    roles,
-    users,  
-    permissions,
-    permissionsRoles,
-    categories,
-    products,
-    barcode,
-    provider,
-    shopping,
-    shoppingdetails,
-    client,
-    credit,
-    creditDetail,
-    installment,
-    sales,
-    detailSale,
-    returnLoss,
-    returnSale,
-    returnProvider,
-};
+permissions.belongsToMany(roles, {
+  through: permissionsRoles,
+  foreignKey: 'idPermiso',
+  otherKey: 'idRol'
+});
 
-require('./associationpermissions');
-
-  roles.belongsToMany(permissions, {
-    through: permissionsRoles,
-    foreignKey: 'idRol',
-    otherKey: 'idPermiso'
-  });
-  
-  permissions.belongsToMany(roles, {
-    through: permissionsRoles,
-    foreignKey: 'idPermiso',
-    otherKey: 'idRol'
-  });
-
-// Asociaciones adicionales para consultas directas si son necesarias
 permissionsRoles.belongsTo(roles, { foreignKey: 'idRol' });
 permissionsRoles.belongsTo(permissions, { foreignKey: 'idPermiso' });
 
-const connectDb = async () => {
-    try {
-        await sequelize.sync({ alter: true });
-        console.log('Base de datos sincronizada con éxito!.');
-    } catch (error) {
-        console.error('Error al sincronizar la base de datos:', error);
-    }
+const models = {
+  roles,
+  users,
+  permissions,
+  permissionsRoles,
+  categories,
+  products,
+  barcode,
+  provider,
+  shopping,
+  shoppingdetails,
+  client,
+  credit,
+  creditDetail,
+  installment,
+  sales,
+  detailSale,
+  returnLoss,
+  returnSale,
+  returnProvider,
 };
 
-module.exports = { models, connectDb };
-
+module.exports = models;
