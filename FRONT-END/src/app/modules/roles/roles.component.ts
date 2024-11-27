@@ -273,10 +273,7 @@ export class RolesComponent implements OnInit {
         this.loadRoles();
         this.closeModal();
       },
-      error: (error) => {
-        console.error('Error al guardar el rol:', error);
-        this.toastr.error('Error al guardar rol', 'Error');
-      }
+      error: (error) => { this.toastr.error(error, 'Error'); }
     });
   }
 

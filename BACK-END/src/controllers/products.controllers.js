@@ -5,7 +5,7 @@ const getAllProducts = async (req, res) => {
         const products = await productService.getAllProducts();
         res.status(200).json(products);
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER: Error al obtener los productos', error });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -14,7 +14,7 @@ const getOneProduct = async (req, res) => {
         const product = await productService.getOneProduct(req.params.id);
         res.status(200).json(product);
     } catch (error) {
-        res.status(500).json({message: 'CONTROLLER: Error al obtener el producto.', error});
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -23,7 +23,7 @@ const createProduct = async (req, res) => {
         const newproduct = await productService.createProduct(req.body);
         res.status(201).json({ message: 'Producto registrado exitosamente.', newproduct });
     } catch (error) {
-        res.status(500).json({ message:  error.message});
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -35,7 +35,7 @@ const updateProduct = async (req, res) => {
         if (error.message === 'El nombre del producto ya está registrado.') {
             res.status(400).json({ message: error.message });
         } else {
-            res.status(500).json({ message: 'CONTROLLER:', error: error.message });
+            res.status(500).json({ message: error.message });
         }
     }
 };
@@ -56,7 +56,7 @@ const updateProductStatus  = async (req, res) => {
         await productService.updateProductStatus (req.params.id, estadoProducto);
         res.json({ message: 'Estado actualizado con éxito.' });
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER:', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -67,7 +67,7 @@ const deleteOneProduct = async (req, res) => {
         res.json({ message: 'Producto eliminado con éxito.' });
         }
     } catch (error) {
-        res.status(500).json({mensagge : 'CONTROLLER:', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

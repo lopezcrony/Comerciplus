@@ -54,7 +54,7 @@
                         <!-- pa mostrar los campos al frenta -->
                         <div class="field-group">
                             <div class="field" [ngClass]="{'error': isFieldInvalidCategori('nombreCategoria')}">
-                                <label for="nombreCategoria">Nombre categoria <span style="color: #E24C4C;">*</span></label>
+                                <label for="nombreCategoria">Nombre Categoría <span style="color: #E24C4C;">*</span></label>
                                 <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria"
                                     required autofocus />
                                 <small class="p-error" *ngIf="isFieldInvalidCategori('nombreCategoria')">
@@ -63,7 +63,7 @@
                             </div>
 
                             <div class="field" [ngClass]="{'error': isFieldInvalidCategori('descripcionCategoria')}">
-                                <label for="descripcionCategoria">Descripcion</label>
+                                <label for="descripcionCategoria">Descripción</label>
                                 <input type="text" pInputText id="descripcionCategoria"
                                     formControlName="descripcionCategoria" />
                                 <small class="p-error" *ngIf="isFieldInvalidCategori('descripcionCategoria')">

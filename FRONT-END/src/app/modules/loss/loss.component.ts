@@ -147,14 +147,7 @@ export class LossComponent implements OnInit {
         this.loadData();
         this.closeModal();
       },
-      error: (error) => {
-        console.error('Error al agregar un registro', error);
-        if (error.status === 500) {
-          this.toastr.error('No se puede agregar', 'Error');
-        } else {
-          this.toastr.error('Ocurrió un error al agregar la pérdida revise el stock.', 'Error');
-        }
-      }
+      error: (error) => { this.toastr.error(error, 'Error'); }
     });
   }
 

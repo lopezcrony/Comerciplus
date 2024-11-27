@@ -5,7 +5,7 @@ const getAllRoles = async (req, res) => {
     const roles = await rolService.getAllRoles();
     res.status(200).json(roles);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener los roles', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -14,7 +14,7 @@ const getOneRole = async (req, res) => {
     const role = await rolService.getOneRole(req.params.id);
     res.status(200).json(role);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener el rol', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -27,10 +27,7 @@ const createNewRole = async (req, res) => {
       newRole
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Error al crear el rol.",
-      error: error.message
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -39,7 +36,7 @@ const updateRole = async (req, res) => {
     const updatedRole = await rolService.updateRole(req.params.id, req.body);
     res.status(200).json({ message: 'Rol actualizado exitosamente', updatedRole });
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar el rol', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -53,11 +50,11 @@ const updateRoleStatus = async (req, res) => {
     } else if (estadoRol !== true && estadoRol !== false) {
       return res.status(400).json({ message: 'El estado debe ser un valor booleano' });
     }
-    
+
     await rolService.updateRoleStatus(req.params.id, estadoRol);
     res.json({ message: 'Estado actualizado con éxito.' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al actualizar el estado del rol', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -66,7 +63,7 @@ const deleteOneRole = async (req, res) => {
     await rolService.deleteOneRole(req.params.id);
     res.json({ message: 'Rol eliminado con éxito.' });
   } catch (error) {
-    res.status(500).json({ message: 'Error al eliminar el rol', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 

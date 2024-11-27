@@ -1,6 +1,17 @@
 const { Sequelize } = require('sequelize');
 const fs = require('fs');
-require('dotenv').config();
+const path = require('path');
+const dotenv = require('dotenv');
+
+// Cargar el archivo .env adecuado según el entorno
+const env = process.env.NODE_ENV;
+const envPath = path.resolve(__dirname, `../../.env.${env}`);
+dotenv.config({ path: envPath });
+
+// Verificar que las variables de entorno se han cargado correctamente
+if (!process.env.DB_DIALECT) {
+    throw new Error('DB_DIALECT no está definido en el archivo de entorno.');
+}
 
 const sequelize = new Sequelize(
     process.env.DB_NAME,
@@ -11,18 +22,17 @@ const sequelize = new Sequelize(
         port: process.env.DB_PORT,
         dialect: process.env.DB_DIALECT,
         logging: false,
-        dialectOptions: {
+        dialectOptions: process.env.DB_SSL_MODE === 'REQUIRED' ? {
             ssl: {
                 require: true,
-                ca: fs.readFileSync('src/config/aiven-ca.pem').toString(),
+                ca: fs.readFileSync(path.resolve(__dirname, 'aiven-ca.pem')).toString(),
                 rejectUnauthorized: true
             },
             connectTimeout: 120000
-        },
+        } : {},
         define: {
             timestamps: false // Opcional: evita timestamps automáticos si no los usas
         },
-        
     }
 );
 
@@ -46,7 +56,6 @@ const createDatabaseIfNotExists = async () => {
         console.error('Error al conectar o crear la base de datos:', error.message);
         console.error('Detalles:', error);
     }
-    
 };
 
 // Función para establecer la conexión después de asegurarnos que la BD existe
@@ -54,7 +63,7 @@ const connectToDatabase = async () => {
     try {
         await createDatabaseIfNotExists();
         await sequelize.authenticate();
-        console.log(`\nConexión establecida a la base de datos "${process.env.DB_NAME}".`);
+        console.log(`\nConexión establecida a la base de datos "${process.env.DB_NAME}" puerto ${process.env.DB_PORT}.`);
     } catch (error) {
         console.error('Error de conexión completo:', error);
         console.error('Mensaje de error:', error.message);
@@ -63,6 +72,5 @@ const connectToDatabase = async () => {
     }
     return sequelize;
 };
-
 
 module.exports = { sequelize, connectToDatabase };

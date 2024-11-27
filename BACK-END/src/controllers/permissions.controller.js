@@ -5,7 +5,7 @@ const getAllPermissions = async (req, res) => {
     const permissions = await PermissionService.getAllPermissions(); // Llama al servicio para obtener todos los permisos
     res.status(200).json(permissions); // Devuelve los permisos en formato JSON
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener los permisos', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -18,7 +18,7 @@ const getPermissionsByRole = async (req, res) => {
     }
     res.status(200).json(permissions);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener los permisos', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 

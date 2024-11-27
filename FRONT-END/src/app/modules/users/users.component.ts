@@ -199,12 +199,7 @@ export class UsersComponent implements OnInit {
         this.loadData();
         this.closeModal();
       },
-      error: (error) => {
-        this.toastr.error(
-          error.error?.message || 'Error al guardar el usuario',
-          'Error'
-        );
-      }
+      error: (error) => { this.toastr.error(error, 'Error'); }
     });
   }
 

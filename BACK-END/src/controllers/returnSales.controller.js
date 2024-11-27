@@ -6,7 +6,7 @@ const GetAllReturnSale = async (request, response) => {
         const sales = await returnSale.getAllReturnSales();
         response.json(sales);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener las ventas', error: error.message });
+        response.status(500).json({ message: error.message });
     }
 };
 
@@ -15,7 +15,7 @@ const GetOneReturnSale = async (req, res) => {
         const sales = await returnSale.getOneReturnSales(req.params.id);
         res.status(200).json(sales);
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener la venta', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -25,7 +25,7 @@ const CreateNewReturnSale = async (req, res) => {
         res.status(201).json({ message: 'Devolución de venta creada exitosamente.', newSale });
 
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear la venta.', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -46,7 +46,7 @@ const updateReturnSalesStatus  = async (req, res) => {
         await returnSale.updateReturnSalesStatus(req.params.id, estado);
         res.json({ message: 'Estado actualizado con éxito.' });
     } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el estado del proveedor', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -57,7 +57,7 @@ const cancelReturnSale = async (req, res) => {
         res.status(200).json({ message: 'Devolución anulada con éxito' });
     } catch (error) {
         console.error('Error en el controlador cancelReturnSale:', error.message);
-        res.status(500).json({ message: 'Error al anular la devolución', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

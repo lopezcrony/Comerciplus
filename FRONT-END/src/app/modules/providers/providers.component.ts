@@ -123,8 +123,7 @@ export class ProvidersComponent implements OnInit {
         this.closeModal();
       },
       error: (error) => {
-        console.error('Error al guardar proveedor:', error);
-        this.toastr.error('Error al guardar proveedor. Inténtalo de nuevo.', 'Error');
+        this.toastr.error(error, 'Error');
       }
     });
   }

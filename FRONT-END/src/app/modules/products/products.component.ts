@@ -12,16 +12,6 @@ import { ValidationService } from '../../shared/validators/validations.service';
 import { Product } from "../products/products.model";
 import { ProductsService } from "../products/products.service";
 import { CategoriesService } from '../categories/categories.service';
-import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
-import { ButtonModule } from 'primeng/button';
-import { FileUploadModule } from 'primeng/fileupload';
-import { MessageModule } from 'primeng/message';
-import { ChipModule } from 'primeng/chip';
-import { InplaceModule } from 'primeng/inplace';
-import { TagModule } from 'primeng/tag';
-import { Categorie } from '../categories/categories.model';
 
 @Component({
   selector: 'app-products',
@@ -30,15 +20,6 @@ import { Categorie } from '../categories/categories.model';
     ...SHARED_IMPORTS,
     CRUDComponent,
     CrudModalDirective,
-    DialogModule,
-    InputTextModule,
-    DropdownModule,
-    ButtonModule,
-    FileUploadModule,
-    MessageModule,
-    ChipModule,
-    InplaceModule,
-    TagModule
   ],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.scss']
@@ -71,8 +52,6 @@ export class ProductsComponent implements OnInit {
 
   selectedFile: File | null = null;
   selectedProduct!: any;
-
-  baseUrl = 'https://comerciplus-dggj.onrender.com/uploads';
 
   newCategory = { name: '', description: '' };
 
@@ -207,10 +186,10 @@ export class ProductsComponent implements OnInit {
       next: () => {
         this.toastr.success('Categoría creada exitosamente.', 'Éxito');
         this.categoryModalVisible = false;
-        this.loadDataAll();
+        this.loadData();
       },
       error: (error) => {
-        this.toastr.error(`Ya existe una categoria con ese nombre`,'Error');
+        this.toastr.error(error,'Error');
       }
     });
   };
@@ -261,9 +240,7 @@ export class ProductsComponent implements OnInit {
         this.loadData();
         this.closeModal();
       },
-      error: (error) => {
-        this.toastr.error(`Ya existe un producto con este nombre`,'Error');
-      }
+      error: (error) => { this.toastr.error(error, 'Error'); }
     });
   }
   
@@ -330,27 +307,6 @@ export class ProductsComponent implements OnInit {
       }
     });
   }
-
-loadDataAll() {
-    forkJoin({
-      categories: this.categorieService.getAllCategories(),
-      products: this.productService.getAllProducts()
-    }).subscribe({
-      next: ({ categories, products }) => {
-        this.categories = categories.filter(category => category);
-        this.products = products.map(product => {
-          const category = this.categories.find(c => c.idCategoria === product.idCategoria)!;
-          return { ...product, nombreCategoria: category?.nombreCategoria };
-        });
-        this.filteredProducts = this.products;
-      },
-      error: (error) => {
-        this.toastr.error('Error al cargar los datos.', 'Error');
-        console.error('Error al cargar los datos:', error);
-      }
-    });
-  }
-
 
   // funciones para la carga de imagenes en productos
 

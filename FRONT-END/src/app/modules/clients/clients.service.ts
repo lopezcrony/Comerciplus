@@ -62,11 +62,11 @@ private handleError(error: HttpErrorResponse) {
     let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
       // Error del lado del cliente o de la red
-      errorMessage = `Error: ${error.error.message}`;
+      errorMessage = error.error.message;
     } else {
       // Error del lado del servidor
-      errorMessage = `Error: ${error.error.message}`;
+      errorMessage = error.error.message;
     }
-    return throwError(() => new Error('Algo salió mal; por favor, intente nuevamente más tarde.'));
+    return throwError(() => new Error(errorMessage));
   }
 }
