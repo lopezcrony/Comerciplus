@@ -93,55 +93,60 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   Future<void> _saveProfile() async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+  setState(() => _isLoading = true);
 
-    try {
-      if (_user != null) {
-        final updatedUser = User(
-          idUsuario: _user!.idUsuario,
-          cedulaUsuario: _user!.cedulaUsuario,
-          nombreUsuario: _nombreController.text.trim(),
-          apellidoUsuario: _apellidoController.text.trim(),
-          telefonoUsuario: _telefonoController.text.trim(),
-          correoUsuario: _correoController.text.trim(),
-          claveUsuario: _claveController.text.isNotEmpty ? _claveController.text.trim() : null,
-          estadoUsuario: _user!.estadoUsuario,
-          idRol: _user!.idRol,
-        );
+  try {
+    if (_user != null) {
+      final updatedUser = User(
+        idUsuario: _user!.idUsuario,
+        cedulaUsuario: _user!.cedulaUsuario,
+        nombreUsuario: _nombreController.text.trim(),
+        apellidoUsuario: _apellidoController.text.trim(),
+        telefonoUsuario: _telefonoController.text.trim(),
+        correoUsuario: _correoController.text.trim(),
+        claveUsuario: _claveController.text.isNotEmpty 
+          ? _claveController.text.trim() 
+          : null,
+        estadoUsuario: _user!.estadoUsuario ?? false,
+        idRol: _user!.idRol ?? 0,
+      );
 
-        final result = await _userService.updateUserProfile(updatedUser);
-        
-        if (mounted) {
-          setState(() {
-            _user = result;
-            _isEditing = false;
-          });
+      final result = await _userService.updateUserProfile(updatedUser);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Perfil actualizado exitosamente'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      }
-    } catch (e) {
       if (mounted) {
+        setState(() {
+          _user = result;
+          _isEditing = false;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error al actualizar perfil: $e'),
-            backgroundColor: Colors.red,
+          const SnackBar(
+            content: Text('Perfil actualizado exitosamente'),
+            backgroundColor: Colors.green,
           ),
         );
       }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+    }
+  } catch (e, stackTrace) {
+    print('Error completo: $e');
+    print('Traza de pila: $stackTrace');
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al actualizar perfil: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } finally {
+    if (mounted) {
+      setState(() => _isLoading = false);
     }
   }
+}
 
   String _getInitial() {
     return _user != null && _user!.nombreUsuario.isNotEmpty 
