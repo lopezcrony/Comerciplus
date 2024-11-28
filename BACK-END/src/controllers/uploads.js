@@ -42,7 +42,7 @@ const actualizarimagen = async (req, res = response) => {
 
     const nombre = await subirimagen(req.files, undefined, coleccion);
     modelo.imagenProducto = nombre;
-
+ 
     await modelo.save();
 
     res.json(modelo);

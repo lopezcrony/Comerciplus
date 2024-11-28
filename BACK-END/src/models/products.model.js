@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
+// definición del modelo de producto
 const Producto = sequelize.define('Producto', {
   idProducto: {
     type: DataTypes.INTEGER,
@@ -55,6 +56,7 @@ const Producto = sequelize.define('Producto', {
   timestamps: false,
 });
 
+// relación con la tabla categorias
 Producto.associate = (models) => {
     Producto.belongsTo(models.CategoriaProducto, {
         foreignKey: 'idCategoria',
