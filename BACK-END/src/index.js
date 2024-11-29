@@ -5,7 +5,6 @@ const fileUpload = require('express-fileupload');
 const { createServer } = require('http');
 const { Server: SocketServer } = require('socket.io');
 
-// Cargar archivo .env
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -14,7 +13,7 @@ class Server {
     constructor() {
         this.app = express();
         this.host = process.env.DB_HOST || 'localhost';
-        this.port = process.env.DB_PORT || 3000;
+        this.port = process.env.PORT;
         // Crear servidor HTTP
         this.httpServer = createServer(this.app);
         // Configurar Socket.IO

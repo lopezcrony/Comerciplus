@@ -9,62 +9,70 @@
       <button *ngIf="PDF" pButton pRipple label="Informe" icon="pi pi-file-pdf"
         class="p-button-primary p-button-rounded p-button-outlined" (click)="showModal()"></button>
 
-        <p-dialog header="Seleccionar rango de fechas" [(visible)]="displayModal" [modal]="true" [closable]="true"
-        [style]="{'width': '425px', 'max-width': '425px'}" styleClass="custom-date-range-modal">
-        <ng-template pTemplate="header">
-          <div class="modal-header">
-            <span class="text-xl font-bold w-full">Seleccionar rango de fechas</span>
-            <small class="text-color-secondary w-full block">Elige el período de tiempo para descargar el informe.</small>
-          </div>
-        </ng-template>
-      
-        <div class="calendar-container">
-          <div class="calendar-field">
-            <label for="startDate" class="font-semibold">Inicio</label>
-            <p-calendar 
-  id="startDate" 
-  [(ngModel)]="calendarField1Value" 
-  (ngModelChange)="getDateStart($event)"
-  [iconDisplay]="'input'" 
-    [showIcon]="true" 
-    inputId="icondisplay"
+      <!-- Modal para descargar informes por rango de fechas -->
+      <p-dialog 
+  header="Descargar Informe" 
+  [(visible)]="displayModal" 
+  [modal]="true" 
+  [closable]="true"
+  [style]="{'width': '500px', 'max-width': '550px'}" 
+  styleClass="custom-date-range-modal">
+  
+  <ng-template pTemplate="content">
+    <div>
+      <div class="mb-4">
+        <p class="font-medium text-gray-700">Elige el período de tiempo para descargar el informe.</p>
+      </div>
 
-  [dateFormat]="'dd/mm/yy'"
-  placeholder="Selecciona fecha de fin" 
-  [readonlyInput]="true" 
-  [appendTo]="'body'"
-  inputStyleClass="w-full border-1 border-solid border-purple-300 hover:border-purple-500 ">
-</p-calendar>
-          </div>
-          <div class="calendar-field">
-            <label for="endDate" class="font-semibold">Fin</label>
-            <p-calendar 
-  id="endDate" 
-  [(ngModel)]="calendarField2Value" 
-  (ngModelChange)="getDateEnd($event)"
-  [iconDisplay]="'input'" 
-    [showIcon]="true" 
-    inputId="icondisplay"
-
-  [dateFormat]="'dd/mm/yy'"
-  placeholder="Selecciona fecha de fin" 
-  [readonlyInput]="true" 
-  [appendTo]="'body'"
-  inputStyleClass="w-full border-1 border-solid border-purple-300 hover:border-purple-500 " 
-  ></p-calendar>
-          </div>
+      <div class="grid grid-cols-2 gap-4 mt-2">
+        <div>
+          <label for="startDate" class="block mb-2 text-sm font-bold text-gray-700">Fecha de Inicio</label>
+          <p-calendar 
+            id="startDate" 
+            [(ngModel)]="calendarField1Value" 
+            (ngModelChange)="getDateStart($event)"
+            [iconDisplay]="'input'" 
+            [showIcon]="true" 
+            [dateFormat]="'dd/mm/yy'"
+            placeholder="DD/MM/AA" 
+            [readonlyInput]="true" 
+            [appendTo]="'body'"
+            inputStyleClass="w-full border-2 border-purple-200 rounded-lg focus:border-purple-500 transition-colors duration-300">
+          </p-calendar>
         </div>
-      
-        <ng-template pTemplate="footer">
-          <button pButton label="Descargar" (click)="onExportDate()"
-            class="p-button-help p-button-rounded p-button-outlined"
-            [disabled]="!calendarField1Value || !calendarField2Value"></button>
-        </ng-template>
-      </p-dialog>
-      
+        
+        <div>
+          <label for="endDate" class="block mb-2 text-sm font-bold text-gray-700">Fecha de Fin</label>
+          <p-calendar 
+            id="endDate" 
+            [(ngModel)]="calendarField2Value" 
+            (ngModelChange)="getDateEnd($event)"
+            [iconDisplay]="'input'" 
+            [showIcon]="true" 
+            [dateFormat]="'dd/mm/yy'"
+            placeholder="DD/MM/AA" 
+            [readonlyInput]="true" 
+            [appendTo]="'body'"
+            inputStyleClass="w-full border-2 border-purple-200 rounded-lg focus:border-purple-500 transition-colors duration-300">
+          </p-calendar>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 
-     
-
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3 p-4">
+      <button 
+        pButton label="Cancelar" icon="pi pi-times"
+        class="p-button-secondary p-button-rounded p-button-outlined"
+        (click)="displayModal = false">
+      </button>
+      <button pButton label="Descargar" (click)="onExportDate()" icon="pi pi-download"
+      class="p-button-help p-button-rounded p-button-outlined"
+      [disabled]="!calendarField1Value || !calendarField2Value"></button>
+    </div>
+  </ng-template>
+</p-dialog>
 
     </div>
 

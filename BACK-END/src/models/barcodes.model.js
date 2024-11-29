@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
-
 const CodigoBarra = sequelize.define('CodigoBarra', {
   idCodigoBarra: {
     type: DataTypes.INTEGER,

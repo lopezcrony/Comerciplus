@@ -43,7 +43,7 @@ export class ShoppingsComponent implements OnInit {
     private fb: FormBuilder,
     private shoppingService: ShoppingsService,
     private providerService: ProvidersService,
-    private Router:Router,
+    private Router: Router,
     private productService: ProductsService,
     private toastr: ToastrService,
     private validationService: ValidationService
@@ -104,10 +104,10 @@ export class ShoppingsComponent implements OnInit {
 
   createShoppingDetail(): FormGroup {
     return this.fb.group({
-      idProducto: ['', this.validationService.getValidatorsForField('shopping', 'idProducto')],
-      codigoBarra: ['', this.validationService.getValidatorsForField('shopping', 'codigoBarra')],
-      cantidadProducto: ['', this.validationService.getValidatorsForField('shopping', 'cantidadProducto')],
-      precioCompraUnidad: ['', this.validationService.getValidatorsForField('shopping', 'precioCompraUnidad')],
+      idProducto: ['', this.validationService.getValidatorsForField('shoppings', 'idProducto')],
+      codigoBarra: ['', this.validationService.getValidatorsForField('shoppings', 'codigoBarra')],
+      cantidadProducto: ['', this.validationService.getValidatorsForField('shoppings', 'cantidadProducto')],
+      precioCompraUnidad: ['', this.validationService.getValidatorsForField('shoppings', 'precioCompraUnidad')],
       subtotal: [{ value: 0, disabled: true }]
     });
   }
@@ -145,14 +145,13 @@ export class ShoppingsComponent implements OnInit {
     this.shoppingForm.get('shopping.valorCompra')?.setValue(valorCompra);
   }
 
-
   fechaNoPosteriorValidator(control: AbstractControl): ValidationErrors | null {
     const fechaSeleccionada = new Date(control.value);
     const fechaActual = new Date();
-    
+
     // Ajustar la hora a 0 para comparar solo la fecha
     fechaActual.setHours(0, 0, 0, 0);
-    
+
     return fechaSeleccionada > fechaActual ? { fechaPosterior: true } : null;
   }
 
@@ -165,7 +164,7 @@ export class ShoppingsComponent implements OnInit {
       });
     }
   }
-  
+
 
   validateNumberInput(event: any, field: string): void {
     const value = event.target.value;
@@ -185,36 +184,78 @@ export class ShoppingsComponent implements OnInit {
     }
   }
 
-
-  markFormFieldsAsTouched() {
-    Object.values(this.shoppingForm.controls).forEach(c => c.markAsTouched());
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.shoppingForm.get(`shopping.${fieldName}`) ||
+      this.shoppingDetailArray.at(0)?.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
   }
 
+  isFieldInvalidDetail(index: number, fieldName: string): boolean {
+    const detail = this.shoppingDetailArray.at(index);
+    const field = detail?.get(fieldName);
+    return !!(field?.invalid && (field.touched || field.dirty));
+  }
+
+  isFieldEmpty(fieldName: string): boolean {
+    const field = this.shoppingForm.get(fieldName);
+    return !field?.value; // Retorna true si el valor es null, undefined o una cadena vacía
+  }
+
+  isFieldEmptyDetail(fieldName: string): boolean {
+    const field = this.shoppingDetailArray.get(fieldName);
+    return !field?.value; // Retorna true si el valor es null, undefined o una cadena vacía
+  }
+
+  getErrorMessage(fieldName: string): string {
+    const control = this.shoppingForm.get(`shopping.${fieldName}`) ||
+      this.shoppingDetailArray.at(0)?.get(fieldName);
+
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('shoppings', fieldName, errorKey);
+    }
+    return '';
+  }
+
+  getErrorMessageDetail(index: number, fieldName: string): string {
+    const detail = this.shoppingDetailArray.at(index);
+    const control = detail?.get(fieldName);
+    
+    if (control?.errors) {
+      const errorKey = Object.keys(control.errors)[0];
+      return this.validationService.getErrorMessage('shoppings', fieldName, errorKey);
+    }
+    return '';
+  }
+
+  private markFormFieldsAsTouched() {
+    Object.values(this.shoppingForm.controls).forEach(c => c.markAsTouched());
+  }
 
   saveShopping() {
     if (this.shoppingForm.invalid) {
       this.markFormFieldsAsTouched();
       return;
     }
-  
+
     const formValue = this.shoppingForm.getRawValue();
-  
+
     // Convertir la fechaCompra al formato "YYYY-MM-DD"
     const rawDate = new Date(formValue.shopping.fechaCompra);
     const formattedDate = rawDate.toISOString().split('T')[0]; // Obtener solo la parte de la fecha
-  
+
     const shoppingData = {
       ...formValue.shopping,
       fechaCompra: formattedDate, // Fecha en formato "YYYY-MM-DD"
       estadoCompra: true, // Asegurar el estado por defecto
       fechaRegistro: new Date().toISOString() // Fecha actual para registro
     };
-  
+
     const shoppingDetails = formValue.shoppingDetail.map((detail: { idProducto: { idProducto: any; }; }) => ({
       ...detail,
       idProducto: detail.idProducto.idProducto
     }));
-  
+
     if (shoppingDetails.length === 0) {
       this.toastr.error('Debe agregar al menos un detalle de compra.', 'Error');
       return;
@@ -224,14 +265,12 @@ export class ShoppingsComponent implements OnInit {
       next: (response) => {
         this.toastr.success('Compra y detalles guardados exitosamente.', 'Éxito');
         this.resetForm();
-        this.Router.navigate(['/shoppingview']); 
+        this.Router.navigate(['/shoppingview']);
       },
-      error: (error) => {
-        this.toastr.error(`Error al crear compra`, 'Error');
-      }
+      error: (error) => { this.toastr.error(error, 'Error'); }
     });
   }
-  
+
 
   resetForm() {
     this.shoppingForm.reset();
@@ -257,20 +296,5 @@ export class ShoppingsComponent implements OnInit {
       }
     });
   }
-  
 
-
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.shoppingForm.get(fieldName);
-    return !!(field?.invalid && (field.touched || field.dirty));
-  }
-
-  getErrorMessage(fieldName: string): string {
-    const control = this.shoppingForm.get(fieldName);
-    if (control?.errors) {
-      const errorKey = Object.keys(control.errors)[0];
-      return this.validationService.getErrorMessage('shoppings', fieldName, errorKey);
-    }
-    return '';
-  }
 }

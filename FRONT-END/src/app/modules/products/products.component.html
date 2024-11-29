@@ -15,7 +15,9 @@
         <form [formGroup]="productForm">
 
             <div class="field" [ngClass]="{'error': isFieldInvalid('nombreProducto')}">
-                <label for="nombreProducto">Nombre Producto <span style="color: #E24C4C;">*</span></label>
+                <label for="nombreProducto">Nombre Producto
+                    <span *ngIf="isFieldEmpty('nombreProducto')" class="required">*</span>
+                </label>
                 <input type="text" pInputText id="nombreProducto" formControlName="nombreProducto" required autofocus />
                 <small class="p-error" *ngIf="isFieldInvalid('nombreProducto')">
                     {{ getErrorMessage('nombreProducto') }}
@@ -25,7 +27,9 @@
 
             <div class="field-group">
                 <div class="field" [ngClass]="{'error': isFieldInvalid('idCategoria')}">
-                    <label for="categoria">Categoría <span style="color: #E24C4C;">*</span></label>
+                    <label for="categoria">Categoría 
+                        <span *ngIf="isFieldEmpty('idCategoria')" class="required">*</span>
+                    </label>
                     <div class="p-inputgroup">
                         <p-dropdown [options]="filteredCategories" formControlName="idCategoria" optionLabel="nombreCategoria"
                             optionValue="idCategoria" placeholder="Seleccionar categoría" [virtualScroll]="false"
@@ -50,7 +54,7 @@
                         <!-- pa mostrar los campos al frenta -->
                         <div class="field-group">
                             <div class="field" [ngClass]="{'error': isFieldInvalidCategori('nombreCategoria')}">
-                                <label for="nombreCategoria">Nombre categoria <span style="color: #E24C4C;">*</span></label>
+                                <label for="nombreCategoria">Nombre Categoría <span style="color: #E24C4C;">*</span></label>
                                 <input type="text" pInputText id="nombreCategoria" formControlName="nombreCategoria"
                                     required autofocus />
                                 <small class="p-error" *ngIf="isFieldInvalidCategori('nombreCategoria')">
@@ -59,7 +63,7 @@
                             </div>
 
                             <div class="field" [ngClass]="{'error': isFieldInvalidCategori('descripcionCategoria')}">
-                                <label for="descripcionCategoria">Descripcion</label>
+                                <label for="descripcionCategoria">Descripción</label>
                                 <input type="text" pInputText id="descripcionCategoria"
                                     formControlName="descripcionCategoria" />
                                 <small class="p-error" *ngIf="isFieldInvalidCategori('descripcionCategoria')">
@@ -81,7 +85,9 @@
 
             <div class="field-group">
                 <div class="field" [ngClass]="{'error': isFieldInvalid('precioVenta')}">
-                    <label for="precioVenta">Precio venta <span style="color: #E24C4C;">*</span></label>
+                    <label for="precioVenta">Precio venta 
+                        <span *ngIf="isFieldEmpty('precioVenta')" class="required">*</span>
+                    </label>
                     <input type="number" pInputText id="precioVenta" formControlName="precioVenta" required autofocus />
                     <small class="p-error" *ngIf="isFieldInvalid('precioVenta')">
                         {{ getErrorMessage('precioVenta') }}

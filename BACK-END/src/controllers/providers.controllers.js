@@ -5,7 +5,7 @@ const getAllProviders = async (req, res) => {
         const providers = await providerService.getAllProviders();
         res.status(200).json(providers);
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener los proveedores', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -14,7 +14,7 @@ const getOneProvider = async (req, res) => {
         const provider = await providerService.getOneProvider(req.params.id);
         res.status(200).json(provider);
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener el proveedor', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -24,7 +24,7 @@ const createProvider = async (req, res) => {
         res.status(201).json({ message: 'Proveedor creado exitosamente.', newProvider });
 
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear el proveedor.', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -33,7 +33,7 @@ const updateProvider = async (req, res) => {
         const updatedProvider = await providerService.updateProvider(req.params.id, req.body);
         res.status(200).json({ message: 'Proveedor actualizado exitosamente', updatedProvider });
     } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el proveedor', error: error.message });
+        res.status(500).json({ message: error.message });
 
     }
 };
@@ -55,7 +55,7 @@ const updateProviderStatus = async (req, res) => {
         await providerService.updateProviderStatus(req.params.id, estadoProveedor);
         res.json({ message: 'Estado actualizado con éxito.' });
     } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el estado del proveedor', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -64,7 +64,7 @@ const deleteOneProvider = async (req, res) => {
         await providerService.deleteOneProvider(req.params.id);
         res.json({ message: 'Proveedor eliminado con éxito.' });
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener el proveedor', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

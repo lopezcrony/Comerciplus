@@ -5,7 +5,7 @@ export const shoppingValidation: FieldValidation[] = [
   {
     name: 'idProveedor',
     rules: [
-      { type: 'required', message: 'Ingrese el id del proveedor.' }
+      { type: 'required', message: 'Seleccione un proveedor.' }
     ]
   },
   {
@@ -17,24 +17,23 @@ export const shoppingValidation: FieldValidation[] = [
   {
     name: 'numeroFactura',
     rules: [
-      { type: 'required', message: 'Solo estan permitidos numeros' },
-      { type: 'pattern', value: 'onlyNumbers', message: 'Ingrese solo numeros' }
+      { type: 'required', message: 'El número de la factura es obligatorio' },
+      { type: 'pattern', value: 'onlyNumbers', message: 'Ingrese solo números' }
 
     ]
   },
   {
     name: 'idProducto',
     rules: [
-      { type: 'required', message: 'Ingrese el proveedor' },
+      { type: 'required', message: 'Seleccione un producto' },
     ]
   },
   {
     name: 'codigoBarra',
     rules: [
       { type: 'required', message: 'Ingrese el codigo de barra' },
-      { type: 'pattern', value: 'onlyNumbers', message: 'Ingrese solo numeros' },
-      { type: 'min', value: 1, message: 'La cantidad debe ser mayor a 0.' },
-      { type: 'min', value: 0, message: 'La cantidad no puede ser negativa.' }
+      { type: 'pattern', value: 'onlyNumbers', message: 'Ingrese solo números' },
+      { type: 'min', value: 0, message: 'Ingrese un código valido' }
     ]
   },
   {
@@ -43,7 +42,6 @@ export const shoppingValidation: FieldValidation[] = [
       { type: 'required', message: 'Ingrese la cantidad de productos.' },
       { type: 'pattern', value: 'onlyNumbers', message: 'Ingrese una cantidad valida.' },
       { type: 'min', value: 1, message: 'La cantidad debe ser mayor a 0.' },
-      { type: 'min', value: 0, message: 'La cantidad no puede ser negativa.' }
     ]
   },
   {
@@ -51,8 +49,7 @@ export const shoppingValidation: FieldValidation[] = [
     rules: [
       { type: 'required', message: 'Ingrese el precio de compra.' },
       { type: 'pattern', value: 'price', message: 'Ingrese un valor valido.' },
-      { type: 'min', value: 0.01, message: 'El precio debe ser mayor que 0.' }, // No permite 0
-      { type: 'min', value: 0, message: 'El precio no puede ser negativo.' }
+      { type: 'min', value: 50, message: 'El precio debe ser mayor que 50 COP.' },
     ]
   },
 ];

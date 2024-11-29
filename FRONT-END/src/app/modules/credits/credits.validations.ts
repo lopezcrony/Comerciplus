@@ -14,9 +14,9 @@ export const creditsValidationConfig: FieldValidation[] = [
           const formGroup = control.parent;
           if (formGroup) {
             const totalCredito = formGroup.get('totalCredito')?.value;
-            if (control.value && control.value > totalCredito) {
-              return { maxCredit: true };
-            }
+            return control.value && control.value > totalCredito 
+              ? { exceedsMaxCredit: true } 
+              : null;
           }
           return null;
         }

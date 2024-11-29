@@ -142,7 +142,7 @@ export class CreditsComponent implements OnInit {
           this.loadData();
           this.closeModal();
         },
-        error: () => this.toastr.error('Error al guardar abono', 'Error')
+        error: (error) => { this.toastr.error(error, 'Error'); }
       });
     }
   }

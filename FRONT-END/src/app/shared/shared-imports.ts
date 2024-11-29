@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { DialogModule } from 'primeng/dialog';
@@ -19,7 +21,10 @@ import { OrderListModule } from 'primeng/orderlist';
 import { CalendarModule } from 'primeng/calendar';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { RippleModule } from 'primeng/ripple';
-import { RouterModule } from '@angular/router';
+import { MessageModule } from 'primeng/message';
+import { ChipModule } from 'primeng/chip';
+import { InplaceModule } from 'primeng/inplace';
+import { TagModule } from 'primeng/tag';
 
 export const SHARED_IMPORTS = [
   CommonModule,
@@ -44,5 +49,9 @@ export const SHARED_IMPORTS = [
   CalendarModule,
   InputSwitchModule,
   RippleModule,
-  RouterModule
+  RouterModule,
+  MessageModule,
+  ChipModule,
+  InplaceModule,
+  TagModule,
 ];

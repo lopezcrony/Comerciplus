@@ -6,7 +6,7 @@ const GetAllreturnProvider = async (request, response) => {
         const sales = await returnProviderService.getAllReturnProvider();
         response.json(sales);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener las devoluciones po Proveedor', error: error.message });
+        response.status(500).json({ message: error.message });
     }
 };
 
@@ -15,7 +15,7 @@ const GetOnereturnProvider = async (req, res) => {
         const sales = await returnProviderService.getOneReturnProvider(req.params.id);
         res.status(200).json(sales);
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener la devolución por proveedor', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -35,7 +35,7 @@ const updateSalereturnProviderStatus  = async (req, res) => {
         await returnProviderService.updateReturnProvider(req.params.id, estado);
         res.json({ message: 'Estado actualizado con éxito.' });
     } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el estado de la venta', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

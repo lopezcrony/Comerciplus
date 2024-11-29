@@ -9,7 +9,7 @@ const getInstallmentsByCredit = async (req, res) => {
         }
         return res.status(200).json(installments);
     } catch (error) {
-        return res.status(500).json({ message: 'CONTROLLER: Error al obtener los abonos', error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -18,7 +18,7 @@ const createInstallment = async (req, res) => {
         const newInstallment = await installmentService.createInstallment(req.body);
         res.status(200).json({ message: 'Abono creado con éxito.', newInstallment });
     } catch (error) {
-        res.status(500).json({ message: 'Error al crear el abono.', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -29,7 +29,7 @@ const updateInstallment = async (req, res) => {
         const updatedInstallment = await installmentService.updateInstallment(id, installmentData);
         res.status(200).json({ message: 'Abono actualizado con éxito.', updatedInstallment });
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER: Error al actualizar el abono', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -40,7 +40,7 @@ const cancelInstallment = async (req, res) => {
 
         res.status(200).json({ message: 'Abono anulado con éxito' });
     } catch (error) {
-        res.status(500).json({ message: 'Error al anular el abono', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

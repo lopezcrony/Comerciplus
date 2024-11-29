@@ -160,7 +160,7 @@ export class ClientsComponent implements OnInit {
         this.loadClients();
         this.closeModal();
       },
-      error: () => this.toastr.error('Error al guardar cliente', 'Error')
+      error: (error) => { this.toastr.error(error, 'Error'); }
     });
   };
 

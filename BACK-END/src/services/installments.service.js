@@ -4,9 +4,13 @@ const {sequelize} = require('../config/db');
 
 const getInstallmentsByCredit = async (idCredit) => {
     try {
-        return await installmentRepository.getInstallmentsByCredit(idCredit);
+        const res = await installmentRepository.getInstallmentsByCredit(idCredit);
+        if (res.length === 0) {
+            throw new Error('No se encontraron abonos para el crédito.');
+        }
+        return res;
     } catch (error) {
-        throw new Error('SERVICE: Error al obtener los abonos por crédito: ' + error.message);
+        throw new Error(error.message);
     }
 };
 
@@ -15,6 +19,23 @@ const createInstallment = async (installmentData) => {
     try {
         // Busca el crédito y valida si existe
         const credit = await creditRepository.findCreditById(installmentData.idCredito, { transaction });
+
+        // Valida que el monto abonado sea mayor a 50 COP
+        if (installmentData.montoAbonado < 50) {
+            throw new Error('El monto mínimo de abono es de 50 COP');
+        }
+
+        // Valida que el monto abonado no sea mayor a la deuda actual
+        if (installmentData.montoAbonado > credit.totalCredito) {
+            throw new Error('El abono no puede ser mayor que la deuda actual.');
+        }
+
+        // Agrega la fecha de abono y el estado del abono
+        installmentData ={
+            ...installmentData,
+            fechaAbono: new Date(),
+            estadoAbono: true
+        }
 
         // Registra un abono
         const newInstallment = await installmentRepository.registerInstallment(installmentData, { transaction });
@@ -32,7 +53,7 @@ const createInstallment = async (installmentData) => {
         return newInstallment;
     } catch (error) {
         await transaction.rollback();
-        throw new Error('SERVICE: Error al crear el abono: ' + error.message);
+        throw new Error(error.message);
     }
 };
 
@@ -40,7 +61,7 @@ const updateInstallment = async (id, installmentData) => {
     try {
         const result = await installmentRepository.updateInstallment(id, installmentData);
         if (!result) {
-            throw new Error('SERVICE: No se pudo actualizar el abono.');
+            throw new Error('No se pudo actualizar el abono.');
         }
     } catch (error) {
         throw error;

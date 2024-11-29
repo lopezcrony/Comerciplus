@@ -5,7 +5,7 @@ const getAllCategories = async (req, res) => {
         const categories = await categorieService.getAllCategories();
         res.status(200).json(categories);
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER: Error al obtener las categorias', error });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -14,7 +14,7 @@ const getOneCategorie = async (req, res) => {
         const categorie = await categorieService.getOneCategorie(req.params.id);
         res.status(200).json(categorie);
     } catch (error) {
-        res.status(500).json({message: 'CONTROLLER: Error al obtener la categoria.', error});
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -24,7 +24,7 @@ const createCategorie = async (req, res) => {
         res.status(201).json({ message: 'Categoria registrada exitosamente.', newCategorie });
 
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -36,7 +36,7 @@ const updateCategorie = async (req, res) => {
         if (error.message === 'El nombre de la categoria ya está registrado.') {
             res.status(400).json({ message: error.message });
         } else {
-            res.status(500).json({ message: 'CONTROLLER:', error: error.message });
+            res.status(500).json({ message: error.message });
         }
     }
 };
@@ -57,7 +57,7 @@ const updateCategorieStatus  = async (req, res) => {
         await categorieService.updateCategorieStatus (req.params.id, estadoCategoria);
         res.json({ message: 'Estado actualizado con éxito.' });
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER:', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -68,7 +68,7 @@ const deleteOneCategorie = async (req, res) => {
         res.json({ message: 'Categoria eliminada con éxito.' });
         }
     } catch (error) {
-        res.status(500).json({mensagge : 'CONTROLLER:', error: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
