@@ -4,18 +4,19 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angul
 
 import { LoginService } from './login.service';
 import { ValidationService } from '../../shared/validators/validations.service';
+import { LoadingComponent } from '../../shared/loading/loading.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, LoadingComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   loginForm: FormGroup;
-
   showPassword: boolean = false;
+  isLoading: boolean = false;
 
   constructor(
     private loginService: LoginService,
@@ -53,6 +54,7 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.invalid) return this.markFormFieldsAsTouched();
+    this.isLoading = true;
 
     const formValue = this.loginForm.value;
 
@@ -61,6 +63,13 @@ export class LoginComponent {
       claveUsuario: formValue.claveUsuario
     };
 
-    this.loginService.login(loginData);
+    this.loginService.login(loginData).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.isLoading = false;
+      }
+    });
   }
 }

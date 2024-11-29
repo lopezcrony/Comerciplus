@@ -59,7 +59,7 @@
         <div class="field"
           [ngClass]="{'error':isFieldInvalid('telefonoProveedor')}">
           <label for="telefonoProveedor">Teléfono  <span style="color: #E24C4C;">*</span></label>
-          <input type="text" pInputText id="telefonoProveedor" formControlName="telefonoProveedor" maxlength="10" autofocus />
+          <input type="text" pInputText id="telefonoProveedor" formControlName="telefonoProveedor" maxlength="12" autofocus />
           <small class="p-error"
             *ngIf="isFieldInvalid('telefonoProveedor')">
             {{ getErrorMessage('telefonoProveedor') }}
