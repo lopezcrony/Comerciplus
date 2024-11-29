@@ -60,7 +60,7 @@ const createReturnSales = async (ReturnSalesData) => {
                 fecha: ReturnSalesData.fechaDevolucion,
                 motivoDevolucion: ReturnSalesData.motivoDevolucion
             };
-            if (product.stock < returnProviderData.cantidad) throw new Error('Stock insuficiente');
+            if (product.stock < ReturnSalesData.cantidad) throw new Error('Stock insuficiente');
 
             const newStock = product.stock - ReturnSalesData.cantidad;
             await productRepository.updateProductoStock(product.idProducto, newStock, { transaction });
@@ -77,13 +77,13 @@ const createReturnSales = async (ReturnSalesData) => {
                 motivoDevolucion: ReturnSalesData.motivoDevolucion
             };
 
-        if(product.stock < returnProviderData.cantidad) throw new Error('Stock insuficiente');
+        if(product.stock < ReturnSalesData.cantidad) throw new Error('Stock insuficiente');
 
             await returnProviderRepository.createReturnProvider(Caducidad, { transaction });
         }
 
         if (motivo === 'Equivocación' && tipo === 'Dinero') {
-            if (product.stock < returnProviderData.cantidad) throw new Error('Stock insuficiente');
+            if (product.stock < ReturnSalesData.cantidad) throw new Error('Stock insuficiente');
 
             const newStock = parseInt(product.stock, 10) + parseInt(ReturnSalesData.cantidad, 10);
             await productRepository.updateProductoStock(product.idProducto, newStock, { transaction });

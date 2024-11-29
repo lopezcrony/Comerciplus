@@ -39,6 +39,7 @@ const createReturnLoss = async (ReturnLossData) => {
 
 
         // Se actualiza el stock del producto
+        if(product.stock < ReturnLossData.cantidad) throw new Error('Stock insuficiente');
         const newStock = product.stock - ReturnLossData.cantidad;
         await productRepository.updateProductoStock(product.idProducto, newStock, { transaction });     
 
