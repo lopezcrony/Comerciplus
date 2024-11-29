@@ -4,12 +4,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angul
 
 import { LoginService } from './login.service';
 import { ValidationService } from '../../shared/validators/validations.service';
-import { LoadingComponent } from '../../shared/loading/loading.component';
+import { LoginLoadingComponent } from '../../shared/loading/loginLoading.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, LoadingComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, LoginLoadingComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })

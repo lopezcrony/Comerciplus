@@ -25,4 +25,4 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   `,
   styles: []
 })
-export class LoadingComponent {}
+export class LoginLoadingComponent {}
