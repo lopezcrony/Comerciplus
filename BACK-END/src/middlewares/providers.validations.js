@@ -13,7 +13,7 @@ const validateProvider = [
         .notEmpty().withMessage('La dirección del proveedor es obligatoria'),
     
     body('telefonoProveedor')
-        .isLength({ min: 7, max: 10 }).withMessage('El teléfono del proveedor debe contener mínimo 7 dígitos y máximo 10')
+        .isLength({ min: 7, max: 12 }).withMessage('El teléfono del proveedor debe contener mínimo 7 dígitos y máximo 12')
         .matches(/^[0-9]+$/).withMessage('El teléfono del proveedor solo debe contener números'),
 
     (req, res, next) => {

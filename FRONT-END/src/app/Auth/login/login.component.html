@@ -1,7 +1,9 @@
 <div class="login-container">
 
+  <app-login-loading *ngIf="isLoading"></app-login-loading>
+
   <!-- Lado derecho con el formulario -->
-  <div class="login-card">
+  <div class="login-card" *ngIf="!isLoading">
     <div class="logo-container animated-logo">
       <i class="fas fa-shopping-bag logo-icon"></i>
     </div>
