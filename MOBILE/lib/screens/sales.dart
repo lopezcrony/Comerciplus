@@ -24,6 +24,12 @@ class _ResumenVentasState extends State<ResumenVentas>
       {}; // Agrega un mapa para las ventas filtradas
   late AnimationController _animationController;
 
+  final formatoMoneda = NumberFormat.currency(
+    locale: 'es_CO', // Cambia por el código de tu región, si es necesario
+    symbol: '\$', // Símbolo de la moneda
+    decimalDigits: 0, // Para evitar decimales
+  );
+
   @override
   void initState() {
     super.initState();
@@ -266,7 +272,7 @@ class _ResumenVentasState extends State<ResumenVentas>
                           children: [
                             _buildStatistic(
                               'Total del día',
-                              '\$${totalDelDia.toStringAsFixed(2)}',
+                              '\$${formatoMoneda.format(totalDelDia)}',
                               Icons.attach_money,
                             ),
                             Container(
@@ -396,7 +402,7 @@ class _ResumenVentasState extends State<ResumenVentas>
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '\$${venta.totalVenta.toStringAsFixed(2)}',
+              '\$${formatoMoneda.format(venta.totalVenta)}',
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 color: AppColors.primary,

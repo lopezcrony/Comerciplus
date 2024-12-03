@@ -19,7 +19,7 @@ class Detailsale {
       idDetalleVenta: json['idDetalleVenta'],
       idVenta: json['idVenta'],
       idProducto: json['idProducto'],
-      subtotal: json['subtotal'],
+      subtotal: (json['subtotal'] as num).toDouble(),
       cantidadProducto: json['cantidadProducto'],
     );
   }

@@ -24,9 +24,9 @@ class PurchaseDetails {
       idCompra: json['idCompra'],
       idProducto: json['idProducto'],  // Convertir a int
       codigoBarra: json['codigoBarra'],
-      cantidadProducto: json['cantidadProducto'] as int,  // Convertir a int
-      precioCompraUnidad: (json['precioCompraUnidad'] ?? 0.0).toDouble(),  // Convertir a double
-      subtotal: (json['subtotal'] ?? 0.0).toDouble(),
+      cantidadProducto: (json['cantidadProducto'] as num).toInt(),  // Convertir a int
+      precioCompraUnidad: (json['precioCompraUnidad'] as num).toDouble(), // Convertir a double
+      subtotal: (json['subtotal'] as num).toDouble(),
     );
   }
 }
