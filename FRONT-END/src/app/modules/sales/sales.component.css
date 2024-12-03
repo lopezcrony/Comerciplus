@@ -46,7 +46,7 @@
 /* Estilos PrimeNG */
 :host ::ng-deep .p-button .p-button-icon { font-size: 1.2rem; display: inline-flex !important; }
 :host ::ng-deep .p-card { border-radius: 0.5rem; }
-:host ::ng-deep .p-autocomplete { width: auto !important;   }
+:host ::ng-deep .p-autocomplete { width: 100% !important;   }
 :host ::ng-deep .barcode-container .p-autocomplete .p-autocomplete-input,
 :host ::ng-deep .p-autocomplete .p-autocomplete-input {
   width: 100% !important;
