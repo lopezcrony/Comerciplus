@@ -225,7 +225,7 @@ export class ShoppinviewComponent implements OnInit {
     });
   }
 
-
+//generar PDF
   downloadPurchasePDF() {
     // Si las fechas no están definidas, usar la fecha actual
     if (!this.startDates) {
@@ -254,11 +254,11 @@ export class ShoppinviewComponent implements OnInit {
 
     // Colores corporativos
     const colors = {
-      primary: [0, 83, 156],
-      secondary: [100, 100, 100],
-      accent: [41, 128, 185],
-      success: [46, 204, 113],
-      container: [240, 240, 240]
+      primary: [50, 50, 50],       // Gris oscuro (cabeceras o títulos)
+      secondary: [100, 100, 100], // Gris medio (textos secundarios)
+      accent: [150, 150, 150],    // Gris claro (detalles o iconos)
+      success: [200, 200, 200],   // Gris más claro (fondos o contenedores)
+      container: [240, 240, 240]  // Gris casi blanco (background principal)
     };
 
     const styles = {

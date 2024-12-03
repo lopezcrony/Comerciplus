@@ -62,11 +62,6 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-3 p-4">
-      <button 
-        pButton label="Cancelar" icon="pi pi-times"
-        class="p-button-secondary p-button-rounded p-button-outlined"
-        (click)="displayModal = false">
-      </button>
       <button pButton label="Descargar" (click)="onExportDate()" icon="pi pi-download"
       class="p-button-help p-button-rounded p-button-outlined"
       [disabled]="!calendarField1Value || !calendarField2Value"></button>
