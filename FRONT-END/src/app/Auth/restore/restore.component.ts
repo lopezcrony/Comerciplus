@@ -68,7 +68,7 @@ export class RestoreComponent implements OnInit {
   
     console.log('Token a enviar:', this.token); // Verifica el token aquí
   
-    this.http.post('https://comerciplus-dggj.onrender.com/restore', 
+    this.http.post('https://comerciplus-vh7i.onrender.com/restore', 
       { claveUsuario: this.newPassword },
       { headers }) // Se añade si el token va en los headers.
       .subscribe({
