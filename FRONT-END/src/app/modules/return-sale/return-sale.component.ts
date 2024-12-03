@@ -72,7 +72,7 @@ export class ReturnSaleComponent implements OnInit {
       fechaDeBaja: new Date(),
       motivoDevolucion: ['', validationService.getValidatorsForField('returnSale', 'motivoDevolucion')],
       tipoReembolso: ['', validationService.getValidatorsForField('returnSale', 'tipoReembolso')],
-      idProveedor: ['', validationService.getValidatorsForField('returnProvider', 'idProveedor')],
+      idProveedor: ['', validationService.getValidatorsForField('returnSale', 'idProveedor')],
     });
   }
 
@@ -171,6 +171,7 @@ export class ReturnSaleComponent implements OnInit {
         this.closeModal();
       },
       error: (error) => {
+        this.toastr.error(error.message, 'Error');
         console.error('Error al agregar un registro', error);
         if (error.status === 500) {
           this.toastr.error('No se puede agregar', 'Error');

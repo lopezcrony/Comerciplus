@@ -147,7 +147,9 @@ export class LossComponent implements OnInit {
         this.loadData();
         this.closeModal();
       },
-      error: (error) => { this.toastr.error(error, 'Error'); }
+      error: (error) => { 
+        this.toastr.error(error.message, 'Error');
+      }
     });
   }
 

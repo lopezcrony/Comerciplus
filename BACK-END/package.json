@@ -9,6 +9,7 @@
   "scripts": {
     "build": "npm install --build-from-source bcrypt",
     "test": "jest",
+    "test:watch": "jest --watch",
     "start": "cross-env NODE_ENV=production node main.js",
     "start:local": "cross-env NODE_ENV=local node main.js"
   },

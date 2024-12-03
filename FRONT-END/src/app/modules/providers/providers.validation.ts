@@ -11,7 +11,7 @@ export const providersValidationConfig: FieldValidation[] = [
   {
     name: 'nombreProveedor',
     rules: [
-      { type: 'required', message: 'El nombre es obligatorio.' },
+      { type: 'required', message: 'El nombre de la empresa es obligatorio.' },
       { type: 'pattern', value: 'onlyLetters', message: 'Ingrese un nombre válido.' },
     ],
   },
@@ -23,7 +23,7 @@ export const providersValidationConfig: FieldValidation[] = [
     name: 'telefonoProveedor',
     rules: [
       { type: 'required', message: 'El teléfono es obligatorio.' },
-      { type: 'pattern', value: 'phone', message: 'Ingrese un número de teléfono válido. (7-10 dígitos)' },
+      { type: 'pattern', value: 'phoneProvider', message: 'Ingrese un número de teléfono válido. (7-12 dígitos)' },
     ],
   },
 ];

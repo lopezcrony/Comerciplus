@@ -5,6 +5,7 @@ export const validationPatterns = {
 
   cedula: /^[0-9]{5,10}$/,
   phone: /^[0-9]{7,10}$/,
+  phoneProvider: /^[0-9]{7,12}$/,
   price: /^(|[1-9][0-9]*)(\\.[0-9]+)?$/,
 
   nit: /^[0-9]{9}$/,
