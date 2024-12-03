@@ -45,7 +45,7 @@ export class SalesComponent implements OnInit {
   cambio: number = 0;
 
   selectedClient: any = null;
-  imprimirRecibo: boolean = false;
+  imprimirRecibo: boolean = true;
   showCreditModal: boolean = false;
   showClientModal: boolean = false;
   idSale: number | null = null;
