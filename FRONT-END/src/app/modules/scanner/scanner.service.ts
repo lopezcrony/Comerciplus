@@ -18,6 +18,7 @@ export class ScannerSocketService {
     this.authService.getUserData().subscribe(user => {
       if (user) {
         this.socket.on(user.idUsuario.toString(), (data: any) => {
+          console.log(data);          
           this.barcodeSubject.next(data);
         });
       }
