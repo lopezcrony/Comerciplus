@@ -156,3 +156,10 @@
 :host ::ng-deep .p-button.p-button-text:hover {
   background: rgba(112, 128, 144, 0.1);
 }
+
+.logo {
+  margin-top : 7px;
+  height: 40px; /* Ajusta según el tamaño del topbar */
+  max-width: 100%; /* Para evitar que se desborde */
+  object-fit: contain; /* Para mantener la proporción */
+}
