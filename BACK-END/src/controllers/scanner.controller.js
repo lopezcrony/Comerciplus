@@ -5,6 +5,10 @@ const scannerController = async (req, res) => {
 
         // Emitir el código de barras solo al cliente específico
         req.io.to(userId).emit('newBarcode', { barcode, timestamp, scanTime: new Date().toISOString() });
+        console.log(req.body);
+        console.log(userId);
+        
+        
 
         res.json({ ok: true, message: 'Código de barras procesado correctamente' });
 
