@@ -151,11 +151,11 @@
 
         <div class="">
           <div class="p-field mb-2">
-            <label for="cliente" class="block mb-1 texto-pequeno">Cliente</label>
+            <label for="cliente" class="block mb-1 texto-pequeno">Cliente <span style="color: #E24C4C;">*</span></label>
             <div class="cliente-container">
               <p-autoComplete id="cliente" formControlName="cliente" [suggestions]="filteredCredits"
                 (completeMethod)="searchCreditClient($event)" (onSelect)="onClientSelect($event)" field="nombreCliente"
-                [dropdown]="true" placeholder="Buscar cliente" [style]="{'width':'calc(100% - 2.5rem)'}"
+                [dropdown]="true" placeholder="Buscar cliente" [style]="{'width':'calc(100% - 5rem)'}"
                 styleClass="texto-pequeno">
                 <ng-template let-cliente pTemplate="item">
                   <div>{{cliente.nombreCliente}} - CC {{cliente.cedulaCliente}}</div>
@@ -174,7 +174,7 @@
             <form [formGroup]="clientForm">
 
               <div class="field" [ngClass]="{'error': isFieldInvalid('cedulaCliente')}">
-                <label for="cedulaCliente">Cédula</label>
+                <label for="cedulaCliente">Cédula <span style="color: #E24C4C;">*</span></label>
                 <input type="text" pInputText id="cedulaCliente" formControlName="cedulaCliente" maxlength="15"
                   autofocus />
                 <small class="p-error" *ngIf="isFieldInvalid('cedulaCliente')">
@@ -184,7 +184,7 @@
 
               <div class="field-group">
                 <div class="field" [ngClass]="{'error': isFieldInvalid('nombreCliente')}">
-                  <label for="nombreCliente">Nombre</label>
+                  <label for="nombreCliente">Nombre <span style="color: #E24C4C;">*</span></label>
                   <input type="text" pInputText id="nombreCliente" formControlName="nombreCliente" />
                   <small class="p-error" *ngIf="isFieldInvalid('nombreCliente')">
                     {{ getErrorMessage('nombreCliente') }}
@@ -192,7 +192,7 @@
                 </div>
 
                 <div class="field" [ngClass]="{'error': isFieldInvalid('apellidoCliente')}">
-                  <label for="apellidoCliente">Apellido</label>
+                  <label for="apellidoCliente">Apellido <span style="color: #E24C4C;">*</span></label>
                   <input type="text" pInputText id="apellidoCliente" formControlName="apellidoCliente" />
                   <small class="p-error" *ngIf="isFieldInvalid('apellidoCliente')">
                     {{ getErrorMessage('apellidoCliente') }}
@@ -202,7 +202,7 @@
 
               <div class="field-group">
                 <div class="field" [ngClass]="{'error': isFieldInvalid('direccionCliente')}">
-                  <label for="direccionCliente">Dirección</label>
+                  <label for="direccionCliente">Dirección <span style="color: #E24C4C;">*</span></label>
                   <input type="text" pInputText id="direccionCliente" formControlName="direccionCliente" />
                   <small class="p-error" *ngIf="isFieldInvalid('direccionCliente')">
                     {{ getErrorMessage('direccionCliente') }}
@@ -210,7 +210,7 @@
                 </div>
 
                 <div class="field" [ngClass]="{'error': isFieldInvalid('telefonoCliente')}">
-                  <label for="telefonoCliente">Teléfono</label>
+                  <label for="telefonoCliente">Teléfono <span style="color: #E24C4C;">*</span></label>
                   <input type="text" pInputText id="telefonoCliente" formControlName="telefonoCliente" minlength="7"
                     maxlength="10" />
                   <small class="p-error" *ngIf="isFieldInvalid('telefonoCliente')">
@@ -239,7 +239,7 @@
         </div>
 
         <div class="p-field mb-2">
-          <label for="montoCredito" class="block mb-1 texto-pequeno">Monto a Acreditar</label>
+          <label for="montoCredito" class="block mb-1 texto-pequeno">Monto a Acreditar <span style="color: #E24C4C;">*</span></label>
           <p-inputNumber id="montoCredito" formControlName="montoCredito" mode="decimal" currency="COP" locale="en-CO"
             placeholder="Monto a acreditar" [min]="50" [max]="total" [style]="{'width':'100%'}"
             styleClass="texto-pequeno">
@@ -247,7 +247,7 @@
         </div>
 
         <div class="p-field mb-2">
-          <label for="plazoMaximo" class="block mb-1 texto-pequeno">Plazo máximo de pago</label>
+          <label for="plazoMaximo" class="block mb-1 texto-pequeno">Plazo máximo de pago <span style="color: #E24C4C;">*</span></label>
           <p-calendar id="plazoMaximo" formControlName="plazoMaximo" [iconDisplay]="'input'" inputId="icondisplay"
             placeholder="Ingrese la fecha límite de pago" [inputStyle]="{'width':'80%'}" [showIcon]="true"
             [minDate]="minDate" class="custom-calendar" appendTo="body">
