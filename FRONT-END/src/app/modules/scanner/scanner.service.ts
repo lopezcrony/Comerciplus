@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { AuthService } from '../../Auth/auth.service'; // Asumiendo que tienes un servicio de autenticación
+import { AuthService } from '../../Auth/auth.service'; // Asegúrate de que la ruta es correcta
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,7 @@ export class ScannerSocketService {
 
     // Suscribirse al evento 'newBarcode' para recibir datos en tiempo real
     this.socket.on('newBarcode', (data: any) => {
+      console.log('Evento newBarcode recibido:', data); // Log para verificar
       this.barcodeSubject.next(data);
     });
 
@@ -24,6 +25,7 @@ export class ScannerSocketService {
       if (user) {
         // Convertir user.idUsuario a cadena
         this.socket.on(user.idUsuario.toString(), (data: any) => {
+          console.log(`Evento recibido para el usuario ${user.idUsuario}:`, data); // Log para verificar
           this.barcodeSubject.next(data);
         });
       }
