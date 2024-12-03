@@ -5,9 +5,11 @@ const scannerController = async (req, res) => {
         console.log(`Datos recibidos: barcode=${barcode}, timestamp=${timestamp}, idUsuario=${idUsuario}`); // Log para verificar datos
 
         // Emitir el código de barras solo al cliente específico
-        req.io.emit('newBarcode', { barcode, timestamp, scanTime: new Date().toISOString() });
+        req.io.emit('newBarcode', { barcode, timestamp, scanTime: new Date().toISOString(),idUsuario });
 
         res.json({ ok: true, message: 'Código de barras procesado correctamente' });
+        console.log(res.json);
+        
 
     } catch (error) {
         console.error('Error en el controlador de escáner:', error); // Log de error
