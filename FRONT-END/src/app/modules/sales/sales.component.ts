@@ -19,6 +19,7 @@ import { CreditDetailService } from '../detailCredit/creditDetail.service';
 import { BarcodesService } from '../barcodes/barcodes.service';
 import jsPDF from 'jspdf';
 import { ScannerSocketService } from '../scanner/scanner.service';
+import { AlertsService } from '../../shared/alerts/alerts.service';
 
 @Component({
   selector: 'app-sales',
@@ -44,7 +45,7 @@ export class SalesComponent implements OnInit {
   cambio: number = 0;
 
   selectedClient: any = null;
-  imprimirRecibo: boolean = false;
+  imprimirRecibo: boolean = true;
   showCreditModal: boolean = false;
   showClientModal: boolean = false;
   idSale: number | null = null;
@@ -62,6 +63,7 @@ export class SalesComponent implements OnInit {
 
   private barcodeSubscription!: Subscription;
 
+
   constructor(
     private fb: FormBuilder,
     private saleService: SaleService,
@@ -72,7 +74,8 @@ export class SalesComponent implements OnInit {
     private clientService: ClientService,
     private toastr: ToastrService,
     private validationService: ValidationService,
-    private scannerSocketService: ScannerSocketService
+    private scannerSocketService: ScannerSocketService,
+    private alertsService: AlertsService,
   ) {
     this.busquedaForm = this.fb.group({
       busqueda: ['']
@@ -220,16 +223,16 @@ export class SalesComponent implements OnInit {
   loadSaleFromLocalStorage() {
     const savedDetailSale = localStorage.getItem('detailSale');
     const savedTotal = localStorage.getItem('total');
-  
+
     if (savedDetailSale) {
       this.detailSale = JSON.parse(savedDetailSale);
     }
-  
+
     if (savedTotal) {
       this.total = parseFloat(savedTotal);
       this.creditForm.get('totalVenta')?.setValue(this.total);
     }
-  
+
     console.log('Venta restaurada desde localStorage', 'Info');
   }
 
@@ -324,8 +327,8 @@ export class SalesComponent implements OnInit {
   }
 
   // --------------------------------------FINALIZAR VENTA-------------------------------------------
-  
-  
+
+
 
 
   calcularCambio() {
@@ -367,7 +370,7 @@ export class SalesComponent implements OnInit {
   clearLocalStorage() {
     localStorage.removeItem('detailSale');
     localStorage.removeItem('total');
-  }  
+  }
 
   finalizeSale() {
     this.createSale((completed) => {
@@ -376,16 +379,30 @@ export class SalesComponent implements OnInit {
       this.toastr.success('Venta registrada', 'Éxito');
 
       if (this.imprimirRecibo) this.downloadPDF(); // Llama a la función de descarga del PDF si el switch está activado
-      
+
       this.clearLocalStorage();
       this.resetForm();
     });
   }
 
   cancelSale() {
-    this.clearLocalStorage();
-    this.resetForm();
-    this.toastr.success('Venta Cancelada', 'Info');
+
+    this.alertsService.confirm(
+      `¿Estás seguro de que deseas cancelar esta venta?`,
+
+      () => {
+        this.clearLocalStorage();
+        this.resetForm();
+        this.toastr.success('Venta Cancelada', 'Info');
+      },
+      () => {
+        this.toastr.info('cancelado', 'Información');
+      }
+    );
+
+
+
+
   };
   // ---------------------------------------- ASIGNAR CREDITO ----------------------------------------- //
   loadCreditsClients() {
@@ -567,7 +584,7 @@ export class SalesComponent implements OnInit {
     // Encabezado
     setStyle(styles.title);
     setColor([255, 255, 255]);
-    doc.text('RECIBO DE VENTA', pageWidth / 2, yPosition, { align: 'center' });
+    doc.text('COMPROBANTE DE VENTA', pageWidth / 2, yPosition, { align: 'center' });
     yPosition += lineHeight + 6;
 
     // Información de la venta
@@ -667,9 +684,9 @@ export class SalesComponent implements OnInit {
     doc.text('¡Gracias por su compra!', pageWidth / 2, yPosition, { align: 'center' });
     yPosition += lineHeight;
     setColor(colors.secondary);
-    doc.text('Conserve este recibo para cualquier aclaración', pageWidth / 2, yPosition, { align: 'center' });
+    doc.text('Conserve este comprobante para cualquier aclaración', pageWidth / 2, yPosition, { align: 'center' });
 
     // Guardar el PDF
-    doc.save('recibo_venta.pdf');
+    doc.save('comprobante_venta.pdf');
   }
 }

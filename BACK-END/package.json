@@ -37,13 +37,19 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
+<<<<<<< HEAD
     "chai": "^5.1.2",
+=======
+>>>>>>> a90b916066a336919e0759e5827a884f2203d295
     "cross-env": "^7.0.3",
     "jest": "^29.7.0",
     "jest-mock-extended": "^4.0.0-beta1",
     "mocha": "^10.8.2",
     "nodemon": "^3.1.7",
+<<<<<<< HEAD
     "sinon": "^19.0.2",
+=======
+>>>>>>> a90b916066a336919e0759e5827a884f2203d295
     "supertest": "^7.0.0"
   }
 }
