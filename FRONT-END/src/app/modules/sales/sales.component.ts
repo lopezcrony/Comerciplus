@@ -97,28 +97,13 @@ export class SalesComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.loadProducts();
-    this.loadSaleFromLocalStorage();
-
-    // Agregar la suscripción al scanner
-    this.barcodeSubscription = this.scannerSocketService.getLatestBarcode()
-      .subscribe(barcodeData => {
-        if (barcodeData && barcodeData.barcode) {
-          // Mostrar el código de barras en el input
-          this.busquedaForm.patchValue({ busqueda: barcodeData.barcode });
-
-          // Limpiar el input después de 1 segundo
-          setTimeout(() => {
-            this.busquedaForm.patchValue({ busqueda: '' });
-          }, 5000);
-
-          // Usar el método existente searchByBarcode
-          this.searchByBarcode(barcodeData.barcode);
-        }
-      });
-  }
-
+  ngOnInit() { this.loadProducts(); this.loadSaleFromLocalStorage(); // Agregar la suscripción al scanner 
+    this.barcodeSubscription = this.scannerSocketService.getLatestBarcode() .subscribe(barcodeData => { 
+      if (barcodeData && barcodeData.barcode) { // Mostrar el código de barras en el input 
+        console.log('Código de barras recibido para buscar productos:', barcodeData.barcode); // Añadimos log para verificar 
+        this.busquedaForm.patchValue({ busqueda: barcodeData.barcode }); // Limpiar el input después de 5 segundos 
+        setTimeout(() => { this.busquedaForm.patchValue({ busqueda: '' }); }, 5000); // Usar el método existente 
+        this.searchByBarcode(barcodeData.barcode); } }); }
   ngOnDestroy() {
     if (this.barcodeSubscription) {
       this.barcodeSubscription.unsubscribe();

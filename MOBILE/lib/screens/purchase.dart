@@ -36,6 +36,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     });
   }
 
+  // ignore: unused_element
   void _initializeData() async {
     try {
       // Obtiene la lista de compras desde la API
