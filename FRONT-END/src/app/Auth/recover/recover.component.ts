@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { RouterModule } from '@angular/router';
+import { RecoverService } from './recover.service';
 
 @Component({
   selector: 'app-recover',
@@ -18,9 +18,9 @@ export class RecoverComponent {
   emailPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   constructor(
-    private http: HttpClient,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private recoverService: RecoverService
   ) {}
 
   volverALogin() {
@@ -39,22 +39,7 @@ export class RecoverComponent {
     if (!this.validateEmail()) {
       return;
     }
+   this.recoverService.recovery(this.correoUsuario);
 
-    this.http.post('https://comerciplus-vh7i.onrender.com/recover', { correoUsuario: this.correoUsuario }).subscribe({
-      next: ( ) => {
-        this.toastr.success('Se han enviado instrucciones para restablecer tu contraseña a tu correo electrónico');
-        this.router.navigate(['/']);
-      },
-      error: (error: HttpErrorResponse) => {
-        console.error('Error al enviar la solicitud de recuperación:', error);
-        if (error.status === 404) {
-          this.toastr.error('No se encontró un usuario con ese correo electrónico');
-        } else if (error.status === 0) {
-          this.toastr.error('No se pudo conectar con el servidor. Verifica tu conexión o que el servidor esté en funcionamiento.');
-        } else {
-          this.toastr.error('Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde.');
-        }
-      }
-    });
   }
 }
