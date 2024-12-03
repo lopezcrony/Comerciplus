@@ -43,4 +43,26 @@ class PurchaseService {
       rethrow; 
     }
   }
+
+  Future<double> getDailyPurchasesTotal() async {
+  final response = await http.get(Uri.parse(_purchasesUrl));
+  if (response.statusCode == 200) {
+    List jsonResponse = jsonDecode(response.body);
+    List<Purchase> allPurchases = jsonResponse.map((purchase) => Purchase.fromJson(purchase)).toList();
+
+    // Filtrar las compras del día
+    DateTime today = DateTime.now();
+    double totalPurchases = allPurchases
+        .where((purchase) =>
+            purchase.fechaCompra.year == today.year &&
+            purchase.fechaCompra.month == today.month &&
+            purchase.fechaCompra.day == today.day)
+        .fold(0.0, (sum, purchase) => sum + purchase.valorCompra);
+
+    return totalPurchases;
+  } else {
+    throw Exception('Error al obtener las compras del día');
+  }
+}
+
 }
