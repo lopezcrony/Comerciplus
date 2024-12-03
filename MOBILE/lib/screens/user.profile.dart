@@ -129,10 +129,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         );
       }
     }
-  } catch (e, stackTrace) {
-    print('Error completo: $e');
-    print('Traza de pila: $stackTrace');
-
+  } catch (e) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
