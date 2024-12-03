@@ -17,6 +17,8 @@ const scannerController = async (req, res) => {
     }
 }
 
+
+
 module.exports = {
     scannerController
 };
