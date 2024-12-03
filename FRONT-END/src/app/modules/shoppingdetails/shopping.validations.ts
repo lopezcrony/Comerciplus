@@ -32,7 +32,7 @@ export const shoppingValidation: FieldValidation[] = [
     name: 'codigoBarra',
     rules: [
       { type: 'required', message: 'Ingrese el codigo de barra' },
-      { type: 'pattern', value: 'onlyNumbers', message: 'Ingrese solo números' },
+      { type: 'pattern', value: 'alfanumeric', message: 'Ingrese solo números' },
       { type: 'min', value: 0, message: 'Ingrese un código valido' }
     ]
   },
