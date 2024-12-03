@@ -14,11 +14,16 @@ export class ScannerSocketService {
   constructor(private authService: AuthService) {
     this.socket = io(environment.apiUrl);
 
+    // Suscribirse al evento 'newBarcode' para recibir datos en tiempo real
+    this.socket.on('newBarcode', (data: any) => {
+      this.barcodeSubject.next(data);
+    });
+
     // Suscribirse solo a los eventos específicos del usuario
     this.authService.getUserData().subscribe(user => {
       if (user) {
+        // Convertir user.idUsuario a cadena
         this.socket.on(user.idUsuario.toString(), (data: any) => {
-          console.log(data);          
           this.barcodeSubject.next(data);
         });
       }

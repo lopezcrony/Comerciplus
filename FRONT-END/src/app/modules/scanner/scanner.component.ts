@@ -21,22 +21,11 @@ import { ScannerSocketService } from './scanner.service';
 
 export class ScannerComponent implements OnInit, OnDestroy {
   latestBarcode: any;
+
   private subscription!: Subscription;
-
-  constructor(private scannerSocketService: ScannerSocketService) {}
-
-  ngOnInit() {
-    this.subscription = this.scannerSocketService.getLatestBarcode()
-      .subscribe(barcode => {
-        if (barcode) {
-          this.latestBarcode = barcode;
-        }
-      });
-  }
-
-  ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
+  constructor(private scannerSocketService: ScannerSocketService) { } ngOnInit() {
+    this.subscription = this.scannerSocketService.getLatestBarcode().subscribe(barcode => {
+      if (barcode) { this.latestBarcode = barcode; }
+    });
+  } ngOnDestroy() { if (this.subscription) { this.subscription.unsubscribe(); } }
 }
