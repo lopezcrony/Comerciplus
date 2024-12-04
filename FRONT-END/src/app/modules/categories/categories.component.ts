@@ -205,7 +205,7 @@ export class CategoriesComponent implements OnInit {
         this.toastr.success('Estado actualizado con éxito', 'Éxito');
       },
       error: () => {
-        this.toastr.error('Error al actualizar el estado', 'Error');
+        this.toastr.error('Error al go actualizar el estado', 'Error');
       }
     });
   } 
