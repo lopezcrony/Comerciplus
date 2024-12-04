@@ -197,14 +197,6 @@ stopListeningToScanner() {
   }
 }
 
-clearScanner(){
-  this.LossForm.patchValue({
-    CodigoProducto: ''
-  });
-  console.log('Código de barras limpiado');
-}
-
-
   openCreateModal() {
     this.isEditing = false;
     this.showModal = true;
@@ -250,7 +242,6 @@ clearScanner(){
     request.subscribe({
       next: () => {
         this.toastr.success('Pérdida guardada con éxito!', 'Éxito');
-        this.clearScanner();
         this.loadData();
         this.closeModal();
       },
