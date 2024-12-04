@@ -477,7 +477,7 @@ export class SalesComponent implements OnInit {
     this.detailSale = [];
     this.total = 0;
     this.selectedClient = null;
-    this.imprimirRecibo = false;
+    this.imprimirRecibo = true;
     this.idSale = null;
     this.loadProducts();
   }
