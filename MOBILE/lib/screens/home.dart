@@ -8,19 +8,28 @@ import 'package:comerciplus/widgets/menu_card.dart';
 import 'package:comerciplus/screens/providers.dart';
 import 'package:comerciplus/screens/clients.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
+import '../services/purchase.dart';
+import '../services/sales.dart';
 import '../shared/AppColors.dart';
 import '../widgets/scanner_button.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  Home({super.key});
+
+  final formatoMoneda = NumberFormat.currency(
+    locale: 'es_CO', // Cambia por el código de tu región, si es necesario
+    symbol: '\$', // Símbolo de la moneda
+    decimalDigits: 0, // Para evitar decimales
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const CustomAppBar(),
-      
+
       // Botpón flotante para escanear
       floatingActionButton: AnimatedScannerButton(
         onPressed: () {
@@ -60,22 +69,47 @@ class Home extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SummaryCard(
-                          title: 'Ventas',
-                          value: '\$15,280',
-                          icon: Icons.trending_up,
-                          change: '+12.5%',
-                        ),
-                        SummaryCard(
-                          title: 'Compras',
-                          value: '\$30,950',
-                          icon: Icons.trending_down,
-                          change: '+1.5%',
-                        ),
-                      ],
+                    FutureBuilder<List<double>>(
+                      future: Future.wait([
+                        SaleService().getDailySalesTotal(),
+                        PurchaseService().getDailyPurchasesTotal(),
+                      ]),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Text(
+                            'Error: ${snapshot.error}',
+                            style: const TextStyle(color: Colors.white),
+                          );
+                        }
+
+                        final totals = snapshot.data ?? [0.0, 0.0];
+                        final totalSales = totals[0];
+                        final totalPurchases = totals[1];
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SummaryCard(
+                              title: 'Ventas',
+                              value: '\$${formatoMoneda.format(totalSales)}',
+                              icon: Icons.trending_up,
+                              change:
+                                  '+12.5%', // Puedes calcular cambios aquí si es necesario
+                            ),
+                            SummaryCard(
+                              title: 'Compras',
+                              value:
+                                  '\$${formatoMoneda.format(totalPurchases)}',
+                              icon: Icons.trending_down,
+                              change: '+1.5%', // Placeholder
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),

@@ -23,7 +23,12 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   List<Purchase> _allPurchases = [];
   Map<String, List<Purchase>> purchasesByDay = {};
 
-
+ final formatoMoneda = NumberFormat.currency(
+    locale: 'es_CO', // Cambia por el código de tu región, si es necesario
+    symbol: '\$', // Símbolo de la moneda
+    decimalDigits: 0, // Para evitar decimales
+  );
+  
   @override
   void initState() {
     super.initState();
@@ -151,7 +156,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       color: AppColors.text),
                   ),
                   subtitle: Text(
-                    '\$${purchase.valorCompra.toStringAsFixed(2)}',
+                    '\$${formatoMoneda.format(purchase.valorCompra)}',
                     style: GoogleFonts.poppins(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w600),
@@ -219,7 +224,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                                   size: 16, color: AppColors.primary),
                               const SizedBox(width: 4),
                               Text(
-                                '\$${purchase.valorCompra.toStringAsFixed(2)}',
+                                '\$${formatoMoneda.format(purchase.valorCompra)}',
                                 style: GoogleFonts.poppins(
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.w600),

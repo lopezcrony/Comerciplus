@@ -15,7 +15,7 @@
     return Sales(
       idVenta: json['idVenta'],
       fechaVenta: DateTime.parse(json['fechaVenta']),
-      totalVenta: json['totalVenta'],
+      totalVenta: (json['totalVenta'] as num).toDouble(), // Convierte a double
       estadoVenta: json['estadoVenta'],
     );
   }

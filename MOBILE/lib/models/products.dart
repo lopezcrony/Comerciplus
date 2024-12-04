@@ -19,7 +19,7 @@ class Products {
     return Products(
       idProducto: json['idProducto'],
       idCategoria: json['idCategoria'],
-      precioVenta: json['precioVenta'],
+      precioVenta: (json['precioVenta'] as num).toDouble(),
       nombreProducto: json['nombreProducto'],
       stock: json['stock'],
       estadoProducto: json['estadoProducto'],

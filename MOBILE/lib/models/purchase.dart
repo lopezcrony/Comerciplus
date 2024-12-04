@@ -57,7 +57,7 @@ class Purchase {
       fechaCompra: DateTime.parse(json['fechaCompra']),
       fechaRegistro: DateTime.parse(json['fechaRegistro']),
       numeroFactura: json['numeroFactura'],
-      valorCompra: (json['valorCompra'] ?? 0.0).toDouble(),
+      valorCompra: (json['valorCompra'] as num).toDouble(),
       estadoCompra: json['estadoCompra'] ?? true,
       detalleCompra: detalles, // Asignamos los detalles aquí
     );

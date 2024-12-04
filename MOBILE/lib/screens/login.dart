@@ -63,7 +63,7 @@ class _LoginScreenState extends State<Login>
     await _authService.userAuthentication(email, password);
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const Home()),
+      MaterialPageRoute(builder: (context) => Home()),
     );
   } catch (error) {
     _showError('Error al iniciar sesión. Por favor, intenta nuevamente.');
