@@ -97,37 +97,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Center(
-                child: Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.blue.shade200,
-                        Colors.blue.shade500,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blue.shade100,
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.person,
-                      size: 80,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
               const SizedBox(height: 20),
               Text(
                 'Opciones de Cuenta',

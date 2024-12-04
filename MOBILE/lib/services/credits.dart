@@ -20,7 +20,6 @@ class CreditService{
   }
 }
 
-
   Future<Credit> fetchCredit(int id) async {
     final response = await http.get(Uri.parse('$_creditsUrl/$id'));
     if (response.statusCode == 200) {

@@ -46,7 +46,8 @@ class InfoCard extends StatelessWidget {
             border: BorderDirectional(
               end: BorderSide(
                 width: 6,
-                color: status ? const Color(0xFF4CAF50) : const Color(0xFFFF5252),
+                color:
+                    status ? const Color(0xFF4CAF50) : const Color(0xFFFF5252),
               ),
             ),
           ),
@@ -55,54 +56,46 @@ class InfoCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  crossAxisAlignment: WrapCrossAlignment.center,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              name,
-                              style: GoogleFonts.poppins(
-                                fontSize: isMobile ? 16 : 20,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF2D3142),
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          _buildIdentifier(typeId, id),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: status
-                            ? const Color(0xFFE8F5E9)
-                            : const Color(0xFFFFEBEE),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                    Expanded(
                       child: Text(
-                        status ? 'Activo' : 'Inactivo',
+                        name,
                         style: GoogleFonts.poppins(
-                          color: status
-                              ? const Color(0xFF2E7D32)
-                              : const Color(0xFFC62828),
+                          fontSize: isMobile ? 16 : 20,
                           fontWeight: FontWeight.w600,
-                          fontSize: isMobile ? 12 : 14,
+                          color: const Color(0xFF2D3142),
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    const SizedBox(width: 12),
+                    _buildIdentifier(typeId, id),
                   ],
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: status
+                        ? const Color(0xFFE8F5E9)
+                        : const Color(0xFFFFEBEE),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    status ? 'Activo' : 'Inactivo',
+                    style: GoogleFonts.poppins(
+                      color: status
+                          ? const Color(0xFF2E7D32)
+                          : const Color(0xFFC62828),
+                      fontWeight: FontWeight.w600,
+                      fontSize: isMobile ? 12 : 14,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 isMobile

@@ -53,4 +53,13 @@ export class ScannerSocketService {
   getLatestBarcode(): Observable<any> {
     return this.barcodeSubject.asObservable();
   }
+
+  listenClearBarcode() {
+    // Usar 'on()' en lugar de 'fromEvent()'
+    return new Observable((observer) => {
+      this.socket.on('clearBarcode', (data) => {
+        observer.next(data);
+      });
+    });
+  }
 }

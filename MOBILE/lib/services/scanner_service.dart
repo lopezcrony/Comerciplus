@@ -18,8 +18,8 @@ class ScannerService {
         throw Exception('No se encontró sesión activa: idUsuario o token es null');
       }
 
-      // Log para verificar los datos enviados
-      print('Enviando datos: barcode=$barcode, timestamp=${DateTime.now().toIso8601String()}, idUsuario=$idUsuario, token=$token');
+      // // Log para verificar los datos enviados
+      // print('Enviando datos: barcode=$barcode, timestamp=${DateTime.now().toIso8601String()}, idUsuario=$idUsuario, token=$token');
 
       final response = await http.post(
         Uri.parse(_scannerUrl),
@@ -37,10 +37,7 @@ class ScannerService {
         throw Exception('Error al enviar el código');
       }
 
-      // Log para verificar la respuesta
-      print('Respuesta del servidor: ${response.body}');
     } catch (e) {
-      print('Error de conexión: $e'); // Log de error
       throw Exception('Error de conexión: $e');
     }
   }
