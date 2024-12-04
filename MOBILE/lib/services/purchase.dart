@@ -26,21 +26,26 @@ class PurchaseService {
     }
   }
 
-  Future<List<Purchase>> getPurchases() async {
-    try {
-      final response = await http.get(Uri.parse(_purchasesUrl));
+  Future<List<Purchase>> getPurchases() async { 
+  try {
+    final response = await http.get(Uri.parse(_purchasesUrl));
 
-
-      if (response.statusCode == 200) {
-        List jsonResponse = jsonDecode(response.body);
-        return jsonResponse
-            .map((purchase) => Purchase.fromJson(purchase))
-            .toList();
-      } else {
-        throw Exception('Error al obtener las compras');
-      }
-    } catch (error) {
-      rethrow; 
+    if (response.statusCode == 200) {
+      List jsonResponse = jsonDecode(response.body);
+      
+      // Filtrar las compras activas
+      List<Purchase> activePurchases = jsonResponse
+          .map((purchase) => Purchase.fromJson(purchase))
+          .where((purchase) => purchase.estadoCompra == true) // Filtra por estado
+          .toList();
+      
+      return activePurchases;
+    } else {
+      throw Exception('Error al obtener las compras');
     }
+  } catch (error) {
+    rethrow; 
   }
+}
+
 }
