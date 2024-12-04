@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/appBar_Screens.dart';
 import '../widgets/infoCard.dart';
+import '../widgets/loading.dart';
 import '../widgets/search.dart';
 
 import '../models/client.dart';
@@ -19,7 +20,8 @@ class ClientScreen extends StatefulWidget {
 }
 
 class _ClientScreenState extends State<ClientScreen> {
-  late Future<List<Client>> _futureClients;
+  late Future<Map<Client, List<Credit>>> _futureClientCredits;
+
   String searchTerm = '';
   String sortBy = 'nombreCliente';
   bool isAscending = true;
@@ -27,37 +29,55 @@ class _ClientScreenState extends State<ClientScreen> {
   @override
   void initState() {
     super.initState();
-    _futureClients = ClientService().getClients();
+    _futureClientCredits = _fetchClientCredits();
+  }
+
+  Future<Map<Client, List<Credit>>> _fetchClientCredits() async {
+    try {
+      final clients = await ClientService().getClients();
+      final clientCredits = <Client, List<Credit>>{};
+
+      for (var client in clients) {
+        final credits =
+            await CreditService().getCreditsByClient(client.idCliente);
+        clientCredits[client] = credits;
+      }
+
+      return clientCredits;
+    } catch (error) {
+      rethrow;
+    }
   }
 
   // Parámetros del buscador
-  List<Client> _filteredClients(List<Client> clients) {
-    List<Client> filteredClients = clients
-        .where((client) =>
-            client.nombreCliente
-                .toLowerCase()
-                .contains(searchTerm.toLowerCase()) ||
-            client.apellidoCliente
-                .toLowerCase()
-                .contains(searchTerm.toLowerCase()) ||
-            client.cedulaCliente
-                .toLowerCase()
-                .contains(searchTerm.toLowerCase()))
-        .toList();
+  Map<Client, List<Credit>> _filteredClientCredits(
+      Map<Client, List<Credit>> clientCredits) {
+    final filtered = clientCredits.entries.where((entry) {
+      final client = entry.key;
+      return client.nombreCliente
+              .toLowerCase()
+              .contains(searchTerm.toLowerCase()) ||
+          client.apellidoCliente
+              .toLowerCase()
+              .contains(searchTerm.toLowerCase()) ||
+          client.cedulaCliente.toLowerCase().contains(searchTerm.toLowerCase());
+    }).toList();
 
-    filteredClients.sort((a, b) => isAscending
-        ? a.nombreCliente.compareTo(b.nombreCliente)
-        : b.nombreCliente.compareTo(a.nombreCliente));
+    filtered.sort((a, b) {
+      final clientA = a.key.nombreCliente;
+      final clientB = b.key.nombreCliente;
+      return isAscending
+          ? clientA.compareTo(clientB)
+          : clientB.compareTo(clientA);
+    });
 
-    return filteredClients;
+    return Map.fromEntries(filtered);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarScreens(
-        nameModule: 'Clientes',
-      ),
+      appBar: const AppBarScreens(nameModule: 'Clientes'),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,57 +93,58 @@ class _ClientScreenState extends State<ClientScreen> {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: FutureBuilder<List<Client>>(
-                future: _futureClients,
-                builder: (context, clientSnapshot) {
-                  if (clientSnapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (clientSnapshot.hasError) {
-                    return const Center(child: Text('Error al cargar clientes.'));
-                  } else if (clientSnapshot.hasData) {
-                    final filteredClients = _filteredClients(clientSnapshot.data!);
-                    if (filteredClients.isEmpty) {
-                      return const Center(child: Text('No hay clientes registrados.'));
+              child: FutureBuilder<Map<Client, List<Credit>>>(
+                future: _futureClientCredits,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const LoadingIndicator(
+                        message: 'Cargando clientes...');
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else if (snapshot.hasData) {
+                    final filteredClientCredits =
+                        _filteredClientCredits(snapshot.data!);
+
+                    if (filteredClientCredits.isEmpty) {
+                      return const Center(
+                        child: Text('No hay clientes registrados.'),
+                      );
                     }
+
                     return ListView.builder(
-                      itemCount: filteredClients.length,
+                      itemCount: filteredClientCredits.length,
                       itemBuilder: (context, index) {
-                        final client = filteredClients[index];
+                        final client =
+                            filteredClientCredits.keys.elementAt(index);
+                        final credits = filteredClientCredits[client] ?? [];
+
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
-                          child: FutureBuilder<List<Credit>>(
-                            future: CreditService().getCreditsByClient(client.idCliente),
-                            builder: (context, creditSnapshot) {
-                              if (creditSnapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(child: CircularProgressIndicator());
-                              } else if (creditSnapshot.hasError) {
-                                return Center(child: Text('Error al cargar créditos: ${creditSnapshot.error}'));
-                              } else if (creditSnapshot.hasData) {
-                                final credits = creditSnapshot.data!;
-                                if (credits.isEmpty) {
-                                  return const Center(child: Text('No hay créditos disponibles.'));
-                                }
-                                return InfoCard(
-                                  typeId: 'CC',
-                                  id: client.cedulaCliente,
-                                  name: '${client.nombreCliente} ${client.apellidoCliente}',
-                                  address: client.direccionCliente,
-                                  phone: client.telefonoCliente,
-                                  status: client.estadoCliente,
-                                  icon: Icons.credit_card_outlined,
-                                  title: 'Deuda Actual',
-                                  value: NumberFormat.currency(locale: 'es', symbol: '\$').format(credits[0].totalCredito),
-                                );
-                              } else {
-                                return const Center(child: Text('No hay créditos disponibles.'));
-                              }
-                            },
+                          child: InfoCard(
+                            typeId: 'CC',
+                            id: client.cedulaCliente,
+                            name:
+                                '${client.nombreCliente} ${client.apellidoCliente}',
+                            address: client.direccionCliente,
+                            phone: client.telefonoCliente,
+                            status: client.estadoCliente,
+                            icon: Icons.credit_card_outlined,
+                            title: 'Deuda Actual',
+                            value: credits.isNotEmpty
+                                ? NumberFormat.currency(
+                                        locale: 'es', symbol: '\$')
+                                    .format(credits[0].totalCredito)
+                                : 'No hay créditos',
                           ),
                         );
                       },
                     );
                   } else {
-                    return const Center(child: Text('No hay clientes disponibles.'));
+                    return const Center(
+                      child: Text('No hay clientes disponibles.'),
+                    );
                   }
                 },
               ),

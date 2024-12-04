@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../widgets/appBar_Screens.dart';
 import '../widgets/infoCard.dart';
+import '../widgets/loading.dart';
 import '../widgets/search.dart';
 
 import '../models/purchase.dart';
@@ -19,48 +20,59 @@ class ProvidersScreen extends StatefulWidget {
 }
 
 class _ProvidersScreenState extends State<ProvidersScreen> {
-  late Future<List<Provider>> _futureProviders;
+  late Future<Map<Provider, Purchase?>> _futureProviderPurchases;
   String searchTerm = '';
   bool isAscending = true;
 
   @override
   void initState() {
     super.initState();
-    _futureProviders = ProviderService().getProviders();
+    _futureProviderPurchases = _fetchProviderPurchases();
   }
 
-  // Filtrar y ordenar proveedores
-  List<Provider> _filteredProviders(List<Provider> providers) {
-    // Primero filtrar
-    List<Provider> filteredProviders = providers
-        .where((provider) =>
-            provider.nombreProveedor
-                .toLowerCase()
-                .contains(searchTerm.toLowerCase()) ||
-            provider.nitProveedor
-                .toLowerCase()
-                .contains(searchTerm.toLowerCase()))
-        .toList();
+  // Obtener proveedores y su última compra
+  Future<Map<Provider, Purchase?>> _fetchProviderPurchases() async {
+    try {
+      final providers = await ProviderService().getProviders();
+      final providerPurchases = <Provider, Purchase?>{};
 
-    // Luego ordenar
-    filteredProviders.sort((a, b) => isAscending
-        ? a.nombreProveedor.compareTo(b.nombreProveedor)
-        : b.nombreProveedor.compareTo(a.nombreProveedor));
+      for (var provider in providers) {
+        final purchases = await PurchaseService().getPurchaseByProvider(provider.idProveedor);
+        providerPurchases[provider] = purchases.isNotEmpty ? purchases.first : null;
+      }
 
-    return filteredProviders;
+      return providerPurchases;
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  // Filtrar y ordenar proveedores con sus compras
+  Map<Provider, Purchase?> _filteredProviderPurchases(Map<Provider, Purchase?> data) {
+    final filtered = data.entries.where((entry) {
+      final provider = entry.key;
+      return provider.nombreProveedor.toLowerCase().contains(searchTerm.toLowerCase()) ||
+             provider.nitProveedor.toLowerCase().contains(searchTerm.toLowerCase());
+    }).toList();
+
+    filtered.sort((a, b) {
+      final providerA = a.key.nombreProveedor;
+      final providerB = b.key.nombreProveedor;
+      return isAscending ? providerA.compareTo(providerB) : providerB.compareTo(providerA);
+    });
+
+    return Map.fromEntries(filtered);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarScreens(
-        nameModule: 'Proveedores',
-      ),
+      appBar: const AppBarScreens(nameModule: 'Proveedores'),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Componente de búsqueda y filtro
+            // Componente de búsqueda y orden
             SearchFilter(
               onSearchChanged: (value) => setState(() => searchTerm = value),
               onSortPressed: () {
@@ -71,80 +83,59 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
               isAscending: isAscending,
             ),
             const SizedBox(height: 10),
-      
             // Lista de Proveedores
             Expanded(
-              child: FutureBuilder<List<Provider>>(
-                future: _futureProviders,
+              child: FutureBuilder<Map<Provider, Purchase?>>(
+                future: _futureProviderPurchases,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const LoadingIndicator(message: 'Cargando proveedores...');
                   } else if (snapshot.hasError) {
-                    return const Center(
-                        child: Text('Error al cargar proveedores.'));
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
                   } else if (snapshot.hasData) {
-                    final filteredProviders = _filteredProviders(snapshot.data!);
+                    final filteredProviderPurchases =
+                        _filteredProviderPurchases(snapshot.data!);
+
+                    if (filteredProviderPurchases.isEmpty) {
+                      return const Center(
+                        child: Text('No hay proveedores disponibles.'),
+                      );
+                    }
+
                     return ListView.builder(
-                      itemCount: filteredProviders.length,
+                      itemCount: filteredProviderPurchases.length,
                       itemBuilder: (context, index) {
-                        final proveedor = filteredProviders[index];
+                        final provider = filteredProviderPurchases.keys.elementAt(index);
+                        final purchase = filteredProviderPurchases[provider];
+
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: FutureBuilder<List<Purchase>>(
-                            future: PurchaseService()
-                                .getPurchaseByProvider(proveedor.idProveedor),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              } else if (snapshot.hasError) {
-                                return const Center(
-                                    child: Text(
-                                        'Error al cargar última compra.'));
-                              } else if (snapshot.hasData) {
-                                final purchases = snapshot.data!;
-                                if (purchases.isNotEmpty) {
-                                  final purchase = purchases[0];
-                                  return InfoCard(
-                                    typeId: 'NIT',
-                                    id: proveedor.nitProveedor,
-                                    name: proveedor.nombreProveedor,
-                                    address: proveedor.direccionProveedor,
-                                    phone: proveedor.telefonoProveedor,
-                                    status: proveedor.estadoProveedor,
-                                    icon: Icons.calendar_today_outlined,
-                                    title: 'Última compra',
-                                    date: DateFormat('dd MMMM yyyy', 'es')
-                                        .format(purchase.fechaCompra),
-                                    value: NumberFormat.currency(
-                                            locale: 'es', symbol: '\$')
-                                        .format(purchase.valorCompra),
-                                  );
-                                } else {
-                                  return InfoCard(
-                                    typeId: 'NIT',
-                                    id: proveedor.nitProveedor,
-                                    name: proveedor.nombreProveedor,
-                                    address: proveedor.direccionProveedor,
-                                    phone: proveedor.telefonoProveedor,
-                                    status: proveedor.estadoProveedor,
-                                    icon: Icons.calendar_today_outlined,
-                                    title: 'Última compra',
-                                    date: 'Sin compras',
-                                    value: '0,0 \$',
-                                  );
-                                }
-                              }
-                              return const SizedBox.shrink();
-                            },
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: InfoCard(
+                            typeId: 'NIT',
+                            id: provider.nitProveedor,
+                            name: provider.nombreProveedor,
+                            address: provider.direccionProveedor,
+                            phone: provider.telefonoProveedor,
+                            status: provider.estadoProveedor,
+                            icon: Icons.calendar_today_outlined,
+                            title: 'Última compra',
+                            date: purchase != null
+                                ? DateFormat('dd MMMM yyyy', 'es').format(purchase.fechaCompra)
+                                : 'Sin compras',
+                            value: purchase != null
+                                ? NumberFormat.currency(locale: 'es', symbol: '\$')
+                                    .format(purchase.valorCompra)
+                                : '0,0 \$',
                           ),
                         );
                       },
                     );
                   } else {
                     return const Center(
-                        child: Text('No hay proveedores disponibles.'));
+                      child: Text('No hay proveedores disponibles.'),
+                    );
                   }
                 },
               ),
