@@ -158,8 +158,8 @@
 }
 
 .logo {
-  margin-top : 7px;
-  height: 40px; /* Ajusta según el tamaño del topbar */
+  margin-left: 3px;
+  height: 25px; /* Ajusta según el tamaño del topbar */
   max-width: 100%; /* Para evitar que se desborde */
   object-fit: contain; /* Para mantener la proporción */
 }

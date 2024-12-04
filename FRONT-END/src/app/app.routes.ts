@@ -24,10 +24,12 @@ import { DashboardComponent } from './modules/dashboard/dashboard.component';
 import { ScannerComponent } from './modules/scanner/scanner.component';
 import { RoleGuard } from './Auth/role.guard';
 import { NotFoundComponent } from './shared/notFound/notFound.component';
+import { LoginLoadingComponent } from './shared/loading/loginLoading.component';
 
 export const routes: Routes = [
   { path: 'index', component: IndexComponent},
   { path: 'loading', component: LoadingComponent },
+  { path: 'LoginLoading', component: LoginLoadingComponent },
   { path: 'login', component: LoginComponent },
   { path: 'recover', component: RecoverComponent },
   { path: 'restore', component: RestoreComponent },

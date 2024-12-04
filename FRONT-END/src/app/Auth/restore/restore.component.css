@@ -1,23 +1,41 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
 /* Fondo */
 .min-h-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
   min-height: 100vh;
-  height: 100vh;
   width: 100vw;
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom right, #E3F9E5, #A8EDDF);
+  padding: 0;
+
+  background: linear-gradient(135deg, #3887BE 0%, #5AA6D8 35%, #89C5E8 70%, #B7E1F7 100%);
+  background-size: 300% 300%;
+  animation: gradientAnimation 8s ease-in-out infinite alternate;
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0
+}
+
+/* Efecto de brillo sutil en el fondo */
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 0%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
 }
 
 /* Tarjeta */
@@ -29,7 +47,6 @@ html, body {
 }
 
 .bg-white {
-  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 15px;
   padding: 50px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -51,12 +68,12 @@ html, body {
 
 /* Inputs */
 input {
+  background: transparent;
   padding: 12px;
   width: 100%;
   border: none;
   font-size: 1rem;
   color: #4a5568;
-  background-color: white;
   outline: none;
   transition: border-color 0.2s;
 }
@@ -98,7 +115,6 @@ i {
 button {
   background-color: #3B82F6;
   color: white;
-  font-weight: bold;
   padding: 12px;
   width: 100%;
   border: none;
