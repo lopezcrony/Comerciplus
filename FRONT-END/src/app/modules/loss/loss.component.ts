@@ -72,14 +72,6 @@ export class LossComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
-
-    this.barcodeSubscription = this.scannerService.listenClearBarcode().subscribe(() => {
-      // Limpiar el campo de código de barras cuando el evento 'clearBarcode' sea recibido
-      this.LossForm.patchValue({
-        CodigoProducto: ''
-      });
-      console.log('Código de barras limpiado');
-    });
   }
 
   loadData() {
@@ -205,6 +197,13 @@ stopListeningToScanner() {
   }
 }
 
+clearScanner(){
+  this.LossForm.patchValue({
+    CodigoProducto: ''
+  });
+  console.log('Código de barras limpiado');
+}
+
 
   openCreateModal() {
     this.isEditing = false;
@@ -251,6 +250,7 @@ stopListeningToScanner() {
     request.subscribe({
       next: () => {
         this.toastr.success('Pérdida guardada con éxito!', 'Éxito');
+        this.clearScanner();
         this.loadData();
         this.closeModal();
       },
