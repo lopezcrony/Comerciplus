@@ -13,6 +13,9 @@ import { ReturnSaleService } from './return-sale.service';
 import { ReturnSaleModel } from './return-sale.model';
 import { Barcode } from '../barcodes/barcode.model';
 import { BarcodesService } from '../barcodes/barcodes.service';
+import { ProductsService } from '../products/products.service';
+import { forkJoin } from 'rxjs';
+import { Product } from '../products/products.model';
 
 interface SelectOption {
   label: string;
@@ -31,13 +34,15 @@ interface SelectOption {
 export class ReturnSaleComponent implements OnInit {
 
   providers:any []=[];
-  barcode: Barcode[] = [];
+  barcode: any[] = [];
   returnSale: ReturnSaleModel[] = [];
   filteredReturnSale: ReturnSaleModel[] = [];
+  products: any[] = [];
+
 
     colums: { field: string, header: string, type: string }[] = [
     { field: 'codigoBarra', header: 'Código', type: 'text' },
-    // { field: 'NombreProducto', header: 'Producto' },
+    { field: 'nombreProducto', header: 'Producto', type: 'text' },
     { field: 'cantidad', header: 'Cantidad', type: 'text' },
     { field: 'tipoReembolso', header: 'Tipo Reembolso', type: 'text' },
     { field: 'motivoDevolucion', header: 'Motivo', type: 'text' },   
@@ -65,6 +70,7 @@ export class ReturnSaleComponent implements OnInit {
     private validationService: ValidationService,
     private providerService: ProvidersService,
     private barcodeService: BarcodesService,
+    private productService: ProductsService
   ) {
     this.returnSaleForm = this.fb.group({
       CodigoProducto: ['', validationService.getValidatorsForField('returnSale', 'CodigoProducto')],
@@ -81,7 +87,8 @@ export class ReturnSaleComponent implements OnInit {
     this.loadBardCode();
     this.returnSaleForm.get('tipoReembolso')?.valueChanges.subscribe((value) => {
       this.updateMotivosOptions(value);
-    });    
+    });  
+    this.loadReturnSale() 
   }
 
   
@@ -98,16 +105,34 @@ export class ReturnSaleComponent implements OnInit {
 
 
   loadReturnSale() {
-    this.returnSaleService.getReturnSale().subscribe(data => {
-      this.returnSale = data.map(repp => {
-        const code = this.barcode.find(codes => codes.idCodigoBarra === repp.idCodigoBarra);
-        return { 
-          ...repp, 
-          codigoBarra: code ? code.codigoBarra : 'Codigo no encontrado'
-        };
-      });
-      this.filteredReturnSale = this.returnSale;
-    });
+    forkJoin({
+      code: this.barcodeService.getAllBarcodes(),
+      returnSale: this.returnSaleService.getReturnSale(),
+      products: this.productService.getAllProducts()
+    }).subscribe({
+      next: ({returnSale, code, products }) => {
+
+        this.products = products;
+        this.barcode = code.map(c => {
+          const product = this.products.find(p => p.idProducto === c.idProducto);
+          return { ...c, nombreProducto: product?.nombreProducto };
+        });
+
+        this.returnSale = returnSale.map(repp => {
+          const code = this.barcode.find(codes => codes.idCodigoBarra === repp.idCodigoBarra);
+          return { 
+            ...repp, 
+            codigoBarra: code ? code.codigoBarra : 'Desconocido',
+            nombreProducto: code ? code.nombreProducto : 'Desconocido'
+          };
+        });
+        this.filteredReturnSale = this.returnSale; 
+      },
+      error: (error) => {
+        console.error('Error al cargar los datos', error);
+        this.toastr.error('Ocurrió un error al cargar los datos', 'Error');
+      }
+    })
   }
 
   loadProviders() {

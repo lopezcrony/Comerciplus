@@ -204,6 +204,7 @@ stopListeningToScanner() {
 
   closeModal() {
     this.stopListeningToScanner();
+    this.loadData()
     this.showModal = false;
     this.LossForm.reset();
   }
