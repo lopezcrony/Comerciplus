@@ -35,12 +35,11 @@ flutter:
   assets:
     - assets/.env
     - assets/images/iconoc.png
-    - assets/images/logo.png
-    - assets/images/logo2.1.png
-    - assets/images/logo2.png
-
+    - assets/images/logo-simbolo.JPG
+    - assets/images/logo-name.JPG
+    - assets/images/logo-completo.jpeg
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo.png"  # Aquí pones la ruta de tu imagen
+  image_path: "assets/images/logo-simbolo.JPG"  # Aquí pones la ruta de tu imagen

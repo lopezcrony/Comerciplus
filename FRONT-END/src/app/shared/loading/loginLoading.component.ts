@@ -12,12 +12,12 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
         <div class="flex justify-center mb-4">
           <div class="relative">
             <i 
-              class="pi pi-shopping-cart text-blue-600 animate-bounce text-4xl"
+              class="pi pi-shopping-cart text-white animate-bounce text-4xl"
             ></i>
-            <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-500 rounded-full animate-ping"></div>
+            <div class="absolute bottom-0 right-0 w-2 h-2 bg-gray-300 rounded-full animate-ping"></div>
           </div>
         </div>
-        <p class="text-sm text-gray-600 font-medium">
+        <p class="text-sm text-white font-medium">
           Iniciando sesión...
         </p>
       </div>
