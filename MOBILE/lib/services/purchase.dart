@@ -46,8 +46,8 @@ class PurchaseService {
   } catch (error) {
     rethrow; 
   }
-
-  Future<double> getDailyPurchasesTotal() async {
+}
+Future<double> getDailyPurchasesTotal() async {
   final response = await http.get(Uri.parse(_purchasesUrl));
   if (response.statusCode == 200) {
     List jsonResponse = jsonDecode(response.body);
@@ -66,8 +66,6 @@ class PurchaseService {
   } else {
     throw Exception('Error al obtener las compras del día');
   }
-}
-
 }
 
 }
