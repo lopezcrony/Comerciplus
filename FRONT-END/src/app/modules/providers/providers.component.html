@@ -27,7 +27,7 @@
         <div class="field"
           [ngClass]="{'error': isFieldInvalid('nitProveedor')}">
           <label for="nitProveedor">NIT  <span style="color: #E24C4C;">*</span></label>
-          <input type="text" pInputText id="nitProveedor" formControlName="nitProveedor" maxlength="9" required autofocus />
+          <input type="text" pInputText id="nitProveedor" formControlName="nitProveedor" maxlength="15" required autofocus />
           <small class="p-error"
             *ngIf="isFieldInvalid('nitProveedor')">
             {{ getErrorMessage('nitProveedor') }}

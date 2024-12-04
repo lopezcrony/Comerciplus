@@ -3,7 +3,7 @@ const { body, validationResult } = require('express-validator');
 const validateProvider = [
     body('nitProveedor')
         .notEmpty().withMessage('El NIT del proveedor es obligatorio')
-        .matches(/^[0-9]+$/).withMessage('El NIT del proveedor solo debe contener números'),
+        .matches(/^[0-9.-]+$/).withMessage('El NIT del proveedor solo debe contener números, puntos y guiones'),
         
     body('nombreProveedor')
         .notEmpty().withMessage('El nombre del proveedor es obligatorio')
