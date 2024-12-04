@@ -8,7 +8,7 @@ export const validationPatterns = {
   phoneProvider: /^[0-9]{7,12}$/,
   price: /^(|[1-9][0-9]*)(\\.[0-9]+)?$/,
 
-  nit: /^[0-9.-]$/,
+  nit: /^[0-9.-]+$/,
 
   email: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
   password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)$/, 
