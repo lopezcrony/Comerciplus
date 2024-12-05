@@ -27,7 +27,8 @@
       <div class="field-group">
         <div class="field" [ngClass]="{'error': isFieldInvalid('CodigoProducto')}">
           <label for="CodigoProducto">Código de Barras<span style="color: #E24C4C;">*</span></label>
-          <input type="text" pInputText id="CodigoProducto" formControlName="CodigoProducto" required />
+          <input type="text" pInputText id="CodigoProducto" formControlName="CodigoProducto" (focus)="startListeningToScanner()" 
+          (blur)="stopListeningToScanner()" required />
           <small class="p-error" *ngIf="isFieldInvalid('CodigoProducto')">
             {{ getErrorMessage('CodigoProducto') }}
           </small>
