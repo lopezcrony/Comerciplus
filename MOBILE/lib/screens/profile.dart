@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/appBar_Screens.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -6,17 +7,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mi Perfil'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              // Implementar edición de perfil
-            },
-          ),
-        ],
-      ),
+      appBar: const AppBarScreens(nameModule: 'Mi Perfil'),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -35,16 +26,6 @@ class ProfileScreen extends StatelessWidget {
           _buildProfileItem(Icons.phone, 'Teléfono', '+1234567890'),
           _buildProfileItem(Icons.business, 'Rol', 'Administrador'),
           const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: () {
-              // Implementar cierre de sesión
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            child: const Text('Cerrar Sesión'),
-          ),
         ],
       ),
     );
