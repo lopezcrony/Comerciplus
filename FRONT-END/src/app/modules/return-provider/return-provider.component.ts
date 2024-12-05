@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 
 import { SHARED_IMPORTS } from '../../shared/shared-imports';
 import { CRUDComponent } from '../../shared/crud/crud.component';
@@ -17,6 +17,8 @@ import { Barcode } from '../barcodes/barcode.model'
 import { returnProviderModel } from './return-provider.model';
 import { ProductsService } from '../products/products.service';
 import { Product } from '../products/products.model';
+import { ScannerSocketService } from '../scanner/scanner.service';
+
 
 @Component({
   selector: 'app-return-provider',
@@ -42,6 +44,8 @@ export class ReturnProviderComponent implements OnInit {
   filteredReturnProvider: returnProviderModel[] = [];
 
   returnProviderForm: FormGroup;
+  private scannerSubscription: Subscription | null = null;
+  private barcodeSubscription: Subscription | null = null;
 
   showModal = false;
   isEditing = false;
@@ -63,7 +67,9 @@ export class ReturnProviderComponent implements OnInit {
     private validationService: ValidationService,
     private providerService: ProvidersService,
     private barcodeService: BarcodesService,
-    private productService: ProductsService
+    private productService: ProductsService,
+    private scannerService: ScannerSocketService
+
   ) {
     this.returnProviderForm = this.fb.group({
       idProveedor: ['', validationService.getValidatorsForField('returnProvider', 'idProveedor')],
@@ -113,12 +119,94 @@ export class ReturnProviderComponent implements OnInit {
     });
   }
 
+
+ // Desactivar el scanner al salir del campo de código de barras
+ onBarcodeFieldBlur() {
+  // Cancelar la suscripción si existe
+  if (this.scannerSubscription) {
+    this.scannerSubscription.unsubscribe();
+    this.scannerSubscription = null;
+  }
+}
+
+// Manejar el código escaneado
+private handleScannedCode(code: string) {
+  // Suscripción al servicio de escaneo
+  this.barcodeSubscription = this.scannerService.getLatestBarcode().subscribe({
+    next: (barcodeData) => {
+      if (barcodeData && barcodeData.barcode) {
+        console.log('Código de barras recibido para buscar productos:', barcodeData.barcode);
+
+        // Buscar el código en la lista de códigos de barras
+        const barcode = this.code.find((b) => b.codigoBarra === barcodeData.barcode);
+
+        if (barcode) {
+          // Buscar el producto asociado al código de barra
+          const product = this.products.find((p) => p.idProducto === barcode.idProducto);
+
+          if (product) {
+            // Rellenar el formulario con los datos del producto
+            this.returnProviderForm.patchValue({
+              CodigoProducto: barcode.codigoBarra// Campo vacío, el usuario debe completarlo
+            });
+            this.toastr.success(`Producto encontrado: ${product.nombreProducto}`, 'Scanner');
+          } else {
+            // Si no hay producto asociado
+            this.toastr.warning('Producto no encontrado para este código.', 'Advertencia');
+          }
+        } else {
+          // Si el código no existe en la lista de códigos de barras
+          this.toastr.warning('Código de barra no registrado.', 'Advertencia');
+        }
+      } else {
+        // Si el código escaneado es inválido o no llega correctamente
+        this.toastr.warning('Código de barra no recibido o inválido.', 'Advertencia');
+      }
+    },
+    error: (error) => {
+      console.error('Error al recibir el código de barras:', error);
+      this.toastr.error('Error al procesar el código de barras.', 'Error');
+    },
+  });
+}
+
+
+// Variable para manejar la suscripción
+
+// Método para iniciar la escucha al escáner
+startListeningToScanner() {
+console.log('Iniciando escucha al escáner...');
+this.barcodeSubscription = this.scannerService.getLatestBarcode().subscribe({
+  next: (barcodeData) => {
+    if (barcodeData && barcodeData.barcode) {
+      this.handleScannedCode(barcodeData.barcode);
+    }
+  },
+  error: (error) => {
+    console.error('Error al recibir el código de barras:', error);
+    this.toastr.error('Error al procesar el código de barras.', 'Error');
+  },
+});
+}
+
+// Método para detener la escucha al escáner
+stopListeningToScanner() {
+console.log('Deteniendo escucha al escáner...');
+if (this.barcodeSubscription) {
+  this.barcodeSubscription.unsubscribe();
+  this.barcodeSubscription = null;
+}
+}
+
+
   openCreateModal() {
     this.isEditing = false;
     this.showModal = true;
   }
 
   closeModal() {
+    this.stopListeningToScanner();
+    this.loadData()
     this.showModal = false;
     this.returnProviderForm.reset();
   }
