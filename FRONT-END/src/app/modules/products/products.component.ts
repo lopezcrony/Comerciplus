@@ -111,11 +111,13 @@ export class ProductsComponent implements OnInit {
     this.isEditing = false;
     this.productForm.reset({ estadoProducto: true });
     this.showModal = true;
+    this.resetForm();
   };
 
   openEditModal(product: Product) {
     this.isEditing = true;
     this.productForm.patchValue(product);
+    this.productForm.get('idCategoria')?.disable();
     this.showModal = true;
   };
 
@@ -209,24 +211,24 @@ export class ProductsComponent implements OnInit {
   }
 
   saveProduct() {
-    // Si es edición, deshabilita los campos que no deben ser modificados.
+    // Si es edición, deshabilita los campos que no deben ser modificados
     if (this.isEditing) {
-      this.productForm.get('stock')?.disable();         
-      this.productForm.get('idCategoria')?.disable();   
-      this.productForm.get('nombreCategoria')?.disable(); 
+      this.productForm.get('stock')?.disable();
+      this.productForm.get('idCategoria')?.disable();
+      this.productForm.get('nombreCategoria')?.disable();
     } else {
-      this.productForm.patchValue({
-        stock: 0
-      });
+      this.productForm.patchValue({ stock: 0 });
     }
   
-    // Válida el formulario antes de enviarlo
-    if (this.productForm.invalid) { return this.markFormFieldsAsTouched(); }
+    // Validar el formulario antes de enviarlo
+    if (this.productForm.invalid) {
+      return this.markFormFieldsAsTouched();
+    }
   
     // Obtener los valores del formulario, incluyendo los deshabilitados
     const productData = this.productForm.getRawValue();
   
-    // Ejecuta la acción correspondiente (crear o actualizar)
+    // Ejecutar la acción correspondiente (crear o actualizar)
     const request = this.isEditing
       ? this.productService.updateProduct(productData)
       : this.productService.createProduct(productData);
@@ -234,14 +236,30 @@ export class ProductsComponent implements OnInit {
     // Manejo de la respuesta
     request.subscribe({
       next: () => {
-        this.isEditing
-          ? this.toastr.success('Producto actualizado exitosamente.', 'Éxito')
-          : this.toastr.success('Producto creado exitosamente.', 'Éxito');
+        this.toastr.success(
+          this.isEditing
+            ? 'Producto actualizado exitosamente.'
+            : 'Producto creado exitosamente.',
+          'Éxito'
+        );
         this.loadData();
+        this.resetForm(); // Reinicia el formulario tras guardar
         this.closeModal();
       },
-      error: (error) => { this.toastr.error(error, 'Error'); }
+      error: (error) => {
+        this.toastr.error(error, 'Error');
+      },
     });
+  }
+  
+  resetForm() {
+    this.productForm.reset(); // Limpia el formulario
+    this.productForm.enable(); // Asegúrate de habilitar todos los campos
+    if (this.isEditing) {
+      this.productForm.get('stock')?.disable();
+      this.productForm.get('idCategoria')?.disable();
+      this.productForm.get('nombreCategoria')?.disable();
+    }
   }
   
 
