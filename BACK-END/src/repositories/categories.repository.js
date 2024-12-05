@@ -1,4 +1,5 @@
 const Categories = require('../models/categories.model');
+const Product = require('../models/products.model');
 
 const findAllCategories = async () => {
     return await Categories.findAll();
@@ -29,6 +30,15 @@ const updateCategorieStatus = async (id, status) => {
     throw new Error('REPOSITORY: Categoria no encontrada');
 };
 
+const checkIfCategoryHasProducts = async (categoryId) => {
+    try {
+        const products = await Product.findAll({ where: { idCategoria: categoryId } });
+        return products.length > 0;
+    } catch (error) {
+        throw new Error('Error al verificar los productos de la categoría: ' + error.message);
+    }
+};
+
 const deleteCategorie = async (id) => {
     const result = await Categories.destroy({
         where: { 	idCategoria: id }
@@ -44,4 +54,5 @@ module.exports = {
     updateCategorie,
     updateCategorieStatus,
     deleteCategorie,
+    checkIfCategoryHasProducts
 };
