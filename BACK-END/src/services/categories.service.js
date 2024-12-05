@@ -53,16 +53,24 @@ const updateCategorieStatus  = async (id, status) => {
     }
 }
 
-
-
 const deleteOneCategorie = async (id) => {
     try {
+        const hasProducts = await categorieRepository.checkIfCategoryHasProducts(id);
+        if (hasProducts) {
+            throw new Error('No se puede eliminar la categoría porque tiene productos asociados');
+        }
         const result = await categorieRepository.deleteCategorie(id);
         if (result === 0) {
-            throw new Error('categoria no encontrada');
+            throw new Error('Categoría no encontrada');
         }
+
         return result;
     } catch (error) {
+        if (error.message.includes('productos asociados')) {
+            throw new Error('No se puede eliminar la categoría porque tiene productos asociados');
+        } else if (error.message.includes('no encontrada')) {
+            throw new Error('La categoría que intentas eliminar no existe');
+        }
         throw error;
     }
 };

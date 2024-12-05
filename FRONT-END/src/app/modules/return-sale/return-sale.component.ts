@@ -14,8 +14,10 @@ import { ReturnSaleModel } from './return-sale.model';
 import { Barcode } from '../barcodes/barcode.model';
 import { BarcodesService } from '../barcodes/barcodes.service';
 import { ProductsService } from '../products/products.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { Product } from '../products/products.model';
+import { ScannerSocketService } from '../scanner/scanner.service';
+
 
 interface SelectOption {
   label: string;
@@ -38,7 +40,10 @@ export class ReturnSaleComponent implements OnInit {
   returnSale: ReturnSaleModel[] = [];
   filteredReturnSale: ReturnSaleModel[] = [];
   products: any[] = [];
-
+ returnSaleForm: FormGroup;
+ 
+ private scannerSubscription: Subscription | null = null;
+ private barcodeSubscription: Subscription | null = null;
 
     colums: { field: string, header: string, type: string }[] = [
     { field: 'codigoBarra', header: 'Código', type: 'text' },
@@ -49,7 +54,7 @@ export class ReturnSaleComponent implements OnInit {
     { field: 'valorDevolucion', header: 'Valor', type: 'currency' },
     { field: 'fechaDevolucion', header: 'Fecha', type: 'date' },
   ];
-  returnSaleForm: FormGroup;
+  
   options: SelectOption[] = [
     { label: 'Dinero', value: 'Dinero' },
     { label: 'Producto', value: 'Producto' },
@@ -70,7 +75,9 @@ export class ReturnSaleComponent implements OnInit {
     private validationService: ValidationService,
     private providerService: ProvidersService,
     private barcodeService: BarcodesService,
-    private productService: ProductsService
+    private productService: ProductsService,
+    private scannerService: ScannerSocketService
+
   ) {
     this.returnSaleForm = this.fb.group({
       CodigoProducto: ['', validationService.getValidatorsForField('returnSale', 'CodigoProducto')],
@@ -148,12 +155,105 @@ export class ReturnSaleComponent implements OnInit {
     });
   }
 
+  // Activar el scanner al enfocar el campo de código de barras
+  onBarcodeFieldFocus() {
+    this.scannerService.getLatestBarcode().subscribe({
+      next: (code: string) => {
+        this.handleScannedCode(code);
+      },
+      error: (error) => {
+        console.error('Error al recibir datos del scanner:', error);
+        this.toastr.error('Error al procesar el código escaneado.', 'Error');
+      },
+    });
+  }
+  
+  // Desactivar el scanner al salir del campo de código de barras
+  onBarcodeFieldBlur() {
+    // Cancelar la suscripción si existe
+    if (this.scannerSubscription) {
+      this.scannerSubscription.unsubscribe();
+      this.scannerSubscription = null;
+    }
+  }
+  
+  // Manejar el código escaneado
+  private handleScannedCode(code: string) {
+    // Suscripción al servicio de escaneo
+    this.barcodeSubscription = this.scannerService.getLatestBarcode().subscribe({
+      next: (barcodeData) => {
+        if (barcodeData && barcodeData.barcode) {
+          console.log('Código de barras recibido para buscar productos:', barcodeData.barcode);
+  
+          // Buscar el código en la lista de códigos de barras
+          const barcode = this.barcode.find((b) => b.codigoBarra === barcodeData.barcode);
+  
+          if (barcode) {
+            // Buscar el producto asociado al código de barra
+            const product = this.products.find((p) => p.idProducto === barcode.idProducto);
+  
+            if (product) {
+              // Rellenar el formulario con los datos del producto
+              this.returnSaleForm.patchValue({
+                CodigoProducto: barcode.codigoBarra// Campo vacío, el usuario debe completarlo
+              });
+              this.toastr.success(`Producto encontrado: ${product.nombreProducto}`, 'Scanner');
+            } else {
+              // Si no hay producto asociado
+              this.toastr.warning('Producto no encontrado para este código.', 'Advertencia');
+            }
+          } else {
+            // Si el código no existe en la lista de códigos de barras
+            this.toastr.warning('Código de barra no registrado.', 'Advertencia');
+          }
+        } else {
+          // Si el código escaneado es inválido o no llega correctamente
+          this.toastr.warning('Código de barra no recibido o inválido.', 'Advertencia');
+        }
+      },
+      error: (error) => {
+        console.error('Error al recibir el código de barras:', error);
+        this.toastr.error('Error al procesar el código de barras.', 'Error');
+      },
+    });
+  }
+  
+
+  // Variable para manejar la suscripción
+
+// Método para iniciar la escucha al escáner
+startListeningToScanner() {
+  console.log('Iniciando escucha al escáner...');
+  this.barcodeSubscription = this.scannerService.getLatestBarcode().subscribe({
+    next: (barcodeData) => {
+      if (barcodeData && barcodeData.barcode) {
+        this.handleScannedCode(barcodeData.barcode);
+      }
+    },
+    error: (error) => {
+      console.error('Error al recibir el código de barras:', error);
+      this.toastr.error('Error al procesar el código de barras.', 'Error');
+    },
+  });
+}
+
+// Método para detener la escucha al escáner
+stopListeningToScanner() {
+  console.log('Deteniendo escucha al escáner...');
+  if (this.barcodeSubscription) {
+    this.barcodeSubscription.unsubscribe();
+    this.barcodeSubscription = null;
+  }
+}
+
   openCreateModal() {
     this.isEditing = false;
     this.showModal = true;
   }
 
   closeModal() {
+    this.stopListeningToScanner();
+    this.loadReturnSale()
     this.showModal = false;
     this.returnSaleForm.reset();
   }
