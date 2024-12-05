@@ -5,7 +5,7 @@ export const providersValidationConfig: FieldValidation[] = [
     name: 'nitProveedor',
     rules: [
       { type: 'required', message: 'El NIT es obligatorio.' },
-      { type: 'pattern', value: 'nit', message: 'Ingrese un NIT válido. (9 dígitos)' },
+      { type: 'pattern', value: 'nit', message: 'Solo puede ingresar números, puntos y guiones' },
     ],
   },
   {
