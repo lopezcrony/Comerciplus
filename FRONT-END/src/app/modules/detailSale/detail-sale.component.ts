@@ -156,7 +156,7 @@ export class DetailSaleComponent implements OnInit {
           },
           error: () => {
             this.toastr.error('Error al anular la venta.', 'Error');
-            console.log('Error: ', error)
+            
           }
         });
         
