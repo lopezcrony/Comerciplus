@@ -1,5 +1,5 @@
 <nav class="sidebar" [ngClass]="{'open': isSidebarVisible, 'collapsed': !isSidebarVisible}">
-  <div class="mt-5">
+  <div class="sidebar-content">
     <ul>
       <!-- Dashboard - solo para administradores -->
       <li *ngIf="hasRole(['Administrador'])" class="item" routerLink="/dashboard" routerLinkActive="active">
@@ -90,6 +90,16 @@
         </ul>
       </li>
 
+    </ul>
+  </div>
+
+  <!-- Sección para la Guía de uso -->
+  <div class="sidebar-help-section">
+    <ul>
+      <li class="item" routerLink="/info" routerLinkActive="active" (click)="closeSidebar()">
+        <i class="pi pi-question-circle mr-2" style="color: #007bff;"></i>
+        <a>Guía de uso</a>
+      </li>
     </ul>
   </div>
 </nav>

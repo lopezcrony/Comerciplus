@@ -25,6 +25,7 @@ import { ScannerComponent } from './modules/scanner/scanner.component';
 import { RoleGuard } from './Auth/role.guard';
 import { NotFoundComponent } from './shared/notFound/notFound.component';
 import { LoginLoadingComponent } from './shared/loading/loginLoading.component';
+import { InfoComponent } from './modules/info/info.component';
 
 export const routes: Routes = [
   { path: 'index', component: IndexComponent},
@@ -58,7 +59,9 @@ export const routes: Routes = [
       { path: 'returnProvider', component: ReturnProviderComponent },
       { path: 'returnSale', component: ReturnSaleComponent },
 
-      { path: 'scanner', component: ScannerComponent}
+      { path: 'scanner', component: ScannerComponent},
+      { path: 'info', component: InfoComponent}
+
       
       // { path: '', redirectTo: 'index', pathMatch: 'full' },
     ]
