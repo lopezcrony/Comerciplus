@@ -218,6 +218,7 @@ export class ProductsComponent implements OnInit {
       this.productForm.get('nombreCategoria')?.disable();
     } else {
       this.productForm.patchValue({ stock: 0 });
+      this.productForm.patchValue({ estadoProducto : 'true' });
     }
   
     // Validar el formulario antes de enviarlo

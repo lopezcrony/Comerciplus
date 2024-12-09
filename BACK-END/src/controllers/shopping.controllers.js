@@ -38,7 +38,7 @@ const createShopping = async (req, res) => {
         const newShopping = await shoppingService.createShopping(shopping, shoppingDetail);
         res.status(201).json({ message: 'Compra registrada exitosamente.', newShopping });
     } catch (error) {
-        res.status(500).json({ message: 'CONTROLLER: Error al crear la compra.', error: error.message });
+        res.status(500).json({ message: 'ya existe una compra con ese número de factura', error: error.message });
     }
 };
 

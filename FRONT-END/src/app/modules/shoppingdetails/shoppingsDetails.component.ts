@@ -234,8 +234,7 @@ export class ShoppingsComponent implements OnInit {
 
   saveShopping() {
     if (this.shoppingForm.invalid) {
-      this.markFormFieldsAsTouched();
-      return;
+      return  this.markFormFieldsAsTouched();;
     }
 
     const formValue = this.shoppingForm.getRawValue();

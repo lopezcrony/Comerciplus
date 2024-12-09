@@ -11,7 +11,7 @@ export const shoppingValidation: FieldValidation[] = [
   {
     name: 'fechaCompra',
     rules: [
-      { type: 'required', message: 'Ingrese la fecha de compra.' },
+      { type: 'required', message: 'Ingrese la fecha de compra.(no se permite fecha posterior a la actual)' },
     ]
   },
   {
