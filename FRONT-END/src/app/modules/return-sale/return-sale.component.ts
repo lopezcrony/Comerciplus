@@ -373,6 +373,8 @@ stopListeningToScanner() {
     this.filteredReturnSale = this.returnSale.filter(returSale =>{
       const barCode = returSale as unknown as Barcode & {codigoBarra?: string};
       const code =(barCode.codigoBarra || '').toLowerCase().includes(query);
+      const productName = returSale as unknown as Product & {nombreProducto?: string};
+      const product = (productName.nombreProducto || '').toLowerCase().includes(query.toLowerCase());
 
      const reembolso= returSale.tipoReembolso.toLowerCase().includes(query.toLowerCase());
     const cantidad =returSale.cantidad.toString().includes(query.toLowerCase());
@@ -382,7 +384,7 @@ stopListeningToScanner() {
 
     const estado = (returSale.estado ? 'vigente' : 'anulado').includes(query.toLowerCase())
     
-      return code || reembolso || cantidad || motivo ||fecha || valor || estado 
+      return code || reembolso || cantidad || motivo ||fecha || valor || estado || product
     }
     );
   }

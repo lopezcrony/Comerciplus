@@ -13,6 +13,7 @@ import { SaleService } from '../sales/sales.service'
 import { Product } from '../products/products.model';
 import { ProductsService } from '../products/products.service';
 import jsPDF from 'jspdf';
+import { error } from 'console';
 
 @Component({
   selector: 'app-detail-sale',
@@ -142,7 +143,7 @@ export class DetailSaleComponent implements OnInit {
   cancelSale(updatedSale: Sale) {
     // Mostrar mensaje de confirmación
     this.alertsService.confirm(
-      `¿Estás seguro de que deseas cancelar la venta?`,
+      `¿Estás seguro de que deseas anular la venta?`,
 
       () => {
         updatedSale.estadoVenta = false; 
@@ -155,6 +156,7 @@ export class DetailSaleComponent implements OnInit {
           },
           error: () => {
             this.toastr.error('Error al anular la venta.', 'Error');
+            
           }
         });
         

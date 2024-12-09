@@ -41,14 +41,15 @@ export class DetailSalesService {
     );
   }
 
-private handleError(error: HttpErrorResponse) {
-    let errorMessage: string;
+  private handleError(error: HttpErrorResponse) {
+    // Puedes ajustar la lógica para diferentes tipos de errores aquí
+    let errorMessage = 'Algo salió mal; por favor, intente nuevamente más tarde.';
     if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente o de la red
-      errorMessage = error.error.message;
+      // Error del lado del cliente
+      errorMessage = `Error: ${error.error.message}`;
     } else {
       // Error del lado del servidor
-      errorMessage = error.error.message;
+      errorMessage = error.error?.message || errorMessage;
     }
     return throwError(() => new Error(errorMessage));
   }

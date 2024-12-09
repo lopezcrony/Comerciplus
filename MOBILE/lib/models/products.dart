@@ -22,7 +22,7 @@ class Products {
       precioVenta: (json['precioVenta'] as num).toDouble(),
       nombreProducto: json['nombreProducto'],
       stock: json['stock'],
-      estadoProducto: json['estadoProducto'],
+      estadoProducto: json['estadoProducto']?? false,
     );
   }
 }
