@@ -25,10 +25,11 @@ export const productsValidationConfig: FieldValidation[] = [
       { type: 'required', message: 'Ingrese el nombre del producto.' },
       {
         type: 'pattern',
-        value: /^[A-Za-z]{3,}([ -][A-Za-z0-9()]+)*$/, 
-        message: 'El nombre debe comenzar con al menos 3 letras y puede incluir números, paréntesis, guiones y espacios.'
+        value: /^[A-Za-záéíóúÁÉÍÓÚñÑ]{3,}([ -][A-Za-z0-9áéíóúÁÉÍÓÚñÑ()]+)*$/, 
+        message: 'El nombre debe comenzar con al menos 3 letras y puede incluir números, paréntesis, guiones, espacios y caracteres especiales como ñ y tildes.'
       },
     ]
+    
   },
 
   {
