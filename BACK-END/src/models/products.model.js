@@ -29,7 +29,7 @@ const Producto = sequelize.define('Producto', {
       msg: 'El nombre del producto debe ser único.'
     },
     validate: {
-      is: /^[a-zA-Záéíóúñ ]+$/,
+      // is: /^[a-zA-Záéíóúñ ]+$/,
     },
   },
   stock: {

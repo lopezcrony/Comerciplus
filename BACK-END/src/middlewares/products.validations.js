@@ -2,8 +2,8 @@ const { body, validationResult } = require('express-validator');
 
 const validateProducts = [
     body('nombreProducto')
-        .notEmpty().withMessage('el nombre del producto es obligatoria')
-        .matches(/^[a-zA-Záéíóúñ ]+$/).withMessage('Los caracteres no son validos'),
+        .notEmpty().withMessage('el nombre del producto es obligatoria'),
+        // .matches(/^[a-zA-Záéíóúñ ]+$/).withMessage('Los caracteres no son validos'),
 
     body('stock')
         .notEmpty().withMessage('El stock es obligatorio')
