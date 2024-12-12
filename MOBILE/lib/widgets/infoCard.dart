@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InfoCard extends StatelessWidget {
   final String typeId, id, name, address, phone, title, value;
@@ -130,16 +131,28 @@ class InfoCard extends StatelessWidget {
         _buildContactRow(
           Icons.location_on_outlined,
           address,
-          onTap: () {
-            // Implementar acción para abrir en maps
+          onTap: () async {
+            final encodedAddress = Uri.encodeComponent(address);
+            final url = Uri.parse(
+                'https://www.google.com/maps/search/?api=1&query=$encodedAddress');
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url);
+            } else {
+              throw 'Could not launch $url';
+            }
           },
         ),
         const SizedBox(height: 12),
         _buildContactRow(
           Icons.phone_outlined,
           phone,
-          onTap: () {
-            // Implementar acción para llamar
+          onTap: () async {
+            final url = Uri.parse('tel:$phone');
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url);
+            } else {
+              throw 'Could not launch $url';
+            }
           },
         ),
       ],

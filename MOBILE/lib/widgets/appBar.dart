@@ -34,8 +34,11 @@ class _CustomAppBarState extends State<CustomAppBar> {
         });
       }
     } catch (e) {
-      // Handle error silently or log it
-      print('Error fetching user profile: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se pudo cargar el perfil de usuario')),
+        );
+      }
     }
   }
 
