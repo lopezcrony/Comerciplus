@@ -31,7 +31,7 @@ exports.initiatePasswordReset = async (correoUsuario) => {
     await userRepository.saveResetToken(user, token, expirationTime);
 
     // Modificado: incluir el token en la URL
-    const resetUrl = `http://localhost:4200/restore?token=${token}`;
+    const resetUrl = `${process.env.webUrl}/restore?token=${token}`; 
     const mailOptions = {
         to: user.correoUsuario,
         from: process.env.EMAIL_USER,
