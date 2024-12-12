@@ -1,0 +1,28 @@
+{
+  "routes": [
+    "/",
+    "/categories",
+    "/clients",
+    "/credits",
+    "/dashboard",
+    "/detailSales",
+    "/index",
+    "/info",
+    "/loading",
+    "/login",
+    "/LoginLoading",
+    "/loss",
+    "/products",
+    "/providers",
+    "/recover",
+    "/restore",
+    "/returnProvider",
+    "/returnSale",
+    "/roles",
+    "/sales",
+    "/scanner",
+    "/shoppings",
+    "/shoppingview",
+    "/users"
+  ]
+}
