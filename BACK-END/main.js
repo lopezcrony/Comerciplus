@@ -11,7 +11,12 @@ const startServer = async () => {
 
     // Sincronizar modelos
     models;
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ alter: {
+      // Ignora errores de constraints
+      drop: false,
+      // No intentes eliminar constraints existentes
+      removeConstraints: false
+    } });
 
     // Cargar los permisos predefinidos
     await seedPermissions();
