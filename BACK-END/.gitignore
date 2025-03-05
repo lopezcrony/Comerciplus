@@ -1,7 +1,7 @@
 .vercel
 
-.env.production
 .env.local
+.env.production
 
 uploads/productos*/.
 */

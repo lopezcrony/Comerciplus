@@ -3,12 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 
-// Cargar el archivo .env adecuado según el entorno
 const env = process.env.NODE_ENV;
 const envPath = path.resolve(__dirname, `../../.env.${env}`);
 dotenv.config({ path: envPath });
 
-// Verificar que las variables de entorno se han cargado correctamente
 if (!process.env.DB_DIALECT) {
     throw new Error('DB_DIALECT no está definido en el archivo de entorno.');
 }
